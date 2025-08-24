@@ -1,6 +1,6 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.4.9",
+  "version": "1.4.10",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
@@ -25,9 +25,7 @@
       "buildResources": "resources"
     },
     "asar": true,
-    "extraMetadata": {
-      "main": "electron/main.js"
-    },
+    "extraMetadata": { "main": "electron/main.js" },
     "files": [
       {
         "from": ".",
@@ -35,8 +33,9 @@
           "dist/**",
           "electron/**",
           "assets/**",
+          "resources/**",
           "package.json",
-          "resources/**"
+          "node_modules/**"
         ]
       },
       "!release/**",
@@ -44,20 +43,9 @@
       "!**/*.map"
     ],
     "extraResources": [
-      {
-        "from": "resources/live-helper",
-        "to": "live-helper",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "LiveRouteOCR",
-        "to": "LiveRouteOCR",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "resources/icon.ico",
-        "to": "icon.ico"
-      }
+      { "from": "resources/live-helper", "to": "live-helper", "filter": ["**/*"] },
+      { "from": "LiveRouteOCR", "to": "LiveRouteOCR", "filter": ["**/*"] },
+      { "from": "resources/icon.ico", "to": "icon.ico" }
     ],
     "win": {
       "icon": "resources/icon.ico",
@@ -66,16 +54,13 @@
         { "target": "zip",  "arch": ["x64"] }
       ]
     },
-    "artifactName": "${productName} v${version}.${ext}",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "publish": [
-      {
-        "provider": "github",
-        "owner": "muphy09",
-        "repo": "3s-PokeMMO-Tool"
-      }
+      { "provider": "github", "owner": "muphy09", "repo": "3s PokeMMO Tool" }
     ]
   },
   "dependencies": {
+    "electron-updater": "^6.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
