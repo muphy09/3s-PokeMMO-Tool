@@ -1,9 +1,8 @@
-name: 3's PokeMMO Tool
+name: LiveOCR Reader fix
 
 on:
   push:
-    tags:
-      - "v*"
+    tags: ["v*"]
   workflow_dispatch: {}
 
 jobs:
@@ -23,38 +22,56 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
+        shell: pwsh
         run: npm ci
 
-      # If you need your helper script, include it here:
-      - name: Build helper (optional)
-        run: npm run build:helper
-        continue-on-error: true
+      # Build OCR runtime (so we never miss the EXE)
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"   # LiveRouteOCR targets net6.0
 
-      - name: Build app
-        run: npm run dist
+      - name: Publish LiveRouteOCR
+        shell: pwsh
+        run: dotnet publish .\LiveRouteOCR\LiveRouteOCR.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=true -o LiveRouteOCR/publish
 
-      - name: List dist contents
+      - name: Ensure OCR publish output exists
+        shell: pwsh
         run: |
-          echo "---- DIST TREE ----"
-          dir dist /s
-          echo "-------------------"
+          if (-not (Test-Path "LiveRouteOCR/publish/LiveRouteOCR.exe")) {
+            Write-Error "Missing LiveRouteOCR/publish/LiveRouteOCR.exe"; exit 1
+          }
 
-      - name: Verify artifacts exist
+      - name: Build app (renderer + package)
+        shell: pwsh
+        run: npm run dist   # builds Vite + packs to release/
+
+      - name: List release contents
+        shell: pwsh
         run: |
-          if not exist dist (
-            echo "dist folder missing" & exit /b 1
-          )
-          dir dist\*.exe /b || (echo "No .exe found in dist" & exit /b 1)
+          Write-Host "---- RELEASE TREE ----"
+          Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length,LastWriteTime
+
+      - name: Verify OCR binary packaged
+        shell: pwsh
+        run: |
+          $p = Get-ChildItem -Path "release\win-unpacked\resources\LiveRouteOCR\LiveRouteOCR.exe" -ErrorAction SilentlyContinue
+          if (-not $p) {
+            Get-ChildItem -Path "release\win-unpacked\resources" -Recurse | Select FullName,Length | Out-String | Write-Host
+            Write-Error "Packaged app is missing LiveRouteOCR.exe"; exit 1
+          } else {
+            Write-Host "Found packaged: $($p.FullName)"
+          }
 
       - name: Create/Update GitHub Release and upload
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/*.exe
-            dist/**/*.msi
-            dist/**/*.zip
-            dist/**/*.yml
-            dist/**/*.blockmap
+            release/**/*.exe
+            release/**/*.msi
+            release/**/*.zip
+            release/**/*.yml
+            release/**/*.blockmap
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
