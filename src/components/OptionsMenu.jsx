@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 
 /**
- * A compact, nice-looking Options dropdown with transient toasts.
- * Items:
- *  - Check for updates → shows "Checking…", "Up to date!", or "Update vX available…"
+ * Options dropdown with toasts:
+ *  - Check for updates → "Checking…", "Up to date (vX)!", or "Update vY available — will install on exit."
  *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
@@ -33,13 +32,22 @@ export default function OptionsMenu() {
   async function onCheckUpdates() {
     try {
       show("Checking for updates…", "info");
-      const info = await window.app?.checkUpdates?.();
-      if (!info) {
-        show("Up to date!", "success");
-      } else if (info?.version) {
-        show(`Update ${info.version} available — will install on exit.`, "success");
+
+      // Ask main for current version and an update check result
+      const current = await window.app?.getVersion?.().catch(() => null);
+      const res = await window.app?.checkUpdates?.();
+
+      const status = res?.status || (res?.version ? "available" : "uptodate");
+
+      if (status === "available" && res?.version) {
+        show(`Update ${res.version} available — will install on exit.`, "success");
+      } else if (status === "uptodate") {
+        show(`Up to date${current ? ` (v${current})` : ""}!`, "success");
+      } else if (status === "error") {
+        show("Update check failed.", "error");
+        console.error("[OptionsMenu] checkUpdates error:", res?.message);
       } else {
-        show("Update available — downloading…", "success");
+        show("Up to date!", "success");
       }
     } catch (err) {
       show("Update check failed.", "error");
@@ -72,7 +80,7 @@ export default function OptionsMenu() {
     }
   }
 
-  // Basic styles (no Tailwind needed)
+  // Styles
   const btnStyle = {
     padding: "6px 10px",
     borderRadius: 10,
@@ -94,21 +102,9 @@ export default function OptionsMenu() {
     boxShadow: "0 16px 40px rgba(0,0,0,.45)",
     overflow: "hidden",
   };
-  const itemStyle = {
-    width: "100%",
-    textAlign: "left",
-    padding: "10px 12px",
-    color: "#ddd",
-    background: "transparent",
-    border: 0,
-    cursor: "pointer",
-    fontWeight: 600,
-  };
-  const itemHover = { background: "#1b1b1b" };
 
   return (
     <div ref={menuRef} style={{ position: "fixed", top: 10, right: 12, zIndex: 9999 }}>
-      {/* Button */}
       <button
         style={btnStyle}
         onClick={() => setOpen((v) => !v)}
@@ -119,7 +115,6 @@ export default function OptionsMenu() {
         Options ▾
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div style={menuStyle} role="menu" aria-label="Options menu">
           <MenuItem label="Check for updates" onClick={onCheckUpdates} />
@@ -129,7 +124,6 @@ export default function OptionsMenu() {
         </div>
       )}
 
-      {/* Toast */}
       {toast && (
         <div
           role="status"
