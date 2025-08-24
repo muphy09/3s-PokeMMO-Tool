@@ -16,11 +16,7 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
   - Very Rare → Purple  
   - Horde → Red  
 - 🌍 **Region Selector** – Instantly filter by Kanto, Hoenn, Sinnoh, or Unova.  
-- 🧹 **Cleaned-Up Data** – Removed duplicate entries, grouped multi-method encounters (e.g., Golbat grass/cave).  
-- 🏆 **Victory Road Grouping** – All Sinnoh Victory Road entrances now display together.  
 - 🔄 **Auto-Updater** – Stay current with one click or the **Check for Updates** button.  
-- ⚡ **Performance Improvements** – Faster scraping and better filtering logic.  
-- 🛠 **Bug Fixes** – Fixed missing Pokémon sprites (e.g., Abra), parenthesis display issues, and lost location data.  
 
 ---
 
@@ -41,4 +37,5 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 5. Search the built-in Pokédex for detailed info on any Pokémon.  
 
 ---
+
 
