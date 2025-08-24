@@ -1,39 +1,31 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.4.1",
+  "version": "1.4.17",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
   "main": "electron/main.js",
-
   "scripts": {
     "dev": "vite",
     "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "vite build",
     "start": "electron .",
     "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
-    "clean": "rimraf dist release",
-    "dist": "electron-builder",                        // what CI uses
+    "clean": "rimraf release",
+    "dist": "npm run clean && npm run build:helper && npm run build && electron-builder --publish never",
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
   },
-
   "build": {
     "appId": "com.pokemmo.tool",
     "productName": "3's PokeMMO Tool",
-
     "directories": {
       "app": ".",
-      "output": "dist",                                // must match workflow
+      "output": "release",
       "buildResources": "resources"
     },
-
     "asar": true,
-
-    "extraMetadata": {
-      "main": "electron/main.js"
-    },
-
+    "extraMetadata": { "main": "electron/main.js" },
     "files": [
       {
         "from": ".",
@@ -41,52 +33,37 @@
           "dist/**",
           "electron/**",
           "assets/**",
-          "package.json",
           "resources/**",
-          "LiveRouteOCR/**"
+          "package.json",
+          "node_modules/**"
         ]
       },
       "!release/**",
       "!resources/live-helper/**",
       "!**/*.map"
     ],
-
     "extraResources": [
-      {
-        "from": "resources/live-helper",
-        "to": "live-helper",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "resources/icon.ico",
-        "to": "icon.ico"
-      }
+      { "from": "resources/live-helper", "to": "live-helper", "filter": ["**/*"] },
+      { "from": "LiveRouteOCR/publish", "to": "LiveRouteOCR", "filter": ["**/*"] },
+      { "from": "resources/icon.ico", "to": "icon.ico" }
     ],
-
     "win": {
       "icon": "resources/icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64"] },         // installer exe
-        { "target": "zip",  "arch": ["x64"] }          // portable zip
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "zip",  "arch": ["x64"] }
       ]
     },
-
     "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-
     "publish": [
-      {
-        "provider": "github",
-        "owner": "muphy09",
-        "repo": "3s-PokeMMO-Tool"
-      }
+      { "provider": "github", "owner": "muphy09", "repo": "3s-PokeMMO-Tool" }
     ]
   },
-
   "dependencies": {
+    "electron-updater": "^6.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
-
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.0",
     "concurrently": "^8.2.2",
