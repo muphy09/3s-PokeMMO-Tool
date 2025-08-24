@@ -11,8 +11,6 @@
     "dev": "vite",
     "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
 
-    "dist": "electron-builder",
-
     "build": "vite build",
 
     "start": "electron .",
@@ -21,8 +19,9 @@
 
     "clean": "rimraf dist release",
 
-    "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win portable",
+    "dist": "electron-builder",                       // CI uses this
 
+    "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip", 
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
   },
 
@@ -32,7 +31,7 @@
 
     "directories": {
       "app": ".",
-      "output": "release",
+      "output": "dist",                               // <-- align with workflow
       "buildResources": "resources"
     },
 
@@ -46,16 +45,14 @@
       {
         "from": ".",
         "filter": [
-          "dist/**",
+          "dist/**",                                  // frontend build output from Vite
           "electron/**",
           "assets/**",
           "package.json",
-          "resources/**",
-          "LiveRouteOCR/**"
+          "resources/**"
         ]
       },
-      "!release/**",
-      "!resources/live-helper/**",
+      "!resources/live-helper/**",                    // moved to extraResources
       "!**/*.map"
     ],
 
@@ -63,6 +60,11 @@
       {
         "from": "resources/live-helper",
         "to": "live-helper",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "LiveRouteOCR",
+        "to": "LiveRouteOCR",
         "filter": ["**/*"]
       },
       {
@@ -74,14 +76,20 @@
     "win": {
       "icon": "resources/icon.ico",
       "target": [
-        {
-          "target": "portable",
-          "arch": ["x64"]
-        }
+        { "target": "nsis", "arch": ["x64"] },       // installer .exe
+        { "target": "zip",  "arch": ["x64"] }        // portable zip
       ]
     },
 
-    "artifactName": "${productName} v${version}.${ext}"
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "muphy09",
+        "repo": "3s-PokeMMO-Tool"
+      }
+    ]
   },
 
   "dependencies": {
