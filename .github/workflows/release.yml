@@ -1,4 +1,4 @@
-name: 3's PokeMMO Tool
+name: Build & Release
 
 on:
   push:
@@ -25,7 +25,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # If you need your helper script, include it here:
       - name: Build helper (optional)
         run: npm run build:helper
         continue-on-error: true
@@ -33,28 +32,28 @@ jobs:
       - name: Build app
         run: npm run dist
 
-      - name: List dist contents
+      - name: List release contents
         run: |
-          echo "---- DIST TREE ----"
-          dir dist /s
-          echo "-------------------"
+          echo "---- RELEASE TREE ----"
+          dir release /s
+          echo "----------------------"
 
       - name: Verify artifacts exist
         run: |
-          if not exist dist (
-            echo "dist folder missing" & exit /b 1
+          if not exist release (
+            echo "release folder missing" & exit /b 1
           )
-          dir dist\*.exe /b || (echo "No .exe found in dist" & exit /b 1)
+          dir release\*.exe /b || (echo "No .exe found in release" & exit /b 1)
 
       - name: Create/Update GitHub Release and upload
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/**/*.exe
-            dist/**/*.msi
-            dist/**/*.zip
-            dist/**/*.yml
-            dist/**/*.blockmap
+            release/**/*.exe
+            release/**/*.msi
+            release/**/*.zip
+            release/**/*.yml
+            release/**/*.blockmap
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
