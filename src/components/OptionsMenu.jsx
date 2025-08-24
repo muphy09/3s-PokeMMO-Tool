@@ -1,46 +1,192 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
+/**
+ * A compact, nice-looking Options dropdown with transient toasts.
+ * Items:
+ *  - Check for updates → shows "Checking…", "Up to date!", or "Update vX available…"
+ *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
+ *  - Refresh app       → full renderer refresh
+ */
 export default function OptionsMenu() {
   const [open, setOpen] = useState(false);
-  const ref = useRef(null);
+  const [toast, setToast] = useState(null); // { text, kind } | null
+  const menuRef = useRef(null);
 
+  // close when clicking outside
   useEffect(() => {
-    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
+    const onDoc = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  const item = (label, onClick) => (
-    <button
-      key={label}
-      className="px-3 py-2 w-full text-left hover:bg-zinc-800"
-      onClick={() => { setOpen(false); onClick(); }}
-    >
-      {label}
-    </button>
-  );
+  // auto-hide toast
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2200);
+    return () => clearTimeout(t);
+  }, [toast]);
 
-  const actions = [
-    item('Check for updates', () => window.app?.checkUpdates?.()),
-    item('Reload OCR',        () => window.app?.reloadOCR?.()),
-    item('Refresh app',       () => window.app?.refreshApp?.()),
-  ];
+  const show = (text, kind = "info") => setToast({ text, kind });
+
+  async function onCheckUpdates() {
+    try {
+      show("Checking for updates…", "info");
+      const info = await window.app?.checkUpdates?.();
+      if (!info) {
+        show("Up to date!", "success");
+      } else if (info?.version) {
+        show(`Update ${info.version} available — will install on exit.`, "success");
+      } else {
+        show("Update available — downloading…", "success");
+      }
+    } catch (err) {
+      show("Update check failed.", "error");
+      console.error("[OptionsMenu] checkUpdates error:", err);
+    } finally {
+      setOpen(false);
+    }
+  }
+
+  async function onReloadOCR() {
+    try {
+      show("Restarting OCR…", "info");
+      await window.app?.reloadOCR?.();
+      // ask Live tab to reconnect & clear current state
+      window.dispatchEvent(new CustomEvent("force-live-reconnect", { detail: { reset: true } }));
+      show("OCR restarted.", "success");
+    } catch (err) {
+      show("Failed to restart OCR.", "error");
+      console.error("[OptionsMenu] reloadOCR error:", err);
+    } finally {
+      setOpen(false);
+    }
+  }
+
+  async function onRefresh() {
+    try {
+      await window.app?.refreshApp?.();
+    } finally {
+      setOpen(false);
+    }
+  }
+
+  // Basic styles (no Tailwind needed)
+  const btnStyle = {
+    padding: "6px 10px",
+    borderRadius: 10,
+    border: "1px solid #2a2a2a",
+    background: "linear-gradient(180deg,#2b2b2b,#1b1b1b)",
+    color: "#eaeaea",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 4px 16px rgba(0,0,0,.3)",
+  };
+  const menuStyle = {
+    position: "absolute",
+    right: 0,
+    top: "calc(100% + 6px)",
+    minWidth: 220,
+    background: "#0e0e0e",
+    border: "1px solid #282828",
+    borderRadius: 12,
+    boxShadow: "0 16px 40px rgba(0,0,0,.45)",
+    overflow: "hidden",
+  };
+  const itemStyle = {
+    width: "100%",
+    textAlign: "left",
+    padding: "10px 12px",
+    color: "#ddd",
+    background: "transparent",
+    border: 0,
+    cursor: "pointer",
+    fontWeight: 600,
+  };
+  const itemHover = { background: "#1b1b1b" };
 
   return (
-    <div ref={ref} style={{ position: 'fixed', top: 8, right: 12, zIndex: 9999 }}>
+    <div ref={menuRef} style={{ position: "fixed", top: 10, right: 12, zIndex: 9999 }}>
+      {/* Button */}
       <button
-        onClick={() => setOpen(v => !v)}
-        className="px-3 py-1 rounded bg-zinc-800 hover:bg-zinc-700 border border-zinc-700"
+        style={btnStyle}
+        onClick={() => setOpen((v) => !v)}
         title="Options"
+        aria-haspopup="menu"
+        aria-expanded={open}
       >
         Options ▾
       </button>
+
+      {/* Dropdown */}
       {open && (
-        <div className="mt-2 rounded border border-zinc-700 bg-zinc-900 shadow-xl"
-             style={{ minWidth: 200 }}>
-          {actions}
+        <div style={menuStyle} role="menu" aria-label="Options menu">
+          <MenuItem label="Check for updates" onClick={onCheckUpdates} />
+          <Divider />
+          <MenuItem label="Reload OCR" onClick={onReloadOCR} />
+          <MenuItem label="Refresh app" onClick={onRefresh} />
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "absolute",
+            right: 0,
+            top: "calc(100% + 54px)",
+            padding: "8px 12px",
+            background:
+              toast.kind === "error"
+                ? "#5a1a1a"
+                : toast.kind === "success"
+                ? "#1b4a1b"
+                : "#1a1a3a",
+            color: "#eee",
+            borderRadius: 10,
+            border: "1px solid #333",
+            boxShadow: "0 8px 28px rgba(0,0,0,.45)",
+            maxWidth: 360,
+            pointerEvents: "none",
+            fontWeight: 700,
+          }}
+        >
+          {toast.text}
         </div>
       )}
     </div>
   );
+}
+
+function MenuItem({ label, onClick }) {
+  const [hover, setHover] = useState(false);
+  const itemStyle = {
+    width: "100%",
+    textAlign: "left",
+    padding: "10px 12px",
+    color: "#ddd",
+    background: "transparent",
+    border: 0,
+    cursor: "pointer",
+    fontWeight: 600,
+  };
+  const itemHover = { background: "#1b1b1b" };
+  return (
+    <button
+      role="menuitem"
+      onClick={onClick}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{ ...itemStyle, ...(hover ? itemHover : null) }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function Divider() {
+  return <div style={{ height: 1, background: "#262626" }} />;
 }

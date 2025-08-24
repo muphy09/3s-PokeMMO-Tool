@@ -457,7 +457,7 @@ class LiveRouteClient {
     this.reconnectTimer = null;
     this.pathToggle = false;
     this.lastMsgTs = 0;
-    this.lastPayload = null; // NEW: cache last message
+    this.lastPayload = null; // cache last message
   }
   connect(){
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
@@ -484,7 +484,7 @@ class LiveRouteClient {
   }
   on(fn){
     this.listeners.add(fn);
-    // NEW: immediately replay last payload so Live tab shows data when you return
+    // Immediately replay last message so the tab shows data when you return
     if (this.lastPayload !== null) {
       try { fn(this.lastPayload); } catch {}
     }
@@ -503,6 +503,7 @@ class LiveRouteClient {
   forceReconnect(){
     try { if (this.ws) this.ws.close(); } catch {}
     this.ws = null;
+    this.lastPayload = null;          // <-- clear cached message so UI resets
     this.pathToggle = !this.pathToggle;
     setTimeout(()=> this.connect(), 100);
   }
@@ -619,6 +620,18 @@ function LiveRoutePanel({ areasIndex }){
       setIsStale(!!rawText && Date.now() - last > STALE_AFTER_MS);
     }, 1000);
 
+    // NEW: respond to "Reload OCR" signal (clear panel + reconnect)
+    const onForce = () => {
+      setRawText('');
+      setConfidence(0);
+      setDisplayMap(null);
+      setRegion(null);
+      setEntries([]);
+      setRegionChoices([]);
+      liveRouteClient.forceReconnect();
+    };
+    window.addEventListener('force-live-reconnect', onForce);
+
     // Reconnect when tab becomes visible again (tab-away fix)
     const onVis = () => {
       if (document.visibilityState === 'visible') {
@@ -638,7 +651,13 @@ function LiveRoutePanel({ areasIndex }){
     };
     window.addEventListener('focus', onFocus);
 
-    return () => { off(); clearInterval(pulse); document.removeEventListener('visibilitychange', onVis); window.removeEventListener('focus', onFocus); };
+    return () => {
+      off();
+      clearInterval(pulse);
+      window.removeEventListener('force-live-reconnect', onForce);
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('focus', onFocus);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [areasIndex, rawText]);
 
