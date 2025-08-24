@@ -1,4 +1,4 @@
-name: LiveOCR Reader fix
+name: Build & Release
 
 on:
   push:
@@ -25,26 +25,27 @@ jobs:
         shell: pwsh
         run: npm ci
 
-      # Build OCR runtime (so we never miss the EXE)
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "6.0.x"   # LiveRouteOCR targets net6.0
+          dotnet-version: "6.0.x"
 
       - name: Publish LiveRouteOCR
         shell: pwsh
         run: dotnet publish .\LiveRouteOCR\LiveRouteOCR.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=true -o LiveRouteOCR/publish
 
-      - name: Ensure OCR publish output exists
+      - name: Zip LiveRouteOCR for packaging
+        shell: pwsh
+        run: Compress-Archive -Path LiveRouteOCR/publish/* -DestinationPath LiveRouteOCR/LiveRouteOCR.zip -Force
+
+      - name: Ensure OCR zip exists
         shell: pwsh
         run: |
-          if (-not (Test-Path "LiveRouteOCR/publish/LiveRouteOCR.exe")) {
-            Write-Error "Missing LiveRouteOCR/publish/LiveRouteOCR.exe"; exit 1
-          }
+          if (-not (Test-Path "LiveRouteOCR/LiveRouteOCR.zip")) { Write-Error "OCR zip missing"; exit 1 }
 
       - name: Build app (renderer + package)
         shell: pwsh
-        run: npm run dist   # builds Vite + packs to release/
+        run: npm run dist
 
       - name: List release contents
         shell: pwsh
@@ -52,15 +53,15 @@ jobs:
           Write-Host "---- RELEASE TREE ----"
           Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length,LastWriteTime
 
-      - name: Verify OCR binary packaged
+      - name: Verify OCR zip packaged
         shell: pwsh
         run: |
-          $p = Get-ChildItem -Path "release\win-unpacked\resources\LiveRouteOCR\LiveRouteOCR.exe" -ErrorAction SilentlyContinue
-          if (-not $p) {
+          $z = Get-ChildItem -Path "release\win-unpacked\resources\LiveRouteOCR.zip" -ErrorAction SilentlyContinue
+          if (-not $z) {
             Get-ChildItem -Path "release\win-unpacked\resources" -Recurse | Select FullName,Length | Out-String | Write-Host
-            Write-Error "Packaged app is missing LiveRouteOCR.exe"; exit 1
+            Write-Error "Packaged app is missing LiveRouteOCR.zip"; exit 1
           } else {
-            Write-Host "Found packaged: $($p.FullName)"
+            Write-Host "Found packaged: $($z.FullName)"
           }
 
       - name: Create/Update GitHub Release and upload
