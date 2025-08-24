@@ -1,27 +1,20 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
-
   "main": "electron/main.js",
 
   "scripts": {
     "dev": "vite",
     "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-
     "build": "vite build",
-
     "start": "electron .",
-
     "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
-
     "clean": "rimraf dist release",
-
-    "dist": "electron-builder",                       // CI uses this
-
-    "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip", 
+    "dist": "electron-builder",                        // what CI uses
+    "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
   },
 
@@ -31,7 +24,7 @@
 
     "directories": {
       "app": ".",
-      "output": "dist",                               // <-- align with workflow
+      "output": "dist",                                // must match workflow
       "buildResources": "resources"
     },
 
@@ -45,14 +38,16 @@
       {
         "from": ".",
         "filter": [
-          "dist/**",                                  // frontend build output from Vite
+          "dist/**",
           "electron/**",
           "assets/**",
           "package.json",
-          "resources/**"
+          "resources/**",
+          "LiveRouteOCR/**"
         ]
       },
-      "!resources/live-helper/**",                    // moved to extraResources
+      "!release/**",
+      "!resources/live-helper/**",
       "!**/*.map"
     ],
 
@@ -60,11 +55,6 @@
       {
         "from": "resources/live-helper",
         "to": "live-helper",
-        "filter": ["**/*"]
-      },
-      {
-        "from": "LiveRouteOCR",
-        "to": "LiveRouteOCR",
         "filter": ["**/*"]
       },
       {
@@ -76,8 +66,8 @@
     "win": {
       "icon": "resources/icon.ico",
       "target": [
-        { "target": "nsis", "arch": ["x64"] },       // installer .exe
-        { "target": "zip",  "arch": ["x64"] }        // portable zip
+        { "target": "nsis", "arch": ["x64"] },         // installer exe
+        { "target": "zip",  "arch": ["x64"] }          // portable zip
       ]
     },
 
