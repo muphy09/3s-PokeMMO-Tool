@@ -1,23 +1,52 @@
-name: Build & Release
+name: 3's PokeMMO Tool
+
 on:
   push:
     tags:
-      - "v*"              # runs when you push v1.4.1 etc.
+      - "v*"
+  workflow_dispatch: {}
+
 jobs:
   build-windows:
     runs-on: windows-latest
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - name: Install deps
+          cache: "npm"
+
+      - name: Install dependencies
         run: npm ci
-      - name: Build installer
+
+      # If you need your helper script, include it here:
+      - name: Build helper (optional)
+        run: npm run build:helper
+        continue-on-error: true
+
+      - name: Build app
         run: npm run dist
-      - name: Upload to GitHub Release
+
+      - name: List dist contents
+        run: |
+          echo "---- DIST TREE ----"
+          dir dist /s
+          echo "-------------------"
+
+      - name: Verify artifacts exist
+        run: |
+          if not exist dist (
+            echo "dist folder missing" & exit /b 1
+          )
+          dir dist\*.exe /b || (echo "No .exe found in dist" & exit /b 1)
+
+      - name: Create/Update GitHub Release and upload
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -26,5 +55,6 @@ jobs:
             dist/**/*.zip
             dist/**/*.yml
             dist/**/*.blockmap
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
