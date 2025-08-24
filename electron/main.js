@@ -1,5 +1,5 @@
 // electron/main.js
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn, spawnSync } = require('child_process');
@@ -84,11 +84,10 @@ function extractZipSync(zipPath, destDir) {
 
   if (process.platform === 'win32') {
     // Use PowerShell Expand-Archive
-    const cmd = "Expand-Archive";
     const args = [
       '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
       '-Command',
-      `${cmd} -Path '${zipPath.replace(/'/g, "''")}' -DestinationPath '${destDir.replace(/'/g, "''")}' -Force`
+      `Expand-Archive -Path '${zipPath.replace(/'/g, "''")}' -DestinationPath '${destDir.replace(/'/g, "''")}' -Force`
     ];
     const r = spawnSync('powershell.exe', args, { stdio: 'ignore' });
     logLine('OCR', `Expand-Archive exit ${r.status}`);
@@ -127,8 +126,7 @@ function maybeUnzipLiveRoute() {
     return false;
   }
 
-  // Decide a sensible destination:
-  // Prefer <resources>/LiveRouteOCR
+  // Prefer <resources>/LiveRouteOCR for packaged, repo folder in dev
   const dest = app.isPackaged
     ? path.join(process.resourcesPath, 'LiveRouteOCR')
     : path.join(__dirname, '..', 'LiveRouteOCR');
@@ -139,7 +137,6 @@ function maybeUnzipLiveRoute() {
     return false;
   }
 
-  // After extraction, see if exe exists now (deep trees are handled by exe candidate list)
   const exe = findLiveRouteExe();
   if (!exe) {
     logLine('OCR', 'extraction completed but exe still not found – check zip structure');
@@ -229,6 +226,8 @@ function createWindow() {
     minHeight: 680,
     backgroundColor: '#0b1220',
     icon: windowIcon,
+    // hide native menubar completely
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -236,6 +235,11 @@ function createWindow() {
     },
   });
 
+  // Nuke the app menu so "File/Edit/View/Window/Help" is gone everywhere
+  Menu.setApplicationMenu(null);
+  mainWindow.setMenuBarVisibility(false);
+
+  // proper taskbar / notifications on Windows
   app.setAppUserModelId('com.pokemmo.tool');
 
   if (app.isPackaged) {
@@ -268,6 +272,7 @@ ipcMain.handle('check-updates', async () => {
 });
 
 function setupAutoUpdates() {
+  // Force the GitHub feed so a missing app-update.yml can’t break things.
   autoUpdater.setFeedURL({
     provider: 'github',
     owner: 'muphy09',
@@ -301,10 +306,23 @@ function setupAutoUpdates() {
 }
 
 /* =========================
-   IPC for OCR (optional UI)
+   IPC for OCR + window actions (for Options menu)
    ========================= */
 ipcMain.handle('start-ocr', async () => {
   startLiveRouteOCR();
+  return true;
+});
+
+ipcMain.handle('reload-ocr', async () => {
+  stopLiveRouteOCR();
+  startLiveRouteOCR();
+  return true;
+});
+
+ipcMain.handle('refresh-app', async () => {
+  if (mainWindow) {
+    mainWindow.webContents.reloadIgnoringCache();
+  }
   return true;
 });
 

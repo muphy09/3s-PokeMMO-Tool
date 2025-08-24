@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import rawDex from './pokedex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
+import OptionsMenu from './components/OptionsMenu.jsx';
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
@@ -108,6 +109,15 @@ function Sprite({ mon, size=42, alt='' }){
         if (idx < srcs.length - 1) setIdx(idx + 1);
       }}
     />
+  );
+}
+
+function App() {
+  return (
+    <>
+      <OptionsMenu />
+      {/* ...rest of your app... */}
+    </>
   );
 }
 

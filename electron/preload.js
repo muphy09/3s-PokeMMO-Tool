@@ -2,9 +2,14 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('app', {
+  // updater
   getVersion: () => ipcRenderer.invoke('get-version'),
   checkUpdates: () => ipcRenderer.invoke('check-updates'),
 
-  // optional manual trigger for OCR if you add a button in the UI
+  // OCR controls
   startOCR: () => ipcRenderer.invoke('start-ocr'),
+  reloadOCR: () => ipcRenderer.invoke('reload-ocr'),
+
+  // window
+  refreshApp: () => ipcRenderer.invoke('refresh-app'),
 });
