@@ -1,6 +1,6 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
@@ -78,7 +78,7 @@
         }
       ]
     },
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "artifactName": "3s-PokeMMO-Tool-${version}-win-x64.${ext}",
     "publish": [
       {
         "provider": "github",
