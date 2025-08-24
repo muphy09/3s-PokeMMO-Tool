@@ -1,137 +1,198 @@
 // electron/main.js
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const { autoUpdater } = require('electron-updater');
 
-let mainWindow = null;
-let helper = null;
+let mainWindow;
 
-function resolveResource(...p) {
-  // In prod (portable), everything that is NOT in app.asar is under process.resourcesPath
-  return app.isPackaged
-    ? path.join(process.resourcesPath, ...p)
-    : path.resolve(__dirname, '..', ...p);
-}
+/* ------------------------------- helpers -------------------------------- */
 
-function startHelper() {
+function logToFile(msg) {
   try {
-    const exeName = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
-    const helperPath = resolveResource('resources', 'live-helper', exeName); // dev path
-    const packagedPath = resolveResource('live-helper', exeName);            // prod path
-
-    // Prefer packaged path when running from build
-    const candidate = app.isPackaged ? packagedPath : helperPath;
-
-    if (!fs.existsSync(candidate)) {
-      // Don’t crash—just tell the user we couldn’t start the OCR helper
-      console.warn('[LiveRouteOCR] not found at:', candidate);
-      return;
-    }
-
-    helper = spawn(candidate, [], {
-      cwd: path.dirname(candidate),
-      windowsHide: true,
-      detached: false,
-      stdio: 'ignore'
-    });
-
-    helper.on('error', (err) => {
-      console.warn('[LiveRouteOCR] spawn error:', err);
-      dialog.showMessageBox({
-        type: 'warning',
-        message: 'Could not start LiveRouteOCR helper.',
-        detail: String(err),
-      });
-    });
-
-    helper.on('exit', (code, signal) => {
-      console.log('[LiveRouteOCR] exited', { code, signal });
-      helper = null;
-    });
-  } catch (err) {
-    console.warn('[LiveRouteOCR] failed to launch:', err);
+    const p = path.join(app.getPath('userData'), 'pokemmo-tool.log');
+    fs.appendFileSync(p, `[${new Date().toISOString()}] ${msg}\n`);
+  } catch {
+    // ignore logging failures
   }
 }
 
-function helperPath() {
-  const base = process.env.NODE_ENV === 'development'
-    ? path.join(__dirname, 'dist', 'live-helper')         // dev/build
-    : path.join(process.resourcesPath, 'live-helper');     // packed
-
-  // exe name from your publish output
-  return path.join(base, 'LiveRouteOCR.exe');
+function fileExists(p) {
+  try { return fs.existsSync(p); } catch { return false; }
 }
 
-let ocrProc;
-
-function startOcr() {
-  const exe = helperPath();
-  const args = []; // e.g., ["--port=8765"] if you want a specific port
-
-  ocrProc = spawn(exe, args, { windowsHide: true });
-
-  ocrProc.stdout.on('data', d => console.log('[OCR]', d.toString().trim()));
-  ocrProc.stderr.on('data', d => console.error('[OCR-ERR]', d.toString().trim()));
-  ocrProc.on('close', code => console.log('[OCR] exited', code));
-}
-
-// Start it with the app
-app.whenReady().then(() => {
-  startOcr();
-  // … your window init …
-});
-
+/* ------------------------------ window/menu ----------------------------- */
 
 function createWindow() {
-  const iconPath = resolveResource('resources', 'icon.ico'); // dev
-  const packagedIconPath = resolveResource('icon.ico');      // prod
-  const windowIcon = app.isPackaged ? packagedIconPath : iconPath;
+  const preloadPath = path.join(__dirname, 'preload.js');
+  const hasPreload = fileExists(preloadPath);
 
   mainWindow = new BrowserWindow({
-    width: 1220,
-    height: 820,
-    minWidth: 980,
-    minHeight: 680,
-    backgroundColor: '#0b1220',
-    icon: fs.existsSync(windowIcon) ? windowIcon : undefined,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      nodeIntegration: false,
+      preload: hasPreload ? preloadPath : undefined,
       contextIsolation: true,
-    },
+      nodeIntegration: false
+    }
   });
 
-  // Required on Windows for correct taskbar icon/pinning
-  app.setAppUserModelId('com.pokemmo.tool');
-
-  if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadURL('http://localhost:5173/');
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    const htmlPath = path.join(__dirname, '../dist/index.html');
+    if (!fileExists(htmlPath)) {
+      dialog.showErrorBox('Missing UI bundle', `Not found: ${htmlPath}`);
+    }
+    mainWindow.loadFile(htmlPath);
   }
+}
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+function buildMenu() {
+  const template = [
+    {
+      label: 'App',
+      submenu: [
+        { label: 'Check for Updates', click: () => autoUpdater.checkForUpdates() },
+        { label: 'Start LiveRouteOCR', click: () => ensureOCRAndLaunch().catch(showOCRError) },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
+/* ------------------------------ auto-update ----------------------------- */
+
+function setupAutoUpdates() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-downloaded', info => {
+    dialog.showMessageBox({
+      type: 'info',
+      buttons: ['Restart now', 'Later'],
+      message: `Update ${info.version} downloaded`,
+      detail: 'Restart to apply the update.'
+    }).then(r => { if (r.response === 0) autoUpdater.quitAndInstall(); });
+  });
+
+  setTimeout(() => autoUpdater.checkForUpdatesAndNotify(), 3000);
+}
+
+/* ---------------------------- LiveRouteOCR bits -------------------------- */
+
+function resourcesZip() {
+  // packaged app: app.asar sits next to a /resources dir; process.resourcesPath points to it
+  return path.join(process.resourcesPath, 'LiveRouteOCR.zip');
+}
+function resourcesFolder() {
+  return path.join(process.resourcesPath, 'LiveRouteOCR');
+}
+function userOCRDir() {
+  return path.join(app.getPath('userData'), 'LiveRouteOCR');
+}
+function userOCRExe() {
+  const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
+  return path.join(userOCRDir(), exe);
+}
+function devOCRExe() {
+  // when running from source during development
+  const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
+  const p1 = path.join(__dirname, '..', 'LiveRouteOCR', 'publish', exe);
+  const p2 = path.join(__dirname, '..', 'LiveRouteOCR', exe);
+  if (fileExists(p1)) return p1;
+  if (fileExists(p2)) return p2;
+  return null;
+}
+
+function showOCRError(err) {
+  const msg = (err && err.stack) ? err.stack : String(err);
+  logToFile(`LiveRouteOCR error: ${msg}`);
+  dialog.showErrorBox('LiveRouteOCR Error', msg);
+}
+
+function expandZipTo(zipPath, destDir) {
+  return new Promise((resolve, reject) => {
+    try {
+      fs.mkdirSync(destDir, { recursive: true });
+      const ps = spawn('powershell.exe', [
+        '-NoProfile',
+        '-NonInteractive',
+        '-Command',
+        `Expand-Archive -LiteralPath '${zipPath}' -DestinationPath '${destDir}' -Force`
+      ], { windowsHide: true });
+
+      let stderr = '';
+      ps.stderr.on('data', d => { stderr += d.toString(); });
+      ps.on('exit', code => code === 0 ? resolve() : reject(new Error(`Expand-Archive failed (${code}): ${stderr}`)));
+      ps.on('error', reject);
+    } catch (e) { reject(e); }
   });
 }
+
+async function ensureOCRInstalled() {
+  if (!app.isPackaged) {
+    const devExe = devOCRExe();
+    if (devExe) {
+      const cwd = path.dirname(devExe);
+      logToFile(`Dev OCR detected: ${devExe}`);
+      return { exePath: devExe, cwd };
+    }
+    throw new Error('Dev OCR exe not found. Run: dotnet publish LiveRouteOCR -c Release -r win-x64 -o LiveRouteOCR/publish');
+  }
+
+  const exePath = userOCRExe();
+  if (fileExists(exePath)) {
+    return { exePath, cwd: userOCRDir() };
+  }
+
+  // Prefer ZIP if present (avoids AV tampering during install)
+  const zip = resourcesZip();
+  if (fileExists(zip)) {
+    logToFile(`Extracting OCR zip: ${zip} -> ${userOCRDir()}`);
+    await expandZipTo(zip, userOCRDir());
+    if (fileExists(exePath)) return { exePath, cwd: userOCRDir() };
+    throw new Error(`After extraction, OCR exe missing at:\n${exePath}\nCheck Windows Security → Protection history in case it was quarantined.`);
+  }
+
+  // Fallback: packaged folder (copy it out)
+  const folder = resourcesFolder();
+  const packagedExe = path.join(folder, process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR');
+  if (fileExists(packagedExe)) {
+    logToFile(`Copying OCR folder: ${folder} -> ${userOCRDir()}`);
+    fs.mkdirSync(userOCRDir(), { recursive: true });
+    fs.cpSync(folder, userOCRDir(), { recursive: true });
+    if (fileExists(exePath)) return { exePath, cwd: userOCRDir() };
+    throw new Error(`Copied OCR folder but exe missing at:\n${exePath}`);
+  }
+
+  throw new Error(
+    `Could not find LiveRouteOCR payload in resources.\n` +
+    `Checked:\n- ${zip}\n- ${folder}`
+  );
+}
+
+async function ensureOCRAndLaunch() {
+  const { exePath, cwd } = await ensureOCRInstalled();
+  logToFile(`Launching OCR: ${exePath} (cwd=${cwd})`);
+  const child = spawn(exePath, [], { cwd, windowsHide: true, stdio: 'ignore' });
+  child.on('error', showOCRError);
+}
+
+/* --------------------------------- boot --------------------------------- */
 
 app.whenReady().then(() => {
   createWindow();
-  // Try to start the OCR helper. If it’s missing we won’t crash.
-  startHelper();
+  buildMenu();
+  setupAutoUpdates();
+
+  // Auto-start OCR on boot? Uncomment:
+  // ensureOCRAndLaunch().catch(showOCRError);
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('before-quit', () => {
-  try {
-    if (helper && !helper.killed) helper.kill();
-  } catch (_) {}
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });

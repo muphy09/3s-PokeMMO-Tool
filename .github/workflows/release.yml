@@ -53,16 +53,18 @@ jobs:
           Write-Host "---- RELEASE TREE ----"
           Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length,LastWriteTime
 
-      - name: Verify OCR zip packaged
+      - name: Verify OCR payload packaged (zip or folder)
         shell: pwsh
         run: |
-          $z = Get-ChildItem -Path "release\win-unpacked\resources\LiveRouteOCR.zip" -ErrorAction SilentlyContinue
-          if (-not $z) {
-            Get-ChildItem -Path "release\win-unpacked\resources" -Recurse | Select FullName,Length | Out-String | Write-Host
-            Write-Error "Packaged app is missing LiveRouteOCR.zip"; exit 1
-          } else {
-            Write-Host "Found packaged: $($z.FullName)"
-          }
+    $zip = Get-Item -Path "release\win-unpacked\resources\LiveRouteOCR.zip" -ErrorAction SilentlyContinue
+    $exe = Get-Item -Path "release\win-unpacked\resources\LiveRouteOCR\LiveRouteOCR.exe" -ErrorAction SilentlyContinue
+    if (-not $zip -and -not $exe) {
+    Get-ChildItem -Path "release\win-unpacked\resources" -Recurse | Select FullName,Length | Out-String | Write-Host
+    Write-Error "Neither LiveRouteOCR.zip nor LiveRouteOCR\\LiveRouteOCR.exe found in resources"; exit 1
+    }
+    if ($zip) { Write-Host "Found packaged zip: $($zip.FullName)" }
+    if ($exe) { Write-Host "Found packaged folder exe: $($exe.FullName)" }
+
 
       - name: Create/Update GitHub Release and upload
         uses: softprops/action-gh-release@v2
