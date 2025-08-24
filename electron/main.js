@@ -5,70 +5,142 @@ const fs = require('fs');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 
-// ------------------------------
-// Small updater log helper
-// ------------------------------
-function upLog(msg) {
-  try {
-    fs.appendFileSync(
-      path.join(app.getPath('userData'), 'pokemmo-tool.log'),
-      `[${new Date().toISOString()}] ${msg}\n`
-    );
-  } catch (_) {}
-}
-
 let mainWindow = null;
 let liveRouteProc = null;
 
-// Resolve a resource path both in dev and prod
+/* =========================
+   Logging (updater + OCR)
+   ========================= */
+function logLine(scope, msg) {
+  try {
+    fs.appendFileSync(
+      path.join(app.getPath('userData'), 'pokemmo-tool.log'),
+      `[${new Date().toISOString()}] ${scope}: ${msg}\n`
+    );
+  } catch {}
+}
+
+/* =========================
+   Resource resolution
+   ========================= */
 function resolveResource(...p) {
   return app.isPackaged
     ? path.join(process.resourcesPath, ...p)
     : path.resolve(__dirname, '..', ...p);
 }
 
-// ------------------------------
-// LiveRouteOCR helper launcher
-// ------------------------------
-function findLiveRouteExe() {
+/* =========================
+   LiveRouteOCR launcher
+   ========================= */
+function listOcrCandidates() {
   const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
-  const candidates = app.isPackaged
-    ? [
-        // packaged (extraResources)
-        path.join(process.resourcesPath, 'LiveRouteOCR', exe),
-        path.join(process.resourcesPath, 'live-helper', exe),
-        path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', exe),
-      ]
-    : [
-        // dev – run from repo
-        path.join(__dirname, '..', 'LiveRouteOCR', exe),
-        path.join(__dirname, 'LiveRouteOCR', exe),
-        path.join(__dirname, '..', 'resources', 'LiveRouteOCR', exe),
-      ];
+  const list = [];
 
-  for (const c of candidates) {
-    if (fs.existsSync(c)) return c;
+  // ---- Packaged locations (extraResources variants)
+  // flat inside resources
+  list.push(path.join(process.resourcesPath, 'LiveRouteOCR', exe));
+  // with resources/ prefix sometimes added by builders
+  list.push(path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', exe));
+  // deep .NET publish paths (common when copying publish/ into resources)
+  list.push(
+    path.join(
+      process.resourcesPath,
+      'LiveRouteOCR',
+      'bin',
+      'Release',
+      'net6.0-windows',
+      'win-x64',
+      exe
+    )
+  );
+  list.push(
+    path.join(
+      process.resourcesPath,
+      'resources',
+      'LiveRouteOCR',
+      'bin',
+      'Release',
+      'net6.0-windows',
+      'win-x64',
+      exe
+    )
+  );
+
+  // ---- Dev locations (running with Vite)
+  list.push(path.join(__dirname, '..', 'LiveRouteOCR', exe));
+  list.push(
+    path.join(
+      __dirname,
+      '..',
+      'LiveRouteOCR',
+      'bin',
+      'Release',
+      'net6.0-windows',
+      'win-x64',
+      exe
+    )
+  );
+  list.push(path.join(__dirname, 'LiveRouteOCR', exe));
+  list.push(
+    path.join(
+      __dirname,
+      'LiveRouteOCR',
+      'bin',
+      'Release',
+      'net6.0-windows',
+      'win-x64',
+      exe
+    )
+  );
+
+  return list;
+}
+
+function findLiveRouteExe() {
+  const candidates = listOcrCandidates();
+  logLine('OCR', `probing ${candidates.length} candidate paths`);
+  for (const p of candidates) {
+    const ok = fs.existsSync(p);
+    logLine('OCR', `${ok ? 'FOUND' : 'miss'}: ${p}`);
+    if (ok) return p;
   }
   return null;
 }
 
 function startLiveRouteOCR() {
   try {
-    const exe = findLiveRouteExe();
-    if (!exe) {
-      console.warn('[LiveRouteOCR] executable not found in expected locations.');
+    if (liveRouteProc) {
+      logLine('OCR', 'requested start but process already exists; ignoring');
       return;
     }
 
+    const exe = findLiveRouteExe();
+    if (!exe) {
+      const detail =
+        'LiveRouteOCR executable not found in packaged resources.\n' +
+        'Ensure your electron-builder `extraResources` includes: "LiveRouteOCR/**"\n' +
+        'and that the executable is inside that folder (or its published net6.0 path).';
+      logLine('OCR', 'NOT FOUND\n' + detail);
+      // Warn once in UI so it’s visible
+      dialog.showMessageBox({
+        type: 'warning',
+        message: 'LiveRouteOCR missing',
+        detail,
+      });
+      return;
+    }
+
+    const cwd = path.dirname(exe);
+    logLine('OCR', `spawning: ${exe}  (cwd=${cwd})`);
     liveRouteProc = spawn(exe, [], {
-      cwd: path.dirname(exe),
+      cwd,
       windowsHide: true,
       detached: false,
       stdio: 'ignore',
     });
 
     liveRouteProc.on('error', (err) => {
-      console.warn('[LiveRouteOCR] spawn error:', err);
+      logLine('OCR', `spawn error: ${err?.stack || err}`);
       dialog.showMessageBox({
         type: 'warning',
         message: 'Could not start LiveRouteOCR helper.',
@@ -77,17 +149,30 @@ function startLiveRouteOCR() {
     });
 
     liveRouteProc.on('exit', (code, signal) => {
-      console.log('[LiveRouteOCR] exited', code, signal);
+      logLine('OCR', `exited (code=${code}, signal=${signal})`);
       liveRouteProc = null;
     });
   } catch (err) {
-    console.warn('[LiveRouteOCR] failed to launch:', err);
+    logLine('OCR', `unexpected start error: ${err?.stack || err}`);
   }
 }
 
-// ------------------------------
-// Browser window
-// ------------------------------
+function stopLiveRouteOCR() {
+  try {
+    if (liveRouteProc && !liveRouteProc.killed) {
+      logLine('OCR', 'killing process on app quit');
+      liveRouteProc.kill();
+    }
+  } catch (e) {
+    logLine('OCR', `kill error: ${e?.stack || e}`);
+  } finally {
+    liveRouteProc = null;
+  }
+}
+
+/* =========================
+   BrowserWindow
+   ========================= */
 function createWindow() {
   const windowIcon = (() => {
     const dev = resolveResource('resources', 'icon.ico');
@@ -109,7 +194,7 @@ function createWindow() {
     },
   });
 
-  // Required on Windows for correct taskbar icon/pinning
+  // proper taskbar / notifications on Windows
   app.setAppUserModelId('com.pokemmo.tool');
 
   if (app.isPackaged) {
@@ -124,25 +209,25 @@ function createWindow() {
   });
 }
 
-// ------------------------------
-// Auto updates
-// ------------------------------
+/* =========================
+   Auto updates (GitHub)
+   ========================= */
 ipcMain.handle('get-version', () => app.getVersion());
 
 ipcMain.handle('check-updates', async () => {
   try {
-    upLog('manual: checkForUpdatesAndNotify()');
+    logLine('UPDATER', 'manual: checkForUpdatesAndNotify()');
     const res = await autoUpdater.checkForUpdatesAndNotify();
-    upLog(`manual: result ${res ? JSON.stringify(res.updateInfo) : 'no update'}`);
+    logLine('UPDATER', `manual: result ${res ? JSON.stringify(res.updateInfo) : 'no update'}`);
     return res?.updateInfo ?? null;
   } catch (err) {
-    upLog(`manual: error ${err?.stack || err}`);
+    logLine('UPDATER', `manual: error ${err?.stack || err}`);
     throw err;
   }
 });
 
 function setupAutoUpdates() {
-  // Force GitHub feed; removes dependence on app-update.yml shipping
+  // Force the GitHub feed so a missing app-update.yml can’t break things.
   autoUpdater.setFeedURL({
     provider: 'github',
     owner: 'muphy09',
@@ -153,49 +238,54 @@ function setupAutoUpdates() {
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.allowPrerelease = false;
 
-  autoUpdater.on('checking-for-update', () => upLog('updater: checking-for-update'));
-  autoUpdater.on('update-available', (info) => upLog(`updater: update-available ${info?.version}`));
-  autoUpdater.on('update-not-available', () => upLog('updater: update-not-available'));
-  autoUpdater.on('error', (err) => upLog(`updater: error ${err?.stack || err}`));
-  autoUpdater.on('download-progress', (p) => upLog(`updater: progress ${Math.round(p?.percent || 0)}%`));
-  autoUpdater.on('update-downloaded', (info) => {
-    upLog(`updater: update-downloaded ${info?.version}`);
-    // Uncomment if you prefer an immediate prompt instead of install-on-quit:
-    // const { dialog } = require('electron');
-    // dialog.showMessageBox({ message: `Update ${info?.version} downloaded. Install now?`, buttons: ['Install now', 'Later'] })
-    //   .then(({ response }) => { if (response === 0) autoUpdater.quitAndInstall(); });
-  });
+  autoUpdater.on('checking-for-update', () => logLine('UPDATER', 'checking-for-update'));
+  autoUpdater.on('update-available', (info) => logLine('UPDATER', `update-available ${info?.version}`));
+  autoUpdater.on('update-not-available', () => logLine('UPDATER', 'update-not-available'));
+  autoUpdater.on('error', (err) => logLine('UPDATER', `error ${err?.stack || err}`));
+  autoUpdater.on('download-progress', (p) =>
+    logLine('UPDATER', `progress ${Math.round(p?.percent || 0)}%`)
+  );
+  autoUpdater.on('update-downloaded', (info) =>
+    logLine('UPDATER', `update-downloaded ${info?.version}`)
+  );
 
-  // Kick off at startup (few seconds after ready)
+  // initial check
   setTimeout(() => {
-    upLog('startup: checkForUpdatesAndNotify()');
-    autoUpdater.checkForUpdatesAndNotify().catch((e) => upLog(`startup: error ${e}`));
+    logLine('UPDATER', 'startup: checkForUpdatesAndNotify()');
+    autoUpdater.checkForUpdatesAndNotify().catch((e) => logLine('UPDATER', `startup error: ${e}`));
   }, 3000);
 
-  // Background checks every 6h
+  // periodic checks (6h)
   setInterval(() => {
-    upLog('interval: checkForUpdates()');
+    logLine('UPDATER', 'interval: checkForUpdates()');
     autoUpdater.checkForUpdates().catch(() => {});
   }, 6 * 60 * 60 * 1000);
 }
 
-// ------------------------------
-// App lifecycle
-// ------------------------------
+/* =========================
+   IPC for OCR (optional UI)
+   ========================= */
+ipcMain.handle('start-ocr', async () => {
+  startLiveRouteOCR();
+  return true;
+});
+
+/* =========================
+   App lifecycle
+   ========================= */
 app.whenReady().then(() => {
   createWindow();
+  // Auto-start OCR on app launch (like before)
   startLiveRouteOCR();
   setupAutoUpdates();
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+app.on('before-quit', () => {
+  stopLiveRouteOCR();
 });
 
-app.on('before-quit', () => {
-  try {
-    if (liveRouteProc && !liveRouteProc.killed) liveRouteProc.kill();
-  } catch (_) {}
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('activate', () => {
