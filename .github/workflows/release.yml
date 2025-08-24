@@ -1,35 +1,23 @@
-name: 3's PokeMMO Tool
-
+name: Build & Release
 on:
   push:
     tags:
-      - "v*"        # builds on version tags like v1.3.5
-
+      - "v*"              # runs when you push v1.4.1 etc.
 jobs:
   build-windows:
     runs-on: windows-latest
-
     permissions:
-      contents: write   # create/upload releases
-
+      contents: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "20"
-
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
-
-      # Build your installer + portable zip with electron-builder
-      - name: Build dist
+      - name: Build installer
         run: npm run dist
-
-      # Create GH Release (if not already) and upload the artifacts
-      - name: Upload artifacts to release
+      - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |

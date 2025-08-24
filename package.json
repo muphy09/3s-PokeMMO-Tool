@@ -11,6 +11,8 @@
     "dev": "vite",
     "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
 
+    "dist": "electron-builder",
+
     "build": "vite build",
 
     "start": "electron .",
