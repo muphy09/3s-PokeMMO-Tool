@@ -1,137 +1,132 @@
 // electron/main.js
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, Menu, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
+const { autoUpdater } = require('electron-updater');
 
-let mainWindow = null;
-let helper = null;
+let mainWindow;
 
-function resolveResource(...p) {
-  // In prod (portable), everything that is NOT in app.asar is under process.resourcesPath
-  return app.isPackaged
-    ? path.join(process.resourcesPath, ...p)
-    : path.resolve(__dirname, '..', ...p);
+function resolveLiveRouteOCRPath() {
+  const isDev = !app.isPackaged;
+
+  // Where the folder lives:
+  //  - dev: <repo>/LiveRouteOCR/LiveRouteOCR.exe
+  //  - prod: <installDir>/resources/LiveRouteOCR/LiveRouteOCR.exe  (extraResources)
+  const baseDir = isDev
+    ? path.join(__dirname, '..', 'LiveRouteOCR')
+    : path.join(process.resourcesPath, 'LiveRouteOCR');
+
+  const exeName = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
+  const exePath = path.join(baseDir, exeName);
+
+  return { baseDir, exePath };
 }
 
-function startHelper() {
+function launchLiveRouteOCR() {
+  const { baseDir, exePath } = resolveLiveRouteOCRPath();
+
+  if (!fs.existsSync(exePath)) {
+    const msg = `LiveRouteOCR not found at:\n${exePath}\n\n`
+              + `Dev? Ensure LiveRouteOCR/** exists in the repo.\n`
+              + `Packaged? Ensure package.json "build.extraResources" includes the LiveRouteOCR folder.`;
+    console.error(msg);
+    dialog.showErrorBox('LiveRouteOCR Missing', msg);
+    return;
+  }
+
   try {
-    const exeName = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
-    const helperPath = resolveResource('resources', 'live-helper', exeName); // dev path
-    const packagedPath = resolveResource('live-helper', exeName);            // prod path
-
-    // Prefer packaged path when running from build
-    const candidate = app.isPackaged ? packagedPath : helperPath;
-
-    if (!fs.existsSync(candidate)) {
-      // Don’t crash—just tell the user we couldn’t start the OCR helper
-      console.warn('[LiveRouteOCR] not found at:', candidate);
-      return;
-    }
-
-    helper = spawn(candidate, [], {
-      cwd: path.dirname(candidate),
+    const child = spawn(exePath, [], {
+      cwd: baseDir,
       windowsHide: true,
-      detached: false,
       stdio: 'ignore'
     });
 
-    helper.on('error', (err) => {
-      console.warn('[LiveRouteOCR] spawn error:', err);
-      dialog.showMessageBox({
-        type: 'warning',
-        message: 'Could not start LiveRouteOCR helper.',
-        detail: String(err),
-      });
-    });
-
-    helper.on('exit', (code, signal) => {
-      console.log('[LiveRouteOCR] exited', { code, signal });
-      helper = null;
+    child.on('error', (err) => {
+      console.error('Failed to spawn LiveRouteOCR:', err);
+      dialog.showErrorBox('LiveRouteOCR Error', String(err));
     });
   } catch (err) {
-    console.warn('[LiveRouteOCR] failed to launch:', err);
+    console.error('Exception while launching LiveRouteOCR:', err);
+    dialog.showErrorBox('LiveRouteOCR Error', String(err));
   }
 }
 
-function helperPath() {
-  const base = process.env.NODE_ENV === 'development'
-    ? path.join(__dirname, 'dist', 'live-helper')         // dev/build
-    : path.join(process.resourcesPath, 'live-helper');     // packed
-
-  // exe name from your publish output
-  return path.join(base, 'LiveRouteOCR.exe');
+function createMenu() {
+  const template = [
+    {
+      label: 'App',
+      submenu: [
+        {
+          label: 'Check for Updates',
+          click: () => autoUpdater.checkForUpdates()
+        },
+        {
+          label: 'Start LiveRouteOCR',
+          click: () => launchLiveRouteOCR()
+        },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }
+  ];
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 }
-
-let ocrProc;
-
-function startOcr() {
-  const exe = helperPath();
-  const args = []; // e.g., ["--port=8765"] if you want a specific port
-
-  ocrProc = spawn(exe, args, { windowsHide: true });
-
-  ocrProc.stdout.on('data', d => console.log('[OCR]', d.toString().trim()));
-  ocrProc.stderr.on('data', d => console.error('[OCR-ERR]', d.toString().trim()));
-  ocrProc.on('close', code => console.log('[OCR] exited', code));
-}
-
-// Start it with the app
-app.whenReady().then(() => {
-  startOcr();
-  // … your window init …
-});
-
 
 function createWindow() {
-  const iconPath = resolveResource('resources', 'icon.ico'); // dev
-  const packagedIconPath = resolveResource('icon.ico');      // prod
-  const windowIcon = app.isPackaged ? packagedIconPath : iconPath;
-
   mainWindow = new BrowserWindow({
-    width: 1220,
-    height: 820,
-    minWidth: 980,
-    minHeight: 680,
-    backgroundColor: '#0b1220',
-    icon: fs.existsSync(windowIcon) ? windowIcon : undefined,
+    width: 1200,
+    height: 800,
     webPreferences: {
-      nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-    },
+      nodeIntegration: false
+    }
   });
 
-  // Required on Windows for correct taskbar icon/pinning
-  app.setAppUserModelId('com.pokemmo.tool');
-
-  if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadURL('http://localhost:5173/');
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
+}
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+function setupAutoUpdates() {
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-available', (info) => {
+    console.log('Update available:', info.version);
   });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    dialog.showMessageBox({
+      type: 'info',
+      buttons: ['Restart now', 'Later'],
+      message: `Update ${info.version} downloaded`,
+      detail: 'Restart to apply the update.'
+    }).then((r) => {
+      if (r.response === 0) autoUpdater.quitAndInstall();
+    });
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.error('autoUpdater error', err);
+  });
+
+  setTimeout(() => autoUpdater.checkForUpdatesAndNotify(), 3000);
 }
 
 app.whenReady().then(() => {
   createWindow();
-  // Try to start the OCR helper. If it’s missing we won’t crash.
-  startHelper();
+  createMenu();
+  setupAutoUpdates();
+
+  // If you want OCR to start automatically, uncomment:
+  // launchLiveRouteOCR();
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('before-quit', () => {
-  try {
-    if (helper && !helper.killed) helper.kill();
-  } catch (_) {}
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
