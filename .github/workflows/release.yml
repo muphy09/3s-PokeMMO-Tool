@@ -23,27 +23,38 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
+        shell: pwsh
         run: npm ci
 
       - name: Build helper (optional)
+        shell: pwsh
         run: npm run build:helper
         continue-on-error: true
 
       - name: Build app
-        run: npm run dist
+        shell: pwsh
+        run: npm run dist    # package.json uses: electron-builder --publish never
 
       - name: List release contents
+        shell: pwsh
         run: |
-          echo "---- RELEASE TREE ----"
-          dir release /s
-          echo "----------------------"
+          Write-Host "---- RELEASE TREE ----"
+          if (-not (Test-Path "release")) { Write-Host "no release dir"; exit 0 }
+          Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length,LastWriteTime
 
       - name: Verify artifacts exist
+        shell: pwsh
         run: |
-          if not exist release (
-            echo "release folder missing" & exit /b 1
-          )
-          dir release\*.exe /b || (echo "No .exe found in release" & exit /b 1)
+          if (-not (Test-Path "release")) {
+            Write-Error "release folder missing"; exit 1
+          }
+          $exes = Get-ChildItem -Path "release" -Filter *.exe -Recurse
+          if (-not $exes) {
+            Write-Host "Release tree:"
+            Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length
+            Write-Error "No .exe found in release"; exit 1
+          }
+          $exes | ForEach-Object { Write-Host "Found EXE: $($_.FullName)" }
 
       - name: Create/Update GitHub Release and upload
         uses: softprops/action-gh-release@v2
