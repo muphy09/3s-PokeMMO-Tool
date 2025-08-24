@@ -1,6 +1,6 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
@@ -18,7 +18,7 @@
   },
   "build": {
     "appId": "com.pokemmo.tool",
-    "productName": "3's PokeMMO Tool",
+    "productName": "3s PokeMMO Tool",
     "directories": {
       "app": ".",
       "output": "release",
