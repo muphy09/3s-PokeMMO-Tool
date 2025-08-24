@@ -2,7 +2,7 @@ name: Build & Release
 on:
   push:
     tags:
-      - "v*"              # runs when you push v1.4.1 etc.
+      - "v*"          
 jobs:
   build-windows:
     runs-on: windows-latest
