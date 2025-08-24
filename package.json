@@ -12,7 +12,7 @@
     "start": "electron .",
     "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
     "clean": "rimraf release",
-    "dist": "electron-builder",
+    "dist": "electron-builder --publish never",
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
   },
