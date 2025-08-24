@@ -112,15 +112,6 @@ function Sprite({ mon, size=42, alt='' }){
   );
 }
 
-function App() {
-  return (
-    <>
-      <OptionsMenu />
-      {/* ...rest of your app... */}
-    </>
-  );
-}
-
 /* ---------- Type colors (Gen 1–5) ---------- */
 const TYPE_COLORS = {
   normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
@@ -872,6 +863,9 @@ function App(){
 
   return (
     <>
+      {/* App-wide overlay controls (top-right) */}
+      <OptionsMenu />
+
       <div className="container">
         {/* Header */}
         <div className="header" style={{ alignItems:'center' }}>
