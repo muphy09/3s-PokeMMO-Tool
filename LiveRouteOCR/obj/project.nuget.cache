@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iWGReiCAIX3A03tqLePMIn4Clx76ClRL1Du4DfrYQuJqZ6uzjPdTRcgyAo1img1QpISg+YqcsdSWUdgrHsM9Xg==",
+  "dgSpecHash": "iXdoXO2KH986YKGJapo7Gj7lQGDuYwG/TrhfMiE0I+7xqz3LCteQtDZOB2WLDrt0rKZR6hJy0EreVR5JwrsADw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\bkumm\\Downloads\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+  "projectFilePath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\bkumm\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",

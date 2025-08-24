@@ -1,236 +1,203 @@
 // electron/main.js
-const { app, BrowserWindow, Menu, dialog } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { spawn, execFile } = require('child_process');
+const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 
-/* ------------------------------------------------------------------ */
-/*                    Single instance & global flags                   */
-/* ------------------------------------------------------------------ */
-const gotLock = app.requestSingleInstanceLock();
-if (!gotLock) app.quit();
-let mainWindow;
-let ocrProc = null;
-let quitting = false;
-let ocrManuallyStopped = false;
-const OCR_AUTO_START = true; // set false to disable auto-start
-const { ipcMain } = require('electron');
+// ------------------------------
+// Small updater log helper
+// ------------------------------
+function upLog(msg) {
+  try {
+    fs.appendFileSync(
+      path.join(app.getPath('userData'), 'pokemmo-tool.log'),
+      `[${new Date().toISOString()}] ${msg}\n`
+    );
+  } catch (_) {}
+}
+
+let mainWindow = null;
+let liveRouteProc = null;
+
+// Resolve a resource path both in dev and prod
+function resolveResource(...p) {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, ...p)
+    : path.resolve(__dirname, '..', ...p);
+}
+
+// ------------------------------
+// LiveRouteOCR helper launcher
+// ------------------------------
+function findLiveRouteExe() {
+  const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
+  const candidates = app.isPackaged
+    ? [
+        // packaged (extraResources)
+        path.join(process.resourcesPath, 'LiveRouteOCR', exe),
+        path.join(process.resourcesPath, 'live-helper', exe),
+        path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', exe),
+      ]
+    : [
+        // dev – run from repo
+        path.join(__dirname, '..', 'LiveRouteOCR', exe),
+        path.join(__dirname, 'LiveRouteOCR', exe),
+        path.join(__dirname, '..', 'resources', 'LiveRouteOCR', exe),
+      ];
+
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return c;
+  }
+  return null;
+}
+
+function startLiveRouteOCR() {
+  try {
+    const exe = findLiveRouteExe();
+    if (!exe) {
+      console.warn('[LiveRouteOCR] executable not found in expected locations.');
+      return;
+    }
+
+    liveRouteProc = spawn(exe, [], {
+      cwd: path.dirname(exe),
+      windowsHide: true,
+      detached: false,
+      stdio: 'ignore',
+    });
+
+    liveRouteProc.on('error', (err) => {
+      console.warn('[LiveRouteOCR] spawn error:', err);
+      dialog.showMessageBox({
+        type: 'warning',
+        message: 'Could not start LiveRouteOCR helper.',
+        detail: String(err && err.message || err),
+      });
+    });
+
+    liveRouteProc.on('exit', (code, signal) => {
+      console.log('[LiveRouteOCR] exited', code, signal);
+      liveRouteProc = null;
+    });
+  } catch (err) {
+    console.warn('[LiveRouteOCR] failed to launch:', err);
+  }
+}
+
+// ------------------------------
+// Browser window
+// ------------------------------
+function createWindow() {
+  const windowIcon = (() => {
+    const dev = resolveResource('resources', 'icon.ico');
+    const prod = resolveResource('icon.ico');
+    return fs.existsSync(app.isPackaged ? prod : dev) ? (app.isPackaged ? prod : dev) : undefined;
+  })();
+
+  mainWindow = new BrowserWindow({
+    width: 1220,
+    height: 820,
+    minWidth: 980,
+    minHeight: 680,
+    backgroundColor: '#0b1220',
+    icon: windowIcon,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  });
+
+  // Required on Windows for correct taskbar icon/pinning
+  app.setAppUserModelId('com.pokemmo.tool');
+
+  if (app.isPackaged) {
+    mainWindow.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
+  } else {
+    mainWindow.loadURL('http://localhost:5173/');
+    // mainWindow.webContents.openDevTools({ mode: 'detach' });
+  }
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+}
+
+// ------------------------------
+// Auto updates
+// ------------------------------
 ipcMain.handle('get-version', () => app.getVersion());
 
-/* ------------------------------------------------------------------ */
-/*                               Utils                                 */
-/* ------------------------------------------------------------------ */
-function logToFile(msg) {
+ipcMain.handle('check-updates', async () => {
   try {
-    const p = path.join(app.getPath('userData'), 'pokemmo-tool.log');
-    fs.appendFileSync(p, `[${new Date().toISOString()}] ${msg}\n`);
-  } catch {}
-}
-const exists = p => { try { return fs.existsSync(p); } catch { return false; } };
+    upLog('manual: checkForUpdatesAndNotify()');
+    const res = await autoUpdater.checkForUpdatesAndNotify();
+    upLog(`manual: result ${res ? JSON.stringify(res.updateInfo) : 'no update'}`);
+    return res?.updateInfo ?? null;
+  } catch (err) {
+    upLog(`manual: error ${err?.stack || err}`);
+    throw err;
+  }
+});
 
-function showOCRError(err) {
-  const msg = (err && err.stack) ? err.stack : String(err);
-  logToFile(`LiveRouteOCR error: ${msg}`);
-  dialog.showErrorBox('LiveRouteOCR Error', msg);
-}
-
-/* ------------------------------------------------------------------ */
-/*                          Window + Menu                              */
-/* ------------------------------------------------------------------ */
-function createWindow() {
-  const preload = path.join(__dirname, 'preload.js');
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      preload: exists(preload) ? preload : undefined,
-      contextIsolation: true,
-      nodeIntegration: false
-    }
+function setupAutoUpdates() {
+  // Force GitHub feed; removes dependence on app-update.yml shipping
+  autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: 'muphy09',
+    repo: '3s-PokeMMO-Tool',
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
-  } else {
-    const html = path.join(__dirname, '../dist/index.html');
-    if (!exists(html)) dialog.showErrorBox('Missing UI bundle', `Not found: ${html}`);
-    mainWindow.loadFile(html);
-  }
-}
-
-function setMenuState() {
-  const menu = Menu.getApplicationMenu();
-  if (!menu) return;
-  const startItem = menu.getMenuItemById('start-ocr');
-  const stopItem = menu.getMenuItemById('stop-ocr');
-  const running = !!ocrProc && !ocrProc.killed;
-  if (startItem) startItem.enabled = !running;
-  if (stopItem) stopItem.enabled = running;
-}
-
-function buildMenu() {
-  const template = [
-    {
-      label: 'App',
-      submenu: [
-        { id: 'check-updates', label: 'Check for Updates', click: () => autoUpdater.checkForUpdates() },
-        { type: 'separator' },
-        { id: 'start-ocr', label: 'Start LiveRouteOCR', click: () => ensureOCRAndLaunch().catch(showOCRError) },
-        { id: 'stop-ocr',  label: 'Stop LiveRouteOCR',  enabled: false, click: () => stopOCR() },
-        { type: 'separator' },
-        { role: 'quit' }
-      ]
-    }
-  ];
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-  setMenuState();
-}
-
-/* ------------------------------------------------------------------ */
-/*                        Auto-update wiring                           */
-/* ------------------------------------------------------------------ */
-function setupAutoUpdates() {
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
-  autoUpdater.on('update-downloaded', info => {
-    dialog.showMessageBox({
-      type: 'info',
-      buttons: ['Restart now', 'Later'],
-      message: `Update ${info.version} downloaded`,
-      detail: 'Restart to apply the update.'
-    }).then(r => { if (r.response === 0) autoUpdater.quitAndInstall(); });
-  });
-  setTimeout(() => autoUpdater.checkForUpdatesAndNotify(), 3000);
-}
+  autoUpdater.allowPrerelease = false;
 
-/* ------------------------------------------------------------------ */
-/*                     LiveRouteOCR: paths & install                   */
-/* ------------------------------------------------------------------ */
-function resourcesZip()        { return path.join(process.resourcesPath, 'LiveRouteOCR.zip'); }
-function resourcesFolder()     { return path.join(process.resourcesPath, 'LiveRouteOCR'); }
-function userOCRDir()          { return path.join(app.getPath('userData'), 'LiveRouteOCR'); }
-function userOCRExe()          { return path.join(userOCRDir(), process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR'); }
-function devOCRExe() {
-  const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
-  const p1 = path.join(__dirname, '..', 'LiveRouteOCR', 'publish', exe);
-  const p2 = path.join(__dirname, '..', 'LiveRouteOCR', exe);
-  return exists(p1) ? p1 : (exists(p2) ? p2 : null);
-}
-
-function expandZipTo(zipPath, destDir) {
-  return new Promise((resolve, reject) => {
-    try {
-      fs.mkdirSync(destDir, { recursive: true });
-      const ps = spawn('powershell.exe', [
-        '-NoProfile', '-NonInteractive', '-Command',
-        `Expand-Archive -LiteralPath '${zipPath}' -DestinationPath '${destDir}' -Force`
-      ], { windowsHide: true });
-      let stderr = '';
-      ps.stderr.on('data', d => { stderr += d.toString(); });
-      ps.on('exit', c => c === 0 ? resolve() : reject(new Error(`Expand-Archive failed (${c}): ${stderr}`)));
-      ps.on('error', reject);
-    } catch (e) { reject(e); }
-  });
-}
-
-async function ensureOCRInstalled() {
-  if (!app.isPackaged) {
-    const dev = devOCRExe();
-    if (dev) return { exePath: dev, cwd: path.dirname(dev) };
-    throw new Error('Dev OCR exe not found. Run: dotnet publish LiveRouteOCR -c Release -r win-x64 -o LiveRouteOCR/publish');
-  }
-
-  const exe = userOCRExe();
-  if (exists(exe)) return { exePath: exe, cwd: userOCRDir() };
-
-  const zip = resourcesZip();
-  if (exists(zip)) {
-    logToFile(`Extracting OCR zip: ${zip} -> ${userOCRDir()}`);
-    await expandZipTo(zip, userOCRDir());
-    if (exists(exe)) return { exePath: exe, cwd: userOCRDir() };
-    throw new Error(`After extraction, OCR exe missing:\n${exe}\nCheck Windows Security → Protection history.`);
-  }
-
-  const folder = resourcesFolder();
-  const packagedExe = path.join(folder, process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR');
-  if (exists(packagedExe)) {
-    logToFile(`Copying OCR folder: ${folder} -> ${userOCRDir()}`);
-    fs.mkdirSync(userOCRDir(), { recursive: true });
-    fs.cpSync(folder, userOCRDir(), { recursive: true });
-    if (exists(exe)) return { exePath: exe, cwd: userOCRDir() };
-    throw new Error(`Copied OCR folder but exe missing at:\n${exe}`);
-  }
-
-  throw new Error(`No OCR payload in resources:\n- ${zip}\n- ${folder}`);
-}
-
-/* ------------------------------------------------------------------ */
-/*                      Launch / Stop / Monitor OCR                    */
-/* ------------------------------------------------------------------ */
-function killProcessTree(proc) {
-  if (!proc || proc.killed) return;
-  try {
-    if (process.platform === 'win32') {
-      execFile('taskkill', ['/pid', String(proc.pid), '/t', '/f']);
-    } else {
-      proc.kill('SIGTERM');
-    }
-  } catch {}
-}
-
-async function ensureOCRAndLaunch() {
-  if (ocrProc && !ocrProc.killed) { setMenuState(); return; }
-  const { exePath, cwd } = await ensureOCRInstalled();
-  logToFile(`Launching OCR: ${exePath} (cwd=${cwd})`);
-  ocrManuallyStopped = false;
-  ocrProc = spawn(exePath, [], { cwd, windowsHide: true, stdio: 'ignore' });
-  setMenuState();
-
-  ocrProc.on('error', err => {
-    logToFile(`OCR spawn error: ${err}`);
-    showOCRError(err);
+  autoUpdater.on('checking-for-update', () => upLog('updater: checking-for-update'));
+  autoUpdater.on('update-available', (info) => upLog(`updater: update-available ${info?.version}`));
+  autoUpdater.on('update-not-available', () => upLog('updater: update-not-available'));
+  autoUpdater.on('error', (err) => upLog(`updater: error ${err?.stack || err}`));
+  autoUpdater.on('download-progress', (p) => upLog(`updater: progress ${Math.round(p?.percent || 0)}%`));
+  autoUpdater.on('update-downloaded', (info) => {
+    upLog(`updater: update-downloaded ${info?.version}`);
+    // Uncomment if you prefer an immediate prompt instead of install-on-quit:
+    // const { dialog } = require('electron');
+    // dialog.showMessageBox({ message: `Update ${info?.version} downloaded. Install now?`, buttons: ['Install now', 'Later'] })
+    //   .then(({ response }) => { if (response === 0) autoUpdater.quitAndInstall(); });
   });
 
-  ocrProc.on('exit', (code, signal) => {
-    logToFile(`OCR exited (code=${code}, signal=${signal})`);
-    ocrProc = null;
-    setMenuState();
-    if (!quitting && !ocrManuallyStopped && OCR_AUTO_START) {
-      // restart after a short delay
-      setTimeout(() => ensureOCRAndLaunch().catch(showOCRError), 1500);
-    }
-  });
+  // Kick off at startup (few seconds after ready)
+  setTimeout(() => {
+    upLog('startup: checkForUpdatesAndNotify()');
+    autoUpdater.checkForUpdatesAndNotify().catch((e) => upLog(`startup: error ${e}`));
+  }, 3000);
+
+  // Background checks every 6h
+  setInterval(() => {
+    upLog('interval: checkForUpdates()');
+    autoUpdater.checkForUpdates().catch(() => {});
+  }, 6 * 60 * 60 * 1000);
 }
 
-function stopOCR() {
-  ocrManuallyStopped = true;
-  if (ocrProc && !ocrProc.killed) {
-    logToFile('Stopping OCR');
-    killProcessTree(ocrProc);
-  }
-  ocrProc = null;
-  setMenuState();
-}
-
-/* ------------------------------------------------------------------ */
-/*                               Boot                                  */
-/* ------------------------------------------------------------------ */
+// ------------------------------
+// App lifecycle
+// ------------------------------
 app.whenReady().then(() => {
   createWindow();
-  buildMenu();
+  startLiveRouteOCR();
   setupAutoUpdates();
-  if (OCR_AUTO_START) {
-    ensureOCRAndLaunch().catch(showOCRError);
-  }
 });
 
-app.on('second-instance', () => {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
 });
 
-app.on('before-quit', () => { quitting = true; stopOCR(); });
-app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+app.on('before-quit', () => {
+  try {
+    if (liveRouteProc && !liveRouteProc.killed) liveRouteProc.kill();
+  } catch (_) {}
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+});

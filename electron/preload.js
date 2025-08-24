@@ -1,6 +1,8 @@
-// electron/preload.cjs
-const { contextBridge } = require("electron");
+// electron/preload.js
+const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld("pokemmo", {
-  version: "1.2.5"
+// Merge with any existing API you expose
+contextBridge.exposeInMainWorld('app', {
+  getVersion: () => ipcRenderer.invoke('get-version'),
+  checkUpdates: () => ipcRenderer.invoke('check-updates'),
 });

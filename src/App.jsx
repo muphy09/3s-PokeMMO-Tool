@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import rawDex from './pokedex.json';
+import VersionBadge from "./components/VersionBadge.jsx";
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
@@ -860,209 +861,214 @@ function App(){
   }, [resolved]);
 
   return (
-    <div className="container">
-      {/* Header */}
-      <div className="header" style={{ alignItems:'center' }}>
-        <img src={headerSrc} alt="" style={{ width:44, height:44, objectFit:'contain', imageRendering:'pixelated' }} />
-        <h1 style={{ marginLeft:8 }}>3&apos;s PokeMMO Tool</h1>
-      </div>
-
-      {/* Search / Mode Card */}
-      <div style={{ ...styles.card, marginBottom:16 }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-          <div style={styles.segWrap}>
-            <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon</button>
-            <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Areas</button>
-            <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
-          </div>
+    <>
+      <div className="container">
+        {/* Header */}
+        <div className="header" style={{ alignItems:'center' }}>
+          <img src={headerSrc} alt="" style={{ width:44, height:44, objectFit:'contain', imageRendering:'pixelated' }} />
+          <h1 style={{ marginLeft:8 }}>3&apos;s PokeMMO Tool</h1>
         </div>
 
-        {/* Context label + search input (hidden for Live) */}
-        {mode!=='live' && (
-          <>
-            <div className="label-muted" style={{ marginBottom:8 }}>
-              {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
+        {/* Search / Mode Card */}
+        <div style={{ ...styles.card, marginBottom:16 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+            <div style={styles.segWrap}>
+              <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon</button>
+              <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Areas</button>
+              <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
             </div>
-            <input
-              value={query}
-              onChange={(e)=> setQuery(e.target.value)}
-              placeholder={mode==='pokemon' ? 'e.g. Garchomp or 445' : 'e.g. Victory Road, Viridian Forest, Route 10'}
-              className="input"
-              style={{ height:44, borderRadius:10, fontSize:16 }}
-            />
-          </>
-        )}
-
-        {/* Pokémon results */}
-        {mode==='pokemon' && !!results.length && (
-          <div className="result-grid" style={{ marginTop:12 }}>
-            {results.map(p => {
-              const mon = p;
-              const t = (p.types || []).map(normalizeType);
-              return (
-                <button
-                  key={`${p.id}-${p.name}`}
-                  onClick={()=>{ setSelected(p); setQuery(''); }}
-                  className="result-tile"
-                  style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid #262626', background:'#141414' }}
-                >
-                  <Sprite mon={mon} size={42} alt={p.name} />
-                  <div style={{ textAlign:'left' }}>
-                    <div style={{ fontWeight:800 }}>{titleCase(p.name)}</div>
-                    <div className="label-muted">Dex #{p.id}</div>
-                    <div style={{ display:'flex', gap:6, marginTop:6 }}>
-                      {t.map(tp => <TypePill key={tp} t={tp} compact />)}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
           </div>
-        )}
 
-        {/* Area results */}
-        {mode==='areas' && !!areaHits.length && (
-          <div style={{ marginTop:12, display:'grid', gap:12 }}>
-            {areaHits.map(hit => (
-              <div key={`${hit.region}-${hit.map}`} style={styles.areaCard}>
-                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
-                  <div style={{ fontWeight:800, fontSize:16 }}>
-                    {hit.map} <span className="label-muted">({hit.region})</span>
+          {/* Context label + search input (hidden for Live) */}
+          {mode!=='live' && (
+            <>
+              <div className="label-muted" style={{ marginBottom:8 }}>
+                {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
+              </div>
+              <input
+                value={query}
+                onChange={(e)=> setQuery(e.target.value)}
+                placeholder={mode==='pokemon' ? 'e.g. Garchomp or 445' : 'e.g. Victory Road, Viridian Forest, Route 10'}
+                className="input"
+                style={{ height:44, borderRadius:10, fontSize:16 }}
+              />
+            </>
+          )}
+
+          {/* Pokémon results */}
+          {mode==='pokemon' && !!results.length && (
+            <div className="result-grid" style={{ marginTop:12 }}>
+              {results.map(p => {
+                const mon = p;
+                const t = (p.types || []).map(normalizeType);
+                return (
+                  <button
+                    key={`${p.id}-${p.name}`}
+                    onClick={()=>{ setSelected(p); setQuery(''); }}
+                    className="result-tile"
+                    style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid #262626', background:'#141414' }}
+                  >
+                    <Sprite mon={mon} size={42} alt={p.name} />
+                    <div style={{ textAlign:'left' }}>
+                      <div style={{ fontWeight:800 }}>{titleCase(p.name)}</div>
+                      <div className="label-muted">Dex #{p.id}</div>
+                      <div style={{ display:'flex', gap:6, marginTop:6 }}>
+                        {t.map(tp => <TypePill key={tp} t={tp} compact />)}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Area results */}
+          {mode==='areas' && !!areaHits.length && (
+            <div style={{ marginTop:12, display:'grid', gap:12 }}>
+              {areaHits.map(hit => (
+                <div key={`${hit.region}-${hit.map}`} style={styles.areaCard}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
+                    <div style={{ fontWeight:800, fontSize:16 }}>
+                      {hit.map} <span className="label-muted">({hit.region})</span>
+                    </div>
+                    <div className="label-muted">{hit.count} Pokémon</div>
                   </div>
-                  <div className="label-muted">{hit.count} Pokémon</div>
-                </div>
 
-                <div style={{ ...styles.gridCols, marginTop:10 }}>
-                  {hit.entries.map((g, idx) => {
-                    const mon = getMon(g.monName);
-                    return (
-                      <div key={idx} style={styles.monRow}>
-                        <Sprite mon={mon} size={36} alt={g.monName} />
-                        <div style={{ flex:1, minWidth:0 }}>
-                          <div style={{ fontWeight:700 }}>{g.monName}</div>
-                          <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
-                            {g.methods.map(m => <MethodPill key={`m-${m}`} method={m} />)}
-                            {g.rarities.map(r => <RarityPill key={`r-${r}`} rarity={r} />)}
+                  <div style={{ ...styles.gridCols, marginTop:10 }}>
+                    {hit.entries.map((g, idx) => {
+                      const mon = getMon(g.monName);
+                      return (
+                        <div key={idx} style={styles.monRow}>
+                          <Sprite mon={mon} size={36} alt={g.monName} />
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ fontWeight:700 }}>{g.monName}</div>
+                            <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
+                              {g.methods.map(m => <MethodPill key={`m-${m}`} method={m} />)}
+                              {g.rarities.map(r => <RarityPill key={`r-${r}`} rarity={r} />)}
+                            </div>
                           </div>
+                          {mon && (
+                            <button
+                              className="btn"
+                              style={{ padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }}
+                              onClick={() => setSelected(mon)}
+                              title="Open Pokémon"
+                            >View</button>
+                          )}
                         </div>
-                        {mon && (
-                          <button
-                            className="btn"
-                            style={{ padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }}
-                            onClick={() => setSelected(mon)}
-                            title="Open Pokémon"
-                          >View</button>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Live route panel */}
+          {mode==='live' && (
+            <div style={{ marginTop:4 }}>
+              <LiveRoutePanel areasIndex={areasClean} />
+            </div>
+          )}
+        </div>
+
+        {/* Detail Panel (Pokémon) */}
+        {mode!=='live' && resolved && (
+          <div className="grid">
+            {/* Left: Pokémon card */}
+            <div style={styles.card}>
+              <div style={{ display:'flex', gap:12 }}>
+                <Sprite mon={selected} size={120} alt={resolved.name} />
+                <div>
+                  <div style={{ fontSize:22, fontWeight:900 }}>
+                    {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
+                  </div>
+                  <div style={{ display:'flex', gap:6, marginTop:6 }}>
+                    {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
 
-        {/* Live route panel */}
-        {mode==='live' && (
-          <div style={{ marginTop:4 }}>
-            <LiveRoutePanel areasIndex={areasClean} />
+              {/* Weakness table */}
+              <div style={{ marginTop:16 }}>
+                <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
+                <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                    <div style={{ fontWeight:800, marginBottom:6 }}>4× Weak</div>
+                    {resolved.weakness.x4.length ? (
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                        {resolved.weakness.x4.map(t => <TypePill key={`x4-${t}`} t={t} compact />)}
+                      </div>
+                    ) : <div className="label-muted">None</div>}
+                  </div>
+                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                    <div style={{ fontWeight:800, marginBottom:6 }}>2× Weak</div>
+                    {resolved.weakness.x2.length ? (
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                        {resolved.weakness.x2.map(t => <TypePill key={`x2-${t}`} t={t} compact />)}
+                      </div>
+                    ) : <div className="label-muted">None</div>}
+                  </div>
+                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                    <div style={{ fontWeight:800, marginBottom:6 }}>½× Resist</div>
+                    {resolved.weakness.x0_5.length ? (
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                        {resolved.weakness.x0_5.map(t => <TypePill key={`x05-${t}`} t={t} compact />)}
+                      </div>
+                    ) : <div className="label-muted">None</div>}
+                  </div>
+                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                    <div style={{ fontWeight:800, marginBottom:6 }}>¼× Resist</div>
+                    {resolved.weakness.x0_25.length ? (
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                        {resolved.weakness.x0_25.map(t => <TypePill key={`x025-${t}`} t={t} compact />)}
+                      </div>
+                    ) : <div className="label-muted">None</div>}
+                  </div>
+                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                    <div style={{ fontWeight:800, marginBottom:6 }}>0× Immune</div>
+                    {resolved.weakness.x0.length ? (
+                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                        {resolved.weakness.x0.map(t => <TypePill key={`x0-${t}`} t={t} compact />)}
+                      </div>
+                    ) : <div className="label-muted">None</div>}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Locations */}
+            <div style={styles.card}>
+              <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Locations</div>
+              {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
+              {byRegion.map(([reg, list]) => (
+                <div key={reg} style={{ marginBottom:12 }}>
+                  <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
+                  <div style={{ display:'grid', gap:8 }}>
+                    {list.map((loc, i) => (
+                      <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
+                        <div style={{ fontWeight:700 }}>{loc.map}</div>
+                        <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
+                          {(Array.isArray(loc.method) ? loc.method : [loc.method])
+                            .filter(Boolean)
+                            .map((m, j) => <MethodPill key={`m-${i}-${j}-${m}`} method={m} />)}
+                          {(Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
+                            .filter(Boolean)
+                            .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Detail Panel (Pokémon) */}
-      {mode!=='live' && resolved && (
-        <div className="grid">
-          {/* Left: Pokémon card */}
-          <div style={styles.card}>
-            <div style={{ display:'flex', gap:12 }}>
-              <Sprite mon={selected} size={120} alt={resolved.name} />
-              <div>
-                <div style={{ fontSize:22, fontWeight:900 }}>
-                  {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
-                </div>
-                <div style={{ display:'flex', gap:6, marginTop:6 }}>
-                  {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
-                </div>
-              </div>
-            </div>
-
-            {/* Weakness table */}
-            <div style={{ marginTop:16 }}>
-              <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
-                <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>4× Weak</div>
-                  {resolved.weakness.x4.length ? (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                      {resolved.weakness.x4.map(t => <TypePill key={`x4-${t}`} t={t} compact />)}
-                    </div>
-                  ) : <div className="label-muted">None</div>}
-                </div>
-                <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>2× Weak</div>
-                  {resolved.weakness.x2.length ? (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                      {resolved.weakness.x2.map(t => <TypePill key={`x2-${t}`} t={t} compact />)}
-                    </div>
-                  ) : <div className="label-muted">None</div>}
-                </div>
-                <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>½× Resist</div>
-                  {resolved.weakness.x0_5.length ? (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                      {resolved.weakness.x0_5.map(t => <TypePill key={`x05-${t}`} t={t} compact />)}
-                    </div>
-                  ) : <div className="label-muted">None</div>}
-                </div>
-                <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>¼× Resist</div>
-                  {resolved.weakness.x0_25.length ? (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                      {resolved.weakness.x0_25.map(t => <TypePill key={`x025-${t}`} t={t} compact />)}
-                    </div>
-                  ) : <div className="label-muted">None</div>}
-                </div>
-                <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>0× Immune</div>
-                  {resolved.weakness.x0.length ? (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                      {resolved.weakness.x0.map(t => <TypePill key={`x0-${t}`} t={t} compact />)}
-                    </div>
-                  ) : <div className="label-muted">None</div>}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Locations */}
-          <div style={styles.card}>
-            <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Locations</div>
-            {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
-            {byRegion.map(([reg, list]) => (
-              <div key={reg} style={{ marginBottom:12 }}>
-                <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
-                <div style={{ display:'grid', gap:8 }}>
-                  {list.map((loc, i) => (
-                    <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
-                      <div style={{ fontWeight:700 }}>{loc.map}</div>
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
-                        {(Array.isArray(loc.method) ? loc.method : [loc.method])
-                          .filter(Boolean)
-                          .map((m, j) => <MethodPill key={`m-${i}-${j}-${m}`} method={m} />)}
-                        {(Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
-                          .filter(Boolean)
-                          .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+      {/* Fixed version badge */}
+      <VersionBadge />
+    </>
   );
 }
 
