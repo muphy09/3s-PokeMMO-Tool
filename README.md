@@ -1,4 +1,4 @@
-﻿# 3s-PokeMMO-Tool
+# 3s-PokeMMO-Tool
 
 Pokemmo Tool is a desktop companion app for **PokéMMO** that enhances your gameplay with live route tracking, encounter data, and Pokédex integration.  
 It is designed for **Generations 1–5 only**, matching PokéMMO’s supported regions.
@@ -6,7 +6,7 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 ---
 
 ## 🚀 Features
-- 📍 **Live Route Tracking** – See what Pokémon can be found on your current route in real time.  
+- 📍 **Live Route Tracking** – See what Pokémon can be found on your current route in real time.  (For now only works Fullscreen/Borderless and with relatively high UI Scaling)
 - 📊 **Pokédex Integration** – Catch rates, methods, and locations for every Gen 1–5 Pokémon.  
 - 🎨 **Color-Coded Encounter Rarities** –  
   - Very Common → Brown  
