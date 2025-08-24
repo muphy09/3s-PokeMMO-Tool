@@ -5,7 +5,7 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 
 ---
 
-## 🚀 Features (v1.6)
+## 🚀 Features
 - 📍 **Live Route Tracking** – See what Pokémon can be found on your current route in real time.  
 - 📊 **Pokédex Integration** – Catch rates, methods, and locations for every Gen 1–5 Pokémon.  
 - 🎨 **Color-Coded Encounter Rarities** –  
@@ -37,5 +37,6 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 5. Search the built-in Pokédex for detailed info on any Pokémon.  
 
 ---
+
 
 
