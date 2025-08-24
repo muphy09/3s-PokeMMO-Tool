@@ -2,7 +2,7 @@
 const { app, BrowserWindow, dialog, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const { autoUpdater } = require('electron-updater');
 
 let mainWindow = null;
@@ -30,81 +30,122 @@ function resolveResource(...p) {
 }
 
 /* =========================
-   LiveRouteOCR launcher
+   LiveRouteOCR: unzip-on-first-run + launcher
    ========================= */
-function listOcrCandidates() {
+function listOcrExeCandidates() {
   const exe = process.platform === 'win32' ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
-  const list = [];
+  const L = [];
 
-  // ---- Packaged locations (extraResources variants)
-  // flat inside resources
-  list.push(path.join(process.resourcesPath, 'LiveRouteOCR', exe));
-  // with resources/ prefix sometimes added by builders
-  list.push(path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', exe));
-  // deep .NET publish paths (common when copying publish/ into resources)
-  list.push(
+  // ---- Packaged (resources) common shapes
+  L.push(path.join(process.resourcesPath, 'LiveRouteOCR', exe));
+  L.push(path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', exe));
+  L.push(
     path.join(
       process.resourcesPath,
-      'LiveRouteOCR',
-      'bin',
-      'Release',
-      'net6.0-windows',
-      'win-x64',
-      exe
+      'LiveRouteOCR', 'bin', 'Release', 'net6.0-windows', 'win-x64', exe
     )
   );
-  list.push(
+  L.push(
     path.join(
       process.resourcesPath,
-      'resources',
-      'LiveRouteOCR',
-      'bin',
-      'Release',
-      'net6.0-windows',
-      'win-x64',
-      exe
+      'resources', 'LiveRouteOCR', 'bin', 'Release', 'net6.0-windows', 'win-x64', exe
     )
   );
 
-  // ---- Dev locations (running with Vite)
-  list.push(path.join(__dirname, '..', 'LiveRouteOCR', exe));
-  list.push(
-    path.join(
-      __dirname,
-      '..',
-      'LiveRouteOCR',
-      'bin',
-      'Release',
-      'net6.0-windows',
-      'win-x64',
-      exe
-    )
-  );
-  list.push(path.join(__dirname, 'LiveRouteOCR', exe));
-  list.push(
-    path.join(
-      __dirname,
-      'LiveRouteOCR',
-      'bin',
-      'Release',
-      'net6.0-windows',
-      'win-x64',
-      exe
-    )
-  );
+  // ---- Dev (vite/electron)
+  L.push(path.join(__dirname, '..', 'LiveRouteOCR', exe));
+  L.push(path.join(__dirname, '..', 'LiveRouteOCR', 'bin', 'Release', 'net6.0-windows', 'win-x64', exe));
+  L.push(path.join(__dirname, 'LiveRouteOCR', exe));
+  L.push(path.join(__dirname, 'LiveRouteOCR', 'bin', 'Release', 'net6.0-windows', 'win-x64', exe));
 
-  return list;
+  return L;
+}
+
+function listOcrZipCandidates() {
+  const Z = [];
+  // packaged
+  Z.push(path.join(process.resourcesPath, 'LiveRouteOCR.zip'));
+  Z.push(path.join(process.resourcesPath, 'resources', 'LiveRouteOCR.zip'));
+  Z.push(path.join(process.resourcesPath, 'LiveRouteOCR', 'LiveRouteOCR.zip'));
+  Z.push(path.join(process.resourcesPath, 'resources', 'LiveRouteOCR', 'LiveRouteOCR.zip'));
+  // dev
+  Z.push(path.join(__dirname, '..', 'LiveRouteOCR.zip'));
+  Z.push(path.join(__dirname, 'LiveRouteOCR.zip'));
+  return Z;
+}
+
+function ensureDir(p) {
+  try { fs.mkdirSync(p, { recursive: true }); } catch {}
+}
+
+function extractZipSync(zipPath, destDir) {
+  ensureDir(destDir);
+  logLine('OCR', `extracting zip: ${zipPath} -> ${destDir}`);
+
+  if (process.platform === 'win32') {
+    // Use PowerShell Expand-Archive
+    const cmd = "Expand-Archive";
+    const args = [
+      '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
+      '-Command',
+      `${cmd} -Path '${zipPath.replace(/'/g, "''")}' -DestinationPath '${destDir.replace(/'/g, "''")}' -Force`
+    ];
+    const r = spawnSync('powershell.exe', args, { stdio: 'ignore' });
+    logLine('OCR', `Expand-Archive exit ${r.status}`);
+    return r.status === 0;
+  } else {
+    // Try 'unzip', then 'tar -xf'
+    let r = spawnSync('unzip', ['-o', zipPath, '-d', destDir], { stdio: 'ignore' });
+    if (r.status !== 0) {
+      r = spawnSync('tar', ['-xf', zipPath, '-C', destDir], { stdio: 'ignore' });
+    }
+    logLine('OCR', `unzip/tar exit ${r.status}`);
+    return r.status === 0;
+  }
+}
+
+function findFirstExisting(paths) {
+  for (const p of paths) {
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
 }
 
 function findLiveRouteExe() {
-  const candidates = listOcrCandidates();
-  logLine('OCR', `probing ${candidates.length} candidate paths`);
-  for (const p of candidates) {
-    const ok = fs.existsSync(p);
-    logLine('OCR', `${ok ? 'FOUND' : 'miss'}: ${p}`);
-    if (ok) return p;
+  const exe = findFirstExisting(listOcrExeCandidates());
+  logLine('OCR', exe ? `FOUND exe: ${exe}` : 'exe not found');
+  return exe;
+}
+
+function maybeUnzipLiveRoute() {
+  // If exe already present, skip
+  if (findLiveRouteExe()) return true;
+
+  const zip = findFirstExisting(listOcrZipCandidates());
+  if (!zip) {
+    logLine('OCR', 'no exe and no zip found; cannot start');
+    return false;
   }
-  return null;
+
+  // Decide a sensible destination:
+  // Prefer <resources>/LiveRouteOCR
+  const dest = app.isPackaged
+    ? path.join(process.resourcesPath, 'LiveRouteOCR')
+    : path.join(__dirname, '..', 'LiveRouteOCR');
+
+  const ok = extractZipSync(zip, dest);
+  if (!ok) {
+    logLine('OCR', 'zip extraction failed');
+    return false;
+  }
+
+  // After extraction, see if exe exists now (deep trees are handled by exe candidate list)
+  const exe = findLiveRouteExe();
+  if (!exe) {
+    logLine('OCR', 'extraction completed but exe still not found – check zip structure');
+    return false;
+  }
+  return true;
 }
 
 function startLiveRouteOCR() {
@@ -114,14 +155,15 @@ function startLiveRouteOCR() {
       return;
     }
 
+    // Ensure unzipped if we only shipped a zip
+    maybeUnzipLiveRoute();
+
     const exe = findLiveRouteExe();
     if (!exe) {
       const detail =
-        'LiveRouteOCR executable not found in packaged resources.\n' +
-        'Ensure your electron-builder `extraResources` includes: "LiveRouteOCR/**"\n' +
-        'and that the executable is inside that folder (or its published net6.0 path).';
+        'LiveRouteOCR not found. If your release packs LiveRouteOCR.zip, it will be auto-extracted on first run.\n' +
+        'Ensure electron-builder "extraResources" includes the zip or an extracted folder.';
       logLine('OCR', 'NOT FOUND\n' + detail);
-      // Warn once in UI so it’s visible
       dialog.showMessageBox({
         type: 'warning',
         message: 'LiveRouteOCR missing',
@@ -131,7 +173,7 @@ function startLiveRouteOCR() {
     }
 
     const cwd = path.dirname(exe);
-    logLine('OCR', `spawning: ${exe}  (cwd=${cwd})`);
+    logLine('OCR', `spawning: ${exe} (cwd=${cwd})`);
     liveRouteProc = spawn(exe, [], {
       cwd,
       windowsHide: true,
@@ -194,7 +236,6 @@ function createWindow() {
     },
   });
 
-  // proper taskbar / notifications on Windows
   app.setAppUserModelId('com.pokemmo.tool');
 
   if (app.isPackaged) {
@@ -227,7 +268,6 @@ ipcMain.handle('check-updates', async () => {
 });
 
 function setupAutoUpdates() {
-  // Force the GitHub feed so a missing app-update.yml can’t break things.
   autoUpdater.setFeedURL({
     provider: 'github',
     owner: 'muphy09',
@@ -249,13 +289,11 @@ function setupAutoUpdates() {
     logLine('UPDATER', `update-downloaded ${info?.version}`)
   );
 
-  // initial check
   setTimeout(() => {
     logLine('UPDATER', 'startup: checkForUpdatesAndNotify()');
     autoUpdater.checkForUpdatesAndNotify().catch((e) => logLine('UPDATER', `startup error: ${e}`));
   }, 3000);
 
-  // periodic checks (6h)
   setInterval(() => {
     logLine('UPDATER', 'interval: checkForUpdates()');
     autoUpdater.checkForUpdates().catch(() => {});
@@ -275,7 +313,7 @@ ipcMain.handle('start-ocr', async () => {
    ========================= */
 app.whenReady().then(() => {
   createWindow();
-  // Auto-start OCR on app launch (like before)
+  // Auto-unzip & start OCR on launch
   startLiveRouteOCR();
   setupAutoUpdates();
 });
