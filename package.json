@@ -1,0 +1,97 @@
+{
+  "name": "pokemmo-tool",
+  "version": "1.3.9",
+  "private": true,
+  "description": "3's PokeMMO Tool — For Blueberries",
+  "author": "3",
+
+  "main": "electron/main.js",
+
+  "scripts": {
+    "dev": "vite",
+    "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+
+    "build": "vite build",
+
+    "start": "electron .",
+
+    "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
+
+    "clean": "rimraf dist release",
+
+    "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win portable",
+
+    "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
+  },
+
+  "build": {
+    "appId": "com.pokemmo.tool",
+    "productName": "3's PokeMMO Tool",
+
+    "directories": {
+      "app": ".",
+      "output": "release",
+      "buildResources": "resources"
+    },
+
+    "asar": true,
+
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+
+    "files": [
+      {
+        "from": ".",
+        "filter": [
+          "dist/**",
+          "electron/**",
+          "assets/**",
+          "package.json"
+        ]
+      },
+      "!release/**",
+      "!resources/live-helper/**",
+      "!**/*.map"
+    ],
+
+    "extraResources": [
+      {
+        "from": "resources/live-helper",
+        "to": "live-helper",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "resources/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+
+    "win": {
+      "icon": "resources/icon.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+
+    "artifactName": "${productName} v${version}.${ext}"
+  },
+
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "concurrently": "^8.2.2",
+    "electron": "^30.0.8",
+    "electron-builder": "^24.13.3",
+    "rimraf": "^5.0.10",
+    "vite": "^5.4.0",
+    "wait-on": "^7.2.0"
+  }
+}

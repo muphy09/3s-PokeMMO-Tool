@@ -1,0 +1,17 @@
+﻿# Node/Electron
+node_modules/
+npm-debug.log*
+yarn-error.log*
+*.log
+.DS_Store
+
+# Build / packaging output
+dist/
+out/
+build/
+win-unpacked/
+release/
+*.exe
+*.msi
+*.zip
+*.asar
