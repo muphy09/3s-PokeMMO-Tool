@@ -15,6 +15,8 @@ let ocrProc = null;
 let quitting = false;
 let ocrManuallyStopped = false;
 const OCR_AUTO_START = true; // set false to disable auto-start
+const { ipcMain } = require('electron');
+ipcMain.handle('get-version', () => app.getVersion());
 
 /* ------------------------------------------------------------------ */
 /*                               Utils                                 */
