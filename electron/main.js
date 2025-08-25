@@ -1,5 +1,5 @@
 // ===== Core requires =====
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -259,16 +259,15 @@ function createMainWindow() {
 
   Menu.setApplicationMenu(null);
 
-  // dev/prod loader — works without cross-env
+  // dev/prod loader — load dev server when env URL provided
   const devURL =
     process.env.VITE_DEV_SERVER_URL ||
-    process.env.ELECTRON_START_URL ||
-    "http://localhost:5173";
+    process.env.ELECTRON_START_URL;
 
-  if (devURL.startsWith("http")) {
+  if (devURL && devURL.startsWith("http")) {
     mainWindow.loadURL(devURL);
   } else {
-    const indexFile = path.join(app.getAppPath(), "dist", "index.html");
+    const indexFile = path.join(__dirname, "..", "dist", "index.html");
     mainWindow.loadFile(indexFile);
   }
 
