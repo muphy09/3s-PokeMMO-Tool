@@ -906,6 +906,7 @@ function buildReverseAreasIndex(areasClean) {
 /* ======================= APP ======================= */
 function App(){
   const [query, setQuery]       = useState('');
+  const [areaRegion, setAreaRegion] = useState('All');
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
   const [showSetup, setShowSetup] = useState(false);   // NEW: setup panel visible?
@@ -972,7 +973,7 @@ function App(){
     }
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
-  }, [query, areasClean, mode]);
+ }, [query, areasClean, mode, areaRegion]);
 
   // Selected Pokémon details (MERGED sources)
   const resolved = React.useMemo(() => {
@@ -1067,6 +1068,21 @@ function App(){
               <div className="label-muted" style={{ marginBottom:8 }}>
                 {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
               </div>
+               {mode==='areas' && (
+                <select
+                  value={areaRegion}
+                  onChange={(e)=> setAreaRegion(e.target.value)}
+                  className="input"
+                  style={{ height:44, borderRadius:10, fontSize:16, marginBottom:8 }}
+                >
+                  <option value="All">All</option>
+                  <option value="Kanto">Kanto</option>
+                  <option value="Johto">Johto</option>
+                  <option value="Hoenn">Hoenn</option>
+                  <option value="Sinnoh">Sinnoh</option>
+                  <option value="Unova">Unova</option>
+                </select>
+              )}
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}

@@ -304,11 +304,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+      "projectUniqueName": "C:\\Users\\bkumm\\Downloads\\pokemmo-tool\\live-helper\\LiveRouteOCR.csproj",
       "projectName": "LiveRouteOCR",
-      "projectPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+      "projectPath": "C:\\Users\\bkumm\\Downloads\\pokemmo-tool\\live-helper\\LiveRouteOCR.csproj",
       "packagesPath": "C:\\Users\\bkumm\\.nuget\\packages\\",
-      "outputPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\obj\\",
+      "outputPath": "C:\\Users\\bkumm\\Downloads\\pokemmo-tool\\live-helper\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\bkumm\\AppData\\Roaming\\NuGet\\NuGet.Config"
