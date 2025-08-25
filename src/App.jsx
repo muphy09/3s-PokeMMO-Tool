@@ -1080,7 +1080,7 @@ function App(){
                       onClick={()=> setShowRegionMenu(v => !v)}
                       className="region-btn"
                     >
-                      Region
+                      {areaRegion === 'All' ? 'Region' : areaRegion}
                     </button>
                     {showRegionMenu && (
                       <div className="region-menu">
@@ -1099,21 +1099,6 @@ function App(){
                   </div>
                 )}
               </div>
-               {mode==='areas' && (
-                <select
-                  value={areaRegion}
-                  onChange={(e)=> setAreaRegion(e.target.value)}
-                  className="input"
-                  style={{ height:44, borderRadius:10, fontSize:16, marginBottom:8 }}
-                >
-                  <option value="All">All</option>
-                  <option value="Kanto">Kanto</option>
-                  <option value="Johto">Johto</option>
-                  <option value="Hoenn">Hoenn</option>
-                  <option value="Sinnoh">Sinnoh</option>
-                  <option value="Unova">Unova</option>
-                </select>
-              )}
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
