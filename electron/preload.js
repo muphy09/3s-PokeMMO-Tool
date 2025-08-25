@@ -161,6 +161,27 @@ contextBridge.exposeInMainWorld('app', {
   openLiveSetup: () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
 });
 
+contextBridge.exposeInMainWorld('liveSetup', {
+  listWindows: async () => {
+    const res = await ipcRenderer.invoke('live:list-windows');
+    // normalize to [{pid, title}]
+    if (Array.isArray(res)) return res.filter(w => w && w.pid && w.title);
+    console.warn('live:list-windows error', res);
+    return [];
+  },
+  readPreview: async () => {
+    return await ipcRenderer.invoke('live:read-preview');
+  },
+  saveSettings: async (settings) => {
+    // expected fields: { targetPid: number|null, captureZoom: number, ocrAggressiveness?: 'fast'|'balanced'|'max'|'auto' }
+    return await ipcRenderer.invoke('live:save-settings', settings);
+  },
+  appDataDir: async () => {
+    const r = await ipcRenderer.invoke('live:read-preview');
+    return r?.dir;
+  }
+});
+
 // ---------- Event forwarders to the DOM (React listens for these) ----------
 ipcRenderer.on('force-live-reconnect', (_e, detail) => {
   try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail })); } catch {}
@@ -189,27 +210,4 @@ contextBridge.exposeInMainWorld('debugPreload', {
     captureExists: fs.existsSync(lastCapPath),
     preExists: fs.existsSync(lastPrePath),
   }),
-});
-
-const { contextBridge, ipcRenderer } = require('electron');
-
-contextBridge.exposeInMainWorld('liveSetup', {
-  listWindows: async () => {
-    const res = await ipcRenderer.invoke('live:list-windows');
-    // normalize to [{pid, title}]
-    if (Array.isArray(res)) return res.filter(w => w && w.pid && w.title);
-    console.warn('live:list-windows error', res);
-    return [];
-  },
-  readPreview: async () => {
-    return await ipcRenderer.invoke('live:read-preview');
-  },
-  saveSettings: async (settings) => {
-    // expected fields: { targetPid: number|null, captureZoom: number, ocrAggressiveness?: 'fast'|'balanced'|'max'|'auto' }
-    return await ipcRenderer.invoke('live:save-settings', settings);
-  },
-  appDataDir: async () => {
-    const r = await ipcRenderer.invoke('live:read-preview');
-    return r?.dir;
-  }
 });
