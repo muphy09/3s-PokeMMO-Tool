@@ -1,6 +1,6 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.6.9",
+  "version": "1.6.8",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
@@ -42,8 +42,7 @@
       },
       "!release/**",
       "!resources/live-helper/**",
-      "!**/*.map",
-      "!resources/tessdata/**"
+      "!**/*.map"
     ],
     "extraResources": [
       {
@@ -60,13 +59,6 @@
       {
         "from": "resources/icon.ico",
         "to": "icon.ico"
-      },
-      {
-        "from": "resources/tessdata",
-        "to": "tessdata",
-        "filter": [
-          "**/*"
-        ]
       }
     ],
     "win": {
