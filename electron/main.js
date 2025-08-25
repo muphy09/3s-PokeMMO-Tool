@@ -49,64 +49,101 @@ function settingsPath() {
   return path.join(liveAppDataDir(), 'settings.json');
 }
 
-// PowerShell one‑liner: list visible top‑level windows with PIDs and titles
-function listWindowsPS() {
-  const ps = spawn('powershell.exe', ['-NoProfile', '-Command', `
-Add-Type @"
+
+// Enumerate visible top-level windows with PIDs and titles
+async function enumerateWindows() {
+  // Try simple PS: Get-Process with MainWindowTitle
+  async function psSimple() {
+    return new Promise((resolve) => {
+      const ps = spawn('powershell.exe', [
+        '-NoProfile','-NonInteractive','-Command',
+        "Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle } | Select-Object Id,ProcessName,MainWindowTitle | ConvertTo-Json -Depth 2"
+      ], { windowsHide: true });
+      const chunks = [];
+      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
+      ps.on('close', () => {
+        try {
+          const txt = Buffer.concat(chunks).toString('utf8').trim();
+          if (!txt) return resolve([]);
+          const json = JSON.parse(txt);
+          const arr = Array.isArray(json) ? json : [json];
+          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' }))); 
+        } catch { resolve([]); }
+      });
+      ps.on('error', () => resolve([]));
+    });
+  }
+
+  // Robust fallback: Win32 EnumWindows via Add-Type (works even when elevated mismatch)
+  async function psEnumWin32() {
+    const code = `
+$ErrorActionPreference = 'SilentlyContinue'
+Add-Type @" 
 using System;
 using System.Runtime.InteropServices;
-public class Win32 {
-  public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-  [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
-  [DllImport("user32.dll")] public static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
-  [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+using System.Text;
+using System.Collections.Generic;
+public class WinEnum {
+  [DllImport("user32.dll")] static extern bool EnumWindows(Func<IntPtr, IntPtr, bool> lpEnumFunc, IntPtr lParam);
+  [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hWnd);
+  [DllImport("user32.dll")] static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+  [DllImport("user32.dll")] static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+  [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+  public static System.Collections.Generic.List<object> List() {
+    var res = new System.Collections.Generic.List<object>();
+    EnumWindows((h, l) => {
+      if (!IsWindowVisible(h)) return true;
+      var sb = new StringBuilder(512);
+      GetWindowText(h, sb, sb.Capacity);
+      var title = sb.ToString();
+      if (string.IsNullOrWhiteSpace(title)) return true;
+      uint pid; GetWindowThreadProcessId(h, out pid);
+      string proc = "";
+      try { proc = System.Diagnostics.Process.GetProcessById((int)pid).ProcessName; } catch {}
+      res.Add(new { Id = pid, ProcessName = proc, MainWindowTitle = title });
+      return true;
+    }, IntPtr.Zero);
+    return res;
+  }
 }
-"@;
+"@ | Out-Null
+[WinEnum]::List() | ConvertTo-Json -Depth 4
+`.trim();
 
-$results = New-Object System.Collections.Generic.List[Object]
-$null = [Win32]::EnumWindows({ param($h,$l)
-  if (-not [Win32]::IsWindowVisible($h)) { return $true }
-  $sb = New-Object System.Text.StringBuilder 512
-  [void][Win32]::GetWindowText($h, $sb, $sb.Capacity)
-  $title = $sb.ToString()
-  if ([string]::IsNullOrWhiteSpace($title)) { return $true }
-  [uint32]$pid = 0
-  [void][Win32]::GetWindowThreadProcessId($h, [ref]$pid)
-  # Emit as CSV-safe string (pid,title)
-  $obj = [PSCustomObject]@{ pid = $pid; title = $title }
-  $results.Add($obj) | Out-Null
-  return $true
-}, [IntPtr]::Zero)
-
-# Prefer things that look like PokeMMO/GLFW but return all so user can pick
-$results | Sort-Object {
-  if ($_.title -match 'pok' -or $_.title -match 'glfw') { 0 } else { 1 }
-}, {$_.title} | ConvertTo-Json -Compress
-`], { windowsHide: true });
-
-  return new Promise((resolve, reject) => {
-    let out = '';
-    let err = '';
-    const timer = setTimeout(() => {
-      try { ps.kill(); } catch {}
-      reject(new Error('timeout'));
-    }, 4000);
-    ps.stdout.on('data', d => (out += d.toString()));
-    ps.stderr.on('data', d => (err += d.toString()));
-    ps.on('error', e => { clearTimeout(timer); reject(e); });
-    ps.on('close', code => {
-      clearTimeout(timer);
-      if (code === 0) {
-        try { resolve(JSON.parse(out)); }
-        catch (e) { reject(e); }
-      } else {
-        reject(new Error(err || ('powershell exited ' + code)));
-      }
+    return new Promise((resolve) => {
+      const ps = spawn('powershell.exe', ['-NoProfile','-NonInteractive','-Command', code], { windowsHide: true });
+      const chunks = [];
+      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
+      ps.on('close', () => {
+        try {
+          const txt = Buffer.concat(chunks).toString('utf8').trim();
+          if (!txt) return resolve([]);
+          const json = JSON.parse(txt);
+          const arr = Array.isArray(json) ? json : [json];
+          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' }))); 
+        } catch { resolve([]); }
+      });
+      ps.on('error', () => resolve([]));
     });
+    }
+
+  let list = await psSimple();
+  if (!list.length) list = await psEnumWin32();
+
+  // de-dup + prefer PokeMMO entries first
+  const uniq = new Map();
+  for (const w of list) {
+    if (!w || !w.pid) continue;
+    if (!uniq.has(w.pid)) uniq.set(w.pid, w);
+  }
+  return [...uniq.values()].sort((a, b) => {
+    const aP = (a.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
+    const bP = (b.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
+    if (aP !== bP) return aP - bP;
+    return (a.title || '').localeCompare(b.title || '');
   });
 }
-
 
 function log(...args) {
   try {
@@ -313,99 +350,7 @@ ipcMain.handle('refresh-app', async () => { if (mainWindow && !mainWindow.isDest
 
 // --- OCR Setup IPC ---
 ipcMain.handle('app:listWindows', async () => {
-  // Try simple PS: Get-Process with MainWindowTitle
-  async function psSimple() {
-    return new Promise((resolve) => {
-      const ps = spawn('powershell.exe', [
-        '-NoProfile','-NonInteractive','-Command',
-        "Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle } | Select-Object Id,ProcessName,MainWindowTitle | ConvertTo-Json -Depth 2"
-      ], { windowsHide: true });
-      const chunks = [];
-      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
-      ps.on('close', () => {
-        try {
-          const txt = Buffer.concat(chunks).toString('utf8').trim();
-          if (!txt) return resolve([]);
-          const json = JSON.parse(txt);
-          const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
-        } catch { resolve([]); }
-      });
-      ps.on('error', () => resolve([]));
-    });
-  }
-
-  // Robust fallback: Win32 EnumWindows via Add-Type (works even when elevated mismatch)
-  async function psEnumWin32() {
-    const code = `
-$ErrorActionPreference = 'SilentlyContinue'
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Collections.Generic;
-public class WinEnum {
-  [DllImport("user32.dll")] static extern bool EnumWindows(Func<IntPtr, IntPtr, bool> lpEnumFunc, IntPtr lParam);
-  [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr hWnd);
-  [DllImport("user32.dll")] static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-  [DllImport("user32.dll")] static extern int GetClassName(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-  [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-  public static System.Collections.Generic.List<object> List() {
-    var res = new System.Collections.Generic.List<object>();
-    EnumWindows((h, l) => {
-      if (!IsWindowVisible(h)) return true;
-      var sb = new StringBuilder(512);
-      GetWindowText(h, sb, sb.Capacity);
-      var title = sb.ToString();
-      if (string.IsNullOrWhiteSpace(title)) return true;
-      uint pid; GetWindowThreadProcessId(h, out pid);
-      string proc = "";
-      try { proc = System.Diagnostics.Process.GetProcessById((int)pid).ProcessName; } catch {}
-      res.Add(new { Id = pid, ProcessName = proc, MainWindowTitle = title });
-      return true;
-    }, IntPtr.Zero);
-    return res;
-  }
-}
-"@ | Out-Null
-[WinEnum]::List() | ConvertTo-Json -Depth 4
-`.trim();
-
-    return new Promise((resolve) => {
-      const ps = spawn('powershell.exe', ['-NoProfile','-NonInteractive','-Command', code], { windowsHide: true });
-      const chunks = [];
-      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
-      ps.on('close', () => {
-        try {
-          const txt = Buffer.concat(chunks).toString('utf8').trim();
-          if (!txt) return resolve([]);
-          const json = JSON.parse(txt);
-          const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
-        } catch { resolve([]); }
-      });
-      ps.on('error', () => resolve([]));
-    });
-  }
-
-  let list = await psSimple();
-  if (!list.length) list = await psEnumWin32();
-
-  // de-dup + prefer PokeMMO entries first
-  const uniq = new Map();
-  for (const w of list) {
-    if (!w || !w.pid) continue;
-    if (!uniq.has(w.pid)) uniq.set(w.pid, w);
-  }
-  const arr = [...uniq.values()].sort((a, b) => {
-    const aP = (a.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
-    const bP = (b.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
-    if (aP !== bP) return aP - bP;
-    return (a.title || '').localeCompare(b.title || '');
-  });
-
-  return arr;
+  return await enumerateWindows();
 });
 
 ipcMain.handle('app:getOcrSetup', async () => {
@@ -482,10 +427,10 @@ app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) creat
 
 ipcMain.handle('live:list-windows', async () => {
   try {
-    return await listWindowsPS();
+    return await enumerateWindows();
   } catch (e) {
    const msg = e?.message || String(e);
-   log('listWindowsPS error', msg);
+    log('enumerateWindows error', msg);
     return { error: msg };
   }
 });

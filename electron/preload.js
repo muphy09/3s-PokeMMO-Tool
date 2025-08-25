@@ -174,7 +174,6 @@ contextBridge.exposeInMainWorld('liveSetup', {
       console.warn('live:list-windows error', e);
       return { error: e?.message || String(e) };
     }
-    return [];
   },
   readPreview: async () => {
     return await ipcRenderer.invoke('live:read-preview');
