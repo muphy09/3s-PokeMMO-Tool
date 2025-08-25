@@ -268,7 +268,7 @@ function createMainWindow() {
   if (devURL.startsWith("http")) {
     mainWindow.loadURL(devURL);
   } else {
-    const indexFile = path.join(__dirname, "dist", "index.html");
+    const indexFile = path.join(__dirname, "..", "dist", "index.html");
     mainWindow.loadFile(indexFile);
   }
 
