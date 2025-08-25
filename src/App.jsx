@@ -50,6 +50,7 @@ function normalizeKey(s=''){
   return String(s).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
 }
 function normalizeType(t){ return String(t||'').toLowerCase().trim(); }
+function normalizeRegion(r=''){ return String(r||'').toLowerCase().replace(/\s+/g,'').trim(); }
 const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 /* ---------- pokedex adapter ---------- */
@@ -613,7 +614,7 @@ async function refreshPreview() {
     }
   }
 
-  
+
 
 useEffect(() => {
   let alive = true;
@@ -902,6 +903,7 @@ function buildReverseAreasIndex(areasClean) {
 function App(){
   const [query, setQuery]       = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
+  const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
   const [showSetup, setShowSetup] = useState(false);   // NEW: setup panel visible?
@@ -917,6 +919,8 @@ function App(){
   useEffect(() => { document.title = APP_TITLE; }, []);
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
+  useEffect(() => { setShowRegionMenu(false); }, [mode]);
+  
   // Auto-open setup on first run (no saved targetPid)
   useEffect(() => {
     let alive = true;
@@ -952,7 +956,10 @@ function App(){
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
     const buckets = new Map();
+    const regionKey = normalizeRegion(areaRegion);
     for (const [region, maps] of Object.entries(areasClean)) {
+      const regionNorm = normalizeRegion(region);
+      if (regionKey !== 'all' && regionNorm !== regionKey) continue;
       for (const [mapName, entries] of Object.entries(maps)) {
         const displayMap = normalizeMapForGrouping(region, mapName);
         if (!displayMap.toLowerCase().includes(q)) continue;
@@ -963,6 +970,8 @@ function App(){
     }
     const hits = [];
     for (const { region, map, entries } of buckets.values()) {
+      const regionNorm = normalizeRegion(region);
+      if (regionKey !== 'all' && regionNorm !== regionKey) continue;
       const grouped = groupEntriesByMon(entries);
       if (grouped.length) hits.push({ region, map, count: grouped.length, entries: grouped });
     }
@@ -1060,8 +1069,35 @@ function App(){
           {/* Context label + search input (hidden for Live) */}
           {mode!=='live' && (
             <>
-              <div className="label-muted" style={{ marginBottom:8 }}>
-                {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
+               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                <div className="label-muted">
+                  {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
+                </div>
+                {mode==='areas' && (
+                  <div style={{ position:'relative' }}>
+                    <button
+                      type="button"
+                      onClick={()=> setShowRegionMenu(v => !v)}
+                      className="region-btn"
+                    >
+                      Region
+                    </button>
+                    {showRegionMenu && (
+                      <div className="region-menu">
+                        {['All','Kanto','Johto','Hoenn','Sinnoh','Unova'].map(r => (
+                          <button
+                            type="button"
+                            key={r}
+                            onClick={()=> { setAreaRegion(r); setShowRegionMenu(false); }}
+                            className={r===areaRegion ? 'active' : undefined}
+                          >
+                            {r}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
                {mode==='areas' && (
                 <select

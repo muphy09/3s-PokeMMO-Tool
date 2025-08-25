@@ -160,14 +160,44 @@ h1, h2, h3, h4, h5 { color: #fff; margin: 0; }
 .t-steel   { background: rgba(184,184,208,.28); border-color: rgba(184,184,208,.48); color:#0e1116; }
 .t-water   { background: rgba(104,144,240,.30); border-color: rgba(104,144,240,.48); }
 
-/* Select styling so dropdown options are visible in dark mode */
-select.input {
-  -webkit-appearance: none;
-  appearance: none;
+/* Region filter button + menu */
+.region-btn {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--divider);
   background: rgba(255,255,255,0.06);
   color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
-select.input option {
-  background-color: #0f172a;
-  color: #e8eef5;
+.region-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-2);
+  z-index: 20;
+}
+.region-menu button {
+  display: block;
+  padding: 6px 12px;
+  width: 100%;
+  background: none;
+  border: 0;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+}
+.region-menu button:hover {
+  background: rgba(255,255,255,0.08);
+}
+.region-menu button.active {
+  background: rgba(96,165,250,0.25);
 }
