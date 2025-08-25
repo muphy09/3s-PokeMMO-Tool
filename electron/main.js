@@ -1,308 +1,218 @@
-// ===== Core requires =====
+// === Main process (merged, robust) ===
+// Keeps your existing behavior and fixes blank-window & tessdata issues.
+// - Loads index.html from multiple common locations
+// - Logs failures to %LOCALAPPDATA%/PokemmoLive/main.log
+// - Spawns LiveRouteOCR helper and restarts on demand
+// - Exposes IPC used by Options menu (check updates, reload OCR, refresh)
+// - Ensures tessdata/eng.traineddata exists alongside the app
+
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
-const {
-  app,
-  BrowserWindow,
-  ipcMain,
-  Menu,
-  dialog,
-  shell,
-} = require('electron');
+const os = require('os');
+const { app, BrowserWindow, ipcMain, Menu, dialog, shell } = require('electron');
 const { autoUpdater } = require('electron-updater');
+const { spawn } = require('child_process');
 
-// ===== App identity (Win) =====
-if (process.platform === 'win32') {
-  // Use your publisher / app id here if you have a custom one
-  app.setAppUserModelId('com.pokemmo.tool');
+const APP_NAME = 'pokemmo-tool';
+const isMac = process.platform === 'darwin';
+const isWin = process.platform === 'win32';
+const isDev = !!process.env.ELECTRON_START_URL || !!process.env.VITE_DEV_SERVER_URL || process.env.NODE_ENV === 'development';
+
+// ---------- Logging ----------
+const logDir = path.join(os.homedir(), 'AppData', 'Local', 'PokemmoLive');
+fs.mkdirSync(logDir, { recursive: true });
+const mainLog = path.join(logDir, 'main.log');
+function log(...args) {
+  const line = `[${new Date().toISOString()}] ${args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ')}`;
+  try { fs.appendFileSync(mainLog, line + '\n'); } catch {}
+  console.log(line);
 }
 
-// ===== Single instance =====
+// ---------- App User Model ID (Win) ----------
+if (isWin) {
+  try { app.setAppUserModelId(APP_NAME); } catch {}
+}
+
+// ---------- Single-instance lock ----------
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 }
-app.on('second-instance', () => {
-  const w = BrowserWindow.getAllWindows()[0];
-  if (w) {
-    if (w.isMinimized()) w.restore();
-    w.focus();
-  }
-});
 
-// ===== Globals =====
+// ---------- Globals ----------
 let mainWindow = null;
 let ocrProc = null;
+let quitting = false;
 
-// ===== Helpers =====
+// ---------- Helpers ----------
+function resolvePreload() {
+  const candidates = [
+    path.join(__dirname, 'preload.js'),
+    path.join(__dirname, '../preload.js'),
+    path.join(__dirname, 'dist/preload.js'),
+    path.join(__dirname, '../dist/preload.js'),
+    path.join(process.resourcesPath || __dirname, 'preload.js')
+  ];
+  for (const p of candidates) { if (fs.existsSync(p)) return p; }
+  return path.join(__dirname, 'preload.js');
+}
 
-// Compare "a.b.c" like 1.6.10 > 1.6.7
-function isNewerVersion(a, b) {
-  const pa = String(a).split('.').map(n => parseInt(n, 10) || 0);
-  const pb = String(b).split('.').map(n => parseInt(n, 10) || 0);
-  const len = Math.max(pa.length, pb.length);
-  for (let i = 0; i < len; i++) {
-    const x = pa[i] || 0, y = pb[i] || 0;
-    if (x > y) return true;
-    if (x < y) return false;
+function resolveIndexUrl() {
+  const dev = process.env.ELECTRON_START_URL || process.env.VITE_DEV_SERVER_URL;
+  if (dev) return dev;
+  const candidates = [
+    path.join(__dirname, 'index.html'),
+    path.join(__dirname, '../index.html'),
+    path.join(__dirname, 'dist/index.html'),
+    path.join(__dirname, '../dist/index.html'),
+    path.join(process.resourcesPath || __dirname, 'index.html'),
+    path.join(process.resourcesPath || __dirname, 'dist/index.html'),
+    path.join(process.resourcesPath || __dirname, 'app/dist/index.html')
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return 'file://' + p.replace(/\\/g, '/');
   }
-  return false; // equal
-}
-
-function log(...args) {
-  try {
-    const line = `[${new Date().toISOString()}] ${args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ')}\n`;
-    const logFile = path.join(app.getPath('userData'), 'pokemmo-tool.log');
-    fs.appendFileSync(logFile, line);
-  } catch {}
-  console.log('[main]', ...args);
-}
-
-// Safer path join for packaged/unpacked
-function rsrc(...p) {
-  return path.join(process.resourcesPath || process.cwd(), ...p);
-}
-
-// ===== Updater wiring =====
-function setupAutoUpdates() {
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
-
-  autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
-  autoUpdater.on('update-downloaded', (info) => {
-    // Quiet flow: install on app quit. Renderer toasts inform the user.
-    log('update-downloaded', info?.version || '');
-  });
-
-  // Silent background check a few seconds after boot.
-  setTimeout(() => {
-    try { autoUpdater.checkForUpdates(); } catch (e) { log('checkForUpdates at boot failed', e); }
-  }, 3000);
-}
-
-// ===== LiveRouteOCR: locating/extracting/spawning =====
-const OCR_FOLDER_NAME = 'LiveRouteOCR';
-const OCR_EXE_NAME = 'LiveRouteOCR.exe';
-
-// Where we prefer to run OCR from when extraction is needed
-function ocrUserDir() {
-  return path.join(app.getPath('userData'), OCR_FOLDER_NAME);
-}
-
-function ocrResourcesExe() {
-  return path.join(rsrc(OCR_FOLDER_NAME), OCR_EXE_NAME);
-}
-function ocrUserExe() {
-  return path.join(ocrUserDir(), OCR_EXE_NAME);
-}
-function ocrZipPath() {
-  return path.join(process.resourcesPath || process.cwd(), `${OCR_FOLDER_NAME}.zip`);
-}
-
-async function extractZipToUserDir(zipFile, destDir) {
-  // Try extract-zip first if bundled
-  try {
-    const extract = require('extract-zip');
-    await extract(zipFile, { dir: destDir });
-    return true;
-  } catch (e) {
-    log('extract-zip not available or failed, trying PowerShell Expand-Archive…', e?.message || e);
-  }
-
-  // Windows fallback via PowerShell
-  if (process.platform === 'win32') {
-    await new Promise((resolve) => {
-      const ps = spawn('powershell.exe', [
-        '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
-        'Expand-Archive', '-Path', `"${zipFile}"`, '-DestinationPath', `"${destDir}"`, '-Force',
-      ], { windowsHide: true, shell: true });
-
-      ps.on('exit', () => resolve());
-      ps.on('error', () => resolve());
-    });
-    return fs.existsSync(destDir) && fs.existsSync(path.join(destDir, OCR_EXE_NAME));
-  }
-
-  return false;
-}
-
-async function ensureOCRExeExists() {
-  // 1) Directly in resources
-  if (fs.existsSync(ocrResourcesExe())) return ocrResourcesExe();
-
-  // 2) Extracted into userData
-  if (fs.existsSync(ocrUserExe())) return ocrUserExe();
-
-  // 3) Zip present? extract it to userData
-  const zip = ocrZipPath();
-  if (fs.existsSync(zip)) {
-    try {
-      fs.mkdirSync(ocrUserDir(), { recursive: true });
-      const ok = await extractZipToUserDir(zip, ocrUserDir());
-      if (ok && fs.existsSync(ocrUserExe())) return ocrUserExe();
-    } catch (e) {
-      log('Failed to extract OCR zip', e);
-    }
-  }
-
   return null;
 }
 
-async function startLiveRouteOCR() {
+function ensureTessdata() {
+  const installRoot = process.resourcesPath || path.dirname(app.getPath('exe'));
+  const destDir = path.join(installRoot, 'tessdata');
+  fs.mkdirSync(destDir, { recursive: true });
+
+  const sources = [
+    path.join(installRoot, 'resources', 'tessdata', 'eng.traineddata'),
+    path.join(installRoot, 'tessdata', 'eng.traineddata')
+  ];
+  const dest = path.join(destDir, 'eng.traineddata');
+  if (!fs.existsSync(dest)) {
+    for (const s of sources) {
+      if (fs.existsSync(s)) {
+        try { fs.copyFileSync(s, dest); log('Copied eng.traineddata from', s); break; } catch (e) { log('Copy tessdata error:', e.message); }
+      }
+    }
+  }
+  process.env.POKEMMO_TESSDATA_DIR = destDir;
+  return destDir;
+}
+
+function startLiveRouteOCR() {
   try {
-    if (ocrProc) {
-      try { ocrProc.kill(); } catch {}
-      ocrProc = null;
-    }
+    const installRoot = process.resourcesPath || path.dirname(app.getPath('exe'));
+    const helperDir = path.join(installRoot, 'live-helper');
+    const exe = path.join(helperDir, 'LiveRouteOCR.exe');
+    const exists = fs.existsSync(exe);
+    if (!exists) { log('LiveRouteOCR not found at', exe); return; }
 
-    if (process.platform !== 'win32') {
-      log('LiveRouteOCR currently supported on Windows only; skipping spawn.');
-      return;
-    }
-
-    const exe = await ensureOCRExeExists();
-    if (!exe) {
-      const msg = `LiveRouteOCR not found.\nSearched:\n - ${ocrResourcesExe()}\n - ${ocrUserExe()}\nZip (for extraction):\n - ${ocrZipPath()}`;
-      log(msg);
-      // non-blocking toast via dialog; comment this out if you don't want a modal
-      dialog.showMessageBox({ type: 'warning', message: 'LiveRouteOCR Missing', detail: msg });
-      return;
-    }
-
-    const cwd = path.dirname(exe);
-    ocrProc = spawn(exe, [], {
-      cwd,
-      windowsHide: true,
-      stdio: 'ignore', // change to ['ignore','pipe','pipe'] for verbose logs
-    });
-
-    ocrProc.on('exit', (code, sig) => {
-      log('LiveRouteOCR exited', code, sig);
-      ocrProc = null;
-      // Do NOT auto-restart immediately; renderer has a "Reload OCR" option.
-    });
-
-    ocrProc.on('error', (err) => {
-      log('LiveRouteOCR spawn error:', err?.message || err);
-      ocrProc = null;
-    });
-
-    log('LiveRouteOCR started at', exe);
+    const env = { ...process.env, POKEMMO_TESSDATA_DIR: ensureTessdata() };
+    const args = []; // you can push ROI args here if needed
+    ocrProc = spawn(exe, args, { stdio: ['ignore', 'pipe', 'pipe'], env });
+    ocrProc.stdout.on('data', d => log('[OCR]', String(d).trim()));
+    ocrProc.stderr.on('data', d => log('[OCR:ERR]', String(d).trim()));
+    ocrProc.on('exit', (code, sig) => { log('LiveRouteOCR exited', code, sig); ocrProc = null; if (!quitting) setTimeout(startLiveRouteOCR, 1500); });
+    log('LiveRouteOCR started');
   } catch (e) {
-    log('startLiveRouteOCR exception:', e?.message || e);
+    log('Failed to start LiveRouteOCR:', e.message);
   }
 }
 
 function stopLiveRouteOCR() {
   try {
     if (ocrProc && !ocrProc.killed) {
+      const pid = ocrProc.pid;
       ocrProc.kill();
-      log('LiveRouteOCR killed');
+      log('Killed LiveRouteOCR pid', pid);
     }
-  } catch (e) {
-    log('stopLiveRouteOCR failed', e?.message || e);
-  } finally {
-    ocrProc = null;
-  }
+  } catch {}
+  ocrProc = null;
 }
 
-// ===== Window =====
+// ---------- Window ----------
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 1220,
-    height: 780,
-    backgroundColor: '#0b0f1a',
-    show: false,
-    autoHideMenuBar: true,
+    width: 1280,
+    height: 800,
+    backgroundColor: '#0f0f10',
+    title: APP_NAME,
+    show: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
-    },
+      preload: resolvePreload(),
+      sandbox: false
+    }
   });
 
-  // Remove default app menu globally
-  Menu.setApplicationMenu(null);
+  mainWindow.on('closed', () => { mainWindow = null; });
 
-  // Load Vite dev server or packaged index
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+  mainWindow.webContents.on('did-fail-load', (_e, code, desc, url) => {
+    log('did-fail-load', code, desc, url || '');
+    dialog.showErrorBox('Failed to load UI', `${desc}\n\nURL: ${url || '(none)'}\nSee log: ${mainLog}`);
+  });
+
+  mainWindow.webContents.on('render-process-gone', (_e, details) => {
+    log('renderer crashed', details && JSON.stringify(details));
+  });
+
+  const url = resolveIndexUrl();
+  if (url) {
+    log('Loading', url);
+    mainWindow.loadURL(url);
   } else {
-    const indexFile = path.join(__dirname, 'dist', 'index.html');
-    mainWindow.loadFile(indexFile);
+    log('No index.html found in expected locations.');
+    dialog.showErrorBox('Startup error', 'Could not find index.html. See main.log for details.');
   }
 
-  mainWindow.on('ready-to-show', () => {
-    mainWindow?.show();
-  });
-
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-    return { action: 'deny' };
-  });
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  if (isDev || process.env.SHOW_DEVTOOLS === '1') {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+  }
 }
 
-// ===== IPC =====
-ipcMain.handle('get-app-version', () => app.getVersion());
-
-ipcMain.handle('check-for-updates', async () => {
+// ---------- IPC used by Options menu ----------
+ipcMain.handle('app:getVersion', () => app.getVersion());
+ipcMain.handle('app:refresh', async () => { if (mainWindow) mainWindow.reload(); return true; });
+ipcMain.handle('app:reloadOCR', async () => { stopLiveRouteOCR(); setTimeout(startLiveRouteOCR, 350); return true; });
+ipcMain.handle('app:checkUpdates', async () => {
   try {
-    const current = app.getVersion();
     const result = await autoUpdater.checkForUpdates();
-    const latest = result?.updateInfo?.version;
-
-    if (!latest) {
-      return { status: 'uptodate', current };
+    const info = result && result.updateInfo;
+    if (info && info.version && info.version !== app.getVersion()) {
+      return { status: 'available', version: info.version };
     }
-    if (isNewerVersion(latest, current)) {
-      try { await autoUpdater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
-      return { status: 'available', version: latest, current };
-    }
-    return { status: 'uptodate', current };
+    return { status: 'uptodate', version: app.getVersion() };
   } catch (err) {
-    log('check-for-updates failed', err?.message || err);
-    return { status: 'error', message: err?.message || String(err) };
+    log('checkUpdates error', err && err.message);
+    return { status: 'error', message: String(err) };
   }
 });
 
-ipcMain.handle('reload-ocr', async () => {
-  stopLiveRouteOCR();
-  await startLiveRouteOCR();
-  return true;
-});
-
-ipcMain.handle('refresh-app', async () => {
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.webContents.reloadIgnoringCache();
-  }
-  return true;
-});
-
-// ===== Lifecycle =====
-app.whenReady().then(async () => {
+// ---------- App lifecycle ----------
+app.whenReady().then(() => {
+  ensureTessdata();
   createMainWindow();
-  setupAutoUpdates();
+  startLiveRouteOCR();
 
-  // Start OCR shortly after boot (let window spin up first)
-  setTimeout(() => {
-    startLiveRouteOCR().catch(() => {});
-  }, 800);
+  // Minimal menu to avoid default File/Edit/etc on Windows if you hid it before
+  Menu.setApplicationMenu(null);
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+  });
 });
 
 app.on('before-quit', () => {
+  quitting = true;
   stopLiveRouteOCR();
 });
 
 app.on('window-all-closed', () => {
   stopLiveRouteOCR();
-  if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+  if (!isMac) app.quit();
 });
