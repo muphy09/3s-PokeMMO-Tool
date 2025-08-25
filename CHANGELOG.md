@@ -2,6 +2,11 @@
 
 All notable changes to **Pokemmo Tool** will be documented in this file.  
 This project adheres to [Semantic Versioning](https://semver.org/).
+---
+
+## [1.6.8] - 2025-08
+### Added
+- **Fixed Liveroute OCR not starting** – LiveRoute now properly starts as intended.
 
 ---
 
