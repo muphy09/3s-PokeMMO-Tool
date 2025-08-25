@@ -63,11 +63,13 @@ async function enumerateWindows() {
       ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
       ps.on('close', () => {
         try {
-          const txt = Buffer.concat(chunks).toString('utf8').trim();
+          const buf = Buffer.concat(chunks);
+          let txt = buf.toString('utf8').trim();
+          if (!txt || txt.includes('\u0000')) txt = buf.toString('utf16le').trim();
           if (!txt) return resolve([]);
           const json = JSON.parse(txt);
           const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' }))); 
+          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
         } catch { resolve([]); }
       });
       ps.on('error', () => resolve([]));
@@ -117,11 +119,13 @@ public class WinEnum {
       ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
       ps.on('close', () => {
         try {
-          const txt = Buffer.concat(chunks).toString('utf8').trim();
+          const buf = Buffer.concat(chunks);
+          let txt = buf.toString('utf8').trim();
+          if (!txt || txt.includes('\u0000')) txt = buf.toString('utf16le').trim();
           if (!txt) return resolve([]);
           const json = JSON.parse(txt);
           const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' }))); 
+          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
         } catch { resolve([]); }
       });
       ps.on('error', () => resolve([]));

@@ -602,7 +602,7 @@ function LiveSetup({ onSaved }) {
       .filter(w => w && w.pid)
       .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
     setWindows(sorted);
-    setWinErr(sorted.length ? null : (err || "No windows could be found. Try running the Tool as Administrator."));
+    setWinErr(sorted.length ? null : (err || "No windows can be found. Try running the Tool as Administrator."));
   }
 
 async function refreshPreview() {
