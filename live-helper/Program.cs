@@ -22,14 +22,58 @@ class LiveRouteOCR
 {
     // ---------- Win32 ----------
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hWnd);
+    [DllImport("user32.dll", SetLastError = true)] private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+    [DllImport("user32.dll")] private static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] private static extern IntPtr SetProcessDpiAwarenessContext(IntPtr dpiContext);
+
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);  // Win10+
+
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
     [DllImport("user32.dll", SetLastError = true)] private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
     [DllImport("user32.dll", SetLastError = true)] private static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
     [DllImport("user32.dll")] private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
     [DllImport("user32.dll")] private static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
     [DllImport("user32.dll")] private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
 
+    [DllImport("user32.dll")] private static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] private static extern bool SetProcessDpiAwarenessContext(IntPtr dpiContext);
+    [DllImport("user32.dll")] private static extern uint GetDpiForWindow(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hWnd);
+    [DllImport("user32.dll", SetLastError = true)] private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+
     [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
+
+    // ---------- DPI ----------
+    static void InitDpiAwareness()
+    {
+        try
+        {
+            var ok = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            if (ok == IntPtr.Zero)
+            {
+                SetProcessDPIAware(); // legacy fallback
+            }
+            Log("DPI awareness: enabled (Per-Monitor V2 or system)");
+        }
+        catch
+        {
+            try { SetProcessDPIAware(); Log("DPI awareness: system fallback"); } catch {}
+        }
+    }
 
     // ---------- Paths ----------
     static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
@@ -82,12 +126,17 @@ class LiveRouteOCR
         Directory.CreateDirectory(AppDataDir);
         Directory.CreateDirectory(StableTessDir);
         Log("=== LiveRouteOCR boot ===");
+        InitDpiAwareness();
+
+        // Enable DPI awareness (per-monitor v2 if possible) so coordinates are correct in windowed mode
+        try { if (!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)) SetProcessDPIAware(); Log("DPI awareness enabled."); } catch { Log("DPI awareness default."); }
+
 
         var roi = new Roi {
             Left   = GetArg(args, "--left",  0.010),
             Top    = GetArg(args, "--top",   0.012),
-            Width  = GetArg(args, "--width", 0.355),
-            Height = GetArg(args, "--height",0.150)
+            Width  = GetArg(args, "--width", 0.500),
+            Height = GetArg(args, "--height",0.170)
         };
         Log($"ROI: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
 
@@ -316,6 +365,43 @@ class LiveRouteOCR
     // ---------- Loop ----------
     static async Task OcrLoop(TesseractEngine? engine, Roi roi, CancellationToken ct)
     {
+        // Local function to try multiple crops/thresholds and return first good location
+        (string location, string rawUsed, int confPct) TryMulti(Bitmap baseCrop)
+        {
+            double[] keeps = new double[] { 0.42, 0.50, 0.58, 0.66, 0.80, 0.90 };
+            int[] thresholds = new int[] { 190, 170, 150, 140 };
+            int bestConf = 0;
+            string bestLoc = "";
+            string bestRaw = "";
+            foreach (var keep in keeps)
+            {
+                using var masked = MaskLeftColumn(baseCrop, keepPct: keep);
+                foreach (var th in thresholds)
+                {
+                    using var pre = Preprocess(masked, th, scale: 3);
+                    using var pix = PixFromBitmap(pre);
+                    if (engine != null)
+                    using (var page = engine.Process(pix, PageSegMode.SingleBlock))
+                    {
+                        var raw = (page.GetText() ?? "").Trim();
+                        var loc = ExtractLocation(raw);
+                        if (!string.IsNullOrEmpty(loc))
+                        {
+                            int conf = Math.Clamp((int)Math.Round(page.GetMeanConfidence() * 100), 0, 100);
+                            if (conf > bestConf)
+                            {
+                                bestConf = conf;
+                                bestLoc = loc;
+                                bestRaw = raw;
+                                if (conf >= 75) return (bestLoc, bestRaw, bestConf);
+                            }
+                        }
+                    }
+                }
+            }
+            return (bestLoc, bestRaw, bestConf);
+        }
+
         int missStreak = 0;
         string lastEmitLocal = "";
         int lastConfLocal = 0;
@@ -331,71 +417,22 @@ class LiveRouteOCR
                 var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
                 int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
 
+                try { var dpi = GetDpiForWindow(hWnd); Log($"Client {cw}x{ch} (DPI {dpi})"); } catch {} 
+                Log($"Window client {cw}x{ch} at ({pt.X},{pt.Y})");
                 var r = roi.ToRectangle(cw, ch);
+                Log($"ROI px L={r.Left} T={r.Top} W={r.Width} H={r.Height}");
                 int sx = pt.X + r.Left, sy = pt.Y + r.Top;
 
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
                 crop.Save(LastCapPath, ImgFormat.Png);
 
-                using var masked = MaskLeftColumn(crop, keepPct: 0.42);
-
-                string raw1 = "", raw2 = "", location = "";
-                float  conf = 0f;
-
-                if (engine != null)
-                {
-                    using (var pre1 = Preprocess(masked, 190))
-                    using (var pix1 = PixFromBitmap(pre1))
-                    using (var page1 = engine.Process(pix1, PageSegMode.SingleBlock))
-                    {
-                        raw1 = (page1.GetText() ?? "").Trim();
-                        location = ExtractLocation(raw1);
-                        conf = page1.GetMeanConfidence();
-                        pre1.Save(LastPrePath, ImgFormat.Png);
-                    }
-
-                    if (string.IsNullOrEmpty(location))
-                    {
-                        using var pre2 = Preprocess(masked, 165);
-                        using var pix2 = PixFromBitmap(pre2);
-                        using var page2 = engine.Process(pix2, PageSegMode.SingleBlock);
-                        raw2 = (page2.GetText() ?? "").Trim();
-                        var loc2 = ExtractLocation(raw2);
-                        if (!string.IsNullOrEmpty(loc2)) { location = loc2; conf = page2.GetMeanConfidence(); }
-                    }
-                }
-
-                bool HasText(string s) => !string.IsNullOrWhiteSpace(s);
-
-                if (HasText(location))
-                {
-                    missStreak = 0;
-                    var clean = Regex.Replace(location, @"\s+", " ").Trim();
-                    int confPct = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
-
-                    if (!string.Equals(clean, lastEmitLocal, StringComparison.OrdinalIgnoreCase) || confPct != lastConfLocal)
-                    {
-                        BroadcastAll(clean, string.IsNullOrWhiteSpace(raw2) ? raw1 : raw2, confPct);
-                        lastEmitLocal = clean;
-                        lastConfLocal = confPct;
-                        Log($"SENT ROUTE: {clean} ({confPct}%)");
-                    }
-                }
-                else
-                {
-                    missStreak++;
-                    if (missStreak >= 3 && !string.Equals(lastEmitLocal, "NO_ROUTE", StringComparison.Ordinal))
-                    {
-                        BroadcastAll("NO_ROUTE", string.IsNullOrWhiteSpace(raw2) ? raw1 : raw2, 0);
-                        lastEmitLocal = "NO_ROUTE";
-                        lastConfLocal = 0;
-                        Log("SENT NO_ROUTE");
-                        missStreak = 3;
-                    }
-                }
-
-                await Task.Delay(600, ct);
+                using var masked0 = MaskLeftColumn(crop, keepPct: 0.50);
+                // Multi-try OCR across wider masks & thresholds for windowed mode robustness
+                var attempt = TryMulti(crop);
+                string location = attempt.location;
+                string rawText = attempt.rawUsed;
+                int confPct = attempt.confPct;await Task.Delay(600, ct);
             }
             catch (TaskCanceledException) { }
             catch (Exception ex) { Log("Loop error: " + ex.Message); await Task.Delay(800, ct); }
@@ -403,7 +440,7 @@ class LiveRouteOCR
     }
 
     // ---------- OCR utils ----------
-    static Bitmap Preprocess(Bitmap src, int threshold)
+    static Bitmap Preprocess(Bitmap src, int threshold, int scale = 2)
     {
         var gray = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         using (var g = Graphics.FromImage(gray)) g.DrawImage(src, 0, 0);
@@ -415,7 +452,7 @@ class LiveRouteOCR
             gray.SetPixel(x, y, Color.FromArgb(v, v, v));
         }
 
-        var up = new Bitmap(gray.Width * 2, gray.Height * 2, PixelFormat.Format24bppRgb);
+        var up = new Bitmap(gray.Width * scale, gray.Height * scale, PixelFormat.Format24bppRgb);
         using (var g = Graphics.FromImage(up))
         {
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
@@ -499,13 +536,50 @@ class LiveRouteOCR
     }
 
     // ---------- Window helpers ----------
+    
     static IntPtr FindPokeMMO()
     {
-        var h = GetForegroundWindow();
-        var title = GetTitle(h); var cls = GetClass(h);
-        if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) &&
-            title.IndexOf("pok", StringComparison.OrdinalIgnoreCase) >= 0)
-            return h;
+        // Prefer any visible, non-minimized GLFW window with 'pok' in title; pick largest client area
+        IntPtr best = IntPtr.Zero;
+        int bestArea = 0;
+
+        try
+        {
+            EnumWindows((h, l) =>
+            {
+                if (!IsWindowVisible(h) || IsIconic(h)) return true;
+                var cls = GetClass(h);
+                if (!cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return true;
+                var title = GetTitle(h);
+                if (title.IndexOf("pok", StringComparison.OrdinalIgnoreCase) < 0) return true;
+
+                if (GetClientRect(h, out var rc))
+                {
+                    int w = Math.Max(1, rc.Right - rc.Left);
+                    int hgt = Math.Max(1, rc.Bottom - rc.Top);
+                    int area = w * hgt;
+                    if (area > bestArea)
+                    {
+                        bestArea = area;
+                        best = h;
+                    }
+                }
+                return true;
+            }, IntPtr.Zero);
+        }
+        catch { }
+
+        if (best != IntPtr.Zero) return best;
+
+        // Fallbacks: foreground if it looks like PokeMMO; then first GLFW window.
+        var fg = GetForegroundWindow();
+        var fgTitle = GetTitle(fg); var fgCls = GetClass(fg);
+        if (fg != IntPtr.Zero &&
+            fgCls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) &&
+            fgTitle.IndexOf("pok", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return fg;
+        }
 
         var byClass = FindWindow("GLFW30", null);
         return byClass;

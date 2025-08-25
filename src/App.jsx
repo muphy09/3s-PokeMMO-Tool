@@ -693,7 +693,7 @@ function LiveRoutePanel({ areasIndex }){
 
       {!rawText && (
         <div className="label-muted">
-          Start <b>LiveRouteOCR</b> and focus the PokeMMO window. I’ll auto-detect your current route/area and show encounters here.
+          Start <b>LiveRouteOCR</b> with PokeMMO open in a visible window (focus not required). I’ll auto-detect your current route/area and show encounters here.
         </div>
       )}
 

@@ -1,4 +1,4 @@
-// Program.cs — LiveRouteOCR (packaging-friendly, snapshot + periodic rebroadcast)
+// Program.cs — LiveRouteOCR (snapshot + periodic rebroadcast; emits confidence)
 
 using System;
 using System.Collections.Concurrent;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using ImgFormat = System.Drawing.Imaging.ImageFormat;
+using ImgFormat = System.Drawing.Imaging.ImageFormat; // avoid clash with Tesseract.ImageFormat
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -22,33 +22,78 @@ class LiveRouteOCR
 {
     // ---------- Win32 ----------
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hWnd);
+    [DllImport("user32.dll", SetLastError = true)] private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+    [DllImport("user32.dll")] private static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] private static extern IntPtr SetProcessDpiAwarenessContext(IntPtr dpiContext);
+
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);  // Win10+
+
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
     [DllImport("user32.dll", SetLastError = true)] private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
     [DllImport("user32.dll", SetLastError = true)] private static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
     [DllImport("user32.dll")] private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
     [DllImport("user32.dll")] private static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
     [DllImport("user32.dll")] private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
 
+    [DllImport("user32.dll")] private static extern bool SetProcessDPIAware();
+    [DllImport("user32.dll")] private static extern bool SetProcessDpiAwarenessContext(IntPtr dpiContext);
+    [DllImport("user32.dll")] private static extern uint GetDpiForWindow(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+    [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+    [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool IsIconic(IntPtr hWnd);
+    [DllImport("user32.dll", SetLastError = true)] private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+
     [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
 
+    // ---------- DPI ----------
+    static void InitDpiAwareness()
+    {
+        try
+        {
+            var ok = SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+            if (ok == IntPtr.Zero)
+            {
+                SetProcessDPIAware(); // legacy fallback
+            }
+            Log("DPI awareness: enabled (Per-Monitor V2 or system)");
+        }
+        catch
+        {
+            try { SetProcessDPIAware(); Log("DPI awareness: system fallback"); } catch {}
+        }
+    }
+
     // ---------- Paths ----------
-    static string AppDataDir   => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
-    static string LogPath      => Path.Combine(AppDataDir, "ocr.log");
-    static string LastCapPath  => Path.Combine(AppDataDir, "last-capture.png");
-    static string LastPrePath  => Path.Combine(AppDataDir, "last-pre.png");
-    static string StableTess   => Path.Combine(AppDataDir, "tessdata"); // we copy eng.traineddata here and always read from here
+    static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
+    static string LogPath => Path.Combine(AppDataDir, "ocr.log");
+    static string LastCapPath => Path.Combine(AppDataDir, "last-capture.png");
+    static string LastPrePath => Path.Combine(AppDataDir, "last-pre.png");
+    static string StableTessDir => Path.Combine(AppDataDir, "tessdata"); // we will copy eng.traineddata here and always use this
 
     // ---------- WS ----------
-    static readonly int[] DefaultPorts = { 8765, 8766, 8767, 8768, 8769, 8770 };
+    static readonly int[] DefaultPorts = { 8765, 8766, 8767, 8768, 8769, 8770, 8780 };
     static readonly List<HttpListener> Servers = new();
     static readonly ConcurrentDictionary<WebSocket, byte> Clients = new();
 
     // Snapshot state for new/reconnected clients
     static readonly object SnapshotLock = new();
-    static volatile string LastEmit   = "";  // "Victory Road" or "NO_ROUTE"
-    static volatile string LastRaw    = "";
-    static volatile int    LastConf   = 0;   // 0..100
-    static long            LastTicks  = 0;   // DateTime.UtcNow.Ticks of last broadcast  (primitive avoids CS0677)
+    static volatile string LastEmit = "";   // last route/token we sent (e.g., "Victory Road" or "NO_ROUTE")
+    static volatile string LastRaw  = "";   // last raw OCR text
+    static volatile int LastConfPct = 0;    // 0-100 confidence we last emitted
+    // Use primitive for 'volatile' compatibility to avoid CS0677
+    static long LastBroadcastTicks = 0; // DateTime.UtcNow.Ticks of last broadcast
 
     // ---------- ROI (% of client area) ----------
     struct Roi
@@ -79,41 +124,58 @@ class LiveRouteOCR
     static async Task Main(string[] args)
     {
         Directory.CreateDirectory(AppDataDir);
-        Directory.CreateDirectory(StableTess);
+        Directory.CreateDirectory(StableTessDir);
+        Log("=== LiveRouteOCR boot ===");
+        InitDpiAwareness();
 
-        Log("=== LiveRouteOCR starting ===");
+        // Enable DPI awareness (per-monitor v2 if possible) so coordinates are correct in windowed mode
+        try { if (!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)) SetProcessDPIAware(); Log("DPI awareness enabled."); } catch { Log("DPI awareness default."); }
 
-        // ROI can be overridden by args
+
         var roi = new Roi {
-            Left   = GetArg(args, "--left",   0.010),
-            Top    = GetArg(args, "--top",    0.012),
-            Width  = GetArg(args, "--width",  0.355),
-            Height = GetArg(args, "--height", 0.150)
+            Left   = GetArg(args, "--left",  0.010),
+            Top    = GetArg(args, "--top",   0.012),
+            Width  = GetArg(args, "--width", 0.500),
+            Height = GetArg(args, "--height",0.170)
         };
+        Log($"ROI: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
 
-        // Make sure native DLLs from the packaged folder are loadable
-        ProbeNativePath();
-
-        // Start WS servers on several ports; accept both /live and /live/
+        // WebSocket listeners
         StartServers(ParsePorts(args));
 
-        // Always send an initial “NO_ROUTE” so the app receives something immediately
+        // Always send an initial NO_ROUTE so the app gets a payload immediately
         BroadcastAll("NO_ROUTE", "", 0);
 
-        // Ensure tessdata is available from a stable directory
-        var srcTess = FindTessdataSource();
-        if (string.IsNullOrEmpty(srcTess) || !File.Exists(Path.Combine(srcTess, "eng.traineddata")))
+        // Resolve tessdata, copy into a stable dir, and init Tesseract from there
+        var sourceTess = FindTessdataSource();
+        if (string.IsNullOrEmpty(sourceTess) || !File.Exists(Path.Combine(sourceTess, "eng.traineddata")))
+        {
             Log("FATAL: eng.traineddata not found in any known location.");
+        }
         else
-            TryCopy(Path.Combine(srcTess, "eng.traineddata"), Path.Combine(StableTess, "eng.traineddata"));
+        {
+            try
+            {
+                Directory.CreateDirectory(StableTessDir);
+                var src = Path.Combine(sourceTess, "eng.traineddata");
+                var dst = Path.Combine(StableTessDir, "eng.traineddata");
+                if (!File.Exists(dst) || new FileInfo(dst).Length == 0)
+                {
+                    File.Copy(src, dst, overwrite: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Copy tessdata failed: " + ex.Message);
+            }
+        }
 
-        Log($"Using tessdata at: {StableTess}");
+        Log($"Using tessdata at: {StableTessDir}");
 
-        // Init Tesseract
         TesseractEngine? engine = null;
         try
         {
-            engine = new TesseractEngine(StableTess, "eng", EngineMode.LstmOnly);
+            engine = new TesseractEngine(StableTessDir, "eng", EngineMode.LstmOnly);
             engine.DefaultPageSegMode = PageSegMode.SingleBlock;
             engine.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:-'/#");
             engine.SetVariable("load_system_dawg", "F");
@@ -126,7 +188,7 @@ class LiveRouteOCR
             Log("Tesseract init failed: " + ex.Message);
         }
 
-        // Periodic re‑broadcast so tabbing away/back never leaves the UI blank
+        // Re-broadcast task (helps after tab swaps)
         var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, __) => cts.Cancel();
         _ = Task.Run(() => PeriodicRebroadcastLoop(cts.Token));
@@ -134,7 +196,33 @@ class LiveRouteOCR
         await OcrLoop(engine, roi, cts.Token);
     }
 
-    // ---------- WS ----------
+    // --- locate tessdata in self-contained bundle layouts and normal layouts
+    static string FindTessdataSource()
+    {
+        // 1) next to EXE
+        var exeDir = AppContext.BaseDirectory;
+        var direct = Path.Combine(exeDir, "tessdata");
+        if (File.Exists(Path.Combine(direct, "eng.traineddata"))) return direct;
+
+        // 2) common "resources/<appname or live-helper>/tessdata" in single-file extraction
+        var exeParent = Directory.GetParent(exeDir)?.FullName ?? exeDir;
+        foreach (var sub in new[] { "resources\\tessdata", "resources\\live-helper\\tessdata", "resources\\app\\tessdata" })
+        {
+            string p = Path.Combine(exeParent, sub);
+            if (File.Exists(Path.Combine(p, "eng.traineddata"))) return p;
+        }
+
+        // 3) current working dir
+        var cwd = Path.Combine(Environment.CurrentDirectory, "tessdata");
+        if (File.Exists(Path.Combine(cwd, "eng.traineddata"))) return cwd;
+
+        // 4) already-copied stable location (return it so the caller still logs it)
+        if (File.Exists(Path.Combine(StableTessDir, "eng.traineddata"))) return StableTessDir;
+
+        return "";
+    }
+
+    // ---------- WebSocket ----------
     static void StartServers(IEnumerable<int> ports)
     {
         foreach (var p in ports)
@@ -142,27 +230,18 @@ class LiveRouteOCR
             try
             {
                 var h = new HttpListener();
-
-                // Accept both /live and /live/ (and any path under /)
-                h.Prefixes.Add($"http://127.0.0.1:{p}/");
-                h.Prefixes.Add($"http://localhost:{p}/");
                 h.Prefixes.Add($"http://127.0.0.1:{p}/live/");
                 h.Prefixes.Add($"http://localhost:{p}/live/");
-
                 h.Start();
                 Servers.Add(h);
                 _ = Task.Run(() => AcceptLoop(h));
-                Log($"WebSocket server listening on 127.0.0.1:{p}/live");
+                Log($"WebSocket: ws://127.0.0.1:{p}/live");
             }
-            catch (Exception ex)
-            {
-                Log($"Port {p} failed: {ex.Message}");
-            }
+            catch (Exception ex) { Log($"Port {p} failed: {ex.Message}"); }
         }
-
         if (Servers.Count == 0)
         {
-            Log("No WS ports available. Try --port=8799 or run as admin.");
+            Console.WriteLine("No WS ports available. Try --port=8799 or run as admin.");
             Environment.Exit(1);
         }
     }
@@ -175,45 +254,31 @@ class LiveRouteOCR
             try
             {
                 ctx = await s.GetContextAsync();
-
-                // We allow /live and /live/ (anything that starts with /live)
-                var path = (ctx.Request.RawUrl ?? "").ToLowerInvariant();
-                bool isLivePath = path == "/live" || path.StartsWith("/live/");
-
-                if (ctx.Request.IsWebSocketRequest && isLivePath)
+                if (ctx.Request.IsWebSocketRequest)
                 {
                     var wsctx = await ctx.AcceptWebSocketAsync(null);
+                    Log("WS client connected");
                     var ws = wsctx.WebSocket;
                     Clients.TryAdd(ws, 1);
-                    Log("WS client connected");
 
-                    // Immediate snapshot
+                    // send snapshot right away (if we already emitted something)
                     string emit, raw; int conf;
-                    lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConf; }
+                    lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConfPct; }
                     if (!string.IsNullOrWhiteSpace(emit))
                     {
                         try { SendAllFormats(ws, emit, raw, conf); Log($"SNAPSHOT -> client: {emit}"); } catch { }
                     }
                     else
                     {
-                        try { SendAllFormats(ws, "NO_ROUTE", "", 0); Log("SNAPSHOT -> client: NO_ROUTE"); } catch { }
+                        // ensure client sees *something* immediately
+                        try { SendAllFormats(ws, "NO_ROUTE", "", 0); } catch { }
                     }
 
                     _ = Task.Run(() => WsPump(ws));
                 }
-                else
-                {
-                    // small 200 for health checks / mistakes
-                    ctx.Response.StatusCode = 200;
-                    using var sw = new StreamWriter(ctx.Response.OutputStream);
-                    sw.Write("ok");
-                    ctx.Response.Close();
-                }
+                else { ctx.Response.StatusCode = 426; ctx.Response.Close(); }
             }
-            catch
-            {
-                try { ctx?.Response.Abort(); } catch { }
-            }
+            catch { try { ctx?.Response.Abort(); } catch { } }
         }
     }
 
@@ -238,10 +303,10 @@ class LiveRouteOCR
     {
         lock (SnapshotLock)
         {
-            LastEmit  = routeOrToken;
-            LastRaw   = raw ?? "";
-            LastConf  = Math.Clamp(confPct, 0, 100);
-            LastTicks = DateTime.UtcNow.Ticks;
+            LastEmit = routeOrToken;
+            LastRaw  = raw ?? "";
+            LastConfPct = Math.Clamp(confPct, 0, 100);
+            LastBroadcastTicks = DateTime.UtcNow.Ticks;
         }
 
         foreach (var ws in Clients.Keys)
@@ -267,6 +332,8 @@ class LiveRouteOCR
         }
     }
 
+    static string Escape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+
     static async Task PeriodicRebroadcastLoop(CancellationToken ct)
     {
         const int intervalMs = 8000;
@@ -275,18 +342,18 @@ class LiveRouteOCR
             try
             {
                 await Task.Delay(intervalMs, ct);
-                string emit, raw; int conf; long ticks;
-                lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConf; ticks = LastTicks; }
+                string emit, raw; int conf; long lastTicks;
+                lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConfPct; lastTicks = LastBroadcastTicks; }
                 if (string.IsNullOrWhiteSpace(emit)) continue;
 
-                if ((DateTime.UtcNow - new DateTime(ticks, DateTimeKind.Utc)).TotalSeconds >= 7)
+                if ((DateTime.UtcNow - new DateTime(lastTicks, DateTimeKind.Utc)).TotalSeconds >= 7)
                 {
                     foreach (var ws in Clients.Keys)
                     {
                         if (ws.State != WebSocketState.Open) { Clients.TryRemove(ws, out _); continue; }
                         try { SendAllFormats(ws, emit, raw, conf); } catch { Clients.TryRemove(ws, out _); }
                     }
-                    lock (SnapshotLock) { LastTicks = DateTime.UtcNow.Ticks; }
+                    lock (SnapshotLock) { LastBroadcastTicks = DateTime.UtcNow.Ticks; }
                     Log($"REBROADCAST: {emit} ({conf}%)");
                 }
             }
@@ -295,95 +362,85 @@ class LiveRouteOCR
         }
     }
 
-    // ---------- Main OCR loop ----------
+    // ---------- Loop ----------
     static async Task OcrLoop(TesseractEngine? engine, Roi roi, CancellationToken ct)
     {
-        int miss = 0;
-        string lastEmit = "";
-        int    lastConf = 0;
+        // Local function to try multiple crops/thresholds and return first good location
+        (string location, string rawUsed, int confPct) TryMulti(Bitmap baseCrop)
+        {
+            double[] keeps = new double[] { 0.42, 0.50, 0.58, 0.66, 0.80, 0.90 };
+            int[] thresholds = new int[] { 190, 170, 150, 140 };
+            int bestConf = 0;
+            string bestLoc = "";
+            string bestRaw = "";
+            foreach (var keep in keeps)
+            {
+                using var masked = MaskLeftColumn(baseCrop, keepPct: keep);
+                foreach (var th in thresholds)
+                {
+                    using var pre = Preprocess(masked, th, scale: 3);
+                    using var pix = PixFromBitmap(pre);
+                    if (engine != null)
+                    using (var page = engine.Process(pix, PageSegMode.SingleBlock))
+                    {
+                        var raw = (page.GetText() ?? "").Trim();
+                        var loc = ExtractLocation(raw);
+                        if (!string.IsNullOrEmpty(loc))
+                        {
+                            int conf = Math.Clamp((int)Math.Round(page.GetMeanConfidence() * 100), 0, 100);
+                            if (conf > bestConf)
+                            {
+                                bestConf = conf;
+                                bestLoc = loc;
+                                bestRaw = raw;
+                                if (conf >= 75) return (bestLoc, bestRaw, bestConf);
+                            }
+                        }
+                    }
+                }
+            }
+            return (bestLoc, bestRaw, bestConf);
+        }
+
+        int missStreak = 0;
+        string lastEmitLocal = "";
+        int lastConfLocal = 0;
 
         while (!ct.IsCancellationRequested)
         {
             try
             {
-                var hwnd = FindPokeMMO();
-                if (hwnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                var hWnd = FindPokeMMO();
+                if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
 
-                if (!GetClientRect(hwnd, out var rc)) { await Task.Delay(700, ct); continue; }
-                var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hwnd, ref pt);
+                if (!GetClientRect(hWnd, out var rc)) { await Task.Delay(700, ct); continue; }
+                var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
                 int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
 
-                var r  = roi.ToRectangle(cw, ch);
+                try { var dpi = GetDpiForWindow(hWnd); Log($"Client {cw}x{ch} (DPI {dpi})"); } catch {} 
+                Log($"Window client {cw}x{ch} at ({pt.X},{pt.Y})");
+                var r = roi.ToRectangle(cw, ch);
+                Log($"ROI px L={r.Left} T={r.Top} W={r.Width} H={r.Height}");
                 int sx = pt.X + r.Left, sy = pt.Y + r.Top;
 
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
                 crop.Save(LastCapPath, ImgFormat.Png);
 
-                using var masked = MaskLeftColumn(crop, keepPct: 0.42);
-
-                string raw1 = "", raw2 = "", loc = "";
-                float conf = 0f;
-
-                if (engine != null)
-                {
-                    using (var pre1 = Preprocess(masked, 190))
-                    using (var pix1 = PixFromBitmap(pre1))
-                    using (var page1 = engine.Process(pix1, PageSegMode.SingleBlock))
-                    {
-                        raw1 = (page1.GetText() ?? "").Trim();
-                        loc  = ExtractLocation(raw1);
-                        conf = page1.GetMeanConfidence();
-                        pre1.Save(LastPrePath, ImgFormat.Png);
-                    }
-
-                    if (string.IsNullOrEmpty(loc))
-                    {
-                        using var pre2 = Preprocess(masked, 165);
-                        using var pix2 = PixFromBitmap(pre2);
-                        using var page2 = engine.Process(pix2, PageSegMode.SingleBlock);
-                        raw2 = (page2.GetText() ?? "").Trim();
-                        var loc2 = ExtractLocation(raw2);
-                        if (!string.IsNullOrEmpty(loc2)) { loc = loc2; conf = page2.GetMeanConfidence(); }
-                    }
-                }
-
-                if (!string.IsNullOrWhiteSpace(loc))
-                {
-                    miss = 0;
-                    var clean = Regex.Replace(loc, @"\s+", " ").Trim();
-                    int confPct = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
-
-                    if (!string.Equals(clean, lastEmit, StringComparison.OrdinalIgnoreCase) || confPct != lastConf)
-                    {
-                        BroadcastAll(clean, string.IsNullOrWhiteSpace(raw2) ? raw1 : raw2, confPct);
-                        lastEmit = clean;
-                        lastConf = confPct;
-                        Log($"SENT ROUTE: {clean} ({confPct}%)");
-                    }
-                }
-                else
-                {
-                    miss++;
-                    if (miss >= 3 && !string.Equals(lastEmit, "NO_ROUTE", StringComparison.Ordinal))
-                    {
-                        BroadcastAll("NO_ROUTE", string.IsNullOrWhiteSpace(raw2) ? raw1 : raw2, 0);
-                        lastEmit = "NO_ROUTE";
-                        lastConf = 0;
-                        Log("SENT NO_ROUTE");
-                        miss = 3;
-                    }
-                }
-
-                await Task.Delay(600, ct);
+                using var masked0 = MaskLeftColumn(crop, keepPct: 0.50);
+                // Multi-try OCR across wider masks & thresholds for windowed mode robustness
+                var attempt = TryMulti(crop);
+                string location = attempt.location;
+                string rawText = attempt.rawUsed;
+                int confPct = attempt.confPct;await Task.Delay(600, ct);
             }
             catch (TaskCanceledException) { }
             catch (Exception ex) { Log("Loop error: " + ex.Message); await Task.Delay(800, ct); }
         }
     }
 
-    // ---------- Image helpers ----------
-    static Bitmap Preprocess(Bitmap src, int threshold)
+    // ---------- OCR utils ----------
+    static Bitmap Preprocess(Bitmap src, int threshold, int scale = 2)
     {
         var gray = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         using (var g = Graphics.FromImage(gray)) g.DrawImage(src, 0, 0);
@@ -395,7 +452,7 @@ class LiveRouteOCR
             gray.SetPixel(x, y, Color.FromArgb(v, v, v));
         }
 
-        var up = new Bitmap(gray.Width * 2, gray.Height * 2, PixelFormat.Format24bppRgb);
+        var up = new Bitmap(gray.Width * scale, gray.Height * scale, PixelFormat.Format24bppRgb);
         using (var g = Graphics.FromImage(up))
         {
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
@@ -423,8 +480,13 @@ class LiveRouteOCR
         var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         using var g = Graphics.FromImage(outBmp);
         g.Clear(Color.White);
-        g.DrawImage(src, new Rectangle(0, 0, keepW, src.Height),
-                         new Rectangle(0, 0, keepW, src.Height), GraphicsUnit.Pixel);
+
+        // Copy only the left HUD band (avoid clipping the leftmost letters)
+        g.DrawImage(src,
+            new Rectangle(0, 0, keepW, src.Height),
+            new Rectangle(0, 0, keepW, src.Height),
+            GraphicsUnit.Pixel);
+
         return outBmp;
     }
 
@@ -439,6 +501,7 @@ class LiveRouteOCR
     static string ExtractLocation(string raw)
     {
         if (string.IsNullOrWhiteSpace(raw)) return "";
+
         var s = Regex.Replace(raw, @"\s+", " ").Trim();
         s = Regex.Replace(s, @"^[^A-Za-z]*([A-Za-z].*)$", "$1");
 
@@ -447,13 +510,13 @@ class LiveRouteOCR
 
         var val = m.Value;
 
-        // Kill leading “B”, “Bi”, “Bl” fragments from the map icon
+        // Remove map-icon artifacts like "B ", "Bi ", "Bl "
         val = Regex.Replace(val, @"^(?:B|Bi|Bl)\s+(?=[A-Z])", "", RegexOptions.IgnoreCase);
 
-        // Remove channel suffix
+        // Remove channel suffix (Ch. 1, Ch. 2, etc.)
         val = Regex.Replace(val, @"\bCh\.\s*\d+\b", "", RegexOptions.IgnoreCase).Trim();
 
-        // Cut after key nouns
+        // Cut off after key location nouns
         var cut = Regex.Match(val, @"^(.*?(Road|City|Town|Forest|Cave|Woods|Island|Lake|River|Tower|Desert|Marsh|Park|Bridge|Harbor|Port|Path|Trail|Tunnel|Mountain|League))",
                               RegexOptions.IgnoreCase);
         if (cut.Success) val = cut.Groups[1].Value;
@@ -461,10 +524,10 @@ class LiveRouteOCR
         TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
         val = ti.ToTitleCase(val.ToLowerInvariant());
 
-        // Final guard
+        // Final safeguard
         val = Regex.Replace(val, @"^(?:B|Bl|Bi)\s+(?=[A-Z])", "", RegexOptions.IgnoreCase);
 
-        // Ultra-common autocorrects if a first letter was clipped
+        // Ultra-common autocorrects if first letters were clipped
         var lower = val.ToLowerInvariant();
         if (Regex.IsMatch(lower, @"\b(mon|kemon|okemon)\s+league\b")) val = "Pokemon League";
         if (Regex.IsMatch(lower, @"\b(ictory|ctory)\s+road\b"))       val = "Victory Road";
@@ -473,75 +536,56 @@ class LiveRouteOCR
     }
 
     // ---------- Window helpers ----------
+    
     static IntPtr FindPokeMMO()
     {
-        var h = GetForegroundWindow();
-        var title = GetTitle(h); var cls = GetClass(h);
-        if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) &&
-            title.IndexOf("pok", StringComparison.OrdinalIgnoreCase) >= 0)
-            return h;
+        // Prefer any visible, non-minimized GLFW window with 'pok' in title; pick largest client area
+        IntPtr best = IntPtr.Zero;
+        int bestArea = 0;
 
-        // Fallback by class (works when Electron is focused)
+        try
+        {
+            EnumWindows((h, l) =>
+            {
+                if (!IsWindowVisible(h) || IsIconic(h)) return true;
+                var cls = GetClass(h);
+                if (!cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return true;
+                var title = GetTitle(h);
+                if (title.IndexOf("pok", StringComparison.OrdinalIgnoreCase) < 0) return true;
+
+                if (GetClientRect(h, out var rc))
+                {
+                    int w = Math.Max(1, rc.Right - rc.Left);
+                    int hgt = Math.Max(1, rc.Bottom - rc.Top);
+                    int area = w * hgt;
+                    if (area > bestArea)
+                    {
+                        bestArea = area;
+                        best = h;
+                    }
+                }
+                return true;
+            }, IntPtr.Zero);
+        }
+        catch { }
+
+        if (best != IntPtr.Zero) return best;
+
+        // Fallbacks: foreground if it looks like PokeMMO; then first GLFW window.
+        var fg = GetForegroundWindow();
+        var fgTitle = GetTitle(fg); var fgCls = GetClass(fg);
+        if (fg != IntPtr.Zero &&
+            fgCls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) &&
+            fgTitle.IndexOf("pok", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return fg;
+        }
+
         var byClass = FindWindow("GLFW30", null);
         return byClass;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
     static string GetClass (IntPtr h){ var sb=new StringBuilder(256); GetClassName (h,sb,sb.Capacity); return sb.ToString(); }
-
-    // ---------- Packaging helpers ----------
-    static void ProbeNativePath()
-    {
-        // In packaged builds, native DLLs live next to the tessdata folder under resources\live-helper
-        string exeDir   = AppContext.BaseDirectory;
-        string exeParent= Directory.GetParent(exeDir)?.FullName ?? exeDir;
-
-        var probe = new[]
-        {
-            exeDir,
-            Path.Combine(exeParent, "resources"),
-            Path.Combine(exeParent, "resources", "live-helper")
-        };
-
-        foreach (var p in probe)
-        {
-            if (!Directory.Exists(p)) continue;
-            var cur = Environment.GetEnvironmentVariable("PATH") ?? "";
-            if (!cur.Contains(p, StringComparison.OrdinalIgnoreCase))
-            {
-                Environment.SetEnvironmentVariable("PATH", cur + Path.PathSeparator + p);
-                Log($"Native probe PATH += {p}");
-            }
-        }
-    }
-
-    static string FindTessdataSource()
-    {
-        // 1) next to EXE
-        var exeDir = AppContext.BaseDirectory;
-        var direct = Path.Combine(exeDir, "tessdata");
-        if (File.Exists(Path.Combine(direct, "eng.traineddata"))) return direct;
-
-        // 2) common packaged locations
-        var exeParent = Directory.GetParent(exeDir)?.FullName ?? exeDir;
-        foreach (var sub in new[] {
-            Path.Combine("resources","tessdata"),
-            Path.Combine("resources","live-helper","tessdata"),
-            Path.Combine("resources","app","tessdata")
-        })
-        {
-            string p = Path.Combine(exeParent, sub);
-            if (File.Exists(Path.Combine(p, "eng.traineddata"))) return p;
-        }
-
-        // 3) current working dir for dev
-        var cwd = Path.Combine(Environment.CurrentDirectory, "tessdata");
-        if (File.Exists(Path.Combine(cwd, "eng.traineddata"))) return cwd;
-
-        // 4) already-copied stable location
-        if (File.Exists(Path.Combine(StableTess, "eng.traineddata"))) return StableTess;
-
-        return "";
-    }
 
     // ---------- Utilities ----------
     static IEnumerable<int> ParsePorts(string[] args)
@@ -571,20 +615,6 @@ class LiveRouteOCR
         return def;
     }
 
-    static void TryCopy(string src, string dst)
-    {
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(dst)!);
-            if (!File.Exists(dst) || new FileInfo(dst).Length == 0)
-                File.Copy(src, dst, overwrite: true);
-        }
-        catch (Exception ex)
-        {
-            Log("Copy tessdata failed: " + ex.Message);
-        }
-    }
-
     static void Log(string s)
     {
         try
@@ -596,5 +626,10 @@ class LiveRouteOCR
         Console.WriteLine(s);
     }
 
-    static string Escape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    static string OneLine(string s)
+    {
+        if (string.IsNullOrEmpty(s)) return "";
+        s = s.Replace("\r", " ").Replace("\n", " ");
+        return s.Length > 120 ? s.Substring(0, 120) + "…" : s;
+    }
 }
