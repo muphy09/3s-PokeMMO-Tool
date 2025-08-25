@@ -509,5 +509,8 @@ ipcMain.handle('live:save-settings', async (_evt, payload) => {
     ...(payload && typeof payload === 'object' ? payload : {})
   };
   fs.writeFileSync(file, JSON.stringify(merged, null, 2), 'utf8');
+   // restart OCR helper so new settings take effect
+  try { stopLiveRouteOCR(); await startLiveRouteOCR(); } catch {}
+  try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return { ok: true, path: file, saved: merged };
 });

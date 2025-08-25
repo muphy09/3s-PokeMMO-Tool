@@ -579,46 +579,41 @@ function LiveSetup({ onSaved }) {
   const pollRef = useRef(null);
 
   async function loadWindows() {
-  try {
+    try {
       const first = await window?.liveSetup?.listWindows?.();
-      if (first === null) {
-        setWindows([]);
-        setWinErr("Could not enumerate windows.");
-        return;
+      let list = Array.isArray(first) ? first : null;
+      if (!list || list.length === 0) {
+        const alt = await window?.app?.listWindows?.();
+        list = Array.isArray(alt) ? alt : [];
       }
-      const list =
-        first ??
-        (await window?.app?.listWindows?.()) ??
-        [];
       const sorted = [...list]
         .filter(w => w && w.pid)
         .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
       setWindows(sorted);
-      setWinErr(sorted.length
-        ? null
-        : "No windows found. Try running the Tool as Administrator.");
+      setWinErr(sorted.length ? null : "No windows found. Try running the Tool as Administrator.");
     } catch (e) {
       setWindows([]);
-      setWinErr("Could not enumerate windows (IPC error).");
+      setWinErr("Could not enumerate windows.");
     }
   }
 
 async function refreshPreview() {
-  try {
-    const dbg =
-      (await window?.liveSetup?.readPreview?.()) ??
-      (await window?.app?.getDebugImages?.()) ??
-      null;
-    setCapImg(dbg?.capture || null);
-    // helper might return "pre" or "preprocessed" depending on version
-    setPreImg(dbg?.preprocessed || dbg?.pre || null);
-  } catch {
-    setCapImg(null);
-    setPreImg(null);
+    try {
+      const first = await window?.liveSetup?.readPreview?.();
+      const dbg =
+        (first && (first.capture || first.preprocessed || first.pre))
+          ? first
+          : (await window?.app?.getDebugImages?.()) ?? null;
+      setCapImg(dbg?.capture || null);
+      // helper might return "pre" or "preprocessed" depending on version
+      setPreImg(dbg?.preprocessed || dbg?.pre || null);
+    } catch {
+      setCapImg(null);
+      setPreImg(null);
+    }
   }
-}
 
-
+  
 
 useEffect(() => {
   let alive = true;
