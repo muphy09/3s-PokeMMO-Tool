@@ -581,21 +581,28 @@ function LiveSetup({ onSaved }) {
 
   async function loadWindows() {
     let list = null;
+    let err = null;
     try {
       const first = await window?.liveSetup?.listWindows?.();
       if (Array.isArray(first)) list = first;
-    } catch {}
+    else if (first && first.error) err = first.error;
+    } catch (e) {
+      err = e?.message || String(e);
+    }
     if (!list || list.length === 0) {
       try {
         const alt = await window?.app?.listWindows?.();
         if (Array.isArray(alt)) list = alt;
-      } catch {}
+      else if (alt && alt.error && !err) err = alt.error;
+      } catch (e) {
+        if (!err) err = e?.message || String(e);
+      }
     }
     const sorted = Array.isArray(list) ? [...list]
       .filter(w => w && w.pid)
       .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
     setWindows(sorted);
-    setWinErr(sorted.length ? null : "No windows found. Try running the Tool as Administrator.");
+    setWinErr(sorted.length ? null : (err || "No windows found. Try running the Tool as Administrator."));
   }
 
 async function refreshPreview() {

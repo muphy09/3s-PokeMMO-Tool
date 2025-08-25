@@ -484,8 +484,9 @@ ipcMain.handle('live:list-windows', async () => {
   try {
     return await listWindowsPS();
   } catch (e) {
-   log('listWindowsPS error', e?.message || e);
-    return null;
+   const msg = e?.message || String(e);
+   log('listWindowsPS error', msg);
+    return { error: msg };
   }
 });
 

@@ -167,9 +167,12 @@ contextBridge.exposeInMainWorld('liveSetup', {
       const res = await ipcRenderer.invoke('live:list-windows');
       // normalize to [{pid, title}]
       if (Array.isArray(res)) return res.filter(w => w && w.pid && w.title);
+      if (res && typeof res === 'object' && res.error) return { error: res.error };
       console.warn('live:list-windows error', res);
+      return { error: 'Unknown error' };
     } catch (e) {
       console.warn('live:list-windows error', e);
+      return { error: e?.message || String(e) };
     }
     return [];
   },
