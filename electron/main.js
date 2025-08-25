@@ -88,9 +88,15 @@ $results | Sort-Object {
   return new Promise((resolve, reject) => {
     let out = '';
     let err = '';
+    const timer = setTimeout(() => {
+      try { ps.kill(); } catch {}
+      reject(new Error('timeout'));
+    }, 4000);
     ps.stdout.on('data', d => (out += d.toString()));
     ps.stderr.on('data', d => (err += d.toString()));
+    ps.on('error', e => { clearTimeout(timer); reject(e); });
     ps.on('close', code => {
+      clearTimeout(timer);
       if (code === 0) {
         try { resolve(JSON.parse(out)); }
         catch (e) { reject(e); }

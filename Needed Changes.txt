@@ -1,5 +1,7 @@
-- When searching by route there needs to be a region filter option at the top on the right side (css included). This will alleviate scrolling when searching for "Route 10" and Route 101, Route 102, Route 103, etc come up because keywords match. A region filter fixes this.
 
 - Integrate a "Key" for the different colored rarities and methods of catch. Bake a button into the top near the "options" that says "Key" and gives a pretty layout of what everything means. (css included)
 
 - Include a button at the top that says "Patch Notes" and opens a list of the most recent patch notes. This will be text file located in the root of the project (pre bundled, would need to include when packaging) named 'patchnotes'. When clicking the button the contents of the txt should be displayed in a little overlay window that can be scrolled and closed (not a separate app opening). css should match layout of app to make it look pretty.
+
+
+- Create your own rarity and method colors.

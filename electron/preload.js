@@ -163,10 +163,14 @@ contextBridge.exposeInMainWorld('app', {
 
 contextBridge.exposeInMainWorld('liveSetup', {
   listWindows: async () => {
-    const res = await ipcRenderer.invoke('live:list-windows');
-    // normalize to [{pid, title}]
-    if (Array.isArray(res)) return res.filter(w => w && w.pid && w.title);
-    console.warn('live:list-windows error', res);
+     try {
+      const res = await ipcRenderer.invoke('live:list-windows');
+      // normalize to [{pid, title}]
+      if (Array.isArray(res)) return res.filter(w => w && w.pid && w.title);
+      console.warn('live:list-windows error', res);
+    } catch (e) {
+      console.warn('live:list-windows error', e);
+    }
     return [];
   },
   readPreview: async () => {

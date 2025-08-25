@@ -580,22 +580,22 @@ function LiveSetup({ onSaved }) {
   const pollRef = useRef(null);
 
   async function loadWindows() {
+    let list = null;
     try {
       const first = await window?.liveSetup?.listWindows?.();
-      let list = Array.isArray(first) ? first : null;
-      if (!list || list.length === 0) {
+      if (Array.isArray(first)) list = first;
+    } catch {}
+    if (!list || list.length === 0) {
+      try {
         const alt = await window?.app?.listWindows?.();
-        list = Array.isArray(alt) ? alt : [];
-      }
-      const sorted = [...list]
-        .filter(w => w && w.pid)
-        .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-      setWindows(sorted);
-      setWinErr(sorted.length ? null : "No windows found. Try running the Tool as Administrator.");
-    } catch (e) {
-      setWindows([]);
-      setWinErr("Could not enumerate windows.");
+        if (Array.isArray(alt)) list = alt;
+      } catch {}
     }
+    const sorted = Array.isArray(list) ? [...list]
+      .filter(w => w && w.pid)
+      .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
+    setWindows(sorted);
+    setWinErr(sorted.length ? null : "No windows found. Try running the Tool as Administrator.");
   }
 
 async function refreshPreview() {
