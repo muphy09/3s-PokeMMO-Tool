@@ -271,10 +271,15 @@ function createMainWindow() {
   process.env.ELECTRON_START_URL ||
   "http://localhost:5173";
 
+  const indexFile = path.join(__dirname, "..", "dist", "index.html");
+
   if (devURL) {
+    mainWindow.webContents.once('did-fail-load', (_e, code, desc) => {
+      log('devURL failed to load; falling back to index.html', code, desc);
+      mainWindow.loadFile(indexFile);
+    });
     mainWindow.loadURL(devURL);
   } else {
-    const indexFile = path.join(__dirname, "..", "dist", "index.html");
     mainWindow.loadFile(indexFile);
   }
 
