@@ -1,8 +1,8 @@
 {
   "name": "pokemmo-tool",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "private": true,
-  "description": "3's PokeMMO Tool \u2014 For Blueberries",
+  "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
   "main": "electron/main.js",
   "scripts": {
