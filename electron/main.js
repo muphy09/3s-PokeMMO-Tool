@@ -490,22 +490,37 @@ ipcMain.handle('live:list-windows', async () => {
 });
 
 ipcMain.handle('live:read-preview', async () => {
-  const dir = liveAppDataDir();
-  const cap = path.join(dir, 'last-capture.png');
-  const pre = path.join(dir, 'last-pre.png');
-  function tryRead(p) {
-    try {
-      const buf = fs.readFileSync(p);
-      return 'data:image/png;base64,' + buf.toString('base64');
-    } catch {
-      return null;
+  const localDir = path.join(process.env.LOCALAPPDATA || app.getPath('localAppData'), 'PokemmoLive');
+  const roamingDir = path.join(process.env.APPDATA || app.getPath('appData'), 'PokemmoLive');
+  const dirs = [localDir];
+  if (roamingDir !== localDir) dirs.push(roamingDir);
+
+  function readFirst(name) {
+    for (const d of dirs) {
+      const p = path.join(d, name);
+      try {
+        const buf = fs.readFileSync(p);
+        return { data: 'data:image/png;base64,' + buf.toString('base64'), dir: d };
+      } catch {}
     }
+    return { data: null, dir: null };
   }
-  return {
-    capture: tryRead(cap),
-    preprocessed: tryRead(pre),
-    dir
+  
+  const capture = readFirst('last-capture.png');
+  const pre = readFirst('last-pre.png');
+
+  const res = {
+    capture: captureRes.data,
+    preprocessed: preRes.data,
+    dir: captureRes.dir || preRes.dir || localDir
   };
+  if (!captureRes.data || !preRes.data) {
+    const errors = [];
+    if (!captureRes.data) errors.push('last-capture.png not found');
+    if (!preRes.data) errors.push('last-pre.png not found');
+    res.error = errors.join('; ');
+  }
+  return res;
 });
 
 ipcMain.handle('live:save-settings', async (_evt, payload) => {
