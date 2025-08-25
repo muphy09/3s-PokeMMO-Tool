@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 /**
  * Options dropdown with toasts:
  *  - Check for updates → "Checking…", "Up to date (vX)!", or "Update vY available — will install on exit."
+ *  - Live OCR Setup…   → opens the setup panel in the Live tab
  *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
@@ -80,6 +81,12 @@ export default function OptionsMenu() {
     }
   }
 
+  function onOpenSetup() {
+    // Let App.jsx switch to Live and reveal the setup panel
+    window.dispatchEvent(new Event("open-live-setup"));
+    setOpen(false);
+  }
+
   // Styles
   const btnStyle = {
     padding: "6px 10px",
@@ -119,6 +126,7 @@ export default function OptionsMenu() {
         <div style={menuStyle} role="menu" aria-label="Options menu">
           <MenuItem label="Check for updates" onClick={onCheckUpdates} />
           <Divider />
+          <MenuItem label="Live OCR Setup…" onClick={onOpenSetup} />
           <MenuItem label="Reload OCR" onClick={onReloadOCR} />
           <MenuItem label="Refresh app" onClick={onRefresh} />
         </div>

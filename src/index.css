@@ -159,3 +159,15 @@ h1, h2, h3, h4, h5 { color: #fff; margin: 0; }
 .t-rock    { background: rgba(184,160,56,.30);  border-color: rgba(184,160,56,.50); color:#161208; }
 .t-steel   { background: rgba(184,184,208,.28); border-color: rgba(184,184,208,.48); color:#0e1116; }
 .t-water   { background: rgba(104,144,240,.30); border-color: rgba(104,144,240,.48); }
+
+/* Select styling so dropdown options are visible in dark mode */
+select.input {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgba(17,17,17,0.85);
+  color: var(--text);
+}
+select.input option {
+  background-color: #0f172a;
+  color: #e8eef5;
+}

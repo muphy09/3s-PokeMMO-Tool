@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './index.css';
 import rawDex from './pokedex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
@@ -568,6 +568,137 @@ function RegionPicker({ regions, value, onChange }) {
   );
 }
 
+/* ======================= NEW: Live OCR Setup Panel ======================= */
+function LiveSetup({ onSaved }) {
+  const [windows, setWindows] = useState([]);
+  const [winErr, setWinErr] = useState(null);
+  const [targetPid, setTargetPid] = useState(null);
+  const [captureZoom, setCaptureZoom] = useState(1.5);
+  const [capImg, setCapImg] = useState(null);
+  const [preImg, setPreImg] = useState(null);
+  const pollRef = useRef(null);
+
+  async function loadWindows() {
+  try {
+    const list =
+      (await window?.liveSetup?.listWindows?.()) ??
+      (await window?.app?.listWindows?.()) ??
+      [];
+    const sorted = [...list]
+      .filter(w => w && w.pid)
+      .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    setWindows(sorted);
+    setWinErr(sorted.length
+      ? null
+      : "No windows found. Try running the Tool as Administrator.");
+  } catch (e) {
+    setWindows([]);
+    setWinErr("Could not enumerate windows (IPC error).");
+  }
+}
+
+
+async function refreshPreview() {
+  try {
+    const dbg =
+      (await window?.liveSetup?.readPreview?.()) ??
+      (await window?.app?.getDebugImages?.()) ??
+      null;
+    setCapImg(dbg?.capture || null);
+    // helper might return "pre" or "preprocessed" depending on version
+    setPreImg(dbg?.preprocessed || dbg?.pre || null);
+  } catch {
+    setCapImg(null);
+    setPreImg(null);
+  }
+}
+
+
+
+useEffect(() => {
+  let alive = true;
+
+  const kick = async () => {
+    await loadWindows();
+    await refreshPreview();
+  };
+
+  kick();
+
+  // refresh window list every 4s while the setup panel is open
+  const winTimer = setInterval(() => { if (alive) loadWindows(); }, 4000);
+  // refresh previews every 2s
+  pollRef.current = setInterval(() => { if (alive) refreshPreview(); }, 2000);
+
+  return () => {
+    alive = false;
+    clearInterval(winTimer);
+    if (pollRef.current) clearInterval(pollRef.current);
+  };
+}, []);
+
+
+async function saveSetup(close) {
+  await (window?.liveSetup?.saveSettings?.({
+    targetPid,
+    captureZoom,
+    ocrAggressiveness: 'balanced' // or your selected mode
+  }) ?? window?.app?.saveOcrSetup?.({ targetPid, captureZoom }));
+
+  await refreshPreview();
+  if (close) onSaved?.({ close: true });
+}
+
+
+
+  return (
+    <div className="surface" style={{ padding:12, marginBottom:12 }}>
+      <h3>Live OCR Setup</h3>
+      <label>Active Window</label>
+      <div style={{ display:'flex', gap:8 }}>
+        <select
+          className="input"
+          value={targetPid ?? ''}
+          onChange={(e)=> setTargetPid(e.target.value ? Number(e.target.value) : null)}
+          onFocus={loadWindows}
+          style={{ flex:1 }}
+        >
+          <option value="">— Auto Detect —</option>
+          {windows.map(w => (
+  <option key={w.pid} value={w.pid}>
+    [{w.pid}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
+  </option>
+))}
+
+        </select>
+        <button className="btn" onClick={loadWindows}>Rescan</button>
+      </div>
+      {winErr && <div className="label-muted">{winErr}</div>}
+
+      <label style={{ marginTop:10 }}>Capture Zoom ({captureZoom.toFixed(2)}×)</label>
+      <input type="range" min={1.0} max={2.0} step={0.05}
+             value={captureZoom}
+             onChange={(e)=> setCaptureZoom(parseFloat(e.target.value))} />
+
+      <div style={{ display:'flex', gap:8, marginTop:10 }}>
+        <button className="btn" onClick={()=>saveSetup(false)}>Confirm</button>
+        <button className="btn" onClick={()=>saveSetup(true)}>Save & Close</button>
+        <button className="btn" onClick={refreshPreview}>Refresh Preview</button>
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:12 }}>
+        <div><div>Capture</div>
+          {capImg ? <img src={capImg} style={{ maxWidth:'100%' }}/> : <div className="label-muted">No image</div>}
+        </div>
+        <div><div>Preprocessed</div>
+          {preImg ? <img src={preImg} style={{ maxWidth:'100%' }}/> : <div className="label-muted">No image</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+/* ======================= LIVE ROUTE PANEL ======================= */
+
 function LiveRoutePanel({ areasIndex }){
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(0);
@@ -693,7 +824,7 @@ function LiveRoutePanel({ areasIndex }){
 
       {!rawText && (
         <div className="label-muted">
-          Start <b>LiveRouteOCR</b> with PokeMMO open in a visible window (focus not required). I’ll auto-detect your current route/area and show encounters here.
+          Start <b>LiveRouteOCR</b> and focus the PokeMMO window. I’ll auto-detect your current route/area and show encounters here.
         </div>
       )}
 
@@ -772,6 +903,7 @@ function App(){
   const [query, setQuery]       = useState('');
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
+  const [showSetup, setShowSetup] = useState(false);   // NEW: setup panel visible?
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -783,6 +915,28 @@ function App(){
   });
   useEffect(() => { document.title = APP_TITLE; }, []);
   const headerSrc = headerSprite || TRANSPARENT_PNG;
+
+  // Auto-open setup on first run (no saved targetPid)
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const cfg =
+  (await window?.liveSetup?.getOcrSetup?.()) ??
+  (await window?.app?.getOcrSetup?.());
+
+        if (!alive) return;
+        if (!cfg || !cfg.targetPid) {
+          setMode('live');
+          setShowSetup(true);
+        }
+      } catch {}
+    })();
+    // wire Options menu → open-live-setup
+    const onOpen = () => { setMode('live'); setShowSetup(true); };
+    window.addEventListener('open-live-setup', onOpen);
+    return () => { alive = false; window.removeEventListener('open-live-setup', onOpen); };
+  }, []);
 
   // Search by Pokémon
   const results = React.useMemo(() => {
@@ -918,6 +1072,23 @@ function App(){
             </>
           )}
 
+          {/* Live setup + panel */}
+          {mode==='live' && (
+            <div style={{ marginTop:4 }}>
+              {showSetup && (
+                <LiveSetup
+                  onSaved={(evt)=>{
+                    // evt?.close means user clicked "Save & Close"
+                    if (evt?.close) setShowSetup(false);
+                    // Force live client to reconnect immediately
+                    try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail:{ reset:true } })); } catch {}
+                  }}
+                />
+              )}
+              <LiveRoutePanel areasIndex={areasClean} />
+            </div>
+          )}
+
           {/* Pokémon results */}
           {mode==='pokemon' && !!results.length && (
             <div className="result-grid" style={{ marginTop:12 }}>
@@ -984,13 +1155,6 @@ function App(){
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-
-          {/* Live route panel */}
-          {mode==='live' && (
-            <div style={{ marginTop:4 }}>
-              <LiveRoutePanel areasIndex={areasClean} />
             </div>
           )}
         </div>
