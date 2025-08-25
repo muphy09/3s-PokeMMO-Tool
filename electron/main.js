@@ -271,7 +271,7 @@ function createMainWindow() {
   process.env.ELECTRON_START_URL ||
   "http://localhost:5173";
 
-  if (devURL && devURL.startsWith("http")) {
+  if (devURL) {
     mainWindow.loadURL(devURL);
   } else {
     const indexFile = path.join(__dirname, "..", "dist", "index.html");
