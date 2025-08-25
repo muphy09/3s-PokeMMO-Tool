@@ -185,7 +185,7 @@ class LiveRouteOCR
         if (File.Exists(Path.Combine(direct, "eng.traineddata"))) return direct;
 
         var exeParent = Directory.GetParent(exeDir)?.FullName ?? exeDir;
-        foreach (var sub in new[] { "resources\\tessdata", "resources\\live-helper\\tessdata", "resources\\app\\tessdata" })
+        foreach (var sub in new[] { "resources\\tessdata", "resources\\LiveRouteOCR\\tessdata", "resources\\app\\tessdata" })
         {
             string p = Path.Combine(exeParent, sub);
             if (File.Exists(Path.Combine(p, "eng.traineddata"))) return p;

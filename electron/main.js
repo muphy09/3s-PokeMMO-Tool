@@ -1,5 +1,5 @@
 // ===== Core requires =====
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');

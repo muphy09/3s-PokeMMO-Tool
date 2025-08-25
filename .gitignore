@@ -11,6 +11,17 @@ out/
 build/
 win-unpacked/
 release/
+live-helper/
+resources/live-helper/
+resources/LiveRouteOCR/*
+!resources/LiveRouteOCR/.gitkeep
+LiveRouteOCR/bin/
+LiveRouteOCR/obj/
+LiveRouteOCR/*.exe
+LiveRouteOCR/*.dll
+LiveRouteOCR/*.pdb
+LiveRouteOCR/*.deps.json
+LiveRouteOCR/*.runtimeconfig.json
 *.exe
 *.msi
 *.zip
