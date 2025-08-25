@@ -260,9 +260,10 @@ function createMainWindow() {
   Menu.setApplicationMenu(null);
 
   // dev/prod loader — load dev server when env URL provided
-  const devURL =
-    process.env.VITE_DEV_SERVER_URL ||
-    process.env.ELECTRON_START_URL;
+ const devURL =
+  process.env.VITE_DEV_SERVER_URL ||
+  process.env.ELECTRON_START_URL ||
+  "http://localhost:5173";
 
   if (devURL && devURL.startsWith("http")) {
     mainWindow.loadURL(devURL);
