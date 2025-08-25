@@ -473,7 +473,8 @@ ipcMain.handle('live:list-windows', async () => {
   try {
     return await listWindowsPS();
   } catch (e) {
-    return { error: String(e) };
+   log('listWindowsPS error', e?.message || e);
+    return null;
   }
 });
 

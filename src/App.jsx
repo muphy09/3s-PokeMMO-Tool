@@ -580,23 +580,28 @@ function LiveSetup({ onSaved }) {
 
   async function loadWindows() {
   try {
-    const list =
-      (await window?.liveSetup?.listWindows?.()) ??
-      (await window?.app?.listWindows?.()) ??
-      [];
-    const sorted = [...list]
-      .filter(w => w && w.pid)
-      .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-    setWindows(sorted);
-    setWinErr(sorted.length
-      ? null
-      : "No windows found. Try running the Tool as Administrator.");
-  } catch (e) {
-    setWindows([]);
-    setWinErr("Could not enumerate windows (IPC error).");
+      const first = await window?.liveSetup?.listWindows?.();
+      if (first === null) {
+        setWindows([]);
+        setWinErr("Could not enumerate windows.");
+        return;
+      }
+      const list =
+        first ??
+        (await window?.app?.listWindows?.()) ??
+        [];
+      const sorted = [...list]
+        .filter(w => w && w.pid)
+        .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      setWindows(sorted);
+      setWinErr(sorted.length
+        ? null
+        : "No windows found. Try running the Tool as Administrator.");
+    } catch (e) {
+      setWindows([]);
+      setWinErr("Could not enumerate windows (IPC error).");
+    }
   }
-}
-
 
 async function refreshPreview() {
   try {
