@@ -537,10 +537,10 @@ function coerceIncoming(msg){
   if (typeof msg === 'string') {
     // Plain route or tagged variants
     const mTagged = msg.match(/^(?:ROUTE\|route:)?\s*(.+)$/i);
-    if (mTagged) return { routeText: mTagged[1], confidence: 0.5 };
+    if (mTagged) return { routeText: mTagged[1], confidence: null };
     // GUESS: "..."
     const m = msg.match(/GUESS:\s*"?([^"]+?)"?\s*$/i);
-    if (m) return { routeText: m[1], confidence: 0.5 };
+    if (m) return { routeText: m[1], confidence: null };
     if (msg.trim() === 'NO_ROUTE') return { routeText: '', confidence: 0 };
     return null;
   }
@@ -555,9 +555,9 @@ function coerceIncoming(msg){
     const m = src.message.match(/GUESS:\s*"?([^"]+?)"?\s*$/i);
     if (m) t = m[1];
   }
-  let c = src.confidence ?? src.conf ?? src.c ?? 0.5;
+  let c = src.confidence ?? src.conf ?? src.c
   if (typeof c === 'string') { const f = parseFloat(c); if (!Number.isNaN(f)) c = f; }
-  return (t!==null) ? { routeText: t, confidence: Number(c) || 0.5 } : null;
+  return (t !== null) ? { routeText: t, confidence: c } : null;
 }
 
 /* ---------- RegionPicker (segmented buttons, right-aligned) ---------- */
@@ -772,7 +772,7 @@ async function saveSetup(close) {
 
 function LiveRoutePanel({ areasIndex }){
   const [rawText, setRawText] = useState('');
-  const [confidence, setConfidence] = useState(0);
+  const [confidence, setConfidence] = useState(null);
   const [displayMap, setDisplayMap] = useState(null);
   const [region, setRegion] = useState(null);
   const [entries, setEntries] = useState([]);
@@ -794,7 +794,7 @@ function LiveRoutePanel({ areasIndex }){
       cleaned = trimmed;
 
       setRawText(cleaned);
-      setConfidence(Number(coerced.confidence || 0));
+      setConfidence(coerced.confidence ?? null);
 
       const targetName = best.displayMap;
 
@@ -824,7 +824,7 @@ function LiveRoutePanel({ areasIndex }){
     // NEW: respond to "Reload OCR" signal (clear panel + reconnect)
     const onForce = () => {
       setRawText('');
-      setConfidence(0);
+      setConfidence(null);
       setDisplayMap(null);
       setRegion(null);
       setEntries([]);
@@ -894,12 +894,12 @@ function LiveRoutePanel({ areasIndex }){
 
       {!rawText && (
         <div className="label-muted">
-          Start <b>LiveRouteOCR</b> and focus the PokeMMO window. I’ll auto-detect your current route/area and show encounters here.
+          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window.
         </div>
       )}
 
       {rawText && !displayMap && (
-        <div className="label-muted">No route information found. Move a bit or wait for the HUD to stabilize.</div>
+        <div className="label-muted">No usable route information found. Move around a bit or make sure the route is displayed on screen.</div>
       )}
 
       {displayMap && (
