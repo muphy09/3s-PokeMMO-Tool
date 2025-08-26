@@ -135,11 +135,35 @@ public class WinEnum {
   let list = await psSimple();
   if (!list.length) list = await psEnumWin32();
 
+ // Fallback: use Electron's desktopCapturer if PowerShell paths fail
+  if (!list.length) {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['window'] });
+      list = sources.map((src) => {
+        const id = src.id || null;
+        const title = src.name || '';
+        let pid = null;
+        if (id) {
+          const parts = String(id).split(':');
+          if (parts.length >= 2) {
+            const maybe = parseInt(parts[1], 10);
+            if (!Number.isNaN(maybe)) pid = maybe;
+          }
+        }
+        return { id, pid, title, processName: '' };
+      }).filter(w => w.title);
+    } catch (e) {
+      log('desktopCapturer list failed', e?.message || e);
+    }
+  }
+
   // de-dup + prefer PokeMMO entries first
   const uniq = new Map();
   for (const w of list) {
-    if (!w || !w.pid) continue;
-    if (!uniq.has(w.pid)) uniq.set(w.pid, w);
+        if (!w) continue;
+    const key = w.pid ? `p${w.pid}` : (w.id ? `i${w.id}` : null);
+    if (!key || uniq.has(key)) continue;
+    uniq.set(key, w);
   }
   return [...uniq.values()].sort((a, b) => {
     const aP = (a.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
@@ -392,28 +416,7 @@ ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
   return true;
 });
 
-ipcMain.handle('app:getDebugImages', async () => {
-  // primary: %LOCALAPPDATA%\PokemmoLive
-  const primary = POKELIVE_DIR;
-  // backup: %APPDATA%\YourApp\PokemmoLive (paranoia)
-  const backup = path.join(app.getPath('userData'), 'PokemmoLive');
-
-  const candidates = [
-    path.join(primary, 'last-capture.png'),
-    path.join(backup,  'last-capture.png'),
-  ];
-  const candidatesPre = [
-    path.join(primary, 'last-pre.png'),
-    path.join(backup,  'last-pre.png'),
-  ];
-  const toDataUrl = (pList) => {
-    for (const p of pList) {
-      try { if (fs.existsSync(p)) return 'data:image/png;base64,' + fs.readFileSync(p).toString('base64'); } catch {}
-    }
-    return null;
-  };
-  return { capture: toDataUrl(candidates), pre: toDataUrl(candidatesPre) };
-});
+ipcMain.handle('app:getDebugImages', async () => readPreviewImages());
 
 // --- Compatibility IPC aliases for preload.js ---
 ipcMain.handle('get-version', () => app.getVersion());
@@ -471,22 +474,25 @@ function readPreviewImages() {
   const dirs = [localDir];
   if (roamingDir !== localDir) dirs.push(roamingDir);
 
-  function readFirst(names) {
+  function readFirst(names, folders = ['']) {
     const nameArr = Array.isArray(names) ? names : [names];
     for (const d of dirs) {
-      for (const n of nameArr) {
-        const p = path.join(d, n);
-        try {
-          const buf = fs.readFileSync(p);
-          return { data: 'data:image/png;base64,' + buf.toString('base64'), dir: d };
-        } catch {}
+       for (const folder of folders) {
+        for (const n of nameArr) {
+          const p = path.join(d, folder, n);
+          try {
+            const buf = fs.readFileSync(p);
+            return { data: 'data:image/png;base64,' + buf.toString('base64'), dir: d };
+          } catch {}
+        }
       }
     }
     return { data: null, dir: null };
   }
-  
-  const capture = readFirst('last-capture.png');
-  const pre = readFirst(['last-pre.png', 'last-preview.png']);
+
+  const folders = ['', 'debug'];
+  const capture = readFirst(['last-capture.png', 'last-capture.jpg', 'last-capture.bmp'], folders);
+  const pre = readFirst(['last-pre.png', 'last-pre.jpg', 'last-pre.bmp', 'last-preprocessed.png', 'last-preview.png'], folders);
 
   const res = {
     capture: capture.data,
@@ -496,8 +502,8 @@ function readPreviewImages() {
   };
   if (!capture.data || !pre.data) {
     const errors = [];
-    if (!capture.data) errors.push('last-capture.png not found');
-    if (!pre.data) errors.push('last-pre.png/last-preview.png not found');
+    if (!capture.data) errors.push('last-capture.[png/jpg/bmp] not found');
+    if (!pre.data) errors.push('last-pre.[png/jpg/bmp]/last-preview.png not found');
     res.error = errors.join('; ');
   }
   return res;
