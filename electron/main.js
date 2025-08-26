@@ -1,10 +1,10 @@
 // ===== Core requires =====
+
 const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
 const { autoUpdater } = require('electron-updater');
-
 
 
 // ===== App identity (Win) =====
@@ -291,6 +291,20 @@ function stopLiveRouteOCR() {
   finally { ocrProc = null; }
 }
 
+const preloadCandidates = [
+  path.join(__dirname, 'preload.js'),
+  ];
+
+const preloadPath = preloadCandidates.find(p => fs.existsSync(p));
+console.log('[MAIN] Preload candidates:\n' + preloadCandidates.map(p =>
+  `  - ${p}  ${fs.existsSync(p) ? '(exists)' : '(missing)'}`
+).join('\n'));
+
+if (!preloadPath) {
+  dialog.showErrorBox('FATAL', 'No preload.js found in any known location.\nSee console for searched paths.');
+  app.quit(); process.exit(1);
+}
+
 // ===== Window =====
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -300,7 +314,7 @@ function createMainWindow() {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
     },

@@ -1,6 +1,6 @@
 // electron/preload.js
 /* eslint-disable no-undef */
-const { contextBridge, ipcRenderer, shell } = require('electron');
+const { contextBridge, ipcRenderer, shell, desktopCapturer } = require('electron');
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
@@ -27,6 +27,7 @@ const pokeLiveDir   = path.join(localAppData, 'PokemmoLive');
 const settingsPath  = path.join(pokeLiveDir, 'settings.json');
 const lastCapPath   = path.join(pokeLiveDir, 'last-capture.png');
 const lastPrePath   = path.join(pokeLiveDir, 'last-preview.png');
+const lastPreAlt    = path.join(pokeLiveDir, 'last-pre.png');
 const tessdataDir   = path.join(pokeLiveDir, 'tessdata');
 
 // ---------- Helpers ----------
@@ -161,6 +162,13 @@ async function listWindowsRobust() {
     if (Array.isArray(res) || (res && typeof res === 'object' && (res.error || res.ok))) break;
   }
 
+   if (!Array.isArray(res) || res.length === 0) {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['window'] });
+      res = sources.map(s => ({ id: s.id, title: s.name })).filter(w => w.id && w.title);
+    } catch { res = []; }
+  }
+
   if (Array.isArray(res)) {
     const normalized = res
       .map((w) => {
@@ -192,7 +200,14 @@ contextBridge.exposeInMainWorld('liveSetup', {
 
   readPreview: async () => {
     // main returns { capture?, preprocessed?, dir, error? }
-    return await invokeSafe('live:read-preview', undefined, null);
+    const viaMain = await invokeSafe('live:read-preview', undefined, null);
+    if (viaMain && (viaMain.capture || viaMain.preprocessed || viaMain.pre)) return viaMain;
+
+    const capture = fileToDataUrl(lastCapPath);
+    const pre = fileToDataUrl(lastPrePath) || fileToDataUrl(lastPreAlt);
+    const res = { capture, preprocessed: pre, dir: pokeLiveDir };
+    if (!capture || !pre) res.error = 'Preview images not found';
+    return res;
   },
 
   saveSettings: async (settings) => {
@@ -248,6 +263,6 @@ contextBridge.exposeInMainWorld('debugPreload', {
   peekSettings: () => readJSON(settingsPath, {}),
   peekImages: () => ({
     captureExists: fs.existsSync(lastCapPath),
-    preExists: fs.existsSync(lastPrePath),
+    preExists: fs.existsSync(lastPrePath) || fs.existsSync(lastPreAlt),
   }),
 });
