@@ -3,8 +3,7 @@ import './index.css';
 import rawDex from './pokedex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
-import PatchNotesButton from './components/PatchNotesButton.jsx';
-import PatchNotesModal from './components/PatchNotesModal.jsx';
+import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
@@ -43,7 +42,8 @@ const styles = {
   card: { padding:16, borderRadius:12, border:'1px solid #262626', background:'#111' },
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
-  monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }
+  monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' },
+  viewBtn: { padding:'6px 10px', border:'1px solid var(--divider)', borderRadius:8, background:'rgba(255,255,255,0.06)', color:'var(--text)', cursor:'pointer' }
 };
 
 /* ---------- utils ---------- */
@@ -828,7 +828,7 @@ function App(){
         if (current) {
           const last = localStorage.getItem('last-version');
           if (last !== current) {
-            setShowPatchNotes(true);
+            openPatchNotes();
             localStorage.setItem('last-version', current);
           }
         }
@@ -945,7 +945,7 @@ function App(){
     <>
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
-        <PatchNotesButton onOpen={() => setShowPatchNotes(true)} />
+        <PatchNotesButton />
         <OptionsMenu />
       </div>
 
@@ -1076,7 +1076,7 @@ function App(){
                           {mon && (
                             <button
                               className="btn"
-                              style={{ padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }}
+                              style={styles.viewBtn}
                               onClick={() => setSelected(mon)}
                               title="Open Pokémon"
                             >View</button>
