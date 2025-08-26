@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './index.css';
 import rawDex from './pokedex.json';
+import movesetData from '../pokemon_moveset_data.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
@@ -43,7 +44,7 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' },
-  viewBtn: { padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }
+  viewBtn: { padding:'6px 10px', border:'1px solid #3b3b3b', borderRadius:8, background:'#242424', cursor:'pointer' }
 };
 
 /* ---------- utils ---------- */
@@ -75,6 +76,40 @@ const DEX_BY_NAME = (() => {
   return map;
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
+
+function normalizeEggGroup(g=''){
+  return String(g).toLowerCase().replace('warer','water').replace('hmanoid','humanoid').trim();
+}
+
+const MOVE_METHODS = [
+  { key:'start', label:'Start' },
+  { key:'lv', label:'Level' },
+  { key:'tutor', label:'Tutor' },
+  { key:'tmhm', label:'TM/HM' },
+  { key:'egg', label:'Egg' }
+];
+
+const MOVESETS_BY_ID = (() => {
+  const map = new Map();
+  for (const [key, data] of Object.entries(movesetData || {})) {
+    const m = key.match(/^(\d+)\s+([^()]+)\s*\(([^)]+)\)$/);
+    if (!m) continue;
+    const id = Number(m[1]);
+    const eggGroups = m[3].split(',').map(s => normalizeEggGroup(s));
+    const start = Array.isArray(data.start) ? data.start.filter(Boolean) : [];
+    const lv = Array.isArray(data.lv)
+      ? data.lv.map(it => {
+          const [lvl, move] = Object.entries(it)[0] || [];
+          return { level: Number(lvl), move };
+        })
+      : [];
+    const tutor = Array.isArray(data.tutor) ? data.tutor.filter(Boolean) : [];
+    const tmhm = Array.isArray(data['tm/hm']) ? data['tm/hm'].filter(Boolean) : [];
+    const egg = Array.isArray(data.egg) ? data.egg.filter(Boolean) : [];
+    map.set(id, { eggGroups, start, lv, tutor, tmhm, egg });
+  }
+  return map;
+})();
 
 /* ---------- sprite source helpers & component ---------- */
 function localSpriteCandidates(mon){
@@ -135,6 +170,25 @@ function TypePill({ t, compact=false }){
   );
 }
 
+const EGG_GROUP_COLORS = {
+  monster:'#A8A77A', plant:'#7AC74C', dragon:'#6F35FC', bug:'#A6B91A',
+  flying:'#A98FF3', field:'#E2BF65', fairy:'#F95587', 'water a':'#6390F0',
+  'water b':'#4C7CF0', 'water c':'#1D7BF4', chaos:'#705746', humanoid:'#C22E28',
+  hmanoid:'#C22E28', ditto:'#F7D02C', mineral:'#B7B7CE', 'cannot breed':'#616161',
+  genderless:'#616161'
+};
+function EggGroupPill({ group }){
+  const key = normalizeEggGroup(group);
+  if (!key) return null;
+  const bg = EGG_GROUP_COLORS[key] || '#555';
+  return (
+    <span style={{
+      display:'inline-block', padding:'4px 10px', fontSize:13, lineHeight:1,
+      borderRadius:999, fontWeight:800, color:'#111', background:bg,
+      border:'1px solid #00000022'
+    }}>{titleCase(key)}</span>
+  );
+}
 /* ---------- Method & Rarity palettes ---------- */
 const METHOD_COLORS = {
   grass:'#ECEFF1', 'dark grass':'#B0BEC5', cave:'#7E57C2', water:'#4C7CF0',
@@ -240,7 +294,11 @@ function useLocationsDb(){
         const res = await fetch(LOCATIONS_URL, { cache:'no-store' });
         const json = await res.json();
         const idx = {};
-        for (const [k,v] of Object.entries(json)) idx[normalizeKey(k)] = v;
+        for (const [k,v] of Object.entries(json)) {
+          // Drop any bogus location entries with only dashes for a map name
+          const locations = (v?.locations || []).filter(l => !/^-+$/.test(l.map || ""));
+          idx[normalizeKey(k)] = { ...v, locations };
+        }
         if (alive) setIndex(idx);
       }catch(e){ console.error('load locations failed', e); }
     })();
@@ -277,6 +335,8 @@ function useAreasDbCleaned(){
         const out = {};
         for (const [region, maps] of Object.entries(raw || {})) {
           for (const [mapName, entries] of Object.entries(maps || {})) {
+            // Ignore placeholder maps made entirely of dashes
+            if (/^-+$/.test(mapName)) continue;
             const cleaned = [];
             for (const e of entries || []) {
               const method = cleanAreaMethod(e.method || '');
@@ -471,6 +531,8 @@ function normalizeHudText(s=''){
   let t = String(s).trim();
   t = t.replace(/\s+Ch\.?\s*\d+\b/i, '');
   t = t.replace(/\s{2,}/g,' ').trim();
+  // Treat OCR results that are just dashes as empty/no data
+  if (/^-+$/.test(t)) return '';
   return t;
 }
 
@@ -718,7 +780,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window. Move around a bit or adjust your UI scaling if it still can't find the route.
+          <b>LiveRouteOCR</b> is attempting to find Route Data. Click Into your PokeMMO window. Move around a bit or adjust your UI scaling if it still can't find the route.
         </div>
       )}
 
@@ -758,7 +820,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
                     {mon && (
                       <button
                         className="btn"
-                        style={{ padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }}
+                        style={styles.viewBtn}
                         onClick={() => onViewMon && onViewMon(mon)}
                         title="Open Pokémon"
                       >View</button>
@@ -919,9 +981,20 @@ function App(){
     }));
 
     const types = (selected.types || []).map(normalizeType);
+    const moveInfo = MOVESETS_BY_ID.get(selected.id) || {};
+    const eggGroups = moveInfo.eggGroups || [];
+    const moves = {
+      start: moveInfo.start || [],
+      lv: moveInfo.lv || [],
+      tutor: moveInfo.tutor || [],
+      tmhm: moveInfo.tmhm || [],
+      egg: moveInfo.egg || []
+    };
     return {
       ...selected,
       types,
+      eggGroups,
+      moves,
       weakness: computeWeakness(types),
       locations: mergedLocs
     };
@@ -1099,8 +1172,14 @@ function App(){
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
                   </div>
-                  <div style={{ display:'flex', gap:6, marginTop:6 }}>
+                  <div style={{ display:'flex', gap:6, marginTop:6, flexWrap:'wrap', alignItems:'center' }}>
                     {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
+                    {resolved.eggGroups?.length > 0 && (
+                      <>
+                        <span className="label-muted" style={{ fontWeight:700 }}>Egg Group:</span>
+                        {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1177,6 +1256,29 @@ function App(){
                   </div>
                 </div>
               ))}
+              {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
+                <>
+                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Moveset</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                    {MOVE_METHODS.map(m => (
+                      <div key={m.key} style={{ border:'1px solid #262626', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                        <div style={{ fontWeight:700, marginBottom:4 }}>{m.label}</div>
+                        {(resolved.moves[m.key] || []).length ? (
+                          <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:13 }}>
+                            {resolved.moves[m.key].map((mv, idx) => (
+                              m.key === 'lv'
+                                ? <div key={idx}>{`Lv ${mv.level}: ${mv.move}`}</div>
+                                : <div key={idx}>{mv}</div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="label-muted">None</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
