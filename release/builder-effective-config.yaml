@@ -1,0 +1,44 @@
+directories:
+  output: release
+  buildResources: resources
+  app: .
+appId: com.pokemmo.tool
+productName: 3s PokeMMO Tool
+asar: true
+extraMetadata:
+  main: electron/main.js
+files:
+  - filter:
+      - dist/**
+      - electron/**
+      - assets/**
+      - resources/**
+      - package.json
+      - node_modules/**
+      - '!release/**'
+      - '!resources/LiveRouteOCR/**'
+      - '!**/*.map'
+extraResources:
+  - from: resources/LiveRouteOCR/
+    to: LiveRouteOCR
+    filter:
+      - '**/*'
+  - from: LiveRouteOCR/LiveRouteOCR.zip
+    to: LiveRouteOCR.zip
+  - from: resources/icon.ico
+    to: icon.ico
+win:
+  icon: resources/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: zip
+      arch:
+        - x64
+artifactName: 3s-PokeMMO-Tool-${version}-win-x64.${ext}
+publish:
+  - provider: github
+    owner: muphy09
+    repo: 3s-PokeMMO-Tool
+electronVersion: 30.5.1
