@@ -44,7 +44,15 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' },
-  viewBtn: { padding:'6px 10px', border:'1px solid #3b3b3b', borderRadius:8, background:'#242424', cursor:'pointer' }
+  viewBtn: {
+    padding:'6px 10px',
+    border:'1px solid var(--accent)',
+    borderRadius:8,
+    background:'var(--accent)',
+    color:'#111',
+    fontWeight:700,
+    cursor:'pointer'
+  }
 };
 
 /* ---------- utils ---------- */
@@ -1147,7 +1155,11 @@ function App(){
                             <button
                               className="btn"
                               style={styles.viewBtn}
-                              onClick={() => { setSelected(mon); setMode('pokemon'); }}
+                              onClick={() => {
+                                setSelected(mon);
+                                setMode('pokemon');
+                                setQuery('');
+                              }}
                               title="Open Pokémon"
                             >View</button>
                           )}
