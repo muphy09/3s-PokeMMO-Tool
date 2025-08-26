@@ -1,6 +1,6 @@
 // electron/preload.js
 /* eslint-disable no-undef */
-const { contextBridge, ipcRenderer, shell, desktopCapturer } = require('electron');
+const { contextBridge, ipcRenderer, shell } = require('electron');
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
@@ -10,17 +10,18 @@ const os   = require('os');
  * - Stable paths shared with the OCR helper (LocalAppData\PokemmoLive)
  * - App bridges: version, updates, reload, refresh, start/stop OCR
  * - Live OCR Setup bridges: listWindows/readPreview/saveSettings/getDebugImages
- * - File helpers (read/write/exists/list/delete)
+ * - File helpers (read/write/exists/list/delete) for UI flows that persist JSON or export assets
  * - Event forwarders: force-live-reconnect, open-live-setup
  * - First-run: ensures settings.json exists with sane defaults
  */
 
 // ---------- Paths ----------
 const isWin = process.platform === 'win32';
-const localAppData =
-  (isWin && process.env.LOCALAPPDATA)
-    ? process.env.LOCALAPPDATA
-    : path.join(os.homedir(), isWin ? 'AppData\\Local' : '.config');
+const localAppData = (() => {
+  if (isWin && process.env.LOCALAPPDATA) return process.env.LOCALAPPDATA;
+  // Cross‑platform fallback: ~/.config/PokemmoLive
+  return path.join(os.homedir(), '.config');
+})();
 
 const pokeLiveDir   = path.join(localAppData, 'PokemmoLive');
 const settingsPath  = path.join(pokeLiveDir, 'settings.json');
@@ -60,6 +61,7 @@ function clampZoom(v, def = 1.5) {
 }
 function getLocalSetupDefaults() {
   return {
+    // live window target + capture settings
     targetPid: null,
     targetId: null,
     targetTitle: '',
@@ -68,17 +70,29 @@ function getLocalSetupDefaults() {
   };
 }
 
-// ---------- Local file API ----------
+// ---------- Local file API exposed to UI ----------
 const fileApi = {
   exists: (p) => { try { return fs.existsSync(p); } catch { return false; } },
-  readFile: (p, enc = 'utf8') => { try { return fs.readFileSync(p, enc); } catch { return null; } },
-  writeFile: (p, data, enc = 'utf8') => { try { ensureDir(path.dirname(p)); fs.writeFileSync(p, data ?? '', enc); return true; } catch { return false; } },
-  readText: (p) => { try { return fs.readFileSync(p, 'utf8'); } catch { return null; } },
-  writeText: (p, text) => { try { ensureDir(path.dirname(p)); fs.writeFileSync(p, text ?? '', 'utf8'); return true; } catch { return false; } },
+  readFile: (p, enc = 'utf8') => {
+    try { return fs.readFileSync(p, enc); } catch { return null; }
+  },
+  writeFile: (p, data, enc = 'utf8') => {
+    try { ensureDir(path.dirname(p)); fs.writeFileSync(p, data ?? '', enc); return true; } catch { return false; }
+  },
+  readText: (p) => {
+    try { return fs.readFileSync(p, 'utf8'); } catch { return null; }
+  },
+  writeText: (p, text) => {
+    try { ensureDir(path.dirname(p)); fs.writeFileSync(p, text ?? '', 'utf8'); return true; } catch { return false; }
+  },
   readJSON: (p, fallback = null) => readJSON(p, fallback),
   writeJSON: (p, obj) => writeJSON(p, obj),
-  listDir: (dir) => { try { return fs.readdirSync(dir).map(name => ({ name, path: path.join(dir, name) })); } catch { return []; } },
-  deleteFile: (p) => { try { if (fs.existsSync(p)) fs.unlinkSync(p); return true; } catch { return false; } },
+  listDir: (dir) => {
+    try { return fs.readdirSync(dir).map(name => ({ name, path: path.join(dir, name) })); } catch { return []; }
+  },
+  deleteFile: (p) => {
+    try { if (fs.existsSync(p)) fs.unlinkSync(p); return true; } catch { return false; }
+  },
   makeDir: (dir) => { try { ensureDir(dir); return true; } catch { return false; } },
   join: (...p) => path.join(...p),
   resolve: (...p) => path.resolve(...p),
@@ -86,7 +100,7 @@ const fileApi = {
   dirname: (p) => path.dirname(p),
 };
 
-// ---------- Exposed constants ----------
+// ---------- Expose constants/paths ----------
 contextBridge.exposeInMainWorld('paths', {
   localAppData,
   pokeLiveDir,
@@ -97,98 +111,78 @@ contextBridge.exposeInMainWorld('paths', {
 });
 contextBridge.exposeInMainWorld('files', fileApi);
 
-// ---------- App bridges ----------
+// ---------- App‑level bridges ----------
 contextBridge.exposeInMainWorld('app', {
+  // App base
   getVersion:    () => invokeSafe('get-version', undefined, null),
   checkUpdates:  () => invokeSafe('check-updates', undefined, { status: 'error', message: 'IPC unavailable' }),
   reloadOCR:     (options) => invokeSafe('reload-ocr', options, true),
   refreshApp:    () => invokeSafe('refresh-app', undefined, (location.reload(), true)),
 
+  // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),
   stopOCR:       () => invokeSafe('stop-ocr', undefined, true),
 
+  // Persisted setup + debug
   getOcrSetup:    () => invokeSafe('live:get-setup', undefined, null),
   saveOcrSetup:   (setup) => invokeSafe('live:save-setup', setup, false),
   getDebugImages: () => invokeSafe('live:get-debug-images', undefined, []),
 
+  // Misc
   revealInFolder: (p) => { try { shell.showItemInFolder(p); } catch {} },
   openExternal:   (url) => { try { shell.openExternal(url); } catch {} },
 
+  // Events
   forceLiveReconnect: () => { try { ipcRenderer.send('live:force-reconnect'); } catch {} },
-  openLiveSetup:      () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
+
+  // Optional: request main to open setup panel (if you wired a Menu item/IPC)
+  openLiveSetup: () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
 });
 
-// ---------- Live setup (windows, preview, settings) ----------
-async function listWindowsViaIPC() {
+// ---------- Live setup bridges ----------
+/**
+ * Robust listWindows:
+ *  - Tries multiple IPC channels for compatibility with older/newer main.js versions
+ *  - Normalizes different shapes: {id,name}, {pid,title}, {windowTitle,processId}, etc.
+ */
+async function listWindowsRobust() {
   const tryChannels = [
     'live:list-windows',
     'app:list-windows',
     'live:listWindows',
     'app:listWindows',
   ];
+
   let res = null;
   for (const ch of tryChannels) {
     // eslint-disable-next-line no-await-in-loop
     res = await invokeSafe(ch, undefined, null);
     if (Array.isArray(res) || (res && typeof res === 'object' && (res.error || res.ok))) break;
   }
-  if (!res) return null;
-  if (Array.isArray(res)) return res;
-  if (res && res.error) throw new Error(res.error);
-  return null;
-}
 
-async function listWindowsViaDesktopCapturer() {
-  try {
-    const sources = await desktopCapturer.getSources({
-      types: ['window'],
-      // Small thumbnails; you can raise sizes if you show icons in the dropdown
-      thumbnailSize: { width: 0, height: 0 },
-      fetchWindowIcons: false,
-    });
-    // Normalize to a simple structure
-    return sources.map(src => ({
-      id: src.id ?? null,
-      // Electron returns the OS window title as `name`
-      title: src.name ?? '',
-      pid: null, // desktopCapturer doesn't give PID; keep null
-    })).filter(w => w.title && (w.id || w.pid));
-  } catch (e) {
-    console.warn('desktopCapturer.getSources failed', e);
-    return [];
-  }
-}
-
-function normalizeWindows(arr) {
-  return (arr || []).map(w => {
-    if (!w) return null;
-    const pid   = w.pid ?? w.processId ?? null;
-    const id    = w.id ?? w.sourceId ?? null;
-    const title = w.title ?? w.name ?? w.windowTitle ?? w.processName ?? '';
-    if ((!pid && !id) || !title) return null;
-    return { pid, id, title };
-  }).filter(Boolean);
-}
-
-async function listWindowsRobust() {
-  // 1) Try IPC (if main wired it)
-  try {
-    const viaIPC = await listWindowsViaIPC();
-    if (Array.isArray(viaIPC) && viaIPC.length) {
-      return normalizeWindows(viaIPC);
-    }
-  } catch (e) {
-    console.warn('listWindowsViaIPC error', e?.message || e);
+  if (Array.isArray(res)) {
+    const normalized = res
+      .map((w) => {
+        if (!w) return null;
+        const pid   = w.pid ?? w.processId ?? null;
+        const id    = w.id ?? w.sourceId ?? null; // desktopCapturer uses id
+        const title = w.title ?? w.name ?? w.windowTitle ?? w.processName ?? '';
+        // Keep items if at least one identifier and a label exist
+        if ((!pid && !id) || !title) return null;
+        return { pid, id, title };
+      })
+      .filter(Boolean);
+    return normalized;
   }
 
-  // 2) Fallback to desktopCapturer directly from preload
-  const viaCapturer = await listWindowsViaDesktopCapturer();
-  if (viaCapturer.length) return normalizeWindows(viaCapturer);
+  if (res && typeof res === 'object' && res.error) {
+    return { error: res.error };
+  }
 
-  // 3) Nothing found; return empty list (UI can keep "autodetect")
-  return [];
+  return { error: 'Unknown result from list-windows' };
 }
 
+// Expose the modern API
 contextBridge.exposeInMainWorld('liveSetup', {
   listWindows: async () => {
     try { return await listWindowsRobust(); }
@@ -196,15 +190,12 @@ contextBridge.exposeInMainWorld('liveSetup', {
   },
 
   readPreview: async () => {
-    // expected to return { file: string|null, dir: string }
-    const r = await invokeSafe('live:read-preview', undefined, null);
-    if (r && r.file && fs.existsSync(r.file)) {
-      return { ...r, dataUrl: fileToDataUrl(r.file) };
-    }
-    return r;
+    // main returns { capture?, preprocessed?, dir, error? }
+    return await invokeSafe('live:read-preview', undefined, null);
   },
 
   saveSettings: async (settings) => {
+    // normalize and clamp
     const toSave = {
       ...settings,
       captureZoom: clampZoom(settings?.captureZoom),
@@ -213,6 +204,7 @@ contextBridge.exposeInMainWorld('liveSetup', {
   },
 
   appDataDir: async () => {
+    // Use read-preview response when available to discover where captures live
     const r = await invokeSafe('live:read-preview', undefined, null);
     return r?.dir || pokeLiveDir;
   },
@@ -222,7 +214,7 @@ contextBridge.exposeInMainWorld('liveSetup', {
 try {
   const compat = {
     listWindows: (...args) => window.liveSetup.listWindows(...args),
-    getWindows:  (...args) => window.liveSetup.listWindows(...args),
+    getWindows:  (...args) => window.liveSetup.listWindows(...args), // alias for legacy calls
     readPreview: (...args) => window.liveSetup.readPreview(...args),
     saveSettings: (...args) => window.liveSetup.saveSettings(...args),
     appDataDir:  (...args) => window.liveSetup.appDataDir(...args),
@@ -236,7 +228,7 @@ ipcRenderer.on('open-live-setup', () => {
   try { window.dispatchEvent(new Event('open-live-setup')); } catch {}
 });
 
-// ---------- First‑run guard ----------
+// ---------- First‑run guard: ensure settings.json + folders exist ----------
 (function ensureSettingsFile() {
   try {
     ensureDir(pokeLiveDir);
@@ -248,7 +240,7 @@ ipcRenderer.on('open-live-setup', () => {
   } catch {}
 })();
 
-// ---------- Optional dev helpers ----------
+// ---------- Optional dev visibility helpers ----------
 contextBridge.exposeInMainWorld('debugPreload', {
   ping: () => 'pong',
   hasSettings: () => fs.existsSync(settingsPath),

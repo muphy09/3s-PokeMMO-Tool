@@ -435,25 +435,38 @@ ipcMain.handle('live:list-windows', async () => {
   try {
     return await enumerateWindows();
   } catch (e) {
-   const msg = e?.message || String(e);
+    const msg = e?.message || String(e);
     log('enumerateWindows error', msg);
     return { error: msg };
   }
 });
 
-ipcMain.handle('live:read-preview', async () => {
+ipcMain.handle('app:list-windows', async () => {
+  try {
+    return await enumerateWindows();
+  } catch (e) {
+    const msg = e?.message || String(e);
+    log('enumerateWindows error', msg);
+    return { error: msg };
+  }
+});
+
+function readPreviewImages() {
   const localDir = path.join(process.env.LOCALAPPDATA || app.getPath('localAppData'), 'PokemmoLive');
   const roamingDir = path.join(process.env.APPDATA || app.getPath('appData'), 'PokemmoLive');
   const dirs = [localDir];
   if (roamingDir !== localDir) dirs.push(roamingDir);
 
-  function readFirst(name) {
+  function readFirst(names) {
+    const nameArr = Array.isArray(names) ? names : [names];
     for (const d of dirs) {
-      const p = path.join(d, name);
-      try {
-        const buf = fs.readFileSync(p);
-        return { data: 'data:image/png;base64,' + buf.toString('base64'), dir: d };
-      } catch {}
+      for (const n of nameArr) {
+        const p = path.join(d, n);
+        try {
+          const buf = fs.readFileSync(p);
+          return { data: 'data:image/png;base64,' + buf.toString('base64'), dir: d };
+        } catch {}
+      }
     }
     return { data: null, dir: null };
   }
@@ -464,16 +477,20 @@ ipcMain.handle('live:read-preview', async () => {
   const res = {
     capture: capture.data,
     preprocessed: pre.data,
-    dir: capture.dir || pre.dir || localDir
+    dir: capture.dir || pre.dir || localDir,
+
   };
   if (!capture.data || !pre.data) {
     const errors = [];
     if (!capture.data) errors.push('last-capture.png not found');
-    if (!pre.data) errors.push('last-pre.png not found');
+    if (!pre.data) errors.push('last-preview.png not found');
     res.error = errors.join('; ');
   }
   return res;
-});
+}
+
+ipcMain.handle('live:read-preview', async () => readPreviewImages());
+ipcMain.handle('live:get-debug-images', async () => readPreviewImages());
 
 ipcMain.handle('live:save-settings', async (_evt, payload) => {
   const dir = liveAppDataDir();
