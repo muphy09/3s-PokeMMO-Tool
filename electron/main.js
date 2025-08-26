@@ -1,5 +1,5 @@
 // ===== Core requires =====
-const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -202,6 +202,7 @@ function ocrUserDir() { return path.join(app.getPath('userData'), OCR_FOLDER_NAM
 function ocrResourcesExe() { return path.join(rsrc(OCR_FOLDER_NAME), OCR_EXE_NAME); }
 function ocrUserExe() { return path.join(ocrUserDir(), OCR_EXE_NAME); }
 function ocrZipPath() { return path.join(process.resourcesPath || process.cwd(), `${OCR_FOLDER_NAME}.zip`); }
+function ocrDevExe() { return path.join(__dirname, '..', OCR_FOLDER_NAME, OCR_EXE_NAME); }
 
 async function extractZipToUserDir(zipFile, destDir) {
   try {
@@ -227,6 +228,7 @@ async function extractZipToUserDir(zipFile, destDir) {
 }
 
 async function ensureOCRExeExists() {
+  if (!app.isPackaged && fs.existsSync(ocrDevExe())) return ocrDevExe();
   if (fs.existsSync(ocrResourcesExe())) return ocrResourcesExe();
   if (fs.existsSync(ocrUserExe())) return ocrUserExe();
 
@@ -250,7 +252,7 @@ async function startLiveRouteOCR() {
 
     const exe = await ensureOCRExeExists();
     if (!exe) {
-      const msg = `LiveRouteOCR not found.\nSearched:\n - ${ocrResourcesExe()}\n - ${ocrUserExe()}\nZip:\n - ${ocrZipPath()}`;
+      const msg = `LiveRouteOCR not found.\nSearched:\n - ${ocrDevExe()}\n - ${ocrResourcesExe()}\n - ${ocrUserExe()}\nZip:\n - ${ocrZipPath()}`;
       log(msg);
       dialog.showMessageBox({ type: 'warning', message: 'LiveRouteOCR Missing', detail: msg });
       return;
