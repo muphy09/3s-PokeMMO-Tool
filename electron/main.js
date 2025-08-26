@@ -191,6 +191,20 @@ function setupAutoUpdates() {
     log('update-downloaded', info?.version || '');
   });
 
+   // Explicitly set the GitHub feed. In some earlier builds the generated
+  // app-update.yml was missing, causing update checks to throw with a
+  // "Cannot find update info" error.  Setting the feed URL here ensures the
+  // updater can always locate the repository even if that file is absent.
+  try {
+    autoUpdater.setFeedURL({
+      provider: 'github',
+      owner: 'muphy09',
+      repo: '3s-PokeMMO-Tool',
+    });
+  } catch (e) {
+    log('setFeedURL failed', e?.message || e);
+  }
+  
   setTimeout(() => {
     try { autoUpdater.checkForUpdates(); } catch (e) { log('checkForUpdates at boot failed', e); }
   }, 3000);
