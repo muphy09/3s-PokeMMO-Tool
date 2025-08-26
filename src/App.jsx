@@ -578,57 +578,76 @@ function LiveSetup({ onSaved }) {
   const [capImg, setCapImg] = useState(null);
   const [preImg, setPreImg] = useState(null);
   const pollRef = useRef(null);
+  const [targetId, setTargetId] = useState(null);
+
 
   async function loadWindows() {
-    let list = null;
-    let err = null;
-    try {
-      const first = await window?.liveSetup?.listWindows?.();
-      if (Array.isArray(first)) list = first;
+  let list = null;
+  let err = null;
+
+  try {
+    const first = await window?.liveSetup?.listWindows?.();
+    if (Array.isArray(first)) list = first;
     else if (first && first.error) err = first.error;
-    } catch (e) {
-      err = e?.message || String(e);
-    }
-    if (!list || list.length === 0) {
-      try {
-        const alt = await window?.app?.listWindows?.();
-        if (Array.isArray(alt)) list = alt;
-      else if (alt && alt.error && !err) err = alt.error;
-      } catch (e) {
-        if (!err) err = e?.message || String(e);
-      }
-    }
-    if (!list || list.length === 0) {
-      try {
-        const local = await window?.desktop?.listWindows?.();
-        if (Array.isArray(local)) list = local;
-        else if (local && local.error && !err) err = local.error;
-      } catch (e) {
-        if (!err) err = e?.message || String(e);
-      }
-    }
-    const sorted = Array.isArray(list) ? [...list]
-      .filter(w => w && (w.pid != null || w.id != null))
-      .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
-    setWindows(sorted);
-    setWinErr(sorted.length ? null : (err || "No windows were found."));
+  } catch (e) {
+    err = e?.message || String(e);
   }
 
-async function refreshPreview() {
+  // Try legacy alias exposed by preload for older UI code
+  if (!list || !list.length) {
     try {
-      const first = await window?.liveSetup?.readPreview?.();
-      const dbg =
-        (first && (first.capture || first.preprocessed || first.pre))
-          ? first
-          : (await window?.app?.getDebugImages?.()) ?? null;
-      setCapImg(dbg?.capture || null);
-      // helper might return "pre" or "preprocessed" depending on version
-      setPreImg(dbg?.preprocessed || dbg?.pre || null);
-    } catch {
-      setCapImg(null);
-      setPreImg(null);
+      const altLegacy = await window?.livesetup?.getWindows?.();
+      if (Array.isArray(altLegacy)) list = altLegacy;
+    } catch {}
+  }
+
+  // Optional extra: if you ever expose app.listWindows() in main
+  if (!list || !list.length) {
+    try {
+      const alt = await window?.app?.listWindows?.();
+      if (Array.isArray(alt)) list = alt;
+      else if (alt && alt.error && !err) err = alt.error;
+    } catch (e) {
+      if (!err) err = e?.message || String(e);
     }
   }
+
+  const sorted = Array.isArray(list) ? [...list]
+    .filter(w => w && (w.pid != null || w.id != null))
+    .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
+
+  setWindows(sorted);
+  setWinErr(sorted.length ? null : (err || "No windows were found."));
+}
+
+
+async function refreshPreview() {
+  try {
+    const first = await window?.liveSetup?.readPreview?.();
+
+    // Case A: preload returns a single dataUrl (our newer shape)
+    if (first?.dataUrl) {
+      setCapImg(first.dataUrl);
+      setPreImg(first.dataUrl);
+      return;
+    }
+
+    // Case B: preload/main returns named fields (older shape)
+    if (first && (first.capture || first.preprocessed || first.pre)) {
+      setCapImg(first.capture || null);
+      setPreImg(first.preprocessed || first.pre || null);
+      return;
+    }
+
+    // Case C: fall back to app.getDebugImages()
+    const dbg = await window?.app?.getDebugImages?.();
+    setCapImg(dbg?.capture || null);
+    setPreImg(dbg?.preprocessed || dbg?.pre || null);
+  } catch {
+    setCapImg(null);
+    setPreImg(null);
+  }
+}
 
 
 
@@ -658,8 +677,9 @@ useEffect(() => {
 async function saveSetup(close) {
   await (window?.liveSetup?.saveSettings?.({
     targetPid,
+    targetId,                  // <— new: string source id when PID is not available
     captureZoom,
-    ocrAggressiveness: 'balanced' // or your selected mode
+    ocrAggressiveness: 'balanced'
   }) ?? window?.app?.saveOcrSetup?.({ targetPid, captureZoom }));
 
   await refreshPreview();
@@ -674,26 +694,33 @@ async function saveSetup(close) {
       <label>Active Window</label>
       <div style={{ display:'flex', gap:8 }}>
         <select
-          className="input"
-          value={targetPid ?? ''}
-          onChange={(e)=> {
-            const v = e.target.value;
-            setTargetPid(v && !Number.isNaN(Number(v)) ? Number(v) : null);
-          }}
-          onFocus={loadWindows}
-          style={{ flex:1 }}
-        >
-          <option value="">— Auto Detect —</option>
-          {windows.map((w) => {
-            const id = w.pid ?? w.id;
-            return (
-              <option key={id} value={id}>
-                [{id}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
-              </option>
-            );
-          })}
-
-        </select>
+  className="input"
+  value={ (targetPid ?? targetId ?? '') }
+  onChange={(e) => {
+    const v = e.target.value;
+    // If it looks like a pure number, store as PID; otherwise store as string ID
+    const n = Number(v);
+    if (v && String(n) === v) {
+      setTargetPid(n);
+      setTargetId(null);
+    } else {
+      setTargetPid(null);
+      setTargetId(v || null);
+    }
+  }}
+  onFocus={loadWindows}
+  style={{ flex:1 }}
+>
+  <option value="">— Auto Detect —</option>
+  {windows.map((w) => {
+    const idForValue = (w.pid ?? w.id);
+    return (
+      <option key={idForValue} value={String(idForValue)}>
+        [{w.pid ?? w.id}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
+      </option>
+    );
+  })}
+</select>
         <button className="btn" onClick={loadWindows}>Rescan</button>
       </div>
       {winErr && <div className="label-muted">{winErr}</div>}
