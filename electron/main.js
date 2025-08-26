@@ -462,14 +462,14 @@ ipcMain.handle('live:read-preview', async () => {
   const pre = readFirst('last-pre.png');
 
   const res = {
-    capture: captureRes.data,
-    preprocessed: preRes.data,
-    dir: captureRes.dir || preRes.dir || localDir
+    capture: capture.data,
+    preprocessed: pre.data,
+    dir: capture.dir || pre.dir || localDir
   };
-  if (!captureRes.data || !preRes.data) {
+  if (!capture.data || !pre.data) {
     const errors = [];
-    if (!captureRes.data) errors.push('last-capture.png not found');
-    if (!preRes.data) errors.push('last-pre.png not found');
+    if (!capture.data) errors.push('last-capture.png not found');
+    if (!pre.data) errors.push('last-pre.png not found');
     res.error = errors.join('; ');
   }
   return res;
