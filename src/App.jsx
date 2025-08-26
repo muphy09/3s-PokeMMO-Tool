@@ -599,10 +599,10 @@ function LiveSetup({ onSaved }) {
       }
     }
     const sorted = Array.isArray(list) ? [...list]
-      .filter(w => w && w.pid)
+      .filter(w => w && (w.pid != null || w.id != null))
       .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
     setWindows(sorted);
-    setWinErr(sorted.length ? null : (err || "No windows can be found. Try running the Tool as Administrator."));
+    setWinErr(sorted.length ? null : (err || "No windows were found."));
   }
 
 async function refreshPreview() {
@@ -667,16 +667,22 @@ async function saveSetup(close) {
         <select
           className="input"
           value={targetPid ?? ''}
-          onChange={(e)=> setTargetPid(e.target.value ? Number(e.target.value) : null)}
+          onChange={(e)=> {
+            const v = e.target.value;
+            setTargetPid(v && !Number.isNaN(Number(v)) ? Number(v) : null);
+          }}
           onFocus={loadWindows}
           style={{ flex:1 }}
         >
           <option value="">— Auto Detect —</option>
-          {windows.map(w => (
-  <option key={w.pid} value={w.pid}>
-    [{w.pid}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
-  </option>
-))}
+          {windows.map((w) => {
+            const id = w.pid ?? w.id;
+            return (
+              <option key={id} value={id}>
+                [{id}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
+              </option>
+            );
+          })}
 
         </select>
         <button className="btn" onClick={loadWindows}>Rescan</button>

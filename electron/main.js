@@ -472,7 +472,7 @@ function readPreviewImages() {
   }
   
   const capture = readFirst('last-capture.png');
-  const pre = readFirst('last-pre.png');
+  const pre = readFirst(['last-pre.png', 'last-preview.png']);
 
   const res = {
     capture: capture.data,
@@ -483,7 +483,7 @@ function readPreviewImages() {
   if (!capture.data || !pre.data) {
     const errors = [];
     if (!capture.data) errors.push('last-capture.png not found');
-    if (!pre.data) errors.push('last-preview.png not found');
+    if (!pre.data) errors.push('last-pre.png/last-preview.png not found');
     res.error = errors.join('; ');
   }
   return res;
