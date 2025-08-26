@@ -590,184 +590,6 @@ function RegionPicker({ regions, value, onChange }) {
   );
 }
 
-/* ======================= NEW: Live OCR Setup Panel ======================= */
-function LiveSetup({ onSaved }) {
-  const [windows, setWindows] = useState([]);
-  const [winErr, setWinErr] = useState(null);
-  const [targetPid, setTargetPid] = useState(null);
-  const [captureZoom, setCaptureZoom] = useState(1.5);
-  const [capImg, setCapImg] = useState(null);
-  const [preImg, setPreImg] = useState(null);
-  const pollRef = useRef(null);
-  const [targetId, setTargetId] = useState(null);
-
-
-  async function loadWindows() {
-  let list = null;
-  let err = null;
-
-  try {
-    const first = await window?.liveSetup?.listWindows?.();
-    if (Array.isArray(first)) list = first;
-    else if (first && first.error) err = first.error;
-  } catch (e) {
-    err = e?.message || String(e);
-  }
-
-  // Try legacy alias exposed by preload for older UI code
-  if (!list || !list.length) {
-    try {
-      const altLegacy = await window?.livesetup?.getWindows?.();
-      if (Array.isArray(altLegacy)) list = altLegacy;
-    } catch {}
-  }
-
-  // Optional extra: if you ever expose app.listWindows() in main
-  if (!list || !list.length) {
-    try {
-      const alt = await window?.app?.listWindows?.();
-      if (Array.isArray(alt)) list = alt;
-      else if (alt && alt.error && !err) err = alt.error;
-    } catch (e) {
-      if (!err) err = e?.message || String(e);
-    }
-  }
-
-  const sorted = Array.isArray(list) ? [...list]
-    .filter(w => w && (w.pid != null || w.id != null))
-    .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];
-
-  setWindows(sorted);
-  setWinErr(sorted.length ? null : (err || "No windows were found."));
-}
-
-
-async function refreshPreview() {
-  try {
-    const first = await window?.liveSetup?.readPreview?.();
-
-    // Case A: preload returns a single dataUrl (our newer shape)
-    if (first?.dataUrl) {
-      setCapImg(first.dataUrl);
-      setPreImg(first.dataUrl);
-      return;
-    }
-
-    // Case B: preload/main returns named fields (older shape)
-    if (first && (first.capture || first.preprocessed || first.pre)) {
-      setCapImg(first.capture || null);
-      setPreImg(first.preprocessed || first.pre || null);
-      return;
-    }
-
-    // Case C: fall back to app.getDebugImages()
-    const dbg = await window?.app?.getDebugImages?.();
-    setCapImg(dbg?.capture || null);
-    setPreImg(dbg?.preprocessed || dbg?.pre || null);
-  } catch {
-    setCapImg(null);
-    setPreImg(null);
-  }
-}
-
-
-
-useEffect(() => {
-  let alive = true;
-
-  const kick = async () => {
-    await loadWindows();
-    await refreshPreview();
-  };
-
-  kick();
-
-  // refresh window list every 4s while the setup panel is open
-  const winTimer = setInterval(() => { if (alive) loadWindows(); }, 4000);
-  // refresh previews every 2s
-  pollRef.current = setInterval(() => { if (alive) refreshPreview(); }, 2000);
-
-  return () => {
-    alive = false;
-    clearInterval(winTimer);
-    if (pollRef.current) clearInterval(pollRef.current);
-  };
-}, []);
-
-
-async function saveSetup(close) {
-  await (window?.liveSetup?.saveSettings?.({
-    targetPid,
-    targetId,                  // <— new: string source id when PID is not available
-    captureZoom,
-    ocrAggressiveness: 'balanced'
-  }) ?? window?.app?.saveOcrSetup?.({ targetPid, captureZoom }));
-
-  await refreshPreview();
-  if (close) onSaved?.({ close: true });
-}
-
-
-
-  return (
-    <div className="surface" style={{ padding:12, marginBottom:12 }}>
-      <h3>Live OCR Setup</h3>
-      <label>Active Window</label>
-      <div style={{ display:'flex', gap:8 }}>
-        <select
-  className="input"
-  value={ (targetPid ?? targetId ?? '') }
-  onChange={(e) => {
-    const v = e.target.value;
-    // If it looks like a pure number, store as PID; otherwise store as string ID
-    const n = Number(v);
-    if (v && String(n) === v) {
-      setTargetPid(n);
-      setTargetId(null);
-    } else {
-      setTargetPid(null);
-      setTargetId(v || null);
-    }
-  }}
-  onFocus={loadWindows}
-  style={{ flex:1 }}
->
-  <option value="">— Auto Detect —</option>
-  {windows.map((w) => {
-    const idForValue = (w.pid ?? w.id);
-    return (
-      <option key={idForValue} value={String(idForValue)}>
-        [{w.pid ?? w.id}] {(w.processName || '').trim() || 'Process'} — {w.title || ''}
-      </option>
-    );
-  })}
-</select>
-        <button className="btn" onClick={loadWindows}>Rescan</button>
-      </div>
-      {winErr && <div className="label-muted">{winErr}</div>}
-
-      <label style={{ marginTop:10 }}>Capture Zoom ({captureZoom.toFixed(2)}×)</label>
-      <input type="range" min={1.0} max={2.0} step={0.05}
-             value={captureZoom}
-             onChange={(e)=> setCaptureZoom(parseFloat(e.target.value))} />
-
-      <div style={{ display:'flex', gap:8, marginTop:10 }}>
-        <button className="btn" onClick={()=>saveSetup(false)}>Confirm</button>
-        <button className="btn" onClick={()=>saveSetup(true)}>Save & Close</button>
-        <button className="btn" onClick={refreshPreview}>Refresh Preview</button>
-      </div>
-
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:12 }}>
-        <div><div>Capture</div>
-          {capImg ? <img src={capImg} style={{ maxWidth:'100%' }}/> : <div className="label-muted">No image</div>}
-        </div>
-        <div><div>Preprocessed</div>
-          {preImg ? <img src={preImg} style={{ maxWidth:'100%' }}/> : <div className="label-muted">No image</div>}
-        </div>
-      </div>
-    </div>
-  );
-}
 /* ======================= LIVE ROUTE PANEL ======================= */
 
 function LiveRoutePanel({ areasIndex }){
@@ -975,7 +797,6 @@ function App(){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
-  const [showSetup, setShowSetup] = useState(false);   // NEW: setup panel visible?
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -989,28 +810,8 @@ function App(){
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
   useEffect(() => { setShowRegionMenu(false); }, [mode]);
-  
-  // Auto-open setup on first run (no saved targetPid)
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const cfg =
-  (await window?.liveSetup?.getOcrSetup?.()) ??
-  (await window?.app?.getOcrSetup?.());
 
-        if (!alive) return;
-        if (!cfg || !cfg.targetPid) {
-          setMode('live');
-          setShowSetup(true);
-        }
-      } catch {}
-    })();
-    // wire Options menu → open-live-setup
-    const onOpen = () => { setMode('live'); setShowSetup(true); };
-    window.addEventListener('open-live-setup', onOpen);
-    return () => { alive = false; window.removeEventListener('open-live-setup', onOpen); };
-  }, []);
+// (Removed: legacy OCR setup auto-open)
 
   // Search by Pokémon
   const results = React.useMemo(() => {
@@ -1178,19 +979,9 @@ function App(){
             </>
           )}
 
-          {/* Live setup + panel */}
+          {/* Live route panel */}
           {mode==='live' && (
             <div style={{ marginTop:4 }}>
-              {showSetup && (
-                <LiveSetup
-                  onSaved={(evt)=>{
-                    // evt?.close means user clicked "Save & Close"
-                    if (evt?.close) setShowSetup(false);
-                    // Force live client to reconnect immediately
-                    try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail:{ reset:true } })); } catch {}
-                  }}
-                />
-              )}
               <LiveRoutePanel areasIndex={areasClean} />
             </div>
           )}

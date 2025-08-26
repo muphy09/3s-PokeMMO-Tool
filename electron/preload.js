@@ -11,7 +11,7 @@ const os   = require('os');
  * - App bridges: version, updates, reload, refresh, start/stop OCR
  * - Live OCR Setup bridges: listWindows/readPreview/saveSettings/getDebugImages
  * - File helpers (read/write/exists/list/delete) for UI flows that persist JSON or export assets
- * - Event forwarders: force-live-reconnect, open-live-setup
+ * - Event forwarders: force-live-reconnect
  * - First-run: ensures settings.json exists with sane defaults
  */
 
@@ -136,9 +136,6 @@ contextBridge.exposeInMainWorld('app', {
 
   // Events
   forceLiveReconnect: () => { try { ipcRenderer.send('live:force-reconnect'); } catch {} },
-
-  // Optional: request main to open setup panel (if you wired a Menu item/IPC)
-  openLiveSetup: () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
 });
 
 // ---------- Live setup bridges ----------
@@ -255,15 +252,9 @@ try {
     readPreview: (...args) => window.liveSetup.readPreview(...args),
     saveSettings: (...args) => window.liveSetup.saveSettings(...args),
     appDataDir:  (...args) => window.liveSetup.appDataDir(...args),
-    openLiveSetup: (...args) => window.app?.openLiveSetup?.(...args),
   };
   contextBridge.exposeInMainWorld('livesetup', compat); // note lowercase 's'
 } catch {}
-
-// ---------- Inbound events from main ----------
-ipcRenderer.on('open-live-setup', () => {
-  try { window.dispatchEvent(new Event('open-live-setup')); } catch {}
-});
 
 // ---------- First‑run guard: ensure settings.json + folders exist ----------
 (function ensureSettingsFile() {
