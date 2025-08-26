@@ -598,6 +598,15 @@ function LiveSetup({ onSaved }) {
         if (!err) err = e?.message || String(e);
       }
     }
+    if (!list || list.length === 0) {
+      try {
+        const local = await window?.desktop?.listWindows?.();
+        if (Array.isArray(local)) list = local;
+        else if (local && local.error && !err) err = local.error;
+      } catch (e) {
+        if (!err) err = e?.message || String(e);
+      }
+    }
     const sorted = Array.isArray(list) ? [...list]
       .filter(w => w && (w.pid != null || w.id != null))
       .sort((a, b) => (a.title || '').localeCompare(b.title || '')) : [];

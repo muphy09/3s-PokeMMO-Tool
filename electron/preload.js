@@ -162,13 +162,6 @@ async function listWindowsRobust() {
     if (Array.isArray(res) || (res && typeof res === 'object' && (res.error || res.ok))) break;
   }
 
-   if (!Array.isArray(res) || res.length === 0) {
-    try {
-      const sources = await desktopCapturer.getSources({ types: ['window'] });
-      res = sources.map(s => ({ id: s.id, title: s.name })).filter(w => w.id && w.title);
-    } catch { res = []; }
-  }
-
   if (Array.isArray(res)) {
     const normalized = res
       .map((w) => {
@@ -189,6 +182,27 @@ async function listWindowsRobust() {
   }
 
   return { error: 'Unknown result from list-windows' };
+}
+
+async function listDesktopSources() {
+  try {
+    const sources = await desktopCapturer.getSources({ types: ['window'] });
+    return sources.map((src) => {
+      const id = src.id || null;
+      const title = src.name || '';
+      let pid = null;
+      if (id) {
+        const parts = String(id).split(':');
+        if (parts.length >= 2) {
+          const maybe = parseInt(parts[1], 10);
+          if (!Number.isNaN(maybe)) pid = maybe;
+        }
+      }
+      return { id, pid, title };
+    }).filter(w => w.title);
+  } catch (e) {
+    return { error: e?.message || String(e) };
+  }
 }
 
 // Expose the modern API
@@ -223,6 +237,13 @@ contextBridge.exposeInMainWorld('liveSetup', {
     // Use read-preview response when available to discover where captures live
     const r = await invokeSafe('live:read-preview', undefined, null);
     return r?.dir || pokeLiveDir;
+  },
+});
+
+contextBridge.exposeInMainWorld('desktop', {
+  listWindows: async () => {
+    try { return await listDesktopSources(); }
+    catch (e) { return { error: e?.message || String(e) }; }
   },
 });
 

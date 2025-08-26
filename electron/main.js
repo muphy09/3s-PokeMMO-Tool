@@ -1,6 +1,6 @@
 // ===== Core requires =====
 
-const { app, BrowserWindow, ipcMain, Menu, shell, desktopCapturer, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -134,28 +134,6 @@ public class WinEnum {
 
   let list = await psSimple();
   if (!list.length) list = await psEnumWin32();
-
- // Fallback: use Electron's desktopCapturer if PowerShell paths fail
-  if (!list.length) {
-    try {
-      const sources = await desktopCapturer.getSources({ types: ['window'] });
-      list = sources.map((src) => {
-        const id = src.id || null;
-        const title = src.name || '';
-        let pid = null;
-        if (id) {
-          const parts = String(id).split(':');
-          if (parts.length >= 2) {
-            const maybe = parseInt(parts[1], 10);
-            if (!Number.isNaN(maybe)) pid = maybe;
-          }
-        }
-        return { id, pid, title, processName: '' };
-      }).filter(w => w.title);
-    } catch (e) {
-      log('desktopCapturer list failed', e?.message || e);
-    }
-  }
 
   // de-dup + prefer PokeMMO entries first
   const uniq = new Map();
