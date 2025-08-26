@@ -807,7 +807,6 @@ function App(){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
-  const [showPatchNotes, setShowPatchNotes] = useState(false);
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -948,8 +947,6 @@ function App(){
         <PatchNotesButton />
         <OptionsMenu />
       </div>
-
-      <PatchNotesModal open={showPatchNotes} onClose={() => setShowPatchNotes(false)} />
 
       <div className="container">
         {/* Header */}

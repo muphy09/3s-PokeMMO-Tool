@@ -1,7 +1,8 @@
 import React from 'react';
 
 export function openPatchNotes() {
-  window.open(`${import.meta.env.BASE_URL}patchnotes.html`, 'patch-notes', 'width=900,height=600');
+  const url = new URL('patchnotes.html', window.location.href);
+  window.open(url.toString(), 'patch-notes', 'width=900,height=600');
 }
 
 export default function PatchNotesButton() {

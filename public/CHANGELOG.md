@@ -1,19 +1,55 @@
 # Changelog
 
-All notable changes to **Pokemmo Tool** will be documented in this file.  
+All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
-## [1.6.8] - 2025-08
+## [1.8.0] - 2025-08
 ### Added
-- **Fixed Liveroute OCR not starting** – LiveRoute now properly starts as intended.
+  - **Overhaul of the OCR (capture tool for route display)**
+      - Broader OCR active window selection
+        - Now uses a number of factors to determine which window is the correct PokeMMO window. PokeMMO window must be focused to have data update.
+      - Support for most UI Scales
+        - OCR will now attempted to magnify the route capture if it appears too small, and continue to loop until a useable route can be found. This should help pull data for most UI scale sizes.
+      - Windowed Mode Support
+        - OCR will now correctly target the route in a Windowed screen.
+       
+  - **Region Selection Filter**
+      - Added dropdown in the 'Areas' tab to filter between regions
+
+  - **Patch Notes Button**
+      - Added a button so you'll never miss the juice
+   
+  - **View Pokemon from the Live Tab**
+      - Added an option to "View" a Pokemon directly out of the Live tab. 
+ 
+### Fixed
+- **OCR "jitter" has been drastically reduced**
+     - OCR now uses a combination of factors to minimize the jitter of detecting a route & no_route experienced before.
+     - Route data is temporarily stored and pushed to user until a deterministic difference can be identified. It then references the local database for a known route location, if it matches, it updates.
+     - OCR has improved filtering of artifacts when moving through screens that make it hard to read what the route says.
+- **Route Search Keyword Mistmatch**
+     - Better hadnling of route names between regions and how keywords filter these names.
+
+---
+
+## [1.7.1] - 2025-08
+### Fixed
+  - Unintentional app break, app install now works again.
+  - Blank app window issue resolved after packaging.
+    
+---
+
+## [1.6.8] - 2025-08
+### Fixed
+  - Liveroute OCR not starting – LiveRoute now properly starts as intended.
 
 ---
 
 ## [1.6.0] - 2025-08
 ### Added
-- **Auto-Updater** – users can check for updates directly from the app.  
-- **Check for Updates** button added to settings.  
+  - **Auto-Updater** – users can check for updates directly from the app.  
+  - **Check for Updates** button added to settings.  
 
 ### Fixed
 - LiveRouteOCR files now correctly packaged with the app, ensuring the **Live Tab** connects without manual file copying.  
