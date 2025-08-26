@@ -66,14 +66,12 @@ jobs:
           if ($exe) { Write-Host "Found packaged folder exe: $($exe.FullName)" }
 
       - name: Create/Update GitHub Release and upload
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1
         with:
-          files: |
-            release/**/*.exe
-            release/**/*.msi
-            release/**/*.zip
-            release/**/*.yml
-            release/**/*.blockmap
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: "release/**/*.exe,release/**/*.zip,release/**/*.yml,release/**/*.blockmap"
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
