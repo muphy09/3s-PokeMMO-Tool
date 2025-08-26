@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **3's Pokemmo Tool** will be documented in this file.  
+All notable changes to **Pokemmo Tool** will be documented in this file.  
 This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
         - OCR will now attempted to magnify the route capture if it appears too small, and continue to loop until a useable route can be found. This should help pull data for most UI scale sizes.
       - Windowed Mode Support
         - OCR will now correctly target the route in a Windowed screen.
+       
+  - **Pokemon Moveset Data**
+      - Some Pokemon have been updated to include moveset data and egg groups.
+          - This lays down groundwork for a full moveset and data implementation.
        
   - **Region Selection Filter**
       - Added dropdown in the 'Areas' tab to filter between regions
