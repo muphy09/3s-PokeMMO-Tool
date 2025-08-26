@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function PatchNotesButton() {
+export default function PatchNotesButton({ onOpen }) {
   const btnStyle = {
     padding: '6px 10px',
     borderRadius: 10,
@@ -12,13 +12,8 @@ export default function PatchNotesButton() {
     boxShadow: '0 4px 16px rgba(0,0,0,.3)'
   };
 
-  function openNotes() {
-    const url = `${import.meta.env.BASE_URL}patchnotes.html`;
-    window.open(url, '_blank');
-  }
-
   return (
-    <button style={btnStyle} onClick={openNotes} title="Patch Notes">
+    <button style={btnStyle} onClick={onOpen} title="Patch Notes">
       Patch Notes
     </button>
   );

@@ -4,6 +4,7 @@ import rawDex from './pokedex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton from './components/PatchNotesButton.jsx';
+import PatchNotesModal from './components/PatchNotesModal.jsx';
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
@@ -593,7 +594,7 @@ function RegionPicker({ regions, value, onChange }) {
 
 /* ======================= LIVE ROUTE PANEL ======================= */
 
-function LiveRoutePanel({ areasIndex }){
+function LiveRoutePanel({ areasIndex, onViewMon }){
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(null);
   const [displayMap, setDisplayMap] = useState(null);
@@ -717,7 +718,7 @@ function LiveRoutePanel({ areasIndex }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window.
+          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window and be patient on first boot.
         </div>
       )}
 
@@ -754,6 +755,14 @@ function LiveRoutePanel({ areasIndex }){
                         {g.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} />)}
                       </div>
                     </div>
+                    {mon && (
+                      <button
+                        className="btn"
+                        style={{ padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }}
+                        onClick={() => onViewMon && onViewMon(mon)}
+                        title="Open Pokémon"
+                      >View</button>
+                    )}
                   </div>
                 );
               })}
@@ -798,6 +807,7 @@ function App(){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
+  const [showPatchNotes, setShowPatchNotes] = useState(false);
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -811,6 +821,22 @@ function App(){
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
   useEffect(() => { setShowRegionMenu(false); }, [mode]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const current = await window.app?.getVersion?.().catch(() => null);
+        if (current) {
+          const last = localStorage.getItem('last-version');
+          if (last !== current) {
+            setShowPatchNotes(true);
+            localStorage.setItem('last-version', current);
+          }
+        }
+      } catch (err) {
+        console.error('Version check failed', err);
+      }
+    })();
+  }, []);
 
 // (Removed: legacy OCR setup auto-open)
 
@@ -919,9 +945,11 @@ function App(){
     <>
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
-        <PatchNotesButton />
+        <PatchNotesButton onOpen={() => setShowPatchNotes(true)} />
         <OptionsMenu />
       </div>
+
+      <PatchNotesModal open={showPatchNotes} onClose={() => setShowPatchNotes(false)} />
 
       <div className="container">
         {/* Header */}
@@ -986,7 +1014,10 @@ function App(){
           {/* Live route panel */}
           {mode==='live' && (
             <div style={{ marginTop:4 }}>
-              <LiveRoutePanel areasIndex={areasClean} />
+              <LiveRoutePanel
+                areasIndex={areasClean}
+                onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}
+              />
             </div>
           )}
 
