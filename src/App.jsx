@@ -765,32 +765,41 @@ function LiveRoutePanel({ areasIndex }){
       const coerced = coerceIncoming(msg);
       if (!coerced) return;
 
-      const cleaned = normalizeHudText(coerced.routeText);
+      let cleaned = normalizeHudText(coerced.routeText);
       if (DEBUG_LIVE) console.log('[LIVE] OCR raw:', coerced.routeText, '→ cleaned:', cleaned);
+
+      // Try to match against known locations; if that fails, strip a
+      // short leading token (artifact like "R" or "Bi") and try again.
+      let best = findBestMapName(cleaned, areasIndex);
+      if (!best) {
+        const noPrefix = cleaned.replace(/^[A-Za-z]{1,2}\s+(?=[A-Za-z])/, '');
+        if (noPrefix !== cleaned) {
+          const retry = findBestMapName(noPrefix, areasIndex);
+          if (retry) { cleaned = noPrefix; best = retry; }
+        }
+      }
+
+      // If still no valid map, ignore this update to avoid jitter
+      if (!best) return;
 
       setRawText(cleaned);
       setConfidence(Number(coerced.confidence || 0));
 
-      const best = findBestMapName(cleaned, areasIndex);
-      if (!best){
-        setDisplayMap(null); setRegion(null); setEntries([]); setRegionChoices([]);
-      } else {
-        const targetName = best.displayMap;
+      const targetName = best.displayMap;
 
         const choices = listRegionCandidates(areasIndex, targetName);
         setRegionChoices(choices);
 
         // choose region: saved pref → best → first choice
         const prefKey = `regionPref:${targetName}`;
-        let picked = localStorage.getItem(prefKey);
-        if (picked && !choices.includes(picked)) picked = null;
-        const chosen = picked || best.region || choices[0] || null;
+      let picked = localStorage.getItem(prefKey);
+      if (picked && !choices.includes(picked)) picked = null;
+      const chosen = picked || best.region || choices[0] || null;
 
         setRegion(chosen);
-        setDisplayMap(targetName);
-        setEntries(buildGroupedEntries(areasIndex, targetName, chosen));
-      }
-    });
+      setDisplayMap(targetName);
+      setEntries(buildGroupedEntries(areasIndex, targetName, chosen));
+      });
 
     liveRouteClient.connect();
 
