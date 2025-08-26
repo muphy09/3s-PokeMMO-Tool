@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
  *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
-export default function OptionsMenu() {
+export default function OptionsMenu({ style = {} }) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
@@ -104,7 +104,7 @@ export default function OptionsMenu() {
   };
 
   return (
-    <div ref={menuRef} style={{ position: "fixed", top: 10, right: 12, zIndex: 9999 }}>
+    <div ref={menuRef} style={{ position: "relative", ...style }}>
       <button
         style={btnStyle}
         onClick={() => setOpen((v) => !v)}

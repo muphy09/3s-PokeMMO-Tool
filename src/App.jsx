@@ -3,6 +3,7 @@ import './index.css';
 import rawDex from './pokedex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
+import PatchNotesButton from './components/PatchNotesButton.jsx';
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
@@ -917,7 +918,10 @@ function App(){
   return (
     <>
       {/* App-wide overlay controls (top-right) */}
-      <OptionsMenu />
+      <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
+        <PatchNotesButton />
+        <OptionsMenu />
+      </div>
 
       <div className="container">
         {/* Header */}
