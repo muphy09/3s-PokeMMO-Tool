@@ -311,7 +311,7 @@ class LiveRouteOCR
 
     static async Task PeriodicRebroadcastLoop(CancellationToken ct)
     {
-        const int intervalMs = 8000;
+        const int intervalMs = 2000;
         while (!ct.IsCancellationRequested)
         {
             try
@@ -321,7 +321,7 @@ class LiveRouteOCR
                 lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConfPct; lastTicks = LastBroadcastTicks; }
                 if (string.IsNullOrWhiteSpace(emit)) continue;
 
-                if ((DateTime.UtcNow - new DateTime(lastTicks, DateTimeKind.Utc)).TotalSeconds >= 7)
+                if ((DateTime.UtcNow - new DateTime(lastTicks, DateTimeKind.Utc)).TotalSeconds >= 1)
                 {
                     foreach (var ws in Clients.Keys)
                     {

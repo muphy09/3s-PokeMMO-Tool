@@ -43,7 +43,7 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' },
-  viewBtn: { padding:'6px 10px', border:'1px solid var(--divider)', borderRadius:8, background:'rgba(255,255,255,0.06)', color:'var(--text)', cursor:'pointer' }
+  viewBtn: { padding:'6px 10px', border:'1px solid #2b2b2b', borderRadius:8, background:'#1a1a1a', cursor:'pointer' }
 };
 
 /* ---------- utils ---------- */
@@ -718,7 +718,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window and be patient on first boot.
+          <b>LiveRouteOCR</b> is attempting to find Route Data. Focus your PokeMMO window. Move around a bit or adjust your UI scaling if it still can't find the route.
         </div>
       )}
 
@@ -1074,7 +1074,7 @@ function App(){
                             <button
                               className="btn"
                               style={styles.viewBtn}
-                              onClick={() => setSelected(mon)}
+                              onClick={() => { setSelected(mon); setMode('pokemon'); }}
                               title="Open Pokémon"
                             >View</button>
                           )}
