@@ -1,32 +1,36 @@
+// electron/preload.js
 /* eslint-disable no-undef */
 const { contextBridge, ipcRenderer, shell, desktopCapturer } = require('electron');
 const fs   = require('fs');
 const path = require('path');
 const os   = require('os');
 
-/** =========================================================================
- *  PRELOAD — COMPLETE BRIDGE (with robust window listing + preview fallback)
- *  - Keeps your existing surface: paths, files, app, liveSetup (+ compat alias)
- *  - listWindows(): IPC-first, then desktopCapturer fallback; normalizes shape
- *  - readPreview(): IPC-first, then last-preview.png / last-capture.png fallback
- *  - Includes a fingerprint so you can verify this exact file is running
- * ========================================================================= */
-console.log('[PRELOAD ACTIVE]', __filename);
+/**
+ * COMPLETE PRELOAD BRIDGE
+ * - Stable paths shared with the OCR helper (LocalAppData\PokemmoLive)
+ * - App bridges: version, updates, reload, refresh, start/stop OCR
+ * - Live OCR Setup bridges: listWindows/readPreview/saveSettings/getDebugImages
+ * - File helpers (read/write/exists/list/delete) for UI flows that persist JSON or export assets
+ * - Event forwarders: force-live-reconnect, open-live-setup
+ * - First-run: ensures settings.json exists with sane defaults
+ */
 
-/* ---------- Paths ---------- */
+// ---------- Paths ----------
 const isWin = process.platform === 'win32';
-const localAppData =
-  (isWin && process.env.LOCALAPPDATA)
-    ? process.env.LOCALAPPDATA
-    : path.join(os.homedir(), isWin ? 'AppData\\Local' : '.config');
+const localAppData = (() => {
+  if (isWin && process.env.LOCALAPPDATA) return process.env.LOCALAPPDATA;
+  // Cross‑platform fallback: ~/.config/PokemmoLive
+  return path.join(os.homedir(), '.config');
+})();
 
 const pokeLiveDir   = path.join(localAppData, 'PokemmoLive');
 const settingsPath  = path.join(pokeLiveDir, 'settings.json');
 const lastCapPath   = path.join(pokeLiveDir, 'last-capture.png');
 const lastPrePath   = path.join(pokeLiveDir, 'last-preview.png');
+const lastPreAlt    = path.join(pokeLiveDir, 'last-pre.png');
 const tessdataDir   = path.join(pokeLiveDir, 'tessdata');
 
-/* ---------- Helpers ---------- */
+// ---------- Helpers ----------
 function ensureDir(dir) {
   try { fs.mkdirSync(dir, { recursive: true }); } catch {}
 }
@@ -58,6 +62,7 @@ function clampZoom(v, def = 1.5) {
 }
 function getLocalSetupDefaults() {
   return {
+    // live window target + capture settings
     targetPid: null,
     targetId: null,
     targetTitle: '',
@@ -66,17 +71,29 @@ function getLocalSetupDefaults() {
   };
 }
 
-/* ---------- Files API (for your UI flows) ---------- */
+// ---------- Local file API exposed to UI ----------
 const fileApi = {
   exists: (p) => { try { return fs.existsSync(p); } catch { return false; } },
-  readFile: (p, enc = 'utf8') => { try { return fs.readFileSync(p, enc); } catch { return null; } },
-  writeFile: (p, data, enc = 'utf8') => { try { ensureDir(path.dirname(p)); fs.writeFileSync(p, data ?? '', enc); return true; } catch { return false; } },
-  readText: (p) => { try { return fs.readFileSync(p, 'utf8'); } catch { return null; } },
-  writeText: (p, text) => { try { ensureDir(path.dirname(p)); fs.writeFileSync(p, text ?? '', 'utf8'); return true; } catch { return false; } },
+  readFile: (p, enc = 'utf8') => {
+    try { return fs.readFileSync(p, enc); } catch { return null; }
+  },
+  writeFile: (p, data, enc = 'utf8') => {
+    try { ensureDir(path.dirname(p)); fs.writeFileSync(p, data ?? '', enc); return true; } catch { return false; }
+  },
+  readText: (p) => {
+    try { return fs.readFileSync(p, 'utf8'); } catch { return null; }
+  },
+  writeText: (p, text) => {
+    try { ensureDir(path.dirname(p)); fs.writeFileSync(p, text ?? '', 'utf8'); return true; } catch { return false; }
+  },
   readJSON: (p, fallback = null) => readJSON(p, fallback),
   writeJSON: (p, obj) => writeJSON(p, obj),
-  listDir: (dir) => { try { return fs.readdirSync(dir).map(name => ({ name, path: path.join(dir, name) })); } catch { return []; } },
-  deleteFile: (p) => { try { if (fs.existsSync(p)) fs.unlinkSync(p); return true; } catch { return false; } },
+  listDir: (dir) => {
+    try { return fs.readdirSync(dir).map(name => ({ name, path: path.join(dir, name) })); } catch { return []; }
+  },
+  deleteFile: (p) => {
+    try { if (fs.existsSync(p)) fs.unlinkSync(p); return true; } catch { return false; }
+  },
   makeDir: (dir) => { try { ensureDir(dir); return true; } catch { return false; } },
   join: (...p) => path.join(...p),
   resolve: (...p) => path.resolve(...p),
@@ -84,98 +101,94 @@ const fileApi = {
   dirname: (p) => path.dirname(p),
 };
 
-/* ---------- Expose constants + file helpers ---------- */
+// ---------- Expose constants/paths ----------
 contextBridge.exposeInMainWorld('paths', {
-  localAppData, pokeLiveDir, settingsPath, lastCapPath, lastPrePath, tessdataDir,
+  localAppData,
+  pokeLiveDir,
+  settingsPath,
+  lastCapPath,
+  lastPrePath,
+  tessdataDir,
 });
 contextBridge.exposeInMainWorld('files', fileApi);
 
-/* ---------- App-level bridges you already use ---------- */
+// ---------- App‑level bridges ----------
 contextBridge.exposeInMainWorld('app', {
-  // App meta / updates
+  // App base
   getVersion:    () => invokeSafe('get-version', undefined, null),
   checkUpdates:  () => invokeSafe('check-updates', undefined, { status: 'error', message: 'IPC unavailable' }),
-
-  // Control
   reloadOCR:     (options) => invokeSafe('reload-ocr', options, true),
   refreshApp:    () => invokeSafe('refresh-app', undefined, (location.reload(), true)),
+
+  // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),
   stopOCR:       () => invokeSafe('stop-ocr', undefined, true),
 
-  // Saved setup + debug
+  // Persisted setup + debug
   getOcrSetup:    () => invokeSafe('live:get-setup', undefined, null),
   saveOcrSetup:   (setup) => invokeSafe('live:save-setup', setup, false),
   getDebugImages: () => invokeSafe('live:get-debug-images', undefined, []),
+  listWindows:    () => invokeSafe('app:list-windows', undefined, []),
 
-  // Shell helpers
+  // Misc
   revealInFolder: (p) => { try { shell.showItemInFolder(p); } catch {} },
   openExternal:   (url) => { try { shell.openExternal(url); } catch {} },
 
-  // Misc events
+  // Events
   forceLiveReconnect: () => { try { ipcRenderer.send('live:force-reconnect'); } catch {} },
-  openLiveSetup:      () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
+
+  // Optional: request main to open setup panel (if you wired a Menu item/IPC)
+  openLiveSetup: () => { try { ipcRenderer.send('menu:open-live-setup'); } catch {} },
 });
 
-/* ---------- Live Setup: windows, preview, settings ---------- */
-// 1) IPC fetchers (support multiple channel names across versions)
-async function listWindowsViaIPC() {
+// ---------- Live setup bridges ----------
+/**
+ * Robust listWindows:
+ *  - Tries multiple IPC channels for compatibility with older/newer main.js versions
+ *  - Normalizes different shapes: {id,name}, {pid,title}, {windowTitle,processId}, etc.
+ */
+async function listWindowsRobust() {
   const tryChannels = [
     'live:list-windows',
     'app:list-windows',
     'live:listWindows',
     'app:listWindows',
   ];
+
+  let res = null;
   for (const ch of tryChannels) {
     // eslint-disable-next-line no-await-in-loop
-    const res = await invokeSafe(ch, undefined, null);
-    if (Array.isArray(res)) return res;
-    if (res && typeof res === 'object' && res.error) throw new Error(res.error);
+    res = await invokeSafe(ch, undefined, null);
+    if (Array.isArray(res) || (res && typeof res === 'object' && (res.error || res.ok))) break;
   }
-  return null;
-}
 
-// 2) Fallback using desktopCapturer from preload (no main wiring required)
-async function listWindowsViaDesktopCapturer() {
-  try {
-    const sources = await desktopCapturer.getSources({
-      types: ['window'],
-      thumbnailSize: { width: 0, height: 0 },
-      fetchWindowIcons: false,
-    });
-    return sources.map(src => ({
-      id: src.id ?? null,
-      title: src.name ?? '',
-      pid: null, // capturer doesn't expose PID
-    })).filter(w => (w.id || w.pid) && w.title);
-  } catch (e) {
-    console.warn('desktopCapturer.getSources failed', e);
-    return [];
+   if (!Array.isArray(res) || res.length === 0) {
+    try {
+      const sources = await desktopCapturer.getSources({ types: ['window'] });
+      res = sources.map(s => ({ id: s.id, title: s.name })).filter(w => w.id && w.title);
+    } catch { res = []; }
   }
-}
 
-// 3) Normalize shapes so UI filters stop throwing entries away
-function normalizeWindows(arr) {
-  return (arr || []).map(w => {
-    if (!w) return null;
-    const pid   = w.pid ?? w.processId ?? null;
-    const id    = w.id ?? w.sourceId ?? null;
-    const title = w.title ?? w.name ?? w.windowTitle ?? w.processName ?? '';
-    if ((!pid && !id) || !title) return null;
-    return { pid, id, title };
-  }).filter(Boolean);
-}
-
-// 4) Robust aggregator
-async function listWindowsRobust() {
-  try {
-    const viaIPC = await listWindowsViaIPC();
-    if (Array.isArray(viaIPC) && viaIPC.length) return normalizeWindows(viaIPC);
-  } catch (e) {
-    console.warn('listWindowsViaIPC error', e?.message || e);
+  if (Array.isArray(res)) {
+    const normalized = res
+      .map((w) => {
+        if (!w) return null;
+        const pid   = w.pid ?? w.processId ?? null;
+        const id    = w.id ?? w.sourceId ?? null; // desktopCapturer uses id
+        const title = w.title ?? w.name ?? w.windowTitle ?? w.processName ?? '';
+        // Keep items if at least one identifier and a label exist
+        if ((!pid && !id) || !title) return null;
+        return { pid, id, title };
+      })
+      .filter(Boolean);
+    return normalized;
   }
-  const viaCap = await listWindowsViaDesktopCapturer();
-  if (viaCap.length) return normalizeWindows(viaCap);
-  return [];
+
+  if (res && typeof res === 'object' && res.error) {
+    return { error: res.error };
+  }
+
+  return { error: 'Unknown result from list-windows' };
 }
 
 // Expose the modern API
@@ -185,64 +198,71 @@ contextBridge.exposeInMainWorld('liveSetup', {
     catch (e) { return { error: e?.message || String(e) }; }
   },
 
-  // Prefer IPC; if nothing, expose a simple local fallback for your UI
   readPreview: async () => {
-    const r = await invokeSafe('live:read-preview', undefined, null);
-    if (r && r.file && fs.existsSync(r.file)) {
-      return { ...r, dataUrl: fileToDataUrl(r.file) };
-    }
-    if (fs.existsSync(lastPrePath)) {
-      return { file: lastPrePath, dir: pokeLiveDir, dataUrl: fileToDataUrl(lastPrePath) };
-    }
-    if (fs.existsSync(lastCapPath)) {
-      return { file: lastCapPath, dir: pokeLiveDir, dataUrl: fileToDataUrl(lastCapPath) };
-    }
-    return null;
+    // main returns { capture?, preprocessed?, dir, error? }
+    const viaMain = await invokeSafe('live:read-preview', undefined, null);
+    if (viaMain && (viaMain.capture || viaMain.preprocessed || viaMain.pre)) return viaMain;
+
+    const capture = fileToDataUrl(lastCapPath);
+    const pre = fileToDataUrl(lastPrePath) || fileToDataUrl(lastPreAlt);
+    const res = { capture, preprocessed: pre, dir: pokeLiveDir };
+    if (!capture || !pre) res.error = 'Preview images not found';
+    return res;
   },
 
   saveSettings: async (settings) => {
-    const toSave = { ...settings, captureZoom: clampZoom(settings?.captureZoom) };
+    // normalize and clamp
+    const toSave = {
+      ...settings,
+      captureZoom: clampZoom(settings?.captureZoom),
+    };
     return await invokeSafe('live:save-settings', toSave, false);
   },
 
   appDataDir: async () => {
+    // Use read-preview response when available to discover where captures live
     const r = await invokeSafe('live:read-preview', undefined, null);
     return r?.dir || pokeLiveDir;
   },
 });
 
-/* ---------- Back-compat alias (older UI expects window.livesetup.getWindows) ---------- */
+// ---------- Back‑compat aliases (old UI calls window.livesetup.getWindows()) ----------
 try {
   const compat = {
     listWindows: (...args) => window.liveSetup.listWindows(...args),
-    getWindows:  (...args) => window.liveSetup.listWindows(...args),
+    getWindows:  (...args) => window.liveSetup.listWindows(...args), // alias for legacy calls
     readPreview: (...args) => window.liveSetup.readPreview(...args),
     saveSettings: (...args) => window.liveSetup.saveSettings(...args),
     appDataDir:  (...args) => window.liveSetup.appDataDir(...args),
     openLiveSetup: (...args) => window.app?.openLiveSetup?.(...args),
   };
-  contextBridge.exposeInMainWorld('livesetup', compat);
+  contextBridge.exposeInMainWorld('livesetup', compat); // note lowercase 's'
 } catch {}
 
-/* ---------- Inbound events from main ---------- */
+// ---------- Inbound events from main ----------
 ipcRenderer.on('open-live-setup', () => {
   try { window.dispatchEvent(new Event('open-live-setup')); } catch {}
 });
 
-/* ---------- First-run guard (ensure folders + settings.json) ---------- */
+// ---------- First‑run guard: ensure settings.json + folders exist ----------
 (function ensureSettingsFile() {
   try {
     ensureDir(pokeLiveDir);
     ensureDir(tessdataDir);
     if (!fs.existsSync(settingsPath)) {
-      writeJSON(settingsPath, getLocalSetupDefaults());
+      const def = getLocalSetupDefaults();
+      writeJSON(settingsPath, def);
     }
   } catch {}
 })();
 
-/* ---------- Optional tiny debug surface ---------- */
+// ---------- Optional dev visibility helpers ----------
 contextBridge.exposeInMainWorld('debugPreload', {
-  ping: () => 'pong:' + __filename,
-  file: () => __filename,
-  electron: () => process.versions.electron,
+  ping: () => 'pong',
+  hasSettings: () => fs.existsSync(settingsPath),
+  peekSettings: () => readJSON(settingsPath, {}),
+  peekImages: () => ({
+    captureExists: fs.existsSync(lastCapPath),
+    preExists: fs.existsSync(lastPrePath) || fs.existsSync(lastPreAlt),
+  }),
 });
