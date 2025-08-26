@@ -127,6 +127,7 @@ contextBridge.exposeInMainWorld('app', {
   getOcrSetup:    () => invokeSafe('live:get-setup', undefined, null),
   saveOcrSetup:   (setup) => invokeSafe('live:save-setup', setup, false),
   getDebugImages: () => invokeSafe('live:get-debug-images', undefined, []),
+  listWindows:    () => invokeSafe('app:list-windows', undefined, []),
 
   // Misc
   revealInFolder: (p) => { try { shell.showItemInFolder(p); } catch {} },
