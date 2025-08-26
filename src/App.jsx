@@ -417,6 +417,27 @@ function findBestMapName(hudText, areasIndex){
   return null;
 }
 
+/**
+ * Given raw HUD text, strip any leading garbage and try to locate a
+ * known map name.  Returns { cleaned, best } where `cleaned` is the
+ * matched substring and `best` is the map match (or null).
+ */
+function findBestMapInText(text, areasIndex){
+  const words = String(text).split(/\s+/);
+  let bestMatch = null;
+  let bestClean = text;
+  let bestScore = -1;
+  for (let i = 0; i < words.length; i++) {
+    const candidate = words.slice(i).join(' ');
+    const match = findBestMapName(candidate, areasIndex);
+    if (match) {
+      const s = scoreNames(aliasKey(match.rawMap), aliasKey(candidate));
+      if (s > bestScore) { bestScore = s; bestMatch = match; bestClean = candidate; }
+    }
+  }
+  return { cleaned: bestClean, best: bestMatch };
+}
+
 /* ---------- Region candidates + helpers ---------- */
 function listRegionCandidates(areasIndex, displayMap){
   const out = [];
@@ -768,19 +789,9 @@ function LiveRoutePanel({ areasIndex }){
       let cleaned = normalizeHudText(coerced.routeText);
       if (DEBUG_LIVE) console.log('[LIVE] OCR raw:', coerced.routeText, '→ cleaned:', cleaned);
 
-      // Try to match against known locations; if that fails, strip a
-      // short leading token (artifact like "R" or "Bi") and try again.
-      let best = findBestMapName(cleaned, areasIndex);
-      if (!best) {
-        const noPrefix = cleaned.replace(/^[A-Za-z]{1,2}\s+(?=[A-Za-z])/, '');
-        if (noPrefix !== cleaned) {
-          const retry = findBestMapName(noPrefix, areasIndex);
-          if (retry) { cleaned = noPrefix; best = retry; }
-        }
-      }
-
-      // If still no valid map, ignore this update to avoid jitter
-      if (!best) return;
+      const { cleaned: trimmed, best } = findBestMapInText(cleaned, areasIndex);
+      if (!best) return; // ignore noisy frames
+      cleaned = trimmed;
 
       setRawText(cleaned);
       setConfidence(Number(coerced.confidence || 0));
@@ -791,12 +802,12 @@ function LiveRoutePanel({ areasIndex }){
         setRegionChoices(choices);
 
         // choose region: saved pref → best → first choice
-        const prefKey = `regionPref:${targetName}`;
+      const prefKey = `regionPref:${targetName}`;
       let picked = localStorage.getItem(prefKey);
       if (picked && !choices.includes(picked)) picked = null;
       const chosen = picked || best.region || choices[0] || null;
 
-        setRegion(chosen);
+      setRegion(chosen);
       setDisplayMap(targetName);
       setEntries(buildGroupedEntries(areasIndex, targetName, chosen));
       });
