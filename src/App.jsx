@@ -889,7 +889,10 @@ function App(){
   useEffect(() => { document.title = APP_TITLE; }, []);
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
-  useEffect(() => { setShowRegionMenu(false); }, [mode]);
+  useEffect(() => {
+    setShowRegionMenu(false);
+    if (mode !== 'pokemon') setSelected(null);
+  }, [mode]);
   useEffect(() => {
     (async () => {
       try {
@@ -1174,7 +1177,7 @@ function App(){
         </div>
 
         {/* Detail Panel (Pokémon) */}
-        {mode!=='live' && resolved && (
+        {mode==='pokemon' && resolved && (
           <div className="grid">
             {/* Left: Pokémon card */}
             <div style={styles.card}>
