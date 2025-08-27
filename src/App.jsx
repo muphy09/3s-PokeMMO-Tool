@@ -203,6 +203,22 @@ function EggGroupPill({ group }){
     }}>{titleCase(key)}</span>
   );
 }
+
+function AbilityPill({ label, name }){
+  if (!name) return null;
+  return (
+    <div style={{
+      display:'flex', alignItems:'center', gap:6,
+      padding:'4px 8px',
+      borderRadius:8,
+      background:'var(--surface)',
+      border:'1px solid var(--divider)'
+    }}>
+      <span className="label-muted" style={{ fontSize:12 }}>{label}</span>
+      <span style={{ fontWeight:600, color:'var(--accent)' }}>{titleCase(name)}</span>
+    </div>
+  );
+}
 /* ---------- Method & Rarity palettes ---------- */
 const METHOD_COLORS = {
   grass:'#ECEFF1', 'dark grass':'#B0BEC5', cave:'#7E57C2', water:'#4C7CF0',
@@ -273,7 +289,13 @@ function EvolutionChart({ paths = [], onSelect }){
           {path.map((node, i) => (
             <React.Fragment key={`${idx}-${node.dex}-${i}`}>
               <div
-                style={{ display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer' }}
+                style={{
+                  display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer',
+                  padding:'6px 8px',
+                  background:'var(--surface)',
+                  border:'1px solid var(--divider)',
+                  borderRadius:8
+                }}
                 onClick={() => onSelect && node.mon && onSelect(node.mon)}
               >
                 <Sprite mon={node.mon} size={56} alt={node.mon?.name} />
@@ -299,7 +321,6 @@ function EvolutionChart({ paths = [], onSelect }){
     </div>
   );
 }
-
 /* ---------- Defense chart ---------- */
 const TYPE_CHART = {
   normal:{ weak:['fighting'], res:[], imm:['ghost'] },
@@ -477,6 +498,10 @@ function buildEvolutionPaths(chain){
   function walk(node, path=[]){
     const dex = extractDex(node.species.url);
     const mon = getMonByDex(dex);
+    if (!mon) {
+      if (path.length) paths.push(path);
+      return;
+    }
     const entry = { dex, mon, details: node.details || null };
     const next = [...path, entry];
     if (!node.evolves_to || node.evolves_to.length === 0){
@@ -1311,12 +1336,15 @@ function App(){
                         {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
                       </div>
                     )}
-                    {extras?.abilities?.length > 0 && (
-                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                   {extras?.abilities?.length > 0 && (
+                      <div style={{ display:'flex', gap:6, alignItems:'flex-start' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
-                        <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                          {extras.abilities.map((a, i) => (
-                            <span key={`${a.name}-${i}`}>{a.name}{a.hidden ? ' (Hidden)' : ''}</span>
+                        <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+                          {extras.abilities.filter(a => !a.hidden).map((a, i) => (
+                            <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} />
+                          ))}
+                          {extras.abilities.filter(a => a.hidden).map((a, i) => (
+                            <AbilityPill key={`${a.name}-h-${i}`} label="Hidden" name={a.name} />
                           ))}
                         </div>
                       </div>
@@ -1373,8 +1401,14 @@ function App(){
               </div>
             </div>
 
-            {/* Right: Locations */}
+            {/* Right: Evolution + Locations */}
             <div style={styles.card}>
+             {extras?.evolutions?.length > 0 && (
+                <div style={{ marginBottom:16 }}>
+                  <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Evolution</div>
+                  <EvolutionChart paths={extras.evolutions} onSelect={(m) => { setSelected(m); setMode('pokemon'); setQuery(''); }} />
+                </div>
+              )}
               <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Locations</div>
               {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
               {byRegion.map(([reg, list]) => (

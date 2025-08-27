@@ -4,6 +4,13 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
+## [1.9.7] - 2025-08
+### Added
+  - Pokemon Ability and Evolution chart in their profile section.
+    - Includes all abilities + hidden abilities and how they evolve.
+
+---
+
 ## [1.9.6] - 2025-08
 ### Fixed
   - Auto Update now properly displays when it is receiving, downloading, and applying an update.
