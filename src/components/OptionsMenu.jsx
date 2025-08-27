@@ -30,10 +30,16 @@ export default function OptionsMenu({ style = {} }) {
   const show = (text, kind = "info") => setToast({ text, kind });
   
   useEffect(() => {
-    const off = window.app?.onUpdateDownloaded?.((ver) => {
+    const offDl = window.app?.onUpdateDownloaded?.((ver) => {
       show(`Update ${ver} downloaded — restart to apply.`, "info");
     });
-    return () => { try { off?.(); } catch {} };
+    const offAvail = window.app?.onUpdateAvailable?.((ver) => {
+      show(`Downloading update ${ver}…`, "info");
+    });
+    return () => {
+      try { offDl?.(); } catch {}
+      try { offAvail?.(); } catch {}
+    };
   }, []);
 
   async function onCheckUpdates() {

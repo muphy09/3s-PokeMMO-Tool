@@ -29,6 +29,7 @@ app.on('second-instance', () => {
 let mainWindow = null;
 let ocrProc = null;
 let downloadedUpdate = null;
+let downloadingVersion = null;
 
 // ===== Helpers =====
 function isNewerVersion(a, b) {
@@ -188,8 +189,14 @@ function setupAutoUpdates() {
   autoUpdater.autoInstallOnAppQuit = true;
 
   autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
+  autoUpdater.on('update-available', (info) => {
+    downloadingVersion = info?.version || downloadingVersion;
+    log('update-available', downloadingVersion || '');
+    try { mainWindow?.webContents?.send('update-available', downloadingVersion); } catch {}
+  });
   autoUpdater.on('update-downloaded', (info) => {
     downloadedUpdate = info?.version || downloadedUpdate;
+    downloadingVersion = null;
     log('update-downloaded', info?.version || '');
     try { mainWindow?.webContents?.send('update-downloaded', downloadedUpdate); } catch {}
   });
@@ -370,10 +377,17 @@ ipcMain.handle('get-app-version', () => app.getVersion());
 ipcMain.handle('check-for-updates', async () => {
   try {
     const current = app.getVersion();
+    if (downloadedUpdate && isNewerVersion(downloadedUpdate, current)) {
+      return { status: 'downloaded', version: downloadedUpdate, current };
+    }
+    if (downloadingVersion && isNewerVersion(downloadingVersion, current)) {
+      return { status: 'downloading', version: downloadingVersion, current };
+    }
     const result = await autoUpdater.checkForUpdates();
     const latest = result?.updateInfo?.version;
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
+      downloadingVersion = latest;
       try { await autoUpdater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
       return { status: 'available', version: latest, current };
     }
@@ -421,10 +435,14 @@ ipcMain.handle('check-updates', async () => {
     if (downloadedUpdate && isNewerVersion(downloadedUpdate, current)) {
       return { status: 'downloaded', version: downloadedUpdate, current };
     }
+    if (downloadingVersion && isNewerVersion(downloadingVersion, current)) {
+      return { status: 'downloading', version: downloadingVersion, current };
+    }
     const result = await autoUpdater.checkForUpdates();
     const latest = result?.updateInfo?.version;
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
+      downloadingVersion = latest;
       try { await autoUpdater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
       return { status: 'downloading', version: latest, current };
     }
