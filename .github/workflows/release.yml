@@ -78,6 +78,8 @@ jobs:
           name: ${{ github.ref_name }}
           allowUpdates: true
           replacesArtifacts: true
-          artifacts: "release/3s-PokeMMO-Tool-*-win-x64.*"
+          artifacts: |
+            release/latest.yml
+            release/3s-PokeMMO-Tool-*-win-x64.*
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}

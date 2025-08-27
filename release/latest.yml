@@ -1,8 +1,8 @@
-version: 1.9.0
+version: 1.9.1
 files:
-  - url: 3s-PokeMMO-Tool-1.9.0-win-x64.exe
-    sha512: fB/ndj0+TGBwocuWuclCjb+mK5lYr7H1cCJRZQ1ugQ/H7zGL3Q/jM9i+yjqk0xQTWmV1qxYLGQnR1V58h1RItw==
-    size: 529572818
-path: 3s-PokeMMO-Tool-1.9.0-win-x64.exe
-sha512: fB/ndj0+TGBwocuWuclCjb+mK5lYr7H1cCJRZQ1ugQ/H7zGL3Q/jM9i+yjqk0xQTWmV1qxYLGQnR1V58h1RItw==
-releaseDate: '2025-08-27T01:42:08.549Z'
+  - url: 3s-PokeMMO-Tool-1.9.1-win-x64.exe
+    sha512: pGRQjG/Z0csPCR4TMNgte9ODwp93F27iVx/TsKf4PToB1LjgAIdk/LZTvthxATUOOeTCB90ThjO40x9f3EnEeQ==
+    size: 529572688
+path: 3s-PokeMMO-Tool-1.9.1-win-x64.exe
+sha512: pGRQjG/Z0csPCR4TMNgte9ODwp93F27iVx/TsKf4PToB1LjgAIdk/LZTvthxATUOOeTCB90ThjO40x9f3EnEeQ==
+releaseDate: '2025-08-27T02:19:16.271Z'
