@@ -6,7 +6,6 @@ import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 
-const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
 const APP_TITLE = "3's PokeMMO Tool";
 
@@ -294,25 +293,30 @@ function computeWeakness(types = []){
 
 /* ---------- Loaders ---------- */
 function useLocationsDb(){
-  const [index, setIndex] = useState({});
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try{
-        const res = await fetch(LOCATIONS_URL, { cache:'no-store' });
-        const json = await res.json();
-        const idx = {};
-        for (const [k,v] of Object.entries(json)) {
-          // Drop any bogus location entries with only dashes for a map name
-          const locations = (v?.locations || []).filter(l => !/^-+$/.test(l.map || ""));
-          idx[normalizeKey(k)] = { ...v, locations };
+  return useMemo(() => {
+    const idx = {};
+    for (const [key, data] of Object.entries(movesetData || {})) {
+      const m = key.match(/^(\d+)\s+([^()]+)/);
+      if (!m) continue;
+      const name = m[2].trim();
+      const where = data.whereToFind || {};
+      const locations = [];
+      for (const [region, entries] of Object.entries(where)) {
+        for (const entry of entries) {
+          const map = entry.Location || "";
+          if (/^-+$/.test(map || "")) continue;
+          locations.push({
+            region,
+            map,
+            method: entry.Type || "",
+            rarity: entry.Rarity || ""
+          });
         }
-        if (alive) setIndex(idx);
-      }catch(e){ console.error('load locations failed', e); }
-    })();
-    return () => { alive = false; };
+      }
+      idx[normalizeKey(name)] = { pokedex: name, locations };
+    }
+    return idx;
   }, []);
-  return index;
 }
 
 /** Cleaning helpers for Areas */
