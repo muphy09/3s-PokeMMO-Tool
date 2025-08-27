@@ -80,7 +80,7 @@
         }
       ]
     },
-    "artifactName": "3s-PokeMMO-Tool-${version}-win-x64.${ext}",
+    "artifactName": "3s-PokeMMO-Tool-${version}-${os}-${arch}.${ext}",
     "publish": [
       {
         "provider": "github",

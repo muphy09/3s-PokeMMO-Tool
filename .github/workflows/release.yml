@@ -47,6 +47,12 @@ jobs:
         shell: pwsh
         run: npm run dist
 
+      - name: Version update metadata
+        shell: pwsh
+        run: |
+          $pkg = Get-Content package.json | ConvertFrom-Json
+          $version = $pkg.version
+          Copy-Item "release/latest.yml" "release/3s-PokeMMO-Tool-$version-win-x64.yml"
       - name: List release contents
         shell: pwsh
         run: |
