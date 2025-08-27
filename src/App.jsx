@@ -84,6 +84,12 @@ const DEX_BY_NAME = (() => {
   return map;
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
+const DEX_BY_ID = (() => {
+  const map = new Map();
+  for (const m of DEX_LIST) map.set(m.id, m);
+  return map;
+})();
+const getMonByDex = (id) => DEX_BY_ID.get(Number(id)) || null;
 
 function normalizeEggGroup(g=''){
   return String(g).toLowerCase().replace('warer','water').replace('hmanoid','humanoid').trim();
@@ -258,6 +264,42 @@ function RarityPill({ rarity }){
   );
 }
 
+function EvolutionChart({ paths = [], onSelect }){
+  if (!paths.length) return null;
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+      {paths.map((path, idx) => (
+        <div key={idx} style={{ display:'flex', alignItems:'center', flexWrap:'wrap', gap:8 }}>
+          {path.map((node, i) => (
+            <React.Fragment key={`${idx}-${node.dex}-${i}`}>
+              <div
+                style={{ display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer' }}
+                onClick={() => onSelect && node.mon && onSelect(node.mon)}
+              >
+                <Sprite mon={node.mon} size={56} alt={node.mon?.name} />
+                <div style={{ fontWeight:700, color:'var(--accent)', textDecoration:'underline', fontSize:14 }}>
+                  {node.mon?.name}
+                </div>
+                <div className="label-muted" style={{ fontSize:12 }}>
+                  {(node.mon?.types || []).map(t => titleCase(t)).join(' / ')}
+                </div>
+              </div>
+              {i < path.length - 1 && (
+                <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+                  <div style={{ fontSize:20 }}>→</div>
+                  <div className="label-muted" style={{ fontSize:12 }}>
+                    {formatEvoTrigger(path[i+1].details)}
+                  </div>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ---------- Defense chart ---------- */
 const TYPE_CHART = {
   normal:{ weak:['fighting'], res:[], imm:['ghost'] },
@@ -413,6 +455,76 @@ function normalizeMapForGrouping(region, mapName){
     return 'Victory Road';
   }
   return m;
+}
+
+/* ---------- PokeAPI extras (abilities & evolutions) ---------- */
+function formatEvoTrigger(d){
+  if (!d) return '';
+  if (d.min_level) return `Level ${d.min_level}`;
+  if (d.item?.name) return `Use ${titleCase(d.item.name.replace(/-/g, ' '))}`;
+  if (d.trigger?.name === 'trade') return 'Trade';
+  if (d.trigger?.name === 'level-up' && d.time_of_day) {
+    return `Level up (${titleCase(d.time_of_day)})`;
+  }
+  if (d.trigger?.name) return titleCase(d.trigger.name.replace(/-/g, ' '));
+  return '';
+}
+
+function extractDex(url=''){ const m = url.match(/\/pokemon-species\/(\d+)\/?/); return m ? Number(m[1]) : null; }
+
+function buildEvolutionPaths(chain){
+  const paths = [];
+  function walk(node, path=[]){
+    const dex = extractDex(node.species.url);
+    const mon = getMonByDex(dex);
+    const entry = { dex, mon, details: node.details || null };
+    const next = [...path, entry];
+    if (!node.evolves_to || node.evolves_to.length === 0){
+      paths.push(next);
+    } else {
+      for (const child of node.evolves_to){
+        walk({ ...child, details: child.evolution_details?.[0] || null }, next);
+      }
+    }
+  }
+  if (chain) walk(chain, []);
+  return paths;
+}
+
+function usePokeApiExtras(mon){
+  const cacheRef = useRef(new Map());
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    if (!mon?.id){ setData(null); return; }
+    if (cacheRef.current.has(mon.id)) { setData(cacheRef.current.get(mon.id)); return; }
+    let alive = true;
+    (async () => {
+      try {
+        const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${mon.id}`);
+        const poke = await pokeRes.json();
+        const abilities = (poke.abilities || []).map(a => ({
+          name: titleCase(a.ability.name.replace(/-/g,' ')),
+          hidden: a.is_hidden
+        }));
+        const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${mon.id}`);
+        const species = await speciesRes.json();
+        let evolutions = [];
+        if (species.evolution_chain?.url){
+          const chainRes = await fetch(species.evolution_chain.url);
+          const chain = await chainRes.json();
+          evolutions = buildEvolutionPaths(chain.chain);
+        }
+        const out = { abilities, evolutions };
+        cacheRef.current.set(mon.id, out);
+        if (alive) setData(out);
+      } catch(err){
+        console.error('pokeapi fetch failed', err);
+        if (alive) setData(null);
+      }
+    })();
+    return () => { alive = false; };
+  }, [mon]);
+  return data;
 }
 
 /* ======================= LIVE ROUTE MATCHING ======================= */
@@ -881,6 +993,7 @@ function App(){
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
   const areasRevByMon = useMemo(() => buildReverseAreasIndex(areasClean), [areasClean]); // NEW
+  const extras = usePokeApiExtras(selected);
 
   const [headerSprite] = useState(() => {
     const withSprite = DEX_LIST.filter(d => spriteSources(d).length > 0);
@@ -1196,6 +1309,16 @@ function App(){
                       <div style={{ display:'flex', gap:6, alignItems:'center' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Egg Group:</span>
                         {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
+                      </div>
+                    )}
+                    {extras?.abilities?.length > 0 && (
+                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                        <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
+                        <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                          {extras.abilities.map((a, i) => (
+                            <span key={`${a.name}-${i}`}>{a.name}{a.hidden ? ' (Hidden)' : ''}</span>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
