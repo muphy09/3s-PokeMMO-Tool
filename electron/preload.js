@@ -119,6 +119,13 @@ contextBridge.exposeInMainWorld('app', {
   checkUpdates:  () => invokeSafe('check-updates', undefined, { status: 'error', message: 'IPC unavailable' }),
   reloadOCR:     (options) => invokeSafe('reload-ocr', options, true),
   refreshApp:    () => invokeSafe('refresh-app', undefined, (location.reload(), true)),
+  onUpdateDownloaded: (cb) => {
+    try {
+      const handler = (_evt, v) => { try { cb?.(v); } catch {} };
+      ipcRenderer.on('update-downloaded', handler);
+      return () => ipcRenderer.removeListener('update-downloaded', handler);
+    } catch { return () => {}; }
+  },
 
   // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),

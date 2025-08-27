@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 /**
  * Options dropdown with toasts:
- *  - Check for updates → "Checking…", "Up to date (vX)!", or "Update vY available — will install on exit."
+ *  - Check for updates → "Checking…", "Up to date (vX)!", "Downloading update vY…", or "Update vY downloaded — restart to apply."
  *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
@@ -28,6 +28,13 @@ export default function OptionsMenu({ style = {} }) {
   }, [toast]);
 
   const show = (text, kind = "info") => setToast({ text, kind });
+  
+  useEffect(() => {
+    const off = window.app?.onUpdateDownloaded?.((ver) => {
+      show(`Update ${ver} downloaded — restart to apply.`, "info");
+    });
+    return () => { try { off?.(); } catch {} };
+  }, []);
 
   async function onCheckUpdates() {
     try {
@@ -37,10 +44,12 @@ export default function OptionsMenu({ style = {} }) {
       const current = await window.app?.getVersion?.().catch(() => null);
       const res = await window.app?.checkUpdates?.();
 
-      const status = res?.status || (res?.version ? "available" : "uptodate");
+      const status = res?.status || "uptodate";
 
-      if (status === "available" && res?.version) {
-        show(`Update ${res.version} available — will install on exit.`, "success");
+      if (status === "downloaded" && res?.version) {
+        show(`Update ${res.version} downloaded — restart to apply.`, "success");
+      } else if (status === "downloading" && res?.version) {
+        show(`Downloading update ${res.version}…`, "info");
       } else if (status === "uptodate") {
         show(`Up to date${current ? ` (v${current})` : ""}!`, "success");
       } else if (status === "error") {

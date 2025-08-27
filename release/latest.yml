@@ -1,8 +1,8 @@
-version: 1.8.1
+version: 1.8.4
 files:
-  - url: 3s-PokeMMO-Tool-1.8.1-win-x64.exe
-    sha512: 2+gPkNrdgaeAO06qmGcJKX3cHr1cenmDD7EHgQQZuNdjfDecVujFgXdtwxwY1Y5pD6Xhf3B5Y6Z5h6CotZZHVA==
-    size: 529572162
-path: 3s-PokeMMO-Tool-1.8.1-win-x64.exe
-sha512: 2+gPkNrdgaeAO06qmGcJKX3cHr1cenmDD7EHgQQZuNdjfDecVujFgXdtwxwY1Y5pD6Xhf3B5Y6Z5h6CotZZHVA==
-releaseDate: '2025-08-27T00:34:13.332Z'
+  - url: 3s-PokeMMO-Tool-1.8.4-win-x64.exe
+    sha512: cib+JgXYTczICKwGsEvvFVFLF7cHS4LEDxFb+9oSZU5qmt89Bixon1bRu/7Xo77riXKy+chfwFFr/piEGJd8/Q==
+    size: 529572976
+path: 3s-PokeMMO-Tool-1.8.4-win-x64.exe
+sha512: cib+JgXYTczICKwGsEvvFVFLF7cHS4LEDxFb+9oSZU5qmt89Bixon1bRu/7Xo77riXKy+chfwFFr/piEGJd8/Q==
+releaseDate: '2025-08-27T01:29:34.934Z'
