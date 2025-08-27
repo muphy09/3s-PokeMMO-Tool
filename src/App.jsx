@@ -1184,13 +1184,16 @@ function App(){
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
                   </div>
-                  <div style={{ display:'flex', gap:6, marginTop:6, flexWrap:'wrap', alignItems:'center' }}>
-                    {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
+                  <div style={{ display:'flex', gap:12, marginTop:6, flexWrap:'wrap', alignItems:'center' }}>
+                    <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
+                      {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
+                    </div>
                     {resolved.eggGroups?.length > 0 && (
-                      <>
+                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Egg Group:</span>
                         {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
