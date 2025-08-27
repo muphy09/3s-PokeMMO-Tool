@@ -4,6 +4,18 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
+## [1.9.6] - 2025-08
+### Fixed
+  - Auto Update now properly displays when it is receiving, downloading, and applying an update.
+
+---
+
+## [1.9.4] - 2025-08
+### Fixed
+  - Pokemon information persisted between tab switches; switching tabs now clears this data.
+  
+---
+
 ## [1.8.0] - 2025-08
 ### Added
   - **Overhaul of the OCR (capture tool for route display)**
