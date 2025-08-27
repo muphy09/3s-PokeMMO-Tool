@@ -204,7 +204,7 @@ function EggGroupPill({ group }){
   );
 }
 
-function AbilityPill({ label, name }){
+function AbilityPill({ label, name, desc }){
   if (!name) return null;
   return (
     <div style={{
@@ -215,7 +215,7 @@ function AbilityPill({ label, name }){
       border:'1px solid var(--divider)'
     }}>
       <span className="label-muted" style={{ fontSize:12 }}>{label}</span>
-      <span style={{ fontWeight:600, color:'var(--accent)' }}>{titleCase(name)}</span>
+      <span style={{ fontWeight:600, color:'var(--accent)' }} title={desc}>{titleCase(name)}</span>
     </div>
   );
 }
@@ -527,9 +527,20 @@ function usePokeApiExtras(mon){
       try {
         const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${mon.id}`);
         const poke = await pokeRes.json();
-        const abilities = (poke.abilities || []).map(a => ({
-          name: titleCase(a.ability.name.replace(/-/g,' ')),
-          hidden: a.is_hidden
+       const abilities = await Promise.all((poke.abilities || []).map(async a => {
+          const abilityName = titleCase(a.ability.name.replace(/-/g,' '));
+          let desc = '';
+          try {
+            const abilityRes = await fetch(a.ability.url);
+            const abilityData = await abilityRes.json();
+            const entry = (abilityData.effect_entries || []).find(e => e.language?.name === 'en');
+            desc = (entry?.short_effect || entry?.effect || '').replace(/\n/g, ' ');
+          } catch {}
+          return {
+            name: abilityName,
+            hidden: a.is_hidden,
+            desc
+          };
         }));
         const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${mon.id}`);
         const species = await speciesRes.json();
@@ -1341,10 +1352,10 @@ function App(){
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
                         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
                           {extras.abilities.filter(a => !a.hidden).map((a, i) => (
-                            <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} />
+                            <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} desc={a.desc} />
                           ))}
                           {extras.abilities.filter(a => a.hidden).map((a, i) => (
-                            <AbilityPill key={`${a.name}-h-${i}`} label="Hidden" name={a.name} />
+                            <AbilityPill key={`${a.name}-h-${i}`} label="Hidden" name={a.name} desc={a.desc} />
                           ))}
                         </div>
                       </div>

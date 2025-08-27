@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
   - Pokemon Ability and Evolution chart in their profile section.
     - Includes all abilities + hidden abilities and how they evolve.
+    - Hover on Pokemon ability for a Tooltip
 
 ---
 
