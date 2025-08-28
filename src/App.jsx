@@ -1101,6 +1101,7 @@ function App(){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'live'
+  const [showMoveset, setShowMoveset] = useState(false);
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -1119,6 +1120,7 @@ function App(){
     setShowRegionMenu(false);
     if (mode !== 'pokemon') setSelected(null);
   }, [mode]);
+  useEffect(() => { setShowMoveset(false); }, [selected]);
   useEffect(() => {
     (async () => {
       try {
@@ -1612,19 +1614,27 @@ function App(){
                 </>
               )}
               {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
-                <>
-                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Moveset</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:8 }}>
-                    {MOVE_METHODS.map(m => (
-                      <MovesTable
-                        key={m.key}
-                        title={m.label}
-                        moves={resolved.moves[m.key] || []}
-                        showLevel={m.key === 'lv'}
-                      />
-                    ))}
+                <div style={{ margin:'16px 0 6px' }}>
+                  <div
+                    className="label-muted"
+                    style={{ fontWeight:700, cursor:'pointer' }}
+                    onClick={() => setShowMoveset(v => !v)}
+                  >
+                    {showMoveset ? '▾' : '▸'} Moveset
                   </div>
-                </>
+                {showMoveset && (
+                    <div style={{ display:'flex', flexDirection:'column', gap:8, marginTop:6 }}>
+                      {MOVE_METHODS.map(m => (
+                        <MovesTable
+                          key={m.key}
+                          title={m.label}
+                          moves={resolved.moves[m.key] || []}
+                          showLevel={m.key === 'lv'}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
