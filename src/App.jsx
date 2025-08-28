@@ -1190,6 +1190,7 @@ function App(){
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'live'
   const [showMoveset, setShowMoveset] = useState(false);
+  const [showLocations, setShowLocations] = useState(false);
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -1208,7 +1209,7 @@ function App(){
     setShowRegionMenu(false);
     if (mode !== 'pokemon') setSelected(null);
   }, [mode]);
-  useEffect(() => { setShowMoveset(false); }, [selected]);
+  useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
   useEffect(() => {
     (async () => {
       try {
@@ -1699,34 +1700,44 @@ function App(){
 
             {/* Right: Locations */}
             <div style={styles.card}>
-              <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Locations</div>
-              {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
-              {byRegion.map(([reg, list]) => (
-                <div key={reg} style={{ marginBottom:12 }}>
-                  <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
-                  <div style={{ display:'grid', gap:8 }}>
-                    {list.map((loc, i) => (
-                      <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
-                        <div style={{ fontWeight:700 }}>{loc.map}</div>
-                        {(loc.min || loc.max) && (
-                          <div className="label-muted" style={{ marginTop:4 }}>
-                            {loc.min && loc.max ? `Lv ${loc.min}-${loc.max}` : `Lv ${loc.min || loc.max}`}
+             <div
+                className="label-muted"
+                style={{ fontWeight:700, cursor:'pointer', marginBottom: showLocations ? 6 : 0 }}
+                onClick={() => setShowLocations(v => !v)}
+              >
+                {showLocations ? '▾' : '▸'} Locations
+              </div>
+              {showLocations && (
+                <>
+                  {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
+                  {byRegion.map(([reg, list]) => (
+                    <div key={reg} style={{ marginBottom:12 }}>
+                      <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
+                      <div style={{ display:'grid', gap:8 }}>
+                        {list.map((loc, i) => (
+                          <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
+                            <div style={{ fontWeight:700 }}>{loc.map}</div>
+                            {(loc.min || loc.max) && (
+                              <div className="label-muted" style={{ marginTop:4 }}>
+                                {loc.min && loc.max ? `Lv ${loc.min}-${loc.max}` : `Lv ${loc.min || loc.max}`}
+                              </div>
+                            )}
+                            <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
+                              {(Array.isArray(loc.method) ? loc.method : [loc.method])
+                                .filter(Boolean)
+                                .map((m, j) => <MethodPill key={`m-${i}-${j}-${m}`} method={m} />)}
+                              {(Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
+                                .filter(Boolean)
+                                .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
+                            </div>
                           </div>
-                        )}
-                        <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
-                          {(Array.isArray(loc.method) ? loc.method : [loc.method])
-                            .filter(Boolean)
-                            .map((m, j) => <MethodPill key={`m-${i}-${j}-${m}`} method={m} />)}
-                          {(Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
-                            .filter(Boolean)
-                            .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
-                        </div>
-                      </div>
-                    ))}
+                        ))}
                   </div>
                 </div>
-              ))}
-            </div>
+                  ))}
+                </>
+              )}
+        </div>
           </div>
         )}
       </div>
