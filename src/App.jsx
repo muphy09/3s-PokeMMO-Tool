@@ -1544,6 +1544,7 @@ function App(){
 
         {/* Detail Panel (Pokémon) */}
         {mode==='pokemon' && resolved && (
+          <>
           <div className="grid">
             {/* Left: Pokémon card */}
             <div style={styles.card}>
@@ -1673,29 +1674,6 @@ function App(){
               </div>
 
               <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
-              {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
-                <div style={{ margin:'16px 0 6px' }}>
-                  <div
-                    className="label-muted"
-                    style={{ fontWeight:700, cursor:'pointer' }}
-                    onClick={() => setShowMoveset(v => !v)}
-                  >
-                    {showMoveset ? '▾' : '▸'} Moveset
-                  </div>
-                  {showMoveset && (
-                    <div style={{ display:'flex', flexDirection:'column', gap:8, marginTop:6 }}>
-                      {MOVE_METHODS.map(m => (
-                        <MovesTable
-                          key={m.key}
-                          title={m.label}
-                          moves={resolved.moves[m.key] || []}
-                          showLevel={m.key === 'lv'}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
 
             {/* Right: Locations */}
@@ -1739,6 +1717,31 @@ function App(){
               )}
         </div>
           </div>
+
+          {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
+            <div style={{ ...styles.card, marginTop:16 }}>
+              <div
+                className="label-muted"
+                style={{ fontWeight:700, cursor:'pointer', marginBottom: showMoveset ? 6 : 0 }}
+                onClick={() => setShowMoveset(v => !v)}
+              >
+                {showMoveset ? '▾' : '▸'} Moveset
+              </div>
+              {showMoveset && (
+                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                  {MOVE_METHODS.map(m => (
+                    <MovesTable
+                      key={m.key}
+                      title={m.label}
+                      moves={resolved.moves[m.key] || []}
+                      showLevel={m.key === 'lv'}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          </>
         )}
       </div>
 
