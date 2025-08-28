@@ -11,9 +11,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     - Now includes a dropdown with Moves Information unique to PokeMMO Pokemon
     - Updated Location data to be inline with PokeMMO data - No more generic Gen 9 data!
     - Base Stats for each Pokemon have been added to the dataset
-    - Dropdown for Movesets complete with move information
-    - Catch Rate % & ball selector added!
+  
+  - Catch Rate % and Ball Selector on each Pokemon's Page
+    - See the Pokemon's catch rate and adjust the % in reatime by selecting the PokeBall used
 
+  - Item Search
+    - Search for every item in PokeMMO and find out what it does (location data could be added in the future)
+
+### Fixed
+  - Refreshed the UI to accomodate for the increased data.
+    - Added dropdowns for Movesets and Locations to avoid clutter on the Pokemon screen. 
+  
+  - Aligned 'Abilities' section to be more inline with Pokemon Type & Egg Group
 
 ---
 

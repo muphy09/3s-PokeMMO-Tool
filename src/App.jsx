@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
+import itemsRaw from '../itemdata.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
@@ -19,6 +20,7 @@ const DEBUG_LIVE = true; // set false to silence console logs
  */
 const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
+const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-data/main/assets/itemicons/';
 
 const SHOW_CONFIDENCE = (import.meta?.env?.VITE_SHOW_CONFIDENCE ?? '1') === '1';
 function formatConfidence(c){
@@ -104,6 +106,8 @@ const DEX_BY_ID = (() => {
   return map;
 })();
 const getMonByDex = (id) => DEX_BY_ID.get(Number(id)) || null;
+
+const ITEM_LIST = Array.isArray(itemsRaw) ? itemsRaw : [];
 
 const EVO_PARENTS = (() => {
   const map = new Map();
@@ -1188,7 +1192,7 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'live'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
 
@@ -1289,6 +1293,13 @@ function App(){
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.tm.localeCompare(b.tm));
     return hits;
   }, [query, tmIndex, mode, areaRegion]);
+
+  const itemHits = React.useMemo(() => {
+    if (mode !== 'items') return [];
+    const q = normalizeKey(query);
+    if (!q) return [];
+    return ITEM_LIST.filter(i => normalizeKey(i.name).includes(q)).slice(0, 30);
+  }, [query, mode]);
 
   // Selected Pokémon details (MERGED sources)
   const resolved = React.useMemo(() => {
@@ -1393,6 +1404,7 @@ function App(){
               <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon Search</button>
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
+              <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
             </div>
           </div>
@@ -1402,7 +1414,13 @@ function App(){
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">
-                  {mode==='pokemon' ? 'Search by name or Dex #' : mode==='areas' ? 'Search by route/area name' : 'Search by TM name'}
+                  {mode==='pokemon'
+                    ? 'Search by name or Dex #'
+                    : mode==='areas'
+                    ? 'Search by route/area name'
+                    : mode==='tm'
+                    ? 'Search by TM name'
+                    : 'Search by item name'}
                 </div>
                 {(mode==='areas' || mode==='tm') && (
                   <div style={{ position:'relative' }}>
@@ -1437,7 +1455,9 @@ function App(){
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
                   ? 'e.g. Victory Road, Viridian Forest, Route 10'
-                  : 'e.g. Giga Drain, Payback'}
+                  : mode==='tm'
+                  ? 'e.g. Giga Drain, Payback'
+                  : 'e.g. Master Ball, Shiny Charm'}
                 className="input"
                 style={{ height:44, borderRadius:10, fontSize:16 }}
               />
@@ -1536,6 +1556,27 @@ function App(){
                     {hit.tm} <span className="label-muted">({hit.region})</span>
                   </div>
                   <div style={{ marginTop:6 }}>{hit.location}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Item results */}
+          {mode==='items' && !!itemHits.length && (
+            <div style={{ marginTop:12, display:'grid', gap:12 }}>
+              {itemHits.map(item => (
+                <div key={item.id} style={styles.areaCard}>
+                  <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+                    <img
+                      src={`${ITEM_ICON_BASE}${item.id}.png`}
+                      alt={item.name}
+                      style={{ width:36, height:36, imageRendering:'pixelated' }}
+                    />
+                    <div>
+                      <div style={{ fontWeight:800 }}>{item.name}</div>
+                      <div style={{ whiteSpace:'pre-line' }}>{item.description}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
