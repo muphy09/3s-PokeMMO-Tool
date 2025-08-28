@@ -1,7 +1,7 @@
 # Changelog
 
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
-This project adheres to [Semantic Versioning](https://semver.org/).
+
 ---
 
 ## [2.0.0] - 2025-08
@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   - NEW Dataset for PokeMMO Pokemon.
     - COMPLETE overhaul of the data used for Pokemon information
     - Now includes a dropdown with Moves Information unique to PokeMMO Pokemon
+      - Move Information includes method learned, type, category, power, and accuracy
     - Updated Location data to be inline with PokeMMO data - No more generic Gen 9 data!
     - Base Stats for each Pokemon have been added to the dataset
   
@@ -19,8 +20,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     - Search for every item in PokeMMO and find out what it does (location data could be added in the future)
 
 ### Fixed
+  - Patch Notes button now works properly! Hopefully you see this!
+  
   - Refreshed the UI to accomodate for the increased data.
-    - Added dropdowns for Movesets and Locations to avoid clutter on the Pokemon screen. 
+    - Added dropdowns for Movesets and Locations to avoid clutter on the Pokemon screen.
+    - Reorganized the flow of information so it appears cleaner when inside of a Pokemons' Profile 
   
   - Aligned 'Abilities' section to be more inline with Pokemon Type & Egg Group
 
