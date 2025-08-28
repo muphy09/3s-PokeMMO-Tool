@@ -21,6 +21,7 @@ const DEBUG_LIVE = true; // set false to silence console logs
 const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-data/main/assets/itemicons/';
+const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
 
 const SHOW_CONFIDENCE = (import.meta?.env?.VITE_SHOW_CONFIDENCE ?? '1') === '1';
 function formatConfidence(c){
@@ -1582,6 +1583,11 @@ function App(){
                       src={`${ITEM_ICON_BASE}${item.id}.png`}
                       alt={item.name}
                       style={{ width:36, height:36, imageRendering:'pixelated' }}
+                      onError={e => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = ITEM_PLACEHOLDER;
+                        e.currentTarget.style.imageRendering = 'auto';
+                      }}
                     />
                     <div>
                       <div style={{ fontWeight:800 }}>{item.name}</div>
