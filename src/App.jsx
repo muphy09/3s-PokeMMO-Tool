@@ -401,12 +401,12 @@ function MoveRow({ mv, showLevel=false }){
   const data = useMoveData(name);
   return (
     <tr>
-      {showLevel && <td style={{ padding:'2px 4px' }}>{level ?? '-'}</td>}
+      {showLevel && <td style={{ padding:'2px 4px', textAlign:'center' }}>{level ?? '-'}</td>}
       <td style={{ padding:'2px 4px' }}>{name}</td>
-      <td style={{ padding:'2px 4px' }}>{data?.type ? <TypePill t={data.type} compact /> : '—'}</td>
-      <td style={{ padding:'2px 4px' }}>{data?.category ? <CategoryPill cat={data.category} /> : '—'}</td>
-      <td style={{ padding:'2px 4px' }}>{data?.power ?? '—'}</td>
-      <td style={{ padding:'2px 4px' }}>{data?.accuracy ?? '—'}</td>
+      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.type ? <TypePill t={data.type} compact /> : '—'}</td>
+      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.category ? <CategoryPill cat={data.category} /> : '—'}</td>
+      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.power ?? '—'}</td>
+      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.accuracy ?? '—'}</td>
     </tr>
   );
 }
@@ -416,15 +416,23 @@ function MovesTable({ title, moves=[], showLevel=false }){
     <div style={{ border:'1px solid #262626', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
       <div style={{ fontWeight:700, marginBottom:4 }}>{title}</div>
       {moves.length ? (
-        <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13 }}>
+        <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13, tableLayout:'fixed' }}>
+          <colgroup>
+            {showLevel && <col style={{ width:'40px' }} />}
+            <col />
+            <col style={{ width:'80px' }} />
+            <col style={{ width:'80px' }} />
+            <col style={{ width:'50px' }} />
+            <col style={{ width:'50px' }} />
+          </colgroup>
           <thead>
             <tr>
-              {showLevel && <th style={{ textAlign:'left', padding:'2px 4px' }}>Lv</th>}
+              {showLevel && <th style={{ textAlign:'center', padding:'2px 4px' }}>Lv</th>}
               <th style={{ textAlign:'left', padding:'2px 4px' }}>Move</th>
-              <th style={{ textAlign:'left', padding:'2px 4px' }}>Type</th>
-              <th style={{ textAlign:'left', padding:'2px 4px' }}>Cat</th>
-              <th style={{ textAlign:'left', padding:'2px 4px' }}>Pwr</th>
-              <th style={{ textAlign:'left', padding:'2px 4px' }}>Acc</th>
+              <th style={{ textAlign:'center', padding:'2px 4px' }}>Type</th>
+              <th style={{ textAlign:'center', padding:'2px 4px' }}>Cat</th>
+              <th style={{ textAlign:'center', padding:'2px 4px' }}>Pwr</th>
+              <th style={{ textAlign:'center', padding:'2px 4px' }}>Acc</th>
             </tr>
           </thead>
           <tbody>
@@ -1476,7 +1484,7 @@ function App(){
                       </div>
                     )}
                     {resolved.abilities?.length > 0 && (
-                      <div style={{ display:'flex', gap:6, alignItems:'flex-start' }}>
+                      <div style={{ display:'flex', gap:6, alignItems:'center', marginLeft:'auto' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
                         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
                           {resolved.abilities.map((a, i) => (
