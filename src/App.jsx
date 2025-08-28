@@ -1625,19 +1625,19 @@ function App(){
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
                   </div>
-                  <div style={{ display:'grid', gap:12, marginTop:6, alignItems:'center', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))' }}>
-                    <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                  <div style={{ display:'flex', gap:12, marginTop:6, alignItems:'center', flexWrap:'wrap' }}>
+                    <div style={{ display:'flex', gap:6, alignItems:'center', flex:1, minWidth:0 }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
                       {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
                     </div>
                     {resolved.eggGroups?.length > 0 && (
-                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                      <div style={{ display:'flex', gap:6, alignItems:'center', flex:1, minWidth:0 }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Egg Group:</span>
                         {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
                       </div>
                     )}
                     {resolved.abilities?.length > 0 && (
-                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                      <div style={{ display:'flex', gap:6, alignItems:'center', flex:1, minWidth:0 }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
                         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
                           {resolved.abilities.map((a, i) => (
@@ -1647,18 +1647,28 @@ function App(){
                       </div>
                     )}
                     {resolved.catchRate != null && (
-                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                      <div style={{ display:'flex', gap:6, alignItems:'center', flex:1, minWidth:0 }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Catch Rate:</span>
                         <span>{resolved.catchRate}</span>
                       </div>
                     )}
                   </div>
-                  <div style={{ display:'grid', gap:6, marginTop:8, gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))' }}>
-                    <InfoPill label="Exp" value={titleCase((resolved.expType||'').replace(/_/g,' '))} />
-                    <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
-                    <InfoPill label="Height" value={formatHeight(resolved.height)} />
-                    <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
-                    <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
+                  <div style={{ display:'flex', gap:6, marginTop:8, flexWrap:'wrap' }}>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <InfoPill label="Exp" value={titleCase((resolved.expType||'').replace(/_/g,' '))} />
+                    </div>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
+                    </div>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <InfoPill label="Height" value={formatHeight(resolved.height)} />
+                    </div>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
+                    </div>
+                    <div style={{ flex:1, minWidth:0 }}>
+                      <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
+                    </div>
                   </div>
                   {resolved.forms?.length > 1 && (
                     <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
