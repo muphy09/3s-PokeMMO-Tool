@@ -1677,7 +1677,7 @@ function App(){
             </div>
 
             {/* Right: Locations */}
-            <div style={styles.card}>
+            <div style={{ ...styles.card, marginTop:16 }}>
              <div
                 className="label-muted"
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showLocations ? 6 : 0 }}
