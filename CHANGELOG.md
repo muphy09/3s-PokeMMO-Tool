@@ -43,7 +43,8 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 
 ## [1.9.6] - 2025-08
 ### Fixed
-  - Auto Update now properly displays when it is receiving, downloading, and applying an update.
+  - Auto Update potentially displays when it is receiving, downloading, and applying an update.
+    - Still testing this features' functionality
 
 ---
 

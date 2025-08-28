@@ -1227,6 +1227,19 @@ function App(){
   }, [mode]);
   useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
   useEffect(() => {
+    if (!selected || selected.catchRate != null) return;
+    (async () => {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}/`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setSelected((s) => (s && s.id === selected.id ? { ...s, catchRate: data.capture_rate } : s));
+      } catch (e) {
+        console.error('fetch catch rate failed', e);
+      }
+    })();
+  }, [selected]);
+  useEffect(() => {
     (async () => {
       try {
         const current = await window.app?.getVersion?.().catch(() => null);
@@ -1612,7 +1625,7 @@ function App(){
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
                   </div>
-                  <div style={{ display:'flex', gap:12, marginTop:6, flexWrap:'wrap', alignItems:'center' }}>
+                  <div style={{ display:'flex', gap:12, marginTop:6, flexWrap:'wrap', alignItems:'center', justifyContent:'space-between' }}>
                     <div style={{ display:'flex', gap:6, alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
                       {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
@@ -1624,13 +1637,19 @@ function App(){
                       </div>
                     )}
                     {resolved.abilities?.length > 0 && (
-                      <div style={{ display:'flex', gap:6, alignItems:'center', marginLeft:'auto' }}>
+                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
                         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
                           {resolved.abilities.map((a, i) => (
                             <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} />
                           ))}
                         </div>
+                      </div>
+                    )}
+                    {resolved.catchRate != null && (
+                      <div style={{ display:'flex', gap:6, alignItems:'center' }}>
+                        <span className="label-muted" style={{ fontWeight:700 }}>Catch Rate:</span>
+                        <span>{resolved.catchRate}</span>
                       </div>
                     )}
                   </div>
