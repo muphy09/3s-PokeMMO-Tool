@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './index.css';
-import rawDex from './pokedex.json';
-import movesetData from '../pokemon_moveset_data.json';
+import dexRaw from '../UpdatedDex.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
@@ -69,16 +68,30 @@ const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 function toLegacyShape(m){
   const types = Array.isArray(m.types) ? m.types.map(normalizeType) : [];
   return {
-    id: m.dex,
+    id: m.id,
     name: m.name,
     types,
+    expType: m.exp_type,
+    obtainable: m.obtainable,
+    genderRatio: m.gender_ratio,
+    height: m.height,
+    weight: m.weight,
+    eggGroups: m.egg_groups || [],
+    abilities: m.abilities || [],
+    forms: m.forms || [],
+    evolutions: m.evolutions || [],
+    moves: m.moves || [],
+    stats: m.stats || {},
+    yields: m.yields || {},
+    heldItems: m.held_items || [],
+    locations: m.locations || [],
     sprite: m.sprite ?? null,
     sprites: m.sprites ?? null,
     image: m.image ?? null,
     icon: m.icon ?? null
   };
 }
-const DEX_LIST = rawDex.map(toLegacyShape);
+const DEX_LIST = dexRaw.map(toLegacyShape);
 const DEX_BY_NAME = (() => {
   const map = new Map();
   for (const m of DEX_LIST) map.set(normalizeKey(m.name), m);
@@ -104,27 +117,30 @@ const MOVE_METHODS = [
   { key:'egg', label:'Egg' }
 ];
 
-const MOVESETS_BY_ID = (() => {
-  const map = new Map();
-  for (const [key, data] of Object.entries(movesetData || {})) {
-    const m = key.match(/^(\d+)\s+([^()]+)\s*\(([^)]+)\)$/);
-    if (!m) continue;
-    const id = Number(m[1]);
-    const eggGroups = m[3].split(',').map(s => normalizeEggGroup(s));
-    const start = Array.isArray(data.start) ? data.start.filter(Boolean) : [];
-    const lv = Array.isArray(data.lv)
-      ? data.lv.map(it => {
-          const [lvl, move] = Object.entries(it)[0] || [];
-          return { level: Number(lvl), move };
-        })
-      : [];
-    const tutor = Array.isArray(data.tutor) ? data.tutor.filter(Boolean) : [];
-    const tmhm = Array.isArray(data['tm/hm']) ? data['tm/hm'].filter(Boolean) : [];
-    const egg = Array.isArray(data.egg) ? data.egg.filter(Boolean) : [];
-    map.set(id, { eggGroups, start, lv, tutor, tmhm, egg });
+function groupMoves(list = []){
+  const out = { start: [], lv: [], tutor: [], tmhm: [], egg: [] };
+  for (const mv of list){
+    switch(mv.type){
+      case 'level':
+        if (mv.level <= 1) out.start.push(mv.name);
+        else out.lv.push({ level: mv.level, move: mv.name });
+        break;
+      case 'move_tutor':
+        out.tutor.push(mv.name);
+        break;
+      case 'move_learner_tools':
+        out.tmhm.push(mv.name);
+        break;
+      case 'egg_moves':
+        out.egg.push(mv.name);
+        break;
+      default:
+        break;
+    }
   }
-  return map;
-})();
+  out.lv.sort((a,b) => a.level - b.level);
+  return out;
+}
 
 /* ---------- sprite source helpers & component ---------- */
 function localSpriteCandidates(mon){
@@ -220,6 +236,31 @@ function AbilityPill({ label, name, desc }){
     </div>
   );
 }
+
+function InfoPill({ label, value }){
+  if (value == null || value === '') return null;
+  return (
+    <div style={{
+      display:'flex', alignItems:'center', gap:4,
+      padding:'2px 8px',
+      borderRadius:8,
+      background:'var(--surface)',
+      border:'1px solid var(--divider)'
+    }}>
+      <span className="label-muted" style={{ fontSize:12 }}>{label}:</span>
+      <span style={{ fontWeight:600 }}>{value}</span>
+    </div>
+  );
+}
+
+function formatHeight(h){ return h==null? '--' : `${(h/10).toFixed(1)} m`; }
+function formatWeight(w){ return w==null? '--' : `${(w/10).toFixed(1)} kg`; }
+function formatGenderRatio(r){
+  if (r == null) return '--';
+  const female = Math.round((r/255)*100);
+  const male = 100 - female;
+  return `${male}% ♂ / ${female}% ♀`;
+}
 /* ---------- Method & Rarity palettes ---------- */
 const METHOD_COLORS = {
   grass:'#ECEFF1', 'dark grass':'#B0BEC5', cave:'#7E57C2', water:'#4C7CF0',
@@ -281,47 +322,6 @@ function RarityPill({ rarity }){
   );
 }
 
-function EvolutionChart({ paths = [], onSelect }){
-  if (!paths.length) return null;
-  return (
-    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-      {paths.map((path, idx) => (
-        <div key={idx} style={{ display:'flex', alignItems:'center', flexWrap:'wrap', gap:8 }}>
-          {path.map((node, i) => (
-            <React.Fragment key={`${idx}-${node.dex}-${i}`}>
-              <div
-                style={{
-                  display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer',
-                  padding:'6px 8px',
-                  background:'var(--surface)',
-                  border:'1px solid var(--divider)',
-                  borderRadius:8
-                }}
-                onClick={() => onSelect && node.mon && onSelect(node.mon)}
-              >
-                <Sprite mon={node.mon} size={56} alt={node.mon?.name} />
-                <div style={{ fontWeight:700, color:'var(--accent)', textDecoration:'underline', fontSize:14 }}>
-                  {node.mon?.name}
-                </div>
-                <div className="label-muted" style={{ fontSize:12 }}>
-                  {(node.mon?.types || []).map(t => titleCase(t)).join(' / ')}
-                </div>
-              </div>
-              {i < path.length - 1 && (
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
-                  <div style={{ fontSize:20 }}>→</div>
-                  <div className="label-muted" style={{ fontSize:12 }}>
-                    {formatEvoTrigger(path[i+1].details)}
-                  </div>
-                </div>
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      ))}
-    </div>
-  );
-}
 /* ---------- Defense chart ---------- */
 const TYPE_CHART = {
   normal:{ weak:['fighting'], res:[], imm:['ghost'] },
@@ -496,91 +496,6 @@ function normalizeMapForGrouping(region, mapName){
     return 'Victory Road';
   }
   return m;
-}
-
-/* ---------- PokeAPI extras (abilities & evolutions) ---------- */
-function formatEvoTrigger(d){
-  if (!d) return '';
-  if (d.min_level) return `Level ${d.min_level}`;
-  if (d.item?.name) return `Use ${titleCase(d.item.name.replace(/-/g, ' '))}`;
-  if (d.trigger?.name === 'trade') return 'Trade';
-  if (d.trigger?.name === 'level-up' && d.time_of_day) {
-    return `Level up (${titleCase(d.time_of_day)})`;
-  }
-  if (d.trigger?.name) return titleCase(d.trigger.name.replace(/-/g, ' '));
-  return '';
-}
-
-function extractDex(url=''){ const m = url.match(/\/pokemon-species\/(\d+)\/?/); return m ? Number(m[1]) : null; }
-
-function buildEvolutionPaths(chain){
-  const paths = [];
-  function walk(node, path=[]){
-    const dex = extractDex(node.species.url);
-    const mon = getMonByDex(dex);
-    if (!mon) {
-      if (path.length) paths.push(path);
-      return;
-    }
-    const entry = { dex, mon, details: node.details || null };
-    const next = [...path, entry];
-    if (!node.evolves_to || node.evolves_to.length === 0){
-      paths.push(next);
-    } else {
-      for (const child of node.evolves_to){
-        walk({ ...child, details: child.evolution_details?.[0] || null }, next);
-      }
-    }
-  }
-  if (chain) walk(chain, []);
-  return paths;
-}
-
-function usePokeApiExtras(mon){
-  const cacheRef = useRef(new Map());
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    if (!mon?.id){ setData(null); return; }
-    if (cacheRef.current.has(mon.id)) { setData(cacheRef.current.get(mon.id)); return; }
-    let alive = true;
-    (async () => {
-      try {
-        const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${mon.id}`);
-        const poke = await pokeRes.json();
-       const abilities = await Promise.all((poke.abilities || []).map(async a => {
-          const abilityName = titleCase(a.ability.name.replace(/-/g,' '));
-          let desc = '';
-          try {
-            const abilityRes = await fetch(a.ability.url);
-            const abilityData = await abilityRes.json();
-            const entry = (abilityData.effect_entries || []).find(e => e.language?.name === 'en');
-            desc = (entry?.short_effect || entry?.effect || '').replace(/\n/g, ' ');
-          } catch {}
-          return {
-            name: abilityName,
-            hidden: a.is_hidden,
-            desc
-          };
-        }));
-        const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${mon.id}`);
-        const species = await speciesRes.json();
-        let evolutions = [];
-        if (species.evolution_chain?.url){
-          const chainRes = await fetch(species.evolution_chain.url);
-          const chain = await chainRes.json();
-          evolutions = buildEvolutionPaths(chain.chain);
-        }
-        const out = { abilities, evolutions };
-        cacheRef.current.set(mon.id, out);
-        if (alive) setData(out);
-      } catch(err){
-        console.error('pokeapi fetch failed', err);
-        if (alive) setData(null);
-      }
-    })();
-    return () => { alive = false; };
-  }, [mon]);
-  return data;
 }
 
 /* ======================= LIVE ROUTE MATCHING ======================= */
@@ -1050,7 +965,7 @@ function App(){
   const areasClean = useAreasDbCleaned();
   const tmIndex    = useTmLocations();
   const areasRevByMon = useMemo(() => buildReverseAreasIndex(areasClean), [areasClean]); // NEW
-  const extras = usePokeApiExtras(selected);
+
 
   const [headerSprite] = useState(() => {
     const withSprite = DEX_LIST.filter(d => spriteSources(d).length > 0);
@@ -1163,14 +1078,27 @@ function App(){
       rarity: (e.rarities || []).filter(Boolean),
     }));
 
+
+    // Locations from dex data
+    const dexLocs = (selected.locations || []).map(l => ({
+      region: titleCase(l.region_name || 'Unknown'),
+      map: l.location,
+      method: [l.type].filter(Boolean),
+      rarity: [l.rarity].filter(Boolean),
+      min: l.min_level,
+      max: l.max_level,
+    }));
+
     // Merge & dedupe by region+map; union methods/rarities
     const byKey = new Map();
-    for (const src of [...baseLocs, ...extraLocs]) {
+    for (const src of [...baseLocs, ...extraLocs, ...dexLocs]) {
       if (!src.map) continue;
       const key = `${src.region}|${src.map}`;
-      const prev = byKey.get(key) || { region: src.region, map: src.map, method: [], rarity: [] };
+      const prev = byKey.get(key) || { region: src.region, map: src.map, method: [], rarity: [], min: src.min, max: src.max };
       prev.method.push(...(src.method || []));
       prev.rarity.push(...(src.rarity || []));
+      prev.min = Math.min(prev.min ?? Infinity, src.min ?? Infinity);
+      prev.max = Math.max(prev.max ?? 0, src.max ?? 0);
       byKey.set(key, prev);
     }
 
@@ -1181,22 +1109,14 @@ function App(){
     }));
 
     const types = (selected.types || []).map(normalizeType);
-    const moveInfo = MOVESETS_BY_ID.get(selected.id) || {};
-    const eggGroups = moveInfo.eggGroups || [];
-    const moves = {
-      start: moveInfo.start || [],
-      lv: moveInfo.lv || [],
-      tutor: moveInfo.tutor || [],
-      tmhm: moveInfo.tmhm || [],
-      egg: moveInfo.egg || []
-    };
+    const moves = groupMoves(selected.moves || []);
     return {
       ...selected,
       types,
-      eggGroups,
       moves,
       weakness: computeWeakness(types),
-      locations: mergedLocs
+      locations: mergedLocs,
+      eggGroups: selected.eggGroups || []
     };
   }, [selected, locIndex, areasRevByMon]);
 
@@ -1406,20 +1326,44 @@ function App(){
                         {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
                       </div>
                     )}
-                   {extras?.abilities?.length > 0 && (
+                    {resolved.abilities?.length > 0 && (
                       <div style={{ display:'flex', gap:6, alignItems:'flex-start' }}>
                         <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
                         <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-                          {extras.abilities.filter(a => !a.hidden).map((a, i) => (
-                            <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} desc={a.desc} />
-                          ))}
-                          {extras.abilities.filter(a => a.hidden).map((a, i) => (
-                            <AbilityPill key={`${a.name}-h-${i}`} label="Hidden" name={a.name} desc={a.desc} />
+                          {resolved.abilities.map((a, i) => (
+                            <AbilityPill key={`${a.name}-${i}`} label={`${i+1}`} name={a.name} />
                           ))}
                         </div>
                       </div>
                     )}
                   </div>
+                  <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
+                    <InfoPill label="Exp" value={titleCase((resolved.expType||'').replace(/_/g,' '))} />
+                    <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
+                    <InfoPill label="Height" value={formatHeight(resolved.height)} />
+                    <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
+                    <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
+                  </div>
+                  {resolved.forms?.length > 1 && (
+                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Forms:</span>
+                      {resolved.forms.map(f => <span key={f.form_id || f.id}>{f.name}</span>)}
+                    </div>
+                  )}
+                  {resolved.evolutions?.length > 0 && (
+                    <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:8 }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Evolutions:</span>
+                      {resolved.evolutions.map((e,i)=>(
+                        <span key={i}>{`${e.name} (${titleCase(e.type.toLowerCase())}${e.val?`: ${e.val}`:''})`}</span>
+                      ))}
+                    </div>
+                  )}
+                  {resolved.heldItems?.length > 0 && (
+                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8, alignItems:'center' }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Held Items:</span>
+                      {resolved.heldItems.map((h,i)=> <span key={i}>{h.name || h}</span>)}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1471,14 +1415,8 @@ function App(){
               </div>
             </div>
 
-            {/* Right: Evolution + Locations */}
+            {/* Right: Locations */}
             <div style={styles.card}>
-             {extras?.evolutions?.length > 0 && (
-                <div style={{ marginBottom:16 }}>
-                  <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Evolution</div>
-                  <EvolutionChart paths={extras.evolutions} onSelect={(m) => { setSelected(m); setMode('pokemon'); setQuery(''); }} />
-                </div>
-              )}
               <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Locations</div>
               {byRegion.length === 0 && (<div className="label-muted">No wild locations found.</div>)}
               {byRegion.map(([reg, list]) => (
@@ -1488,6 +1426,11 @@ function App(){
                     {list.map((loc, i) => (
                       <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
                         <div style={{ fontWeight:700 }}>{loc.map}</div>
+                        {(loc.min || loc.max) && (
+                          <div className="label-muted" style={{ marginTop:4 }}>
+                            {loc.min && loc.max ? `Lv ${loc.min}-${loc.max}` : `Lv ${loc.min || loc.max}`}
+                          </div>
+                        )}
                         <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
                           {(Array.isArray(loc.method) ? loc.method : [loc.method])
                             .filter(Boolean)
@@ -1501,6 +1444,26 @@ function App(){
                   </div>
                 </div>
               ))}
+              {Object.keys(resolved.stats || {}).length > 0 && (
+                <>
+                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Base Stats</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
+                    {Object.entries(resolved.stats).map(([k,v]) => (
+                      <InfoPill key={k} label={titleCase(k.replace('_',' '))} value={v} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
+                <>
+                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
+                    {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
+                      <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
+                    ))}
+                  </div>
+                </>
+              )}
               {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
                 <>
                   <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Moveset</div>

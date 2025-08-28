@@ -1,7 +1,7 @@
 // Centralized Pokédex loader + search utilities for gens 1–5.
 // Compatible with legacy shapes: supports `dex` OR `id`, plus optional sprite-ish fields.
 
-import rawDex from "../data/pokedex.json"; // ensure this path/file exists
+import rawDex from "../../UpdatedDex.json"; // uses root UpdatedDex data
 
 function norm(s) {
   return (s ?? "")
