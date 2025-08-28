@@ -1,18 +1,18 @@
+\\ Known Issues
+
 - Patch Notes button goes nowhere.
 
-- If pokemon is selected, it persists between windows underneath the new content.
 
 - Live updater updates, but doesn't actually tell you a new version is out
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\
 
+\\ Changes to come
+
 - Integrate a "Key" for the different colored rarities and methods of catch. Bake a button into the top near the "options" that says "Key" and gives a pretty layout of what everything means. (css included)
 
 
 - Create your own rarity and method colors.
 
-
-- Include pokemon natures and possible abilities. on hover of nature or ability, explain what it does
-
-- finish pokemon moveset data
+- Include pokemon natures somehow

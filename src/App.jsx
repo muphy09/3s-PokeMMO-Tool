@@ -107,7 +107,18 @@ const DEX_BY_ID = (() => {
 })();
 const getMonByDex = (id) => DEX_BY_ID.get(Number(id)) || null;
 
-const ITEM_LIST = Array.isArray(itemsRaw) ? itemsRaw : [];
+const ITEM_LIST = (() => {
+  const src = Array.isArray(itemsRaw) ? itemsRaw : [];
+  const seen = new Set();
+  const list = [];
+  for (const item of src) {
+    const key = normalizeKey(item.name);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    list.push(item);
+  }
+  return list;
+})();
 
 const EVO_PARENTS = (() => {
   const map = new Map();
