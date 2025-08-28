@@ -1625,7 +1625,7 @@ function App(){
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
                   </div>
-                  <div style={{ display:'flex', gap:12, marginTop:6, flexWrap:'wrap', alignItems:'center', justifyContent:'space-between' }}>
+                  <div style={{ display:'grid', gap:12, marginTop:6, alignItems:'center', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))' }}>
                     <div style={{ display:'flex', gap:6, alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
                       {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
@@ -1653,7 +1653,7 @@ function App(){
                       </div>
                     )}
                   </div>
-                  <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
+                  <div style={{ display:'grid', gap:6, marginTop:8, gridTemplateColumns:'repeat(auto-fit, minmax(140px, 1fr))' }}>
                     <InfoPill label="Exp" value={titleCase((resolved.expType||'').replace(/_/g,' '))} />
                     <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
                     <InfoPill label="Height" value={formatHeight(resolved.height)} />
