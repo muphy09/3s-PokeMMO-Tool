@@ -1603,6 +1603,26 @@ function App(){
                   )}
                 </div>
               </div>
+              {Object.keys(resolved.stats || {}).length > 0 && (
+                <>
+                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Base Stats</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
+                    {Object.entries(resolved.stats).map(([k,v]) => (
+                      <InfoPill key={k} label={titleCase(k.replace('_',' '))} value={v} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
+                <>
+                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
+                    {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
+                      <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
+                    ))}
+                  </div>
+                </>
+              )}
 
               {/* Weakness table */}
               <div style={{ marginTop:16 }}>
@@ -1650,6 +1670,31 @@ function App(){
                   </div>
                 </div>
               </div>
+
+              <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
+              {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
+                <div style={{ margin:'16px 0 6px' }}>
+                  <div
+                    className="label-muted"
+                    style={{ fontWeight:700, cursor:'pointer' }}
+                    onClick={() => setShowMoveset(v => !v)}
+                  >
+                    {showMoveset ? '▾' : '▸'} Moveset
+                  </div>
+                  {showMoveset && (
+                    <div style={{ display:'flex', flexDirection:'column', gap:8, marginTop:6 }}>
+                      {MOVE_METHODS.map(m => (
+                        <MovesTable
+                          key={m.key}
+                          title={m.label}
+                          moves={resolved.moves[m.key] || []}
+                          showLevel={m.key === 'lv'}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Right: Locations */}
@@ -1681,50 +1726,6 @@ function App(){
                   </div>
                 </div>
               ))}
-              {Object.keys(resolved.stats || {}).length > 0 && (
-                <>
-                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Base Stats</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
-                    {Object.entries(resolved.stats).map(([k,v]) => (
-                      <InfoPill key={k} label={titleCase(k.replace('_',' '))} value={v} />
-                    ))}
-                  </div>
-                </>
-              )}
-              {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
-                  <>
-                    <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
-                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
-                      {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
-                        <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
-                      ))}
-                    </div>
-                  </>
-                )}
-                <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
-                {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
-                  <div style={{ margin:'16px 0 6px' }}>
-                    <div
-                      className="label-muted"
-                      style={{ fontWeight:700, cursor:'pointer' }}
-                      onClick={() => setShowMoveset(v => !v)}
-                  >
-                    {showMoveset ? '▾' : '▸'} Moveset
-                  </div>
-                {showMoveset && (
-                    <div style={{ display:'flex', flexDirection:'column', gap:8, marginTop:6 }}>
-                      {MOVE_METHODS.map(m => (
-                        <MovesTable
-                          key={m.key}
-                          title={m.label}
-                          moves={resolved.moves[m.key] || []}
-                          showLevel={m.key === 'lv'}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         )}
