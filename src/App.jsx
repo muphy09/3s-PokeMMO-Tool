@@ -1649,7 +1649,11 @@ function App(){
                         <span className="label-muted" style={{ fontWeight: 700 }}>Abilities:</span>
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                           {resolved.abilities.map((a, i) => (
-                            <AbilityPill key={`${a.name}-${i}`} label={`${i + 1}`} name={a.name} />
+                            <AbilityPill
+                              key={`${a.name}-${i}`}
+                              label={i === 2 ? 'Hidden' : `${i + 1}`}
+                              name={a.name}
+                            />
                           ))}
                         </div>
                       </div>
@@ -1689,12 +1693,6 @@ function App(){
                       ))}
                     </div>
                   )}
-                  {resolved.heldItems?.length > 0 && (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8, alignItems:'center' }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Held Items:</span>
-                      {resolved.heldItems.map((h,i)=> <span key={i}>{h.name || h}</span>)}
-                    </div>
-                  )}
                 </div>
               </div>
               {Object.keys(resolved.stats || {}).length > 0 && (
@@ -1716,6 +1714,12 @@ function App(){
                     ))}
                   </div>
                 </>
+              )}
+              {resolved.heldItems?.length > 0 && (
+                <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:16, alignItems:'center' }}>
+                  <span className="label-muted" style={{ fontWeight:700 }}>Held Items:</span>
+                  {resolved.heldItems.map((h,i)=> <span key={i}>{h.name || h}</span>)}
+                </div>
               )}
 
               {/* Weakness table */}

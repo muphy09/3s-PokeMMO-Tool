@@ -21,10 +21,13 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 
 ### Fixed
   - Patch Notes button now works properly! Hopefully you see this!
+
+  - Abilities tab displayed "1, 2, 3" now updated to better represent the 'Hidden' Ability
   
   - Refreshed the UI to accomodate for the increased data.
     - Added dropdowns for Movesets and Locations to avoid clutter on the Pokemon screen.
-    - Reorganized the flow of information so it appears cleaner when inside of a Pokemons' Profile 
+    - Reorganized the flow of information so it appears cleaner when inside of a Pokemons' Profile
+    - Rewrote containers to accomodate for the different size windows users run the app in 
   
   - Aligned 'Abilities' section to be more inline with Pokemon Type & Egg Group
 
