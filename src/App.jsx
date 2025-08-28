@@ -1517,7 +1517,7 @@ function App(){
               {/* Weakness table */}
               <div style={{ marginTop:16 }}>
                 <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:8 }}>
                   <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>4× Weak</div>
                     {resolved.weakness.x4.length ? (
@@ -1614,7 +1614,7 @@ function App(){
               {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
                 <>
                   <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Moveset</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:8 }}>
                     {MOVE_METHODS.map(m => (
                       <MovesTable
                         key={m.key}
