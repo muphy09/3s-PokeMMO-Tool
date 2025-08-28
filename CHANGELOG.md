@@ -10,6 +10,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     - Includes all abilities + hidden abilities and how they evolve.
     - Hover on Pokemon ability for a Tooltip
 
+  - TM Location Tab
+    - Search for TM Locations (per region) with a new tab at the top. Thx Dom!
+
 ---
 
 ## [1.9.6] - 2025-08

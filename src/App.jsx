@@ -8,6 +8,7 @@ import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.
 
 const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
 const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
+const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
 
 const DEBUG_LIVE = true; // set false to silence console logs
@@ -432,6 +433,25 @@ function useAreasDbCleaned(){
         }
         if (alive) setIndex(out);
       }catch(e){ console.error('load areas index failed', e); setIndex({}); }
+    })();
+    return () => { alive = false; };
+  }, []);
+  return index;
+}
+
+function useTmLocations(){
+  const [index, setIndex] = useState({});
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(TM_URL, { cache:'no-store' });
+        const json = await res.json();
+        if (alive) setIndex(json || {});
+      } catch (e) {
+        console.error('load tm locations failed', e);
+        if (alive) setIndex({});
+      }
     })();
     return () => { alive = false; };
   }, []);
@@ -1024,10 +1044,11 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'live'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'live'
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
+  const tmIndex    = useTmLocations();
   const areasRevByMon = useMemo(() => buildReverseAreasIndex(areasClean), [areasClean]); // NEW
   const extras = usePokeApiExtras(selected);
 
@@ -1096,6 +1117,25 @@ function App(){
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
  }, [query, areasClean, mode, areaRegion]);
+
+  const tmHits = React.useMemo(() => {
+    if (mode !== 'tm') return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    const regionKey = normalizeRegion(areaRegion);
+    const hits = [];
+    for (const [region, entries] of Object.entries(tmIndex)) {
+      const regionNorm = normalizeRegion(region);
+      if (regionKey !== 'all' && regionNorm !== regionKey) continue;
+      for (const entry of entries || []) {
+        if (entry.tm.toLowerCase().includes(q)) {
+          hits.push({ ...entry, region });
+        }
+      }
+    }
+    hits.sort((a,b)=> a.region.localeCompare(b.region) || a.tm.localeCompare(b.tm));
+    return hits;
+  }, [query, tmIndex, mode, areaRegion]);
 
   // Selected Pokémon details (MERGED sources)
   const resolved = React.useMemo(() => {
@@ -1192,8 +1232,9 @@ function App(){
         <div style={{ ...styles.card, marginBottom:16 }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
             <div style={styles.segWrap}>
-              <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon</button>
-              <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Areas</button>
+              <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon Search</button>
+              <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
+              <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
             </div>
           </div>
@@ -1203,9 +1244,9 @@ function App(){
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">
-                  {mode==='pokemon' ? 'Search by name or Dex #' : 'Search by route/area name'}
+                  {mode==='pokemon' ? 'Search by name or Dex #' : mode==='areas' ? 'Search by route/area name' : 'Search by TM name'}
                 </div>
-                {mode==='areas' && (
+                {(mode==='areas' || mode==='tm') && (
                   <div style={{ position:'relative' }}>
                     <button
                       type="button"
@@ -1234,7 +1275,11 @@ function App(){
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
-                placeholder={mode==='pokemon' ? 'e.g. Garchomp or 445' : 'e.g. Victory Road, Viridian Forest, Route 10'}
+                placeholder={mode==='pokemon'
+                  ? 'e.g. Garchomp or 445'
+                  : mode==='areas'
+                  ? 'e.g. Victory Road, Viridian Forest, Route 10'
+                  : 'e.g. Giga Drain, Payback'}
                 className="input"
                 style={{ height:44, borderRadius:10, fontSize:16 }}
               />
@@ -1319,6 +1364,20 @@ function App(){
                       );
                     })}
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* TM results */}
+          {mode==='tm' && !!tmHits.length && (
+            <div style={{ marginTop:12, display:'grid', gap:12 }}>
+              {tmHits.map((hit, idx) => (
+                <div key={`${hit.region}-${hit.tm}-${idx}`} style={styles.areaCard}>
+                  <div style={{ fontWeight:800, fontSize:16 }}>
+                    {hit.tm} <span className="label-muted">({hit.region})</span>
+                  </div>
+                  <div style={{ marginTop:6 }}>{hit.location}</div>
                 </div>
               ))}
             </div>
