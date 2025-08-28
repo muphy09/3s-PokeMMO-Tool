@@ -66,7 +66,7 @@ const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 /* ---------- pokedex adapter ---------- */
 function toLegacyShape(m){
-  const types = Array.isArray(m.types) ? m.types.map(normalizeType) : [];
+  const types = Array.isArray(m.types) ? [...new Set(m.types.map(normalizeType))] : [];
   return {
     id: m.id,
     name: m.name,
@@ -221,8 +221,33 @@ function EggGroupPill({ group }){
   );
 }
 
-function AbilityPill({ label, name, desc }){
+const abilityCache = new Map();
+function useAbilityDesc(name){
+  const slug = normalizeKey(name);
+  const [desc, setDesc] = useState(abilityCache.get(slug) || '');
+  useEffect(() => {
+    if (!slug || abilityCache.has(slug)) return;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/ability/${slug}`);
+        const json = await res.json();
+        const entry = (json.effect_entries || []).find(e => e.language?.name === 'en');
+        const d = entry?.short_effect || entry?.effect || '';
+        abilityCache.set(slug, d);
+        if (alive) setDesc(d);
+      } catch (e) {
+        if (alive) setDesc('');
+      }
+    })();
+    return () => { alive = false; };
+  }, [slug]);
+  return desc;
+}
+
+function AbilityPill({ label, name }){
   if (!name) return null;
+  const desc = useAbilityDesc(name);
   return (
     <div style={{
       display:'flex', alignItems:'center', gap:6,
@@ -496,6 +521,21 @@ function normalizeMapForGrouping(region, mapName){
     return 'Victory Road';
   }
   return m;
+}
+
+function lookupRarity(monName, region, map, locIndex){
+  const entry = locIndex[normalizeKey(monName)];
+  if (!entry) return '';
+  const regNorm = normalizeRegion(region);
+  const mapNorm = normalizeMapForGrouping(region, map);
+  for (const loc of entry.locations || []) {
+    if (normalizeRegion(loc.region) === regNorm &&
+        normalizeMapForGrouping(loc.region, loc.map) === mapNorm &&
+        loc.rarity) {
+      return loc.rarity;
+    }
+  }
+  return '';
 }
 
 /* ======================= LIVE ROUTE MATCHING ======================= */
@@ -1026,12 +1066,18 @@ function App(){
     for (const { region, map, entries } of buckets.values()) {
       const regionNorm = normalizeRegion(region);
       if (regionKey !== 'all' && regionNorm !== regionKey) continue;
-      const grouped = groupEntriesByMon(entries);
+      const grouped = groupEntriesByMon(entries).map(g => {
+        if (!g.rarities.length) {
+          const r = lookupRarity(g.monName, region, map, locIndex);
+          if (r) g.rarities.push(r);
+        }
+        return g;
+      });
       if (grouped.length) hits.push({ region, map, count: grouped.length, entries: grouped });
     }
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
- }, [query, areasClean, mode, areaRegion]);
+ }, [query, areasClean, locIndex, mode, areaRegion]);
 
   const tmHits = React.useMemo(() => {
     if (mode !== 'tm') return [];
@@ -1108,7 +1154,7 @@ function App(){
       rarity: [...new Set(l.rarity)],
     }));
 
-    const types = (selected.types || []).map(normalizeType);
+    const types = [...new Set((selected.types || []).map(normalizeType))];
     const moves = groupMoves(selected.moves || []);
     return {
       ...selected,
@@ -1221,7 +1267,7 @@ function App(){
             <div className="result-grid" style={{ marginTop:12 }}>
               {results.map(p => {
                 const mon = p;
-                const t = (p.types || []).map(normalizeType);
+                const t = [...new Set((p.types || []).map(normalizeType))];
                 return (
                   <button
                     key={`${p.id}-${p.name}`}
