@@ -13,8 +13,8 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
     - Updated Location data to be inline with PokeMMO data - No more generic Gen 9 data!
     - Base Stats for each Pokemon have been added to the dataset
   
-  - Catch Rate % and Ball Selector on each Pokemon's Page
-    - See the Pokemon's catch rate and adjust the % in reatime by selecting the PokeBall used
+  - Catch Rate Data
+    - See the Pokemon's catch rate displayed in the profile (Ball and status selector could be added in the future)
 
   - Item Search
     - Search for every item in PokeMMO and find out what it does (location data could be added in the future)
