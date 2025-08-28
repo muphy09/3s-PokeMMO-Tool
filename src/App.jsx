@@ -1631,7 +1631,7 @@ function App(){
                       gap: 12,
                       marginTop: 6,
                       alignItems: 'center',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))'
+                      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))'
                     }}
                   >
                     <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -1647,7 +1647,7 @@ function App(){
                     {resolved.abilities?.length > 0 && (
                       <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                         <span className="label-muted" style={{ fontWeight: 700 }}>Abilities:</span>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                           {resolved.abilities.map((a, i) => (
                             <AbilityPill key={`${a.name}-${i}`} label={`${i + 1}`} name={a.name} />
                           ))}
@@ -1666,7 +1666,7 @@ function App(){
                       display: 'grid',
                       gap: 6,
                       marginTop: 8,
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))'
+                      gridTemplateColumns: 'repeat(5, minmax(0, 1fr))'
                     }}
                   >
                     <InfoPill label="Exp" value={titleCase((resolved.expType || '').replace(/_/g, ' '))} />
