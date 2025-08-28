@@ -347,6 +347,97 @@ function RarityPill({ rarity }){
   );
 }
 
+/* ---------- Move data & tables ---------- */
+
+const CATEGORY_COLORS = {
+  physical:'#C92112',
+  special:'#1976D2',
+  status:'#A0A0A0'
+};
+function CategoryPill({ cat }){
+  const key = String(cat || '').toLowerCase();
+  if(!key) return null;
+  const bg = CATEGORY_COLORS[key] || '#555';
+  return (
+    <span style={{display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      fontWeight:800, color:'#fff', background:bg, textTransform:'capitalize'}}>{key}</span>
+  );
+}
+
+const MOVE_CACHE = new Map();
+function moveSlug(name=''){
+  return String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+function useMoveData(name){
+  const slug = moveSlug(name);
+  const [data,setData] = useState(MOVE_CACHE.get(slug));
+  useEffect(() => {
+    let alive = true;
+    if(!slug || MOVE_CACHE.has(slug)) return;
+    (async () => {
+      try{
+        const res = await fetch(`https://pokeapi.co/api/v2/move/${slug}`);
+        const json = await res.json();
+        const info = {
+          type: json?.type?.name,
+          category: json?.damage_class?.name,
+          power: json?.power,
+          accuracy: json?.accuracy
+        };
+        MOVE_CACHE.set(slug, info);
+        if(alive) setData(info);
+      }catch(e){
+        if(alive) setData(null);
+      }
+    })();
+    return () => { alive = false; };
+  }, [slug]);
+  return data || MOVE_CACHE.get(slug) || null;
+}
+
+function MoveRow({ mv, showLevel=false }){
+  const name = typeof mv === 'string' ? mv : mv.move;
+  const level = typeof mv === 'string' ? null : mv.level;
+  const data = useMoveData(name);
+  return (
+    <tr>
+      {showLevel && <td style={{ padding:'2px 4px' }}>{level ?? '-'}</td>}
+      <td style={{ padding:'2px 4px' }}>{name}</td>
+      <td style={{ padding:'2px 4px' }}>{data?.type ? <TypePill t={data.type} compact /> : '—'}</td>
+      <td style={{ padding:'2px 4px' }}>{data?.category ? <CategoryPill cat={data.category} /> : '—'}</td>
+      <td style={{ padding:'2px 4px' }}>{data?.power ?? '—'}</td>
+      <td style={{ padding:'2px 4px' }}>{data?.accuracy ?? '—'}</td>
+    </tr>
+  );
+}
+
+function MovesTable({ title, moves=[], showLevel=false }){
+  return (
+    <div style={{ border:'1px solid #262626', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+      <div style={{ fontWeight:700, marginBottom:4 }}>{title}</div>
+      {moves.length ? (
+        <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13 }}>
+          <thead>
+            <tr>
+              {showLevel && <th style={{ textAlign:'left', padding:'2px 4px' }}>Lv</th>}
+              <th style={{ textAlign:'left', padding:'2px 4px' }}>Move</th>
+              <th style={{ textAlign:'left', padding:'2px 4px' }}>Type</th>
+              <th style={{ textAlign:'left', padding:'2px 4px' }}>Cat</th>
+              <th style={{ textAlign:'left', padding:'2px 4px' }}>Pwr</th>
+              <th style={{ textAlign:'left', padding:'2px 4px' }}>Acc</th>
+            </tr>
+          </thead>
+          <tbody>
+            {moves.map((mv, idx) => <MoveRow key={idx} mv={mv} showLevel={showLevel} />)}
+          </tbody>
+        </table>
+      ) : (
+        <div className="label-muted">None</div>
+      )}
+    </div>
+  );
+}
+
 /* ---------- Defense chart ---------- */
 const TYPE_CHART = {
   normal:{ weak:['fighting'], res:[], imm:['ghost'] },
@@ -435,20 +526,30 @@ function useAreasDbCleaned(){
             // Ignore placeholder maps made entirely of dashes
             if (/^-+$/.test(mapName)) continue;
             const cleaned = [];
+            let last = null;
             for (const e of entries || []) {
               const method = cleanAreaMethod(e.method || '');
-              const rarity = e.rarity || '';
+              let rarity = e.rarity || '';
               const speciesRaw = cleanSpeciesName(e.pokemon || '');
               if (!speciesRaw) continue;
 
               const mon = getMon(speciesRaw) || getMon(titleCase(speciesRaw));
-              if (!mon) continue; // drop broken / unmatched
-              cleaned.push({
+              if (!mon) {
+                const k = rarityKey(speciesRaw);
+                const isPercent = /^\d+%$/.test(k);
+                if ((k && (RARITY_COLORS[k] || isPercent)) && last && !last.rarity) {
+                  last.rarity = titleCase(speciesRaw);
+                }
+                continue; // drop broken / unmatched
+              }
+              const entry = {
                 monId: mon.id,
                 monName: mon.name,   // canonical
                 method,
                 rarity
-              });
+              };
+              cleaned.push(entry);
+              last = entry;
             }
             if (cleaned.length) {
               if (!out[region]) out[region] = {};
@@ -1503,7 +1604,7 @@ function App(){
               {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
                 <>
                   <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
                     {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
                       <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
                     ))}
@@ -1515,20 +1616,12 @@ function App(){
                   <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Moveset</div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
                     {MOVE_METHODS.map(m => (
-                      <div key={m.key} style={{ border:'1px solid #262626', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-                        <div style={{ fontWeight:700, marginBottom:4 }}>{m.label}</div>
-                        {(resolved.moves[m.key] || []).length ? (
-                          <div style={{ display:'flex', flexDirection:'column', gap:4, fontSize:13 }}>
-                            {resolved.moves[m.key].map((mv, idx) => (
-                              m.key === 'lv'
-                                ? <div key={idx}>{`Lv ${mv.level}: ${mv.move}`}</div>
-                                : <div key={idx}>{mv}</div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="label-muted">None</div>
-                        )}
-                      </div>
+                      <MovesTable
+                        key={m.key}
+                        title={m.label}
+                        moves={resolved.moves[m.key] || []}
+                        showLevel={m.key === 'lv'}
+                      />
                     ))}
                   </div>
                 </>
