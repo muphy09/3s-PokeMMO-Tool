@@ -395,18 +395,26 @@ function useMoveData(name){
   return data || MOVE_CACHE.get(slug) || null;
 }
 
+const moveCell = { padding:'2px 4px', border:'1px solid var(--divider)' };
+
 function MoveRow({ mv, showLevel=false }){
   const name = typeof mv === 'string' ? mv : mv.move;
   const level = typeof mv === 'string' ? null : mv.level;
   const data = useMoveData(name);
   return (
     <tr>
-      {showLevel && <td style={{ padding:'2px 4px', textAlign:'center' }}>{level ?? '-'}</td>}
-      <td style={{ padding:'2px 4px' }}>{name}</td>
-      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.type ? <TypePill t={data.type} compact /> : '—'}</td>
-      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.category ? <CategoryPill cat={data.category} /> : '—'}</td>
-      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.power ?? '—'}</td>
-      <td style={{ padding:'2px 4px', textAlign:'center' }}>{data?.accuracy ?? '—'}</td>
+      {showLevel && (
+        <td style={{ ...moveCell, textAlign:'center' }}>{level ?? '-'}</td>
+      )}
+      <td style={{ ...moveCell, textAlign:'left' }}>{name}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>
+        {data?.type ? <TypePill t={data.type} compact /> : '—'}
+      </td>
+      <td style={{ ...moveCell, textAlign:'center' }}>
+        {data?.category ? <CategoryPill cat={data.category} /> : '—'}
+      </td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.power ?? '—'}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.accuracy ?? '—'}</td>
     </tr>
   );
 }
@@ -427,12 +435,14 @@ function MovesTable({ title, moves=[], showLevel=false }){
           </colgroup>
           <thead>
             <tr>
-              {showLevel && <th style={{ textAlign:'center', padding:'2px 4px' }}>Lv</th>}
-              <th style={{ textAlign:'left', padding:'2px 4px' }}>Move</th>
-              <th style={{ textAlign:'center', padding:'2px 4px' }}>Type</th>
-              <th style={{ textAlign:'center', padding:'2px 4px' }}>Cat</th>
-              <th style={{ textAlign:'center', padding:'2px 4px' }}>Pwr</th>
-              <th style={{ textAlign:'center', padding:'2px 4px' }}>Acc</th>
+              {showLevel && (
+                <th style={{ ...moveCell, textAlign:'center' }}>Lv</th>
+              )}
+              <th style={{ ...moveCell, textAlign:'left' }}>Move</th>
+              <th style={{ ...moveCell, textAlign:'center' }}>Type</th>
+              <th style={{ ...moveCell, textAlign:'center' }}>Cat</th>
+              <th style={{ ...moveCell, textAlign:'center' }}>Pwr</th>
+              <th style={{ ...moveCell, textAlign:'center' }}>Acc</th>
             </tr>
           </thead>
           <tbody>
