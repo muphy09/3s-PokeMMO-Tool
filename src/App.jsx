@@ -105,6 +105,17 @@ const DEX_BY_ID = (() => {
 })();
 const getMonByDex = (id) => DEX_BY_ID.get(Number(id)) || null;
 
+const EVO_PARENTS = (() => {
+  const map = new Map();
+  for (const mon of DEX_LIST) {
+    for (const evo of mon.evolutions || []) {
+      if (!map.has(evo.id)) map.set(evo.id, []);
+      map.get(evo.id).push(mon.id);
+    }
+  }
+  return map;
+})();
+
 function normalizeEggGroup(g=''){
   return String(g).toLowerCase().replace('warer','water').replace('hmanoid','humanoid').trim();
 }
@@ -452,6 +463,65 @@ function MovesTable({ title, moves=[], showLevel=false }){
       ) : (
         <div className="label-muted">None</div>
       )}
+    </div>
+  );
+}
+
+function EvolutionChain({ mon, onSelect }) {
+  const base = React.useMemo(() => {
+    if (!mon) return null;
+    let cur = mon;
+    while (EVO_PARENTS.get(cur.id)?.length) {
+      const parentId = EVO_PARENTS.get(cur.id)[0];
+      const parent = getMonByDex(parentId);
+      if (!parent) break;
+      cur = parent;
+    }
+    return cur;
+  }, [mon]);
+
+  const renderMon = (m) => {
+    if (!m) return null;
+    return (
+      <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+        <div style={{ textAlign:'center' }}>
+          <Sprite mon={m} size={72} alt={m.name} />
+          <div className="label-muted">#{String(m.id).padStart(3,'0')}</div>
+          <button
+            className="link-btn"
+            style={{ background:'none', border:0, padding:0, color:'var(--accent)', fontWeight:700, cursor:'pointer' }}
+            onClick={() => onSelect && onSelect(m)}
+          >
+            {titleCase(m.name)}
+          </button>
+          <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:4 }}>
+            {(m.types || []).map(t => <TypePill key={t} t={t} compact />)}
+          </div>
+        </div>
+        {m.evolutions?.map((evo) => {
+          const child = getMonByDex(evo.id);
+          return (
+            <div key={evo.id} style={{ display:'flex', alignItems:'center', gap:16 }}>
+              <div style={{ textAlign:'center', fontSize:12 }}>
+                <div style={{ fontSize:24 }}>→</div>
+                <div className="label-muted">{`${titleCase(evo.type.toLowerCase())}${evo.val ? `: ${evo.val}` : ''}`}</div>
+              </div>
+              {renderMon(child)}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  if (!base) return null;
+  const hasChain = base.id !== mon.id || (base.evolutions || []).length > 0;
+  if (!hasChain) return null;
+
+  return (
+    <div style={{ margin:'16px 0 6px' }}>
+      <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Evolution</div>
+      {renderMon(base)}
     </div>
   );
 }
@@ -1622,21 +1692,22 @@ function App(){
                 </>
               )}
               {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
-                <>
-                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
-                    {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
-                      <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
-                    ))}
-                  </div>
-                </>
-              )}
-              {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
-                <div style={{ margin:'16px 0 6px' }}>
-                  <div
-                    className="label-muted"
-                    style={{ fontWeight:700, cursor:'pointer' }}
-                    onClick={() => setShowMoveset(v => !v)}
+                  <>
+                    <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
+                    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
+                      {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
+                        <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
+                      ))}
+                    </div>
+                  </>
+                )}
+                <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
+                {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
+                  <div style={{ margin:'16px 0 6px' }}>
+                    <div
+                      className="label-muted"
+                      style={{ fontWeight:700, cursor:'pointer' }}
+                      onClick={() => setShowMoveset(v => !v)}
                   >
                     {showMoveset ? '▾' : '▸'} Moveset
                   </div>

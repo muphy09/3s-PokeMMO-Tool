@@ -4,6 +4,19 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
+## [2.0.0] - 2025-08
+### Added
+  - NEW Dataset for PokeMMO Pokemon.
+    - COMPLETE overhaul of the data used for Pokemon information
+    - Now includes a dropdown with Moves Information unique to PokeMMO Pokemon
+    - Updated Location data to be inline with PokeMMO data - No more generic Gen 9 data!
+    - Base Stats for each Pokemon have been added to the dataset
+    - Dropdown for Movesets complete with move information
+    - Catch Rate % & ball selector added!
+
+
+---
+
 ## [1.9.7] - 2025-08
 ### Added
   - Pokemon Ability and Evolution chart in their profile section.
