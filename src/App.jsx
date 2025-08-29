@@ -6,7 +6,9 @@ import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 import ColorPickerButton from './components/ColorPickerButton.jsx';
+import CaughtListButton from './components/CaughtListButton.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
+import { CaughtContext } from './caughtContext.js';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -46,7 +48,7 @@ const styles = {
   card: { padding:16, borderRadius:12, border:'1px solid #262626', background:'#111' },
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
-  monCard: { display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid #262626', borderRadius:10, padding:'10px', background:'#141414', textAlign:'center' },
+  monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid #262626', borderRadius:10, padding:'10px', background:'#141414', textAlign:'center' },
   encWrap: { display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap', marginTop:8 },
   encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 },
   viewBtn: {
@@ -402,9 +404,33 @@ function ItemPill({ item }){
   );
 }
 
-function AreaMonCard({ mon, monName, encounters, onView }){
+function PokeballIcon({ filled=false, size=16 }){
   return (
-    <div style={styles.monCard}>
+    <svg width={size} height={size} viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="15" fill={filled ? '#fff' : 'none'} stroke="#000" strokeWidth="2" />
+      {filled && <path d="M16 1a15 15 0 0 1 15 15H1A15 15 0 0 1 16 1z" fill="#e53e3e" />}
+      <path d="M1 16h30" stroke="#000" strokeWidth="2" />
+      <circle cx="16" cy="16" r="5" fill={filled ? '#fff' : 'none'} stroke="#000" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleCaught, showCaught=true }){
+  const cardStyle = {
+    ...styles.monCard,
+    opacity: showCaught ? (caught ? 1 : 0.4) : 1
+  };
+  return (
+    <div style={cardStyle}>
+      {showCaught && (
+        <button
+          onClick={onToggleCaught}
+          title={caught ? 'Mark as uncaught' : 'Mark as caught'}
+          style={{ position:'absolute', top:6, right:6, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
+        >
+          <PokeballIcon filled={caught} />
+        </button>
+      )}
       <div style={{ fontWeight:700 }}>{monName}</div>
       <Sprite mon={mon} size={48} alt={monName} />
       <div style={styles.encWrap}>
@@ -1092,6 +1118,9 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [isStale, setIsStale] = useState(false);
   const [regionChoices, setRegionChoices] = useState([]);
   const [lureOnly, setLureOnly] = useState(false);
+  const [showCaught, setShowCaught] = useState(true);
+
+  const { caught, toggleCaught } = React.useContext(CaughtContext);
 
   // Handle messages
   useEffect(() => {
@@ -1178,7 +1207,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
     if (isStale)   return <span className="px-2 py-1 rounded-xl bg-yellow-600/20 text-yellow-300 text-xs">Stale</span>;
-    return <span className="px-2 py-1 rounded-xl bg-green-600/20 text-green-300 text-xs">Live</span>;
+    return <span className="px-2 py-1 rounded-xl bg-green-600/20 text-green-300 text-xs"></span>;
   })();
 
   const confPct = formatConfidence(confidence);
@@ -1211,13 +1240,21 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
             />
             Lure Only
           </label>
+          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+            <input
+              type="checkbox"
+              checked={showCaught}
+              onChange={e=>setShowCaught(e.target.checked)}
+            />
+            Toggle Caught
+          </label>
           <div className="label-muted">{statusPill}</div>
         </div>
       </div>
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data. Click Into your PokeMMO window. Move around a bit or adjust your UI scaling if it still can't find the route.
+          <b>LiveRouteOCR</b> is attempting to find Route Data. Click Into your PokeMMO window. Try launching the app without PokeMMO minimized. Move around a bit if it still can't find the route.
         </div>
       )}
 
@@ -1245,8 +1282,18 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
             <div style={{ ...styles.gridCols, marginTop:10 }}>
               {entries.map((g, idx) => {
                 const mon = getMon(g.monName);
+                const isCaught = mon ? caught.has(mon.id) : false;
                 return (
-                  <AreaMonCard key={idx} mon={mon} monName={g.monName} encounters={g.encounters} onView={onViewMon} />
+                  <AreaMonCard
+                    key={idx}
+                    mon={mon}
+                    monName={g.monName}
+                    encounters={g.encounters}
+                    onView={onViewMon}
+                    caught={isCaught}
+                    showCaught={showCaught}
+                    onToggleCaught={() => mon && toggleCaught(mon.id)}
+                  />
                 );
               })}
             </div>
@@ -1284,6 +1331,23 @@ function buildReverseAreasIndex(areasClean) {
 
 /* ======================= APP ======================= */
 function App(){
+  const [caught, setCaught] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('caughtPokemon') || '[]');
+      return new Set(Array.isArray(saved) ? saved : []);
+    } catch {
+      return new Set();
+    }
+  });
+  const toggleCaught = (id) => {
+    setCaught(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { localStorage.setItem('caughtPokemon', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  };
+
   const [query, setQuery]       = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
@@ -1583,11 +1647,13 @@ function App(){
   }, [resolved]);
 
   return (
+    <CaughtContext.Provider value={{ caught, toggleCaught }}>
     <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
       <>
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
         <PatchNotesButton />
+        <CaughtListButton />
         <ColorPickerButton />
         <OptionsMenu />
       </div>
@@ -2064,6 +2130,7 @@ function App(){
       <VersionBadge />
     </>
     </ColorContext.Provider>
+    </CaughtContext.Provider>
   );
 }
 
