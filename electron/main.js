@@ -1,6 +1,6 @@
 // ===== Core requires =====
 
-const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, dialog, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
@@ -174,6 +174,15 @@ function rsrc(...p) {
   return path.join(process.resourcesPath || process.cwd(), ...p);
 }
 
+function notifyWin(title, body) {
+  if (process.platform !== 'win32') return;
+  try {
+    new Notification({ title, body }).show();
+  } catch (e) {
+    log('notifyWin error', e?.message || e);
+  }
+}
+
 // ===== Settings storage (for OCR Setup) =====
 const LOCAL_APPDATA = process.env.LOCALAPPDATA || app.getPath('userData'); // prefer real LocalAppData
 const POKELIVE_DIR = path.join(LOCAL_APPDATA, 'PokemmoLive');
@@ -199,22 +208,26 @@ function setupAutoUpdates() {
   autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
   autoUpdater.on('checking-for-update', () => {
     log('checking-for-update');
+    notifyWin('Checking for updates…', '');
     try { mainWindow?.webContents?.send('checking-for-update'); } catch {}
   });
   autoUpdater.on('update-not-available', () => {
     downloadingVersion = null;
     log('update-not-available');
+    notifyWin('Up to date', 'You have the latest version.');
     try { mainWindow?.webContents?.send('update-not-available'); } catch {}
   });
   autoUpdater.on('update-available', (info) => {
     downloadingVersion = info?.version ? normalizeVersion(info.version) : downloadingVersion;
     log('update-available', downloadingVersion || '');
+    notifyWin('Update available', `Downloading update v${downloadingVersion}…`);
     try { mainWindow?.webContents?.send('update-available', downloadingVersion); } catch {}
   });
   autoUpdater.on('update-downloaded', (info) => {
     downloadedUpdate = info?.version ? normalizeVersion(info.version) : downloadedUpdate;
     downloadingVersion = null;
     log('update-downloaded', info?.version || '');
+    notifyWin('Update ready', `Update v${downloadedUpdate} downloaded. Restart App to apply.`);
     try { mainWindow?.webContents?.send('update-downloaded', downloadedUpdate); } catch {}
   });
 

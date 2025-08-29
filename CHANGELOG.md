@@ -3,7 +3,7 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.3.3]- 2025-08
+## [2.3.4]- 2025-08
 ### Added
 - Move Filter!
   - Filter by a particular Move a Pokemon can learn, and refine it even further with a toggle for "Level up" only
