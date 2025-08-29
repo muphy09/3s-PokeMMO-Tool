@@ -1696,7 +1696,7 @@ function App(){
       <div className="container">
         {/* Header */}
         <div className="header" style={{ alignItems:'center' }}>
-          <img src={headerSrc} alt="" style={{ width:44, height:44, objectFit:'contain', imageRendering:'pixelated' }} />
+          <img src={headerSrc} alt="" style={{ width:64, height:64, objectFit:'contain', imageRendering:'pixelated' }} />
           <h1 style={{ marginLeft:8 }}>3&apos;s PokeMMO Tool</h1>
         </div>
 
