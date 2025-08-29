@@ -903,7 +903,7 @@ function listRegionCandidates(areasIndex, displayMap){
   }
   return [...new Set(out)];
 }
-function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
+function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lureOnly = false){
   const merged = [];
   const base = stripTimeTag(displayMap).toLowerCase();
   for (const [reg, maps] of Object.entries(areasIndex || {})) {
@@ -919,7 +919,7 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
       }
     }
   }
-  const grouped = groupEntriesByMon(merged).map(g => {
+  let grouped = groupEntriesByMon(merged).map(g => {
     const fallback = regionFilter
       ? lookupRarity(g.monName, regionFilter, stripTimeTag(displayMap), locIndex)
       : null;
@@ -928,6 +928,14 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
     });
     return g;
   });
+  if (lureOnly) {
+    grouped = grouped
+      .map(g => ({
+        ...g,
+        encounters: g.encounters.filter(enc => (enc.method || '').toLowerCase().includes('lure'))
+      }))
+      .filter(g => g.encounters.length);
+  }
   return grouped;
 }
 
@@ -1073,6 +1081,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
   const [regionChoices, setRegionChoices] = useState([]);
+  const [lureOnly, setLureOnly] = useState(false);
 
   // Handle messages
   useEffect(() => {
@@ -1103,7 +1112,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
       setRegion(chosen);
       setDisplayMap(targetName);
-      setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex));
+      setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex, lureOnly));
       });
 
     liveRouteClient.connect();
@@ -1154,7 +1163,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       window.removeEventListener('focus', onFocus);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areasIndex, locIndex, rawText]);
+  }, [areasIndex, locIndex, rawText, lureOnly]);
 
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
@@ -1170,7 +1179,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     if (displayMap) {
       const prefKey = `regionPref:${displayMap}`;
       localStorage.setItem(prefKey, r || '');
-      setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex));
+      setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex, lureOnly));
     }
   };
 
@@ -1183,7 +1192,17 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
         </div>
-        <div className="label-muted">{statusPill}</div>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+            <input
+              type="checkbox"
+              checked={lureOnly}
+              onChange={e=>setLureOnly(e.target.checked)}
+            />
+            Lure Only
+          </label>
+          <div className="label-muted">{statusPill}</div>
+        </div>
       </div>
 
       {!rawText && (
@@ -1205,8 +1224,9 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               </div>
               <div className="label-muted">{entries.length} Pokémon</div>
             </div>
-            {/* Segmented buttons on the RIGHT */}
-            <RegionPicker regions={regionChoices} value={region} onChange={handleRegionChange} />
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <RegionPicker regions={regionChoices} value={region} onChange={handleRegionChange} />
+            </div>
           </div>
 
           {entries.length === 0 ? (
@@ -1261,6 +1281,7 @@ function App(){
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
+  const [lureOnly, setLureOnly] = useState(false);
 
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
@@ -1392,18 +1413,26 @@ function App(){
     for (const { region, map, entries } of buckets.values()) {
       const regionNorm = normalizeRegion(region);
       if (regionKey !== 'all' && regionNorm !== regionKey) continue;
-      const grouped = groupEntriesByMon(entries).map(g => {
+      let grouped = groupEntriesByMon(entries).map(g => {
         const fallback = lookupRarity(g.monName, region, map, locIndex);
         g.encounters.forEach(enc => {
           if (!enc.rarities.length && fallback) enc.rarities.push(fallback);
         });
         return g;
       });
+      if (lureOnly) {
+        grouped = grouped
+          .map(g => ({
+            ...g,
+            encounters: g.encounters.filter(enc => (enc.method || '').toLowerCase().includes('lure'))
+          }))
+          .filter(g => g.encounters.length);
+      }
       if (grouped.length) hits.push({ region, map, count: grouped.length, entries: grouped });
     }
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
- }, [query, areasClean, locIndex, mode, areaRegion]);
+ }, [query, areasClean, locIndex, mode, areaRegion, lureOnly]);
 
   const tmHits = React.useMemo(() => {
     if (mode !== 'tm') return [];
@@ -1644,6 +1673,16 @@ function App(){
                 className="input"
                 style={{ height:44, borderRadius:10, fontSize:16 }}
               />
+              {mode==='areas' && (
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4, marginTop:8 }}>
+                  <input
+                    type="checkbox"
+                    checked={lureOnly}
+                    onChange={e=>setLureOnly(e.target.checked)}
+                  />
+                  Lure Only
+                </label>
+              )}
             </>
           )}
 
