@@ -2137,7 +2137,7 @@ function App(){
                               e.currentTarget.style.imageRendering = 'auto';
                             }}
                           />
-                          <span>{h.name || h}</span>
+                          <span style={{ fontWeight:600, color:'var(--accent)' }}>{h.name || h}</span>
                         </div>
                       );
                     })}
