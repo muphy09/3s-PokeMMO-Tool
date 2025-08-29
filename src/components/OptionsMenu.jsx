@@ -10,6 +10,15 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
+  const [scale, setScale] = useState(() => {
+    const saved = parseInt(localStorage.getItem("uiScale"), 10);
+    return Number.isFinite(saved) ? saved : 100;
+  });
+
+  useEffect(() => {
+    document.body.style.zoom = scale / 100;
+    localStorage.setItem("uiScale", String(scale));
+  }, [scale]);
 
   // close when clicking outside
   useEffect(() => {
@@ -149,6 +158,21 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
 
       {open && (
         <div style={menuStyle} role="menu" aria-label="Options menu">
+          <div style={{ padding:"10px 12px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+              <span style={{ color:"#ddd", fontWeight:600 }}>Element Scale</span>
+              <span style={{ color:"#aaa", fontSize:12 }}>{scale}%</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={200}
+              value={scale}
+              onChange={(e) => setScale(parseInt(e.target.value, 10))}
+              style={{ width:"100%" }}
+            />
+          </div>
+          <Divider />
           <MenuItem label="Check for updates" onClick={onCheckUpdates} />
           {isWindows && (
             <>
