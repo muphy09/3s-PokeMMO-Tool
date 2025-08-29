@@ -1432,6 +1432,7 @@ function App(){
   const [abilityFilter, setAbilityFilter] = useState('');
   const [regionFilter, setRegionFilter] = useState('');
   const [moveFilter, setMoveFilter] = useState('');
+  const [moveLevelOnly, setMoveLevelOnly] = useState(false);
   const typeOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const t of m.types || []) set.add(normalizeType(t));
@@ -1457,6 +1458,8 @@ function App(){
     for (const m of DEX_LIST) for (const l of m.locations || []) if (l.region_name) set.add(l.region_name);
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
+
+  useEffect(() => { if (!moveFilter) setMoveLevelOnly(false); }, [moveFilter]);
 
   const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter);
 
@@ -1529,8 +1532,14 @@ function App(){
         if (!abilities.includes(keyName(abilityFilter))) return false;
       }
       if (moveFilter) {
-        const moves = (mon.moves || []).map(mv => keyName(mv.name));
-        if (!moves.includes(keyName(moveFilter))) return false;
+        const moves = mon.moves || [];
+        if (moveLevelOnly) {
+          const has = moves.some(mv => keyName(mv.name) === keyName(moveFilter) && mv.type === 'level');
+          if (!has) return false;
+        } else {
+          const names = moves.map(mv => keyName(mv.name));
+          if (!names.includes(keyName(moveFilter))) return false;
+        }
       }
       if (regionFilter) {
         const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
@@ -1541,7 +1550,7 @@ function App(){
     });
     if (!hasFilters && q) list = list.slice(0, 24);
     return list;
-  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter]);
+  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
@@ -1805,17 +1814,25 @@ function App(){
                 <option value="">Region</option>
                 {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              <input
-                list="moveOptions"
+              <select
                 value={moveFilter}
                 onChange={e=>setMoveFilter(e.target.value)}
                 className="input"
-                placeholder="Move"
-                style={{ height:44, borderRadius:10, width:160 }}
-              />
-              <datalist id="moveOptions">
-                {moveOptions.map(m => <option key={m} value={m} />)}
-              </datalist>
+                style={{ height:44, borderRadius:10, width:160, overflowY:'auto' }}
+              >
+                <option value="">Move</option>
+                {moveOptions.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+              {moveFilter && (
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={moveLevelOnly}
+                    onChange={e=>setMoveLevelOnly(e.target.checked)}
+                  />
+                  Level up only
+                </label>
+              )}
             </div>
           )}
 
