@@ -141,7 +141,21 @@ contextBridge.exposeInMainWorld('app', {
       return () => ipcRenderer.removeListener('update-downloaded', handler);
     } catch { return () => {}; }
   },
-
+  onUpdateNotAvailable: (cb) => {
+    try {
+      const handler = () => { try { cb?.(); } catch {} };
+      ipcRenderer.on('update-not-available', handler);
+      return () => ipcRenderer.removeListener('update-not-available', handler);
+    } catch { return () => {}; }
+  },
+  onCheckingForUpdate: (cb) => {
+    try {
+      const handler = () => { try { cb?.(); } catch {} };
+      ipcRenderer.on('checking-for-update', handler);
+      return () => ipcRenderer.removeListener('checking-for-update', handler);
+    } catch { return () => {}; }
+  },
+  
   // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),
   stopOCR:       () => invokeSafe('stop-ocr', undefined, true),

@@ -1392,16 +1392,18 @@ function App(){
 
   useEffect(() => {
     let t;
+    const show = () => {
+      setShowUpToDate(true);
+      t = setTimeout(() => setShowUpToDate(false), 3000);
+    };
+    const offNA = window.app?.onUpdateNotAvailable?.(() => show());
     (async () => {
       try {
         const res = await window.app?.checkUpdates?.();
-        if (res?.status === 'uptodate') {
-          setShowUpToDate(true);
-          t = setTimeout(() => setShowUpToDate(false), 3000);
-        }
+        if (res?.status === 'uptodate') show();
       } catch {}
     })();
-    return () => { if (t) clearTimeout(t); };
+    return () => { if (t) clearTimeout(t); try { offNA?.(); } catch {}; };
   }, []);
 
   const [methodColors, setMethodColors] = useState(() => {

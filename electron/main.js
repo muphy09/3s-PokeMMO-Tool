@@ -197,6 +197,15 @@ function setupAutoUpdates() {
   autoUpdater.autoInstallOnAppQuit = true;
 
   autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
+  autoUpdater.on('checking-for-update', () => {
+    log('checking-for-update');
+    try { mainWindow?.webContents?.send('checking-for-update'); } catch {}
+  });
+  autoUpdater.on('update-not-available', () => {
+    downloadingVersion = null;
+    log('update-not-available');
+    try { mainWindow?.webContents?.send('update-not-available'); } catch {}
+  });
   autoUpdater.on('update-available', (info) => {
     downloadingVersion = info?.version ? normalizeVersion(info.version) : downloadingVersion;
     log('update-available', downloadingVersion || '');

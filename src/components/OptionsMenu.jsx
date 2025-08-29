@@ -77,9 +77,13 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     const offAvail = window.app?.onUpdateAvailable?.((ver) => {
       show(`Downloading update ${fmtVer(ver)}…`, "info");
     });
+    const offNA = window.app?.onUpdateNotAvailable?.(() => {
+      show("Up to date!", "success");
+    });
     return () => {
       try { offDl?.(); } catch {}
       try { offAvail?.(); } catch {}
+      try { offNA?.(); } catch {}
     };
   }, []);
 
