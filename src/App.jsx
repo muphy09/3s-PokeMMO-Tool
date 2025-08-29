@@ -1431,6 +1431,7 @@ function App(){
   const [eggFilter, setEggFilter] = useState('');
   const [abilityFilter, setAbilityFilter] = useState('');
   const [regionFilter, setRegionFilter] = useState('');
+  const [moveFilter, setMoveFilter] = useState('');
   const typeOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const t of m.types || []) set.add(normalizeType(t));
@@ -1446,13 +1447,18 @@ function App(){
     for (const m of DEX_LIST) for (const a of m.abilities || []) if (a?.name && a.name !== '--') set.add(a.name);
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
+  const moveOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const mv of m.moves || []) if (mv?.name) set.add(mv.name);
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
   const pokemonRegionOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const l of m.locations || []) if (l.region_name) set.add(l.region_name);
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
 
-  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter);
+  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter);
 
 
   const [headerSprite] = useState(() => {
@@ -1522,6 +1528,10 @@ function App(){
         const abilities = (mon.abilities || []).map(a => keyName(a.name));
         if (!abilities.includes(keyName(abilityFilter))) return false;
       }
+      if (moveFilter) {
+        const moves = (mon.moves || []).map(mv => keyName(mv.name));
+        if (!moves.includes(keyName(moveFilter))) return false;
+      }
       if (regionFilter) {
         const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
         if (!regions.includes(normalizeRegion(regionFilter))) return false;
@@ -1531,7 +1541,7 @@ function App(){
     });
     if (!hasFilters && q) list = list.slice(0, 24);
     return list;
-  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter]);
+  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
@@ -1730,7 +1740,7 @@ function App(){
           Up to date
         </div>
       )}
-      
+
       <div className="container">
         {/* Header */}
         <div className="header" style={{ alignItems:'center' }}>
@@ -1795,6 +1805,17 @@ function App(){
                 <option value="">Region</option>
                 {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
+              <input
+                list="moveOptions"
+                value={moveFilter}
+                onChange={e=>setMoveFilter(e.target.value)}
+                className="input"
+                placeholder="Move"
+                style={{ height:44, borderRadius:10, width:160 }}
+              />
+              <datalist id="moveOptions">
+                {moveOptions.map(m => <option key={m} value={m} />)}
+              </datalist>
             </div>
           )}
 
