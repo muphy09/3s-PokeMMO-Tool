@@ -182,7 +182,7 @@
     {
         "id": 30,
         "type": 0,
-        "name": "Energypowder",
+        "name": "Energy Powder",
         "description": "A very bitter medicine powder.\nIt restores the HP of one POKéMON\nby 50 points."
     },
     {
@@ -914,7 +914,7 @@
     {
         "id": 188,
         "type": 0,
-        "name": "Silverpowder",
+        "name": "Silver Powder",
         "description": "An item to be held by a POKéMON.\nA shiny silver powder that boosts\nthe power of BUG-type moves."
     },
     {
@@ -10730,7 +10730,7 @@
     {
         "id": 5222,
         "type": 0,
-        "name": "SilverPowder",
+        "name": "Silver Powder",
         "description": "An item to be held by a Pokémon.\nIt increases the power of Bug-type\nmoves by 20%.\n\nIt is popular among certain Move\nTutors."
     },
     {
@@ -14228,7 +14228,7 @@
     {
         "id": 6222,
         "type": 0,
-        "name": "SilverPowder",
+        "name": "Silver Powder",
         "description": "An item to be held by a Pokémon.\nIt increases the power of Bug-type\nmoves by 20%.\n\nIt is popular among certain Move\nTutors."
     },
     {
@@ -18260,7 +18260,7 @@
     {
         "id": 8222,
         "type": 0,
-        "name": "SilverPowder",
+        "name": "Silver Powder",
         "description": "An item to be held by a Pokémon.\nIt is a shiny, silver powder that ups\nthe power of Bug-type moves."
     },
     {
@@ -20936,7 +20936,7 @@
     {
         "id": 9222,
         "type": 0,
-        "name": "SilverPowder",
+        "name": "Silver Powder",
         "description": "An item to be held by a Pokémon.\nIt is a shiny, silver powder that ups\nthe power of Bug-type moves."
     },
     {

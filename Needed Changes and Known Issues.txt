@@ -24,3 +24,6 @@
 - why are the sprites so bitcrushed on scale
 - huge pain but kinda silly - option to swap between high def sprites and the pixel ones.
 - that item thing i saw earlier (held item inconsistencies w/ added spaces)
+- ADD TO ITEMS TAB "this item is held by these pokemon in the wild"
+- fix inconsistencies in dex/itemlist with spaces
+- fix duplicate entries in itemdata
