@@ -1,6 +1,6 @@
 {
   "name": "pokemmo-tool",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
@@ -69,7 +69,7 @@
             "x64"
           ]
         }
-        ],
+      ],
       "extraResources": [
         {
           "from": "resources/LiveRouteOCR/",
