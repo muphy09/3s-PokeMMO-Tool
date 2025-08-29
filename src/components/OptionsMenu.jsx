@@ -3,10 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 /**
  * Options dropdown with toasts:
  *  - Check for updates → "Checking…", "Up to date (vX)!", "Downloading update vY…", or "Update vY downloaded — restart to apply."
- *  - Reload OCR        → restarts helper AND signals Live tab to reconnect/clear
+ *  - Reload OCR (Windows only) → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
-export default function OptionsMenu({ style = {} }) {
+export default function OptionsMenu({ style = {}, isWindows = false }) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
@@ -150,8 +150,12 @@ export default function OptionsMenu({ style = {} }) {
       {open && (
         <div style={menuStyle} role="menu" aria-label="Options menu">
           <MenuItem label="Check for updates" onClick={onCheckUpdates} />
-          <Divider />
-          <MenuItem label="Reload OCR" onClick={onReloadOCR} />
+          {isWindows && (
+            <>
+              <Divider />
+              <MenuItem label="Reload OCR" onClick={onReloadOCR} />
+            </>
+          )}
           <MenuItem label="Refresh app" onClick={onRefresh} />
         </div>
       )}

@@ -1332,6 +1332,16 @@ function buildReverseAreasIndex(areasClean) {
 
 /* ======================= APP ======================= */
 function App(){
+  const platform = React.useMemo(() => {
+    const p = window.app?.platform || navigator?.userAgent || '';
+    const ua = String(p).toLowerCase();
+    if (ua.includes('win')) return 'win32';
+    if (ua.includes('linux')) return 'linux';
+    return 'other';
+  }, []);
+  const isWindows = platform === 'win32';
+  const isLinux = platform === 'linux';
+
   const [caught, setCaught] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('caughtPokemon') || '[]');
@@ -1358,6 +1368,10 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [lureOnly, setLureOnly] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
+
+  useEffect(() => {
+    if (!isWindows && mode === 'live') setMode('pokemon');
+  }, [isWindows, mode]);
 
   const [methodColors, setMethodColors] = useState(() => {
     try {
@@ -1657,7 +1671,7 @@ function App(){
         <PatchNotesButton />
         <CaughtListButton />
         <ColorPickerButton />
-        <OptionsMenu />
+        <OptionsMenu isWindows={isWindows} />
       </div>
 
       <div className="container">
@@ -1675,9 +1689,16 @@ function App(){
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
-              <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
+              {isWindows && (
+                <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live</button>
+              )}
+            </div>
           </div>
-</div>
+          {isLinux && (
+            <div className="label-muted" style={{ marginBottom:8 }}>
+              Live route tracking is unavailable on Linux.
+            </div>
+          )}
 
           {mode==='pokemon' && (
             <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
@@ -1822,7 +1843,7 @@ function App(){
           )}
 
           {/* Live route panel */}
-          {mode==='live' && (
+          {mode==='live' && isWindows && (
             <div style={{ marginTop:4 }}>
               <LiveRoutePanel
                 areasIndex={areasClean}
