@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
@@ -1384,6 +1384,8 @@ function App(){
   const [lureOnly, setLureOnly] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
 
+  const detailRef = useRef(null);
+
   const [showUpToDate, setShowUpToDate] = useState(false);
 
   useEffect(() => {
@@ -1484,6 +1486,11 @@ function App(){
     setRegionFilter('');
   }, [mode]);
   useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
+  useEffect(() => {
+    if (selected && detailRef.current) {
+      detailRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [selected]);
   useEffect(() => {
     if (!selected || selected.catchRate != null) return;
     (async () => {
@@ -2054,9 +2061,9 @@ function App(){
         </div>
 
         {/* Detail Panel (Pokémon) */}
-        {mode==='pokemon' && resolved && (
-          <>
-          <div className="grid">
+          {mode==='pokemon' && resolved && (
+             <>
+            <div ref={detailRef} className="grid">
             {/* Left: Pokémon card */}
             <div style={styles.card}>
               <div style={{ display:'flex', gap:12 }}>
