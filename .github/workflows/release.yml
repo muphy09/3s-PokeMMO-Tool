@@ -147,7 +147,7 @@ jobs:
           cache: "npm"
 
       - name: Ensure app-builder is executable
-        run: chmod +x node_modules/app-builder-bin/mac/app-builder
+        run: chmod +x node_modules/app-builder-bin/mac/app-builder_arm64
 
       - name: Build app (renderer + package)
         run: npm run pack:mac
