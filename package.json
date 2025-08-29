@@ -17,7 +17,8 @@
     "dist": "npm run clean && npm run build:helper && npm run build && electron-builder --publish never",
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir",
-    "pack:linux": "npm run clean && npm run build && electron-builder --linux AppImage"
+    "pack:linux": "npm run clean && npm run build && electron-builder --linux AppImage",
+    "pack:mac": "npm run clean && npm run build && electron-builder --mac dmg zip"
   },
   "build": {
     "appId": "com.pokemmo.tool",
@@ -88,6 +89,13 @@
       "target": [
         "AppImage",
         "tar.gz"
+      ]
+    },
+    "mac": {
+      "icon": "resources/icon.icns",
+      "target": [
+        "dmg",
+        "zip"
       ]
     },
     "artifactName": "3s-PokeMMO-Tool-${version}-${os}-${arch}.${ext}",

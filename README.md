@@ -21,9 +21,12 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 ---
 
 ## 📥 Installation
-1. Go to the [Releases](https://github.com/muphy09/3s-PokeMMO-Tool/releases) page.  
-2. Download the latest `.exe` at the top (installer build, automatically updates).  
-3. Run the app  
+1. Go to the [Releases](https://github.com/muphy09/3s-PokeMMO-Tool/releases) page.
+2. Download the build for your OS:
+   - **Windows** – `.exe` installer (includes Live Route)
+   - **Linux** – `.AppImage` bundle (no Live Route)
+   - **macOS** – `.dmg` installer (no Live Route)
+3. Run the app
 
 > ⚠️ Windows may show a security prompt for unsigned executables. This is normal and safe to continue.
 

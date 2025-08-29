@@ -90,7 +90,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
         const res = await window.app?.checkUpdates?.();
         if (res?.status === "downloaded" && res?.version) {
           show(`Update ${res.version} downloaded — restart to apply.`, "info");
-        } else if (res?.status === "downloading" && res?.version) {
+        } else if ((res?.status === "downloading" || res?.status === "available") && res?.version) {
           show(`Downloading update ${res.version}…`, "info");
         }
       } catch {}
@@ -110,7 +110,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
 
       if (status === "downloaded" && res?.version) {
         show(`Update ${res.version} downloaded — restart to apply.`, "success");
-      } else if (status === "downloading" && res?.version) {
+      } else if ((status === "downloading" || status === "available") && res?.version) {
         show(`Downloading update ${res.version}…`, "info");
       } else if (status === "uptodate") {
         show(`Up to date${current ? ` (v${current})` : ""}!`, "success");

@@ -115,8 +115,16 @@ contextBridge.exposeInMainWorld('files', fileApi);
 // ---------- App‑level bridges ----------
 contextBridge.exposeInMainWorld('app', {
   // App base
-  getVersion:    () => invokeSafe('get-version', undefined, null),
-  checkUpdates:  () => invokeSafe('check-updates', undefined, { status: 'error', message: 'IPC unavailable' }),
+  getVersion:    async () => {
+    const v = await invokeSafe('get-version', undefined, null);
+    if (v) return v;
+    return invokeSafe('get-app-version', undefined, null);
+  },
+  checkUpdates:  async () => {
+    const res = await invokeSafe('check-for-updates', undefined, null);
+    if (res) return res;
+    return invokeSafe('check-updates', undefined, { status: 'error', message: 'IPC unavailable' });
+  },
   reloadOCR:     (options) => invokeSafe('reload-ocr', options, true),
   refreshApp:    () => invokeSafe('refresh-app', undefined, (location.reload(), true)),
   onUpdateAvailable: (cb) => {
