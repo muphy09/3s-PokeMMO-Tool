@@ -92,20 +92,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Build Linux package
-        run: npm run pack:linux
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install dependencies
+        run: npm ci
+        
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Ensure app-builder is executable
         run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder
@@ -140,14 +135,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        run: npm ci
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Ensure app-builder is executable
         run: chmod +x node_modules/app-builder-bin/mac/x64/app-builder
