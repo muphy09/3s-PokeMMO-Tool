@@ -315,11 +315,11 @@ function formatGenderRatio(r){
 }
 /* ---------- Method & Rarity palettes ---------- */
 const METHOD_COLORS = {
-  grass:'#31d169ff', 'dark grass':'#B0BEC5', cave:'#482816ff', water:'#2263faff',
+  grass:'#19c254ff', 'dark grass':'#B0BEC5', cave:'#482816ff', water:'#2263faff',
   fishing:'#4ac6dfff','old rod':'#7fb9f0ff','good rod':'#3e9ae9ff','super rod':'#0a61e4ff',
-  horde:'#E056FD', rocks:'#616161','rock smash':'#616161', headbutt:'#FF7F50',
+  horde:'#fca996ff', rocks:'#616161','rock smash':'#616161', headbutt:'#FF7F50',
   tree:'#C2A83E','swampy grass':'#16A085','npc interaction':'#8E9AAF', interaction:'#8E9AAF',
-  building:'#5C7AEA', inside:'#5C7AEA', outside:'#43BCCD', special:'#F4B400', lure:'#b983f8ff'
+  building:'#5C7AEA', inside:'#5C7AEA', outside:'#43BCCD', special:'#F4B400', lure:'#cb1f2dff'
 };
 function methodKey(m=''){ return String(m).toLowerCase().trim(); }
 
@@ -341,7 +341,15 @@ function MethodPill({ method }){
   if (!method) return null;
   const label = cleanMethodLabel(method);
   const m = methodKey(label);
-  const base = m.startsWith('lure') ? 'lure' : (METHOD_COLORS[m] ? m : m.replace(/\s*\(.*\)$/,''));
+  // Some methods like "Water (Horde)" or "Grass - Lure" include the keyword
+  // mid-string instead of at the beginning. Sanitize the label and look for
+  // whole-word matches so custom colors for Lure/Horde apply consistently.
+  const raw = m.replace(/[^a-z]+/g, ' ');
+  const base = /\blure\b/.test(raw)
+    ? 'lure'
+    : /\bhorde\b/.test(raw)
+    ? 'horde'
+    : (METHOD_COLORS[m] ? m : m.replace(/\s*\(.*\)$/,''));
   const bg = METHOD_COLORS[base] || '#7f8c8d';
   return (
     <span style={{
@@ -355,7 +363,7 @@ function MethodPill({ method }){
 
 /* ---- Rarity palette ---- */
 const RARITY_COLORS = {
-  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#62e398ff','rare':'#de811cff','very rare':'#ff8800ff'
+  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#97e9b9ff','rare':'#de811cff','very rare':'#ff8800ff'
 };
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
 function RarityPill({ rarity }){
