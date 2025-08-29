@@ -6,6 +6,10 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 ## [2.1.9] - 2025-08
 ### Added
   - UI scale (App UI) slider now included in the Options Menu -- Thanks Prior-Cobbler!
+  - Held Item Sprites & Tooltips on hover
+
+### Fixed
+  - Duplicate Held Item Entries from appearing  
 
 ---
 

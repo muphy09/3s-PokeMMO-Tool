@@ -21,6 +21,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     return initial;
   });
 
+  const scaleWrapRef = useRef(null);
+  const startScaleRef = useRef(0);
+  const draggingRef = useRef(false);
+
   useEffect(() => {
     // Map slider range [0,100] to visual scale [0.5,1.5]
     // so 50% appears as the normal 100% size.
@@ -43,6 +47,24 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     const t = setTimeout(() => setToast(null), 2200);
     return () => clearTimeout(t);
   }, [toast]);
+
+  useEffect(() => {
+    const onUp = () => {
+      if (draggingRef.current) {
+        draggingRef.current = false;
+        if (scaleWrapRef.current) {
+          scaleWrapRef.current.style.transform = "";
+          scaleWrapRef.current.style.transformOrigin = "";
+        }
+      }
+    };
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, []);
 
   const show = (text, kind = "info") => setToast({ text, kind });
   
@@ -166,7 +188,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
 
       {open && (
         <div style={menuStyle} role="menu" aria-label="Options menu">
-          <div style={{ padding:"10px 12px" }}>
+          <div ref={scaleWrapRef} style={{ padding:"10px 12px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
               <span style={{ color:"#ddd", fontWeight:600 }}>Element Scale</span>
               <div style={{ display:"flex", alignItems:"center", color:"#aaa", fontSize:12 }}>
@@ -198,7 +220,24 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
               min={0}
               max={100}
               value={scale}
-              onChange={(e) => setScale(clamp(parseInt(e.target.value, 10)))}
+              onChange={(e) => {
+                const v = clamp(parseInt(e.target.value, 10));
+                setScale(v);
+                if (draggingRef.current && scaleWrapRef.current) {
+                  const prev = 0.5 + startScaleRef.current / 100;
+                  const curr = 0.5 + v / 100;
+                  scaleWrapRef.current.style.transform = `scale(${prev / curr})`;
+                  scaleWrapRef.current.style.transformOrigin = "0 0";
+                }
+              }}
+              onMouseDown={() => {
+                draggingRef.current = true;
+                startScaleRef.current = scale;
+              }}
+              onTouchStart={() => {
+                draggingRef.current = true;
+                startScaleRef.current = scale;
+              }}
               style={{ width:"100%" }}
             />
           </div>
