@@ -1383,9 +1383,25 @@ function App(){
   const [lureOnly, setLureOnly] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
 
+  const [showUpToDate, setShowUpToDate] = useState(false);
+
   useEffect(() => {
     if (!isWindows && mode === 'live') setMode('pokemon');
   }, [isWindows, mode]);
+
+  useEffect(() => {
+    let t;
+    (async () => {
+      try {
+        const res = await window.app?.checkUpdates?.();
+        if (res?.status === 'uptodate') {
+          setShowUpToDate(true);
+          t = setTimeout(() => setShowUpToDate(false), 3000);
+        }
+      } catch {}
+    })();
+    return () => { if (t) clearTimeout(t); };
+  }, []);
 
   const [methodColors, setMethodColors] = useState(() => {
     try {
@@ -1693,10 +1709,32 @@ function App(){
         <OptionsMenu isWindows={isWindows} />
       </div>
 
+{showUpToDate && (
+        <div
+          style={{
+            position:'fixed',
+            top:10,
+            left:'50%',
+            transform:'translateX(-50%)',
+            zIndex:9999,
+            padding:'8px 12px',
+            background:'#1b4a1b',
+            color:'#eee',
+            borderRadius:10,
+            border:'1px solid #333',
+            boxShadow:'0 8px 28px rgba(0,0,0,.45)',
+            fontWeight:700,
+            pointerEvents:'none'
+          }}
+        >
+          Up to date
+        </div>
+      )}
+      
       <div className="container">
         {/* Header */}
         <div className="header" style={{ alignItems:'center' }}>
-          <img src={headerSrc} alt="" style={{ width:64, height:64, objectFit:'contain', imageRendering:'pixelated' }} />
+          <img src={headerSrc} alt="" style={{ width:56, height:56, objectFit:'contain', imageRendering:'pixelated' }} />
           <h1 style={{ marginLeft:8 }}>3&apos;s PokeMMO Tool</h1>
         </div>
 
