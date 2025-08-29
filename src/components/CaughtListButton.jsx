@@ -98,7 +98,7 @@ export default function CaughtListButton(){
               onChange={e=>setQuery(e.target.value)}
               style={{ width:'100%', marginBottom:12, borderRadius:8, padding:8 }}
             />
-           <div>
+            <div>
               <div style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0', paddingRight:8, fontWeight:700 }}>
                 <span style={{ width:20, textAlign:'center' }}>Caught</span>
                 <span style={{ width:32 }}></span>
@@ -115,11 +115,11 @@ export default function CaughtListButton(){
                   </label>
                 ))}
               </div>
+              <div style={{ marginTop:8, textAlign:'center', fontWeight:700 }}>
+                Total caught {caught.size}/{DEX_LIST.length}
+              </div>
             </div>
           </div>
-          <div style={{ marginTop:8, textAlign:'center', fontWeight:700 }}>
-              Total caught {caught.size}/{DEX_LIST.length}
-            </div>
         </div>
       )}
     </>
