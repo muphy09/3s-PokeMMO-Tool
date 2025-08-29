@@ -363,7 +363,8 @@ function MethodPill({ method }){
 
 /* ---- Rarity palette ---- */
 const RARITY_COLORS = {
-  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#97e9b9ff','rare':'#de811cff','very rare':'#ff8800ff'
+  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#97e9b9ff','rare':'#eb9438cb','very rare':'#ff8800ff',
+  'lure':'#cb1f2dff','horde':'#fca996ff'
 };
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
 function RarityPill({ rarity }){
