@@ -1,8 +1,6 @@
 \\ Known Issues
 
-- Some Pokémon Encounter Rarity doesn't display on the Area search tab, even though the data for it exists
-
-- Live updater updates, but doesn't actually tell you a new version is out
+- Live updater updates on restart, but doesn't actually tell you a new version is out
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -14,6 +12,10 @@
 
 - Create your own rarity and method colors.
 
-- Include pokemon natures somehow
+- Include Pokemon natures somehow
 
-- 
+- Live Battle tab that pull data about the Pokémon on screen in battle
+
+- Integrate swarm and alpha notifications
+
+- "Caught" feature on live tab to dim the bubble of Pokémon that have been marked as caught

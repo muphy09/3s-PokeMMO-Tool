@@ -33,8 +33,14 @@ let downloadingVersion = null;
 
 // ===== Helpers =====
 function isNewerVersion(a, b) {
-  const pa = String(a).split('.').map(n => parseInt(n, 10) || 0);
-  const pb = String(b).split('.').map(n => parseInt(n, 10) || 0);
+  function parse(ver) {
+    return String(ver)
+      .replace(/^v/i, '')
+      .split('.')
+      .map(n => parseInt(n, 10) || 0);
+  }
+  const pa = parse(a);
+  const pb = parse(b);
   const len = Math.max(pa.length, pb.length);
   for (let i = 0; i < len; i++) {
     const x = pa[i] || 0, y = pb[i] || 0;
