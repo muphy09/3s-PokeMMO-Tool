@@ -9,9 +9,6 @@
 
 - Integrate a "Key" for the different colored rarities and methods of catch. Bake a button into the top near the "options" that says "Key" and gives a pretty layout of what everything means. (css included)
 
-
-- Create your own rarity and method colors.
-
 - Include Pokemon natures somehow
 
 - Live Battle tab that pull data about the Pokémon on screen in battle
@@ -19,3 +16,11 @@
 - Integrate swarm and alpha notifications
 
 - "Caught" feature on live tab to dim the bubble of Pokémon that have been marked as caught
+
+\\ jupiterferris's jupiterfinickies
+
+- update readme more idk
+- fix that unicode thing on nidoran/rina(♂/♀)
+- why are the sprites so bitcrushed on scale
+- huge pain but kinda silly - option to swap between high def sprites and the pixel ones.
+- that item thing i saw earlier (held item inconsistencies w/ added spaces)
