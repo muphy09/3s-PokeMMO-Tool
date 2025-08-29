@@ -125,6 +125,16 @@ const ITEM_LIST = (() => {
   return list;
 })();
 
+const ITEM_INDEX = (() => {
+  const byId = new Map();
+  const byName = new Map();
+  for (const item of ITEM_LIST) {
+    if (item.id != null) byId.set(item.id, item);
+    byName.set(normalizeKey(item.name), item);
+  }
+  return { byId, byName };
+})();
+
 const EVO_PARENTS = (() => {
   const map = new Map();
   for (const mon of DEX_LIST) {
@@ -2109,21 +2119,28 @@ function App(){
                 <div style={{ marginTop:16 }}>
                   <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Held Items</div>
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
-                    {resolved.heldItems.map((h,i) => (
-                      <div key={h.id || h.name || i} style={{ display:'flex', alignItems:'center', gap:6 }}>
-                        <img
-                          src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
-                          alt={h.name || h}
-                          style={{ width:24, height:24, imageRendering:'pixelated' }}
-                          onError={e => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = ITEM_PLACEHOLDER;
-                            e.currentTarget.style.imageRendering = 'auto';
-                          }}
-                        />
-                        <span>{h.name || h}</span>
-                      </div>
-                    ))}
+                    {resolved.heldItems.map((h,i) => {
+                      const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
+                      return (
+                        <div
+                          key={h.id || h.name || i}
+                          style={{ display:'flex', alignItems:'center', gap:6 }}
+                          title={item?.description || ''}
+                        >
+                          <img
+                            src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                            alt={h.name || h}
+                            style={{ width:24, height:24, imageRendering:'pixelated' }}
+                            onError={e => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = ITEM_PLACEHOLDER;
+                              e.currentTarget.style.imageRendering = 'auto';
+                            }}
+                          />
+                          <span>{h.name || h}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
