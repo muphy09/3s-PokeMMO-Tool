@@ -1832,7 +1832,7 @@ function App(){
                     checked={moveLevelOnly}
                     onChange={e=>setMoveLevelOnly(e.target.checked)}
                   />
-                  Level up only
+                  Level-Up Only
                 </label>
               )}
             </div>
