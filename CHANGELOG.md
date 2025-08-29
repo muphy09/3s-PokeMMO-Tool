@@ -25,6 +25,7 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
     - Can mark which Pokemon you've caught with the Pokeball icon in the top right of Pokemon boxes
 
   - Linux Release!
+    - App now detects what OS you are running on startup and adjusts the features available accordingly. (Live is not supported in Linux)
     - I don't have a great way of testing this so feedback is MUCH appreciated for this crowd!
 
 ### Fixed
