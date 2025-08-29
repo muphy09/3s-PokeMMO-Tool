@@ -2058,13 +2058,6 @@ function App(){
                   </div>
                 </>
               )}
-              {resolved.heldItems?.length > 0 && (
-                <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:16, alignItems:'center' }}>
-                  <span className="label-muted" style={{ fontWeight:700 }}>Held Items:</span>
-                  {resolved.heldItems.map((h,i)=> <span key={i}>{h.name || h}</span>)}
-                </div>
-              )}
-
               {/* Weakness table */}
               <div style={{ marginTop:16 }}>
                 <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
@@ -2111,6 +2104,29 @@ function App(){
                   </div>
                 </div>
               </div>
+
+              {resolved.heldItems?.length > 0 && (
+                <div style={{ marginTop:16 }}>
+                  <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Held Items</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                    {resolved.heldItems.map((h,i) => (
+                      <div key={h.id || h.name || i} style={{ display:'flex', alignItems:'center', gap:6 }}>
+                        <img
+                          src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                          alt={h.name || h}
+                          style={{ width:24, height:24, imageRendering:'pixelated' }}
+                          onError={e => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = ITEM_PLACEHOLDER;
+                            e.currentTarget.style.imageRendering = 'auto';
+                          }}
+                        />
+                        <span>{h.name || h}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
             </div>
