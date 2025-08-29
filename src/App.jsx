@@ -1244,6 +1244,34 @@ function App(){
   const regionOptions = useMemo(() => ['All', ...Object.keys(areasClean).sort((a,b)=>a.localeCompare(b))], [areasClean]);
 
 
+  const [typeFilter, setTypeFilter] = useState('');
+  const [eggFilter, setEggFilter] = useState('');
+  const [abilityFilter, setAbilityFilter] = useState('');
+  const [regionFilter, setRegionFilter] = useState('');
+  const typeOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const t of m.types || []) set.add(normalizeType(t));
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
+  const eggGroupOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const g of m.eggGroups || []) set.add(normalizeEggGroup(g));
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
+  const abilityOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const a of m.abilities || []) if (a?.name && a.name !== '--') set.add(a.name);
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
+  const pokemonRegionOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const l of m.locations || []) if (l.region_name) set.add(l.region_name);
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
+
+  const hasFilters = typeFilter || eggFilter || abilityFilter || regionFilter;
+
+
   const [headerSprite] = useState(() => {
     const withSprite = DEX_LIST.filter(d => spriteSources(d).length > 0);
     return withSprite.length ? spriteSources(withSprite[Math.floor(Math.random()*withSprite.length)])[0] : null;
@@ -1290,10 +1318,32 @@ function App(){
 
   // Search by Pokémon
   const results = React.useMemo(() => {
+    if (mode !== 'pokemon') return [];
+    if (hasFilters) {
+      return DEX_LIST.filter(mon => {
+        if (typeFilter) {
+          const types = (mon.types || []).map(normalizeType);
+          if (!types.includes(normalizeType(typeFilter))) return false;
+        }
+        if (eggFilter) {
+          const eggs = (mon.eggGroups || []).map(normalizeEggGroup);
+          if (!eggs.includes(normalizeEggGroup(eggFilter))) return false;
+        }
+        if (abilityFilter) {
+          const abilities = (mon.abilities || []).map(a => keyName(a.name));
+          if (!abilities.includes(keyName(abilityFilter))) return false;
+        }
+        if (regionFilter) {
+          const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
+          if (!regions.includes(normalizeRegion(regionFilter))) return false;
+        }
+        return true;
+      });
+    }
     const q = query.trim().toLowerCase();
-    if (!q || mode!=='pokemon') return [];
+    if (!q) return [];
     return DEX_LIST.filter(p => p.name.toLowerCase().includes(q) || String(p.id) === q).slice(0, 24);
-  }, [query, mode]);
+  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
@@ -1470,8 +1520,49 @@ function App(){
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               <button style={styles.segBtn(mode==='live')}    onClick={()=>setMode('live')}>Live</button>
-            </div>
           </div>
+</div>
+
+          {mode==='pokemon' && (
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
+              <select
+                value={typeFilter}
+                onChange={e=>setTypeFilter(e.target.value)}
+                className="input"
+                style={{ height:44, borderRadius:10, width:'auto' }}
+              >
+                <option value="">Type</option>
+                {typeOptions.map(t => <option key={t} value={t}>{titleCase(t)}</option>)}
+              </select>
+              <select
+                value={eggFilter}
+                onChange={e=>setEggFilter(e.target.value)}
+                className="input"
+                style={{ height:44, borderRadius:10, width:'auto' }}
+              >
+                <option value="">Egg Group</option>
+                {eggGroupOptions.map(g => <option key={g} value={g}>{titleCase(g)}</option>)}
+              </select>
+              <select
+                value={abilityFilter}
+                onChange={e=>setAbilityFilter(e.target.value)}
+                className="input"
+                style={{ height:44, borderRadius:10, width:'auto' }}
+              >
+                <option value="">Ability</option>
+                {abilityOptions.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+              <select
+                value={regionFilter}
+                onChange={e=>setRegionFilter(e.target.value)}
+                className="input"
+                style={{ height:44, borderRadius:10, width:'auto' }}
+              >
+                <option value="">Region</option>
+                {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
+              </select>
+            </div>
+          )}
 
           {/* Context label + search input (hidden for Live) */}
           {mode!=='live' && (
@@ -1515,6 +1606,7 @@ function App(){
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
+                disabled={hasFilters}
                 placeholder={mode==='pokemon'
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
