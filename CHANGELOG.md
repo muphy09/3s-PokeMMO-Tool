@@ -7,10 +7,13 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 ### Added
 - Move Filter!
   - Filter by a particular Move a Pokemon can learn, and refine it even further with a toggle for "Level up" only
+- Total Caught #
+  - Added a Total Caught option to the Catch List
 
 ### Fixed
 - Improvements to the OCR to speed up detection of PokeMMO window
   - Should hopefully fix some of the inconsistent startup times.
+- When filtering a category on the pokemon search, clicking into a Pokemon now scrolls to that Pokemons card.
 
 ---
 
