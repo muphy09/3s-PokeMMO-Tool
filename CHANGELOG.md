@@ -3,7 +3,7 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.2.6]- 2025-08
+## [2.2.7]- 2025-08
 ### Added
 - Mac Release
   - DMG package has been added to the Releases. This is a stripped version of the App, just like the linux build. No Live tab feature currently
