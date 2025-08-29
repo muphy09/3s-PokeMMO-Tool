@@ -102,23 +102,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "6.0.x"
-
-      - name: Publish LiveRouteOCR
-        run: dotnet publish ./LiveRouteOCR/LiveRouteOCR.csproj -c Release -r linux-x64 -p:PublishSingleFile=false -p:SelfContained=true -o LiveRouteOCR/publish
-
-      - name: Zip LiveRouteOCR for packaging
-        run: zip -j LiveRouteOCR/LiveRouteOCR.zip LiveRouteOCR/publish/*
-
-      - name: Ensure OCR zip exists
-        run: |
-          if [ ! -f "LiveRouteOCR/LiveRouteOCR.zip" ]; then echo "OCR zip missing"; exit 1; fi
-
       - name: Ensure app-builder is executable
-        run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder    
+        run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder
 
       - name: Build app (renderer + package)
         run: npm run pack:linux

@@ -10,14 +10,20 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
+  const clamp = (v) => Math.max(0, Math.min(100, v));
   const [scale, setScale] = useState(() => {
-    const saved = parseInt(localStorage.getItem("uiScale"), 10);
-    return Number.isFinite(saved) ? saved : 100;
+    const saved = parseInt(localStorage.getItem("uiScaleV2"), 10);
+    if (Number.isFinite(saved)) return clamp(saved);
+    const legacy = parseInt(localStorage.getItem("uiScale"), 10);
+    const initial = Number.isFinite(legacy) ? clamp(Math.round(legacy / 2)) : 50;
+    localStorage.setItem("uiScaleV2", String(initial));
+    localStorage.removeItem("uiScale");
+    return initial;
   });
 
   useEffect(() => {
     document.body.style.zoom = scale / 100;
-    localStorage.setItem("uiScale", String(scale));
+    localStorage.setItem("uiScaleV2", String(scale));
   }, [scale]);
 
   // close when clicking outside
@@ -161,14 +167,36 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
           <div style={{ padding:"10px 12px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
               <span style={{ color:"#ddd", fontWeight:600 }}>Element Scale</span>
-              <span style={{ color:"#aaa", fontSize:12 }}>{scale}%</span>
+              <div style={{ display:"flex", alignItems:"center", color:"#aaa", fontSize:12 }}>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={scale}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    setScale(Number.isFinite(v) ? clamp(v) : 0);
+                  }}
+                  style={{
+                    width: 40,
+                    textAlign: "right",
+                    background: "transparent",
+                    border: "1px solid #444",
+                    borderRadius: 4,
+                    color: "#aaa",
+                    fontSize: 12,
+                    marginRight: 2,
+                  }}
+                />
+                %
+              </div>
             </div>
             <input
               type="range"
               min={0}
-              max={200}
+              max={100}
               value={scale}
-              onChange={(e) => setScale(parseInt(e.target.value, 10))}
+              onChange={(e) => setScale(clamp(parseInt(e.target.value, 10)))}
               style={{ width:"100%" }}
             />
           </div>

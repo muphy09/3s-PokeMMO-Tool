@@ -49,17 +49,6 @@
     ],
     "extraResources": [
       {
-        "from": "resources/LiveRouteOCR/",
-        "to": "LiveRouteOCR",
-        "filter": [
-          "**/*"
-        ]
-      },
-      {
-        "from": "LiveRouteOCR/LiveRouteOCR.zip",
-        "to": "LiveRouteOCR.zip"
-      },
-      {
         "from": "resources/icon.ico",
         "to": "icon.ico"
       }
@@ -78,6 +67,19 @@
           "arch": [
             "x64"
           ]
+        }
+        ],
+      "extraResources": [
+        {
+          "from": "resources/LiveRouteOCR/",
+          "to": "LiveRouteOCR",
+          "filter": [
+            "**/*"
+          ]
+        },
+        {
+          "from": "LiveRouteOCR/LiveRouteOCR.zip",
+          "to": "LiveRouteOCR.zip"
         }
       ]
     },
