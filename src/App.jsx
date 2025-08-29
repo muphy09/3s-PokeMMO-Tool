@@ -7,6 +7,7 @@ import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
+import MoveFilter from './components/MoveFilter.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
 
@@ -1814,17 +1815,11 @@ function App(){
                 <option value="">Region</option>
                 {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              <input
+              <MoveFilter
                 value={moveFilter}
-                onChange={e=>setMoveFilter(e.target.value)}
-                list="move-filter-options"
-                className="input"
-                style={{ height:44, borderRadius:10, width:160 }}
-                placeholder="Move"
+                onChange={setMoveFilter}
+                options={moveOptions}
               />
-              <datalist id="move-filter-options">
-                {moveOptions.map(m => <option key={m} value={m} />)}
-              </datalist>
               {moveFilter && (
                 <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
                   <input
