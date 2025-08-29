@@ -726,14 +726,25 @@ function normalizeMapForGrouping(region, mapName){
   return m;
 }
 
+// Extract trailing time-of-day tag like "(Night)" from map name
+function extractTimeTag(name=''){
+  const m = String(name).match(/\((Morning|Day|Night)\)\s*$/i);
+  return m ? m[1] : '';
+}
+
+// Remove trailing time-of-day tag from map name
+function stripTimeTag(name=''){
+  return String(name).replace(/\s*\((Morning|Day|Night)\)\s*$/i, '').trim();
+}
+
 function lookupRarity(monName, region, map, locIndex){
   const entry = locIndex[normalizeKey(monName)];
   if (!entry) return '';
   const regNorm = normalizeRegion(region);
-  const mapNorm = normalizeMapForGrouping(region, map);
+  const mapNorm = stripTimeTag(normalizeMapForGrouping(region, map));
   for (const loc of entry.locations || []) {
     if (normalizeRegion(loc.region) === regNorm &&
-        normalizeMapForGrouping(loc.region, loc.map) === mapNorm &&
+        stripTimeTag(normalizeMapForGrouping(loc.region, loc.map)) === mapNorm &&
         loc.rarity) {
       return loc.rarity;
     }
@@ -836,27 +847,35 @@ function findBestMapInText(text, areasIndex){
 
 /* ---------- Region candidates + helpers ---------- */
 function listRegionCandidates(areasIndex, displayMap){
+  const base = stripTimeTag(displayMap).toLowerCase();
   const out = [];
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
-      const norm = normalizeMapForGrouping(region, mapName);
-      if (norm === displayMap) { out.push(region); break; }
+      const norm = normalizeMapForGrouping(region, mapName).toLowerCase();
+      if (norm.includes(base)) { out.push(region); break; }
     }
   }
   return [...new Set(out)];
 }
 function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
   const merged = [];
+  const base = stripTimeTag(displayMap).toLowerCase();
   for (const [reg, maps] of Object.entries(areasIndex || {})) {
     if (regionFilter && reg !== regionFilter) continue;
     for (const [mapName, list] of Object.entries(maps || {})) {
       const norm = normalizeMapForGrouping(reg, mapName);
-      if (norm === displayMap) merged.push(...(list || []));
+      if (norm.toLowerCase().includes(base)) {
+        const time = extractTimeTag(norm);
+        const adjusted = time
+          ? (list || []).map(e => ({ ...e, method: e.method ? `${e.method} (${time})` : `(${time})` }))
+          : (list || []);
+        merged.push(...adjusted);
+      }
     }
   }
   const grouped = groupEntriesByMon(merged).map(g => {
     if (!g.rarities.length && regionFilter) {
-      const r = lookupRarity(g.monName, regionFilter, displayMap, locIndex);
+      const r = lookupRarity(g.monName, regionFilter, stripTimeTag(displayMap), locIndex);
       if (r) g.rarities.push(r);
     }
     return g;
