@@ -3,6 +3,13 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.1.2] - 2025-08
+### Fixed
+  - Auto Updates should *hopefully* now let you know an update is available, is being downloaded, and is downloaded.
+
+
+---
+
 ## [2.1.1] - 2025-08
 ### Fixed
   - Live tab now functions again
