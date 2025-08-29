@@ -130,3 +130,45 @@ jobs:
             release/3s-PokeMMO-Tool-*-linux-x64.*
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-mac:
+    runs-on: macos-13
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Ensure app-builder is executable
+        run: chmod +x node_modules/app-builder-bin/mac/x64/app-builder
+
+      - name: Build app (renderer + package)
+        run: npm run pack:mac
+
+      - name: List release contents
+        run: |
+          echo "---- RELEASE TREE ----"
+          find release -type f -print -exec ls -l {} \;
+
+      - name: Create/Update GitHub Release and upload
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: |
+            release/latest-mac.yml
+            release/3s-PokeMMO-Tool-*-mac-*.*
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
