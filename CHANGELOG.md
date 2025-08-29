@@ -7,6 +7,7 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 ### Fixed
   - Re-enabled Linux Downloads
   - Search bar now functions with filters selected in Pokemon tab
+  - Search bar now clears when switching between tabs
 
 ---
 
