@@ -22,7 +22,9 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   });
 
   useEffect(() => {
-    document.body.style.zoom = scale / 100;
+    // Map slider range [0,100] to visual scale [0.5,1.5]
+    // so 50% appears as the normal 100% size.
+    document.body.style.zoom = 0.5 + scale / 100;
     localStorage.setItem("uiScaleV2", String(scale));
   }, [scale]);
 
