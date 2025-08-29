@@ -1,0 +1,1428 @@
+{
+  "Hoenn": [
+    {
+      "tm": "Hurricane",
+      "location": "Route 115"
+    },
+    {
+      "tm": "Dragon Claw",
+      "location": "Meteor Falls"
+    },
+    {
+      "tm": "Water Pulse",
+      "location": "Sootopolis City Gym"
+    },
+    {
+      "tm": "Calm Mind",
+      "location": "Mossdeep City Gym"
+    },
+    {
+      "tm": "Roar",
+      "location": "Route 114"
+    },
+    {
+      "tm": "Toxic",
+      "location": "Fiery Path"
+    },
+    {
+      "tm": "Snowscape",
+      "location": "Shoal Cave (Low Tide)"
+    },
+    {
+      "tm": "Bulk Up",
+      "location": "Dewford Town Gym"
+    },
+    {
+      "tm": "Bullet Seed",
+      "location": "Route 104"
+    },
+    {
+      "tm": "Hidden Power",
+      "location": "Fortree City"
+    },
+    {
+      "tm": "Sunny Day",
+      "location": "Scorched Slab"
+    },
+    {
+      "tm": "Taunt",
+      "location": "Fortree City Mart"
+    },
+    {
+      "tm": "Ice Beam",
+      "location": "Abandoned Ship (storage key needed)"
+    },
+    {
+      "tm": "Blizzard",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Hyper Beam",
+      "location": "Fortree City Mart"
+    },
+    {
+      "tm": "Light Screen",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Protect",
+      "location": "Slateport City Mart"
+    },
+    {
+      "tm": "Rain Dance",
+      "location": "Abandoned Ship"
+    },
+    {
+      "tm": "Giga Drain",
+      "location": "Route 123 and talk to the lady that Bloodyroar is staring at. (Important: make sure to bring a grass type pokemon before talking to her)"
+    },
+    {
+      "tm": "Safeguard",
+      "location": "Slateport City Mart"
+    },
+    {
+      "tm": "Frustration",
+      "location": "Pacifidlog Town"
+    },
+    {
+      "tm": "Solarbeam",
+      "location": "Safari Zone"
+    },
+    {
+      "tm": "Fissure",
+      "location": "Meteor Falls"
+    },
+    {
+      "tm": "Thunderbolt",
+      "location": "New Mauville"
+    },
+    {
+      "tm": "Thunder",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Weather Ball",
+      "location": "Seafloor Cavern"
+    },
+    {
+      "tm": "Return",
+      "location": "Pacifidlog Town"
+    },
+    {
+      "tm": "Dig",
+      "location": "Route 114"
+    },
+    {
+      "tm": "Psychic",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Hex",
+      "location": "Mt. Pyre (6th floor)"
+    },
+    {
+      "tm": "Brick Break",
+      "location": "Sootpolis City"
+    },
+    {
+      "tm": "Double Team",
+      "location": "Route 113"
+    },
+    {
+      "tm": "Reflect",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Shock Wave",
+      "location": "Mauville City Gym"
+    },
+    {
+      "tm": "Flamethrower",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Sludge Bomb",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Sandstorm",
+      "location": "Route 111"
+    },
+    {
+      "tm": "Fire Blast",
+      "location": "Sootopolis City Mart"
+    },
+    {
+      "tm": "Rock Tomb",
+      "location": "Rustboro City Gym"
+    },
+    {
+      "tm": "Aerial Ace",
+      "location": "Fortree City Gym"
+    },
+    {
+      "tm": "Torment",
+      "location": "Slateport City"
+    },
+    {
+      "tm": "Facade",
+      "location": "Petalburg City Gym"
+    },
+    {
+      "tm": "Secret Power",
+      "location": "Slateport City / Route 111"
+    },
+    {
+      "tm": "Rest",
+      "location": "Lilycove City (go to the house circled in red and talk to the man)"
+    },
+    {
+      "tm": "Charm",
+      "location": "Verdanturf Town"
+    },
+    {
+      "tm": "Thief",
+      "location": "Slateport City Museum (talk to the Team Aqua Grunt)"
+    },
+    {
+      "tm": "Steel Wing",
+      "location": "Granite Cave (in Dewford Town) - Chat with Steven to receive this TM"
+    },
+    {
+      "tm": "Guard Swap",
+      "location": "Mt. Pyre"
+    },
+    {
+      "tm": "Snatch",
+      "location": "S.S. Tidal"
+    },
+    {
+      "tm": "Overheat",
+      "location": "Lavaridge Town Gym"
+    },
+    {
+      "tm": "Natural Gift",
+      "location": "Pacifidlog Town"
+    },
+    {
+      "tm": "Double-Edge",
+      "location": "Sootopolis City"
+    },
+    {
+      "tm": "DynamicPunch",
+      "location": "Mossdeep City"
+    },
+    {
+      "tm": "Explosion",
+      "location": "Pacifidlog Town"
+    },
+    {
+      "tm": "Fury Cutter",
+      "location": "Verdanturf Town"
+    },
+    {
+      "tm": "Metronome",
+      "location": "Fallarbor Town"
+    },
+    {
+      "tm": "Mimic",
+      "location": "Lavaridge Town"
+    },
+    {
+      "tm": "Rollout",
+      "location": "Mauville City"
+    },
+    {
+      "tm": "Sleep Talk",
+      "location": "Fortree Town"
+    },
+    {
+      "tm": "Substitute",
+      "location": "Lilycove City Department Store's Top Floor"
+    },
+    {
+      "tm": "Swagger",
+      "location": "Slateport City's Pokemon Fan Club"
+    }
+  ],
+  "Johto": [
+    {
+      "tm": "Bullet Seed",
+      "location": "Route 32"
+    },
+    {
+      "tm": "Metal Claw",
+      "location": "Union Cave"
+    },
+    {
+      "tm": "U-Turn",
+      "location": "Azalea Town Gym"
+    },
+    {
+      "tm": "Headbutt",
+      "location": "Talk to the man at Ilex Forest."
+    },
+    {
+      "tm": "Taunt",
+      "location": "Talk to the girl with the Butterfree at Route 34 in the gate."
+    },
+    {
+      "tm": "Thunderpunch",
+      "location": "Route 34"
+    },
+    {
+      "tm": "Return",
+      "location": "Goldenrod Department Store at the 5th Floor. Talk to the lady market seller when you have a Pokemon with Max Level of Happiness in the lead."
+    },
+    {
+      "tm": "Attract",
+      "location": "Goldenrod City Gym"
+    },
+    {
+      "tm": "Air Cutter",
+      "location": "Route 35"
+    },
+    {
+      "tm": "Magical Leaf",
+      "location": "National Park"
+    },
+    {
+      "tm": "Shadow Ball",
+      "location": "Ecruteak City Gym"
+    },
+    {
+      "tm": "Drain Punch",
+      "location": "Route 39"
+    },
+    {
+      "tm": "Natural Gift",
+      "location": "Route 39 after you feed the Miltank a lot of Oran Berries. Chat with the mother of the girls to get this TM."
+    },
+    {
+      "tm": "Charge Beam",
+      "location": "Olivine City"
+    },
+    {
+      "tm": "Power Gem",
+      "location": "The Olivine City Lighthouse"
+    },
+    {
+      "tm": "Razor Shell",
+      "location": "Route 40"
+    },
+    {
+      "tm": "Focus Punch",
+      "location": "Cianwood City Gym"
+    },
+    {
+      "tm": "Iron Tail",
+      "location": "Olivine City Gym"
+    },
+    {
+      "tm": "Icy Wind",
+      "location": "Route 42"
+    },
+    {
+      "tm": "Hurricane",
+      "location": "Lake of Rage"
+    },
+    {
+      "tm": "Hidden Power",
+      "location": "Go to the house at the north west of Lake of Rage. Talk with the man inside to get this TM."
+    },
+    {
+      "tm": "Foul Play",
+      "location": "Team Rocket HQ B3F"
+    },
+    {
+      "tm": "Gunk Shot",
+      "location": "Team Rocket HQ B2F"
+    },
+    {
+      "tm": "Snowscape",
+      "location": "Mahogany Town Gym"
+    },
+    {
+      "tm": "Sludge Bomb",
+      "location": "Talk to the guard in the gate at Route 43 after you defeated Team Rocket at the Team Rocket HQ."
+    },
+    {
+      "tm": "Rest",
+      "location": "Talk to the Guard at Route 35's Gate while having an empty Party Slot to get your Spearow with Grass Mail. Then go to Route 31 and chat with the man in the Pink Shirt next to the Black Apricorn Tree. Show him the Spearow to obtain this TM."
+    },
+    {
+      "tm": "Roar",
+      "location": "Talk to the man in the Pink Shirt at Route 32."
+    },
+    {
+      "tm": "Iron Defense",
+      "location": "Slowpoke Well's 3rd Floor."
+    },
+    {
+      "tm": "Earth Power",
+      "location": "Goldenrod City's Warehouse Basement 2nd Floor"
+    },
+    {
+      "tm": "Sunny Day",
+      "location": "Talk with the lady at Radio Tower after you defeated Archer from Team Rocket."
+    },
+    {
+      "tm": "Ice Punch",
+      "location": "Ice Path"
+    },
+    {
+      "tm": "Draco Meteor",
+      "location": "Blackthorn City in a house by the Poke Mart. Talk to the Old Lady and say \"Yes.\""
+    },
+    {
+      "tm": "Dragon Pulse",
+      "location": "You get it in the Dragon Den after Clair's mental breakdown from winning her Gym Fight. However, you must first answer some questions by the Elder in the Dragon Den."
+    },
+    {
+      "tm": "Fire Punch",
+      "location": "Burned Town"
+    },
+    {
+      "tm": "Sandstorm",
+      "location": "Talk to the lady in a house at Route 27."
+    },
+    {
+      "tm": "Power Whip",
+      "location": "Route 27"
+    },
+    {
+      "tm": "Brave Bird",
+      "location": "Victory Road at the 2F. However, you will need to follow down the last hole in the 3F to get this TM."
+    },
+    {
+      "tm": "Superpower",
+      "location": "Victory Road 3F"
+    },
+    {
+      "tm": "Aura Sphere",
+      "location": "Mt. Mortar at the Upper Cave."
+    },
+    {
+      "tm": "Drill Run",
+      "location": "Dark Cave from Blackthorn City side."
+    },
+    {
+      "tm": "Steel Wing",
+      "location": "Talk with the lady in the house at Route 28."
+    },
+    {
+      "tm": "Flamethrower",
+      "location": "Route 28"
+    },
+    {
+      "tm": "Stealth Rock",
+      "location": "Mt. Silver Cave lower mountain side."
+    }
+  ],
+  "Kanto": [
+    {
+      "tm": "Aura Sphere",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Water Pulse",
+      "location": "Cerulean Gym - given to you by Misty when you defeat her"
+    },
+    {
+      "tm": "Calm Mind",
+      "location": "Saffron Gym- given to you by Sabrina when you defeat her"
+    },
+    {
+      "tm": "Mega Drain",
+      "location": "Route 4"
+    },
+    {
+      "tm": "Toxic",
+      "location": "Fuchsia Gym- given to you by Koga after you defeat him"
+    },
+    {
+      "tm": "Hyper Beam",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Imprison",
+      "location": "Silph Co 7F"
+    },
+    {
+      "tm": "Water Gun",
+      "location": "Mt Moon"
+    },
+    {
+      "tm": "Hidden Power",
+      "location": "Celadon Game Corner; Island 7 Mart"
+    },
+    {
+      "tm": "Natural Power",
+      "location": "Safari Zone"
+    },
+    {
+      "tm": "Snarl",
+      "location": "Celadon Rocket Hideout (Floor 2B)"
+    },
+    {
+      "tm": "Ice Beam",
+      "location": "Celadon Game Corner"
+    },
+    {
+      "tm": "Blizzard",
+      "location": "Cinnabar Mansion"
+    },
+    {
+      "tm": "Hyper Beam",
+      "location": "Saffron City Mart"
+    },
+    {
+      "tm": "Light Screen",
+      "location": "Celadon Department Store roof- give the girl a Fresh Water from the venders."
+    },
+    {
+      "tm": "Agility",
+      "location": "Power Plant"
+    },
+    {
+      "tm": "Whirlwind",
+      "location": "Route 15"
+    },
+    {
+      "tm": "Giga Drain",
+      "location": "Celadon Gym - given to you by Erika when you defeat her."
+    },
+    {
+      "tm": "Safeguard",
+      "location": "Celadon Department Store roof- give the girl a Soda Pop from the vending machine."
+    },
+    {
+      "tm": "Fake Tears",
+      "location": "Celadon Rocket Hideout (Floor 3B)"
+    },
+    {
+      "tm": "Solarbeam",
+      "location": "Cinnabar Mansion"
+    },
+    {
+      "tm": "Iron Tail",
+      "location": "Celadon Dept Store"
+    },
+    {
+      "tm": "Thunderbolt",
+      "location": "Celadon Game Corner"
+    },
+    {
+      "tm": "Thunder",
+      "location": "Power Plant"
+    },
+    {
+      "tm": "Earthquake",
+      "location": "Viridian City Gym - defeat leader Giovanni and he will give it to you"
+    },
+    {
+      "tm": "Return",
+      "location": "Route 12"
+    },
+    {
+      "tm": "Dig",
+      "location": "Cerulean City"
+    },
+    {
+      "tm": "Psychic",
+      "location": "Saffron City- visit Mr Psychic's house"
+    },
+    {
+      "tm": "Shadow Ball",
+      "location": "Cinnabar Island Mart"
+    },
+    {
+      "tm": "Submission",
+      "location": "SS Anne"
+    },
+    {
+      "tm": "Screech",
+      "location": "Safari Zone"
+    },
+    {
+      "tm": "Reflect",
+      "location": "Celadon Department Store roof - give the girl a Lemonade from the vending machine"
+    },
+    {
+      "tm": "Shock Wave",
+      "location": "Vermilion City gym- given to you by LT.Surge when you defeat him"
+    },
+    {
+      "tm": "Flamethrower",
+      "location": "Celadon Game Corner"
+    },
+    {
+      "tm": "Toxic Spikes",
+      "location": "Team Rocket Headquarters Island 5"
+    },
+    {
+      "tm": "Focus Blast",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Fire Blast",
+      "location": "Cinnabar City gym- defeat Gym Leader Blaine and he will give it to you"
+    },
+    {
+      "tm": "Rock Tomb",
+      "location": "Pewter City gym- defeat Gym Leader Brock and he will give it to you; Pewter City Mart"
+    },
+    {
+      "tm": "Take Down",
+      "location": "Route 9"
+    },
+    {
+      "tm": "Torment",
+      "location": "Silph Co (4F)"
+    },
+    {
+      "tm": "Baton Pass",
+      "location": "Get the lemonade from Celadon Mart's vending machine and place lemonade on Steelix's Grave at Island 5's Memorial Pillar."
+    },
+    {
+      "tm": "Secret Power",
+      "location": "Celadon Department Store"
+    },
+    {
+      "tm": "Pay Day",
+      "location": "SS Anne (watch video)"
+    },
+    {
+      "tm": "Beat Up",
+      "location": "Route 24"
+    },
+    {
+      "tm": "Assurance",
+      "location": "Mt. Moon"
+    },
+    {
+      "tm": "Egg Bomb",
+      "location": "Safari Zone"
+    },
+    {
+      "tm": "Psywave",
+      "location": "Route 12"
+    },
+    {
+      "tm": "Snatch",
+      "location": "Team Rocket Hideout"
+    },
+    {
+      "tm": "Overheat",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Teleport",
+      "location": "Route 25"
+    },
+    {
+      "tm": "Dream Eater",
+      "location": "Man left of Viridian City's Pokemon Center (Cut or Surf is needed)"
+    },
+    {
+      "tm": "Seismic Toss",
+      "location": "Pewter City Museum"
+    },
+    {
+      "tm": "Mega Punch and Mega Kick",
+      "location": "Route 4"
+    },
+    {
+      "tm": "Rock Slide",
+      "location": "Rock Tunnel"
+    },
+    {
+      "tm": "Counter",
+      "location": "Celadon Dept Store (3rd Floor)"
+    },
+    {
+      "tm": "Softboiled",
+      "location": "Celadon City"
+    },
+    {
+      "tm": "Mimic",
+      "location": "Saffron City"
+    },
+    {
+      "tm": "Thunder Wave",
+      "location": "Silph Co (2nd Floor)"
+    },
+    {
+      "tm": "Substitute",
+      "location": "Futchia City"
+    },
+    {
+      "tm": "Metronome",
+      "location": "Cinnabar Island's Laboratory"
+    },
+    {
+      "tm": "Double-Edge",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Explosion",
+      "location": "Mt Ember"
+    },
+    {
+      "tm": "Swords Dance",
+      "location": "Island 7"
+    },
+    {
+      "tm": "Body Slam",
+      "location": "Island 4"
+    }
+  ],
+  "Sinnoh": [
+    {
+      "tm": "Dragon Dance",
+      "location": "Mt Coronet"
+    },
+    {
+      "tm": "Hydro Pump",
+      "location": "Ravaged Path"
+    },
+    {
+      "tm": "Calm Mind",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Brave Bird",
+      "location": "Route 213"
+    },
+    {
+      "tm": "Toxic",
+      "location": "Route 212"
+    },
+    {
+      "tm": "Ice Fang",
+      "location": "Route 217"
+    },
+    {
+      "tm": "Bulk Up",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Bullet Seed",
+      "location": "Route 204"
+    },
+    {
+      "tm": "Hidden Power",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Fire Fang",
+      "location": "Route 212"
+    },
+    {
+      "tm": "Bide",
+      "location": "Route 211 (Left Side)"
+    },
+    {
+      "tm": "Ice Beam",
+      "location": "Route 216"
+    },
+    {
+      "tm": "Blizzard",
+      "location": "Lake Acurity"
+    },
+    {
+      "tm": "Hyper Beam",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Light Screen",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Protect",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Thunder Fang",
+      "location": "Route 223"
+    },
+    {
+      "tm": "Giga Drain",
+      "location": "Route 209"
+    },
+    {
+      "tm": "Safeguard",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Quash",
+      "location": "Team Galactic HQ"
+    },
+    {
+      "tm": "Solarbeam",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Heavy Slam",
+      "location": "Iron Island"
+    },
+    {
+      "tm": "Thunderbolt",
+      "location": "Valley Windworks (surf behind the building)"
+    },
+    {
+      "tm": "Thunder",
+      "location": "Lake Valor"
+    },
+    {
+      "tm": "Dragonbreath",
+      "location": "Wayward Cave"
+    },
+    {
+      "tm": "Return",
+      "location": "Professor Rowan at the beginning and Lost Tower"
+    },
+    {
+      "tm": "Horn Drill",
+      "location": "Ruin Maniac's Cave"
+    },
+    {
+      "tm": "Stored Power",
+      "location": "Route 211 (Right Side)"
+    },
+    {
+      "tm": "Shadow Ball",
+      "location": "Route 210"
+    },
+    {
+      "tm": "Reversal",
+      "location": "Oreburgh Gate"
+    },
+    {
+      "tm": "Double Team",
+      "location": "Wayward Cave"
+    },
+    {
+      "tm": "Reflect",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Air Slash",
+      "location": "Route 215"
+    },
+    {
+      "tm": "Flamethrower",
+      "location": "Fuego Ironworks"
+    },
+    {
+      "tm": "Muddy Water",
+      "location": "Team Galactic HQ Basement"
+    },
+    {
+      "tm": "Razor Wind",
+      "location": "Route 228"
+    },
+    {
+      "tm": "Fire Blast",
+      "location": "Lake Verity"
+    },
+    {
+      "tm": "Smack Down",
+      "location": "Ravaged Path"
+    },
+    {
+      "tm": "Skull Bash",
+      "location": "Route 213"
+    },
+    {
+      "tm": "Giga Impact",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Facade",
+      "location": "Talk to the Fighter Man at the Survival Area"
+    },
+    {
+      "tm": "Tail Slap",
+      "location": "Amity Square"
+    },
+    {
+      "tm": "Rest",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Round",
+      "location": "Amity Square"
+    },
+    {
+      "tm": "Retaliate",
+      "location": "Eterna City"
+    },
+    {
+      "tm": "Steel Wing",
+      "location": "Route 209"
+    },
+    {
+      "tm": "Skill Swap",
+      "location": "Speak with a lady in Canalave City"
+    },
+    {
+      "tm": "Revenge",
+      "location": "Team Galactic HQ"
+    },
+    {
+      "tm": "Heat Crash",
+      "location": "Stark Mountain"
+    },
+    {
+      "tm": "Roost",
+      "location": "Route 210"
+    },
+    {
+      "tm": "Focus Blast",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Energy Ball",
+      "location": "Route 226"
+    },
+    {
+      "tm": "False Swipe",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Brine",
+      "location": "Pastoria City Gym"
+    },
+    {
+      "tm": "Fling",
+      "location": "Talk to the Rich Boy at Route 222"
+    },
+    {
+      "tm": "Charge Beam",
+      "location": "Sunyshore City Gym"
+    },
+    {
+      "tm": "Endure",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Tri Attack",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Drain Punch",
+      "location": "Veilstone City Gym"
+    },
+    {
+      "tm": "Will-O-Wisp",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Silver Wind",
+      "location": "Route 212"
+    },
+    {
+      "tm": "Embargo",
+      "location": "Speak with a man at Veilstone City"
+    },
+    {
+      "tm": "Explosion",
+      "location": "10 Consecutive Rounds at the Veilstone City Casino or Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Shadow Claw",
+      "location": "Hearthome City Gym"
+    },
+    {
+      "tm": "Payback",
+      "location": "Chat with the Fighter Man at Route 215"
+    },
+    {
+      "tm": "Recycle",
+      "location": "Eterna City"
+    },
+    {
+      "tm": "Giga Impact",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Power Gem",
+      "location": "Mt Coronet"
+    },
+    {
+      "tm": "Flash",
+      "location": "Oreburgh Gate"
+    },
+    {
+      "tm": "Stone Edge",
+      "location": "The second bike puzzle at the Victory Road"
+    },
+    {
+      "tm": "Avalanche",
+      "location": "Snowpoint City Gym"
+    },
+    {
+      "tm": "Thunder Wave",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Gyro Ball",
+      "location": "Speak to the Merchant Man at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Swords Dance",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Stealth Rock",
+      "location": "Oreburgh City Gym"
+    },
+    {
+      "tm": "Psych Up",
+      "location": "Route 211"
+    },
+    {
+      "tm": "Captivate",
+      "location": "Route 204"
+    },
+    {
+      "tm": "Dark Pulse",
+      "location": "Stone puzzle at the Victory Road"
+    },
+    {
+      "tm": "Rock Slide",
+      "location": "Mt Coronet"
+    },
+    {
+      "tm": "Leaf Blade",
+      "location": "Route 221"
+    },
+    {
+      "tm": "Amnesia",
+      "location": "Eterna Forrest (Exterior)"
+    },
+    {
+      "tm": "Natural Gift",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    },
+    {
+      "tm": "Poison Jab",
+      "location": "Route 212"
+    },
+    {
+      "tm": "Blaze Kick",
+      "location": "Valor Lakefront"
+    },
+    {
+      "tm": "Grass Knot",
+      "location": "Eterna City Gym"
+    },
+    {
+      "tm": "Encore",
+      "location": "Pokemon Mansion"
+    },
+    {
+      "tm": "Pluck",
+      "location": "Speak to a little girl at Floaroma Town"
+    },
+    {
+      "tm": "Gyro Ball",
+      "location": "Canalave City"
+    },
+    {
+      "tm": "Scary Face",
+      "location": "Old Chateau"
+    },
+    {
+      "tm": "Flash Cannon",
+      "location": "Canalave City Gym"
+    },
+    {
+      "tm": "Trick Room",
+      "location": "Chat with the Clown inside a villa at the Valor Lakefront"
+    },
+    {
+      "tm": "Nature Power",
+      "location": "Speak to the Merchant Lady at the 3rd Floor of the Veilstone Department Store"
+    }
+  ],
+  "Unova": [
+    {
+      "tm": "Dragon Claw",
+      "location": "Inside Victory Road's Cave"
+    },
+    {
+      "tm": "Psyshock",
+      "location": "Giant Chasm (Crater Forest)"
+    },
+    {
+      "tm": "Nasty Plot",
+      "location": "Speak with Ryoku at Relic Castle"
+    },
+    {
+      "tm": "Cross Poison",
+      "location": "Route 10"
+    },
+    {
+      "tm": "Razor Shell",
+      "location": "Route 17"
+    },
+    {
+      "tm": "Snowscape",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Bulk Up",
+      "location": ""
+    },
+    {
+      "tm": "Venoshock",
+      "location": "Route 15"
+    },
+    {
+      "tm": "Hidden Power",
+      "location": "Go to the laboratory and say yes to the professor after you defeated the Unova Elite Four."
+    },
+    {
+      "tm": "Sunny Day",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Close Combat",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Cosmic Power",
+      "location": "Giant Chasm (Crater Forest)"
+    },
+    {
+      "tm": "Blizzard",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Hyper Beam",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Light Screen",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Protect",
+      "location": "Go to the laboratory and say yes to the professor after you defeated the Unova Elite Four."
+    },
+    {
+      "tm": "Rain Dance",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Telekinesis",
+      "location": "Route 18"
+    },
+    {
+      "tm": "Safeguard",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Frustration",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Pin Missile",
+      "location": "Pinwheel Forest"
+    },
+    {
+      "tm": "Smack Down",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Thunderbolt",
+      "location": "P2 Laboratory"
+    },
+    {
+      "tm": "Thunder",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Flare Blitz",
+      "location": "Relic Castle (after you defeat the main story)"
+    },
+    {
+      "tm": "Return",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Dig",
+      "location": "Speak with Construction Worker at Route 4."
+    },
+    {
+      "tm": "Future Sight",
+      "location": "Route 13"
+    },
+    {
+      "tm": "Fire Spin",
+      "location": "Relic Castle"
+    },
+    {
+      "tm": "Brick Break",
+      "location": "Speak to Elderly NPC in Icirrus City's Pokemon Center."
+    },
+    {
+      "tm": "Double Team",
+      "location": "Speak with Rood at Route 18"
+    },
+    {
+      "tm": "Reflect",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Sludge Wave",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Power Swap",
+      "location": "Abundant Shrine"
+    },
+    {
+      "tm": "Sludge Wave",
+      "location": "Route 8"
+    },
+    {
+      "tm": "Sandstorm",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Fire Blast",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Sand Tomb",
+      "location": "Desert Resort"
+    },
+    {
+      "tm": "Aerial Ace",
+      "location": "Talk with a youngster at Mistraliton City and then receive your TM by the place where you plant berries in the same city."
+    },
+    {
+      "tm": "Torment",
+      "location": "Route 4"
+    },
+    {
+      "tm": "Facade",
+      "location": "Speak with Parasol Lady at Route 8."
+    },
+    {
+      "tm": "Flame Charge",
+      "location": "Speak with Battle Girl at Tubeline Bridge."
+    },
+    {
+      "tm": "Rest",
+      "location": "Speak with Hiker at Castelia City."
+    },
+    {
+      "tm": "Attract",
+      "location": "Speak with Schoolgirl at Castelia City."
+    },
+    {
+      "tm": "Detect",
+      "location": "Wellspring Cave 1st Floor"
+    },
+    {
+      "tm": "Low Sweep",
+      "location": "Wellspring Cave 2nd Floor"
+    },
+    {
+      "tm": "Round",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Echoed Voice",
+      "location": "Speak with the Lady at the Musical Hall in Nimbasa City."
+    },
+    {
+      "tm": "Overheat",
+      "location": "Route 11"
+    },
+    {
+      "tm": "Ally Switch",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Focus Blast",
+      "location": "Wellspring Cave 2nd Floor"
+    },
+    {
+      "tm": "Power Whip",
+      "location": "Route 12"
+    },
+    {
+      "tm": "False Swipe",
+      "location": "Go to the laboratory and say yes to the professor after you defeated the Unova Elite Four."
+    },
+    {
+      "tm": "Scald",
+      "location": "Cold Storage (Blue Arrow is you and the TM is in Red)"
+    },
+    {
+      "tm": "Fling",
+      "location": "The TM is tossed at you from a Baseball Player at Route 9."
+    },
+    {
+      "tm": "Charge Beam",
+      "location": "Speak with the Battle Girl at Route 7."
+    },
+    {
+      "tm": "Sky Drop",
+      "location": "Mistralton City"
+    },
+    {
+      "tm": "Incinerate",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Quash",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Will-O-Wisp",
+      "location": "Celestial Tower 2nd Floor"
+    },
+    {
+      "tm": "Acrobatics",
+      "location": "Mistralton City Gym"
+    },
+    {
+      "tm": "Embargo",
+      "location": "Outside of Dragonspiral Tower"
+    },
+    {
+      "tm": "Explosion",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Shadow Claw",
+      "location": "Celestial Tower 4th Floor"
+    },
+    {
+      "tm": "Psycho Cut",
+      "location": "Route 16"
+    },
+    {
+      "tm": "Retaliate",
+      "location": "Nacrene City Gym"
+    },
+    {
+      "tm": "Giga Impact",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Rock Polish",
+      "location": "Speak with Bronius at Chargestone Cave (you will have to fight two disgruntled Team Plazma Grunts)"
+    },
+    {
+      "tm": "Flash",
+      "location": "Secret Service Agent Ambush in Castelia City."
+    },
+    {
+      "tm": "Stone Edge",
+      "location": "Challenger's Cave"
+    },
+    {
+      "tm": "Volt Switch",
+      "location": "Nimbasa City Gym"
+    },
+    {
+      "tm": "Thunder Wave",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Gyro Ball",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Swords Dance",
+      "location": "Speak with Gorm at the Dreamyard."
+    },
+    {
+      "tm": "Struggle Bug",
+      "location": "Castelia City Gym"
+    },
+    {
+      "tm": "Psych Up",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Bulldoze",
+      "location": "Driftveil City Gym"
+    },
+    {
+      "tm": "Frost Breath",
+      "location": "Icirrus City Gym"
+    },
+    {
+      "tm": "Rock Blast",
+      "location": "Mistralton Cave 2nd Floor"
+    },
+    {
+      "tm": "X-Scissor",
+      "location": "Route 7"
+    },
+    {
+      "tm": "Dragon Tail",
+      "location": "Opelucid City Gym"
+    },
+    {
+      "tm": "Work Up",
+      "location": "Striation City Gym"
+    },
+    {
+      "tm": "Bug Buzz",
+      "location": "Route 6"
+    },
+    {
+      "tm": "Dream Eater",
+      "location": "Dreamyard Basement"
+    },
+    {
+      "tm": "Grass Knot",
+      "location": "Pinwheel Forest"
+    },
+    {
+      "tm": "Swagger",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Pluck",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "U-Turn",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    },
+    {
+      "tm": "Spikes",
+      "location": "Twist Mountain (Winter)"
+    },
+    {
+      "tm": "Flash Cannon",
+      "location": "Twist Mountain B1F (Glaceon's evolution location)"
+    },
+    {
+      "tm": "Power Swap",
+      "location": "Abundant Shrine"
+    },
+    {
+      "tm": "Wild Charge",
+      "location": "Victory Road"
+    },
+    {
+      "tm": "Rock Smash",
+      "location": "Speak with Battle Girl at Pinwheel Forest."
+    },
+    {
+      "tm": "Snarl",
+      "location": "Shopping Mall Nine (Located at Route 9 hence the name)"
+    }
+  ]
+}

@@ -8,13 +8,14 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 ## 🚀 Features
 - 📍 **Live Route Tracking** – See what Pokémon can be found on your current route in real time.  (For now only works Fullscreen/Borderless and with relatively high UI Scaling)
 - 📊 **Pokédex Integration** – Catch rates, methods, and locations for every Gen 1–5 Pokémon.  
-- 🎨 **Color-Coded Encounter Rarities** –  
-  - Very Common → Brown  
-  - Common → White  
-  - Uncommon → Green  
-  - Rare → Blue  
-  - Very Rare → Purple  
-  - Horde → Red  
+- 🎨 **Changeable Color-Coded Encounter Tags** –  
+  - Very Common → White  
+  - Common → Light Gray  
+  - Uncommon → Mint Green  
+  - Rare → Dull Orange
+  - Very Rare → Bright Orange  
+  - Horde → Peach  
+  **...And many more!**
 - 🌍 **Region Selector** – Instantly filter by Kanto, Hoenn, Sinnoh, or Unova.  
 - 🔄 **Auto-Updater** – Stay current with one click or the **Check for Updates** button.  
 
