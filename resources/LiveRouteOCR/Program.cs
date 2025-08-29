@@ -664,12 +664,13 @@ class LiveRouteOCR
                 var p = Process.GetProcessById(pid);
                 if (p != null)
                 {
-                    if (p.MainWindowHandle != IntPtr.Zero) return p.MainWindowHandle;
+                    if (p.MainWindowHandle != IntPtr.Zero && IsPokeMMOWindow(p.MainWindowHandle))
+                        return p.MainWindowHandle;
                     IntPtr found = IntPtr.Zero;
                     EnumWindows((h, l) =>
                     {
                         uint wpid; GetWindowThreadProcessId(h, out wpid);
-                        if (wpid == (uint)pid && IsWindowVisible(h)) { found = h; return false; }
+                        if (wpid == (uint)pid && IsWindowVisible(h) && IsPokeMMOWindow(h)) { found = h; return false; }
                         return true;
                     }, IntPtr.Zero);
                     if (found != IntPtr.Zero) return found;
