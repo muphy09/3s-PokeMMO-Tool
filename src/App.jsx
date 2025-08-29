@@ -418,7 +418,7 @@ function PokeballIcon({ filled=false, size=16 }){
 function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleCaught, showCaught=true }){
   const cardStyle = {
     ...styles.monCard,
-    opacity: showCaught ? (caught ? 1 : 0.4) : 1
+    opacity: showCaught ? (caught ? 0.4 : 1) : 1
   };
   return (
     <div style={cardStyle}>
