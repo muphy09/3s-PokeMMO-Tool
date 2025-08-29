@@ -95,7 +95,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -107,6 +107,8 @@ jobs:
 
       - name: Build app (renderer + package)
         run: npm run pack:linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List release contents
         run: |
@@ -149,6 +151,8 @@ jobs:
 
       - name: Build app (renderer + package)
         run: npm run pack:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: List release contents
         run: |
