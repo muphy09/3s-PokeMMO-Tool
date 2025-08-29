@@ -3,16 +3,16 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.1.3] - 2025-08
-### Fixed
-  - Day/Night specific Pokemon now properly appear properly in the Live tab, as they did in the Areas tab
+## [2.1.4] - 2025-08
+### Added
+  - Advanced Pokemon Search
+    - Search for Pokemon with filters - Type, Egg Group, Abilities, & Region!
 
 ---
 
-## [2.1.2] - 2025-08
+## [2.1.3] - 2025-08
 ### Fixed
-  - Auto Updates should *hopefully* now let you know an update is available, is being downloaded, and is downloaded.
-
+  - Day/Night specific Pokemon now properly appear properly in the Live tab, as they did in the Areas tab
 
 ---
 

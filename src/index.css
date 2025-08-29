@@ -67,6 +67,22 @@ h1, h2, h3, h4, h5 { color: #fff; margin: 0; }
   box-shadow: 0 0 0 3px rgba(96,165,250,0.18);
 }
 
+/* Style select elements to match app theme */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 32px;
+  background: rgba(255,255,255,0.06) url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='6'%20fill='none'%20stroke='%23aeb8c7'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M1%201l4%204%204-4'/%3E%3C/svg%3E") no-repeat right 10px center;
+  background-size: 12px;
+  cursor: pointer;
+}
+
+select.input option {
+  background: var(--surface);
+  color: var(--text);
+}
+
 /* Search results */
 .result-grid {
   margin-top: 12px;
