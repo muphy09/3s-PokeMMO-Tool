@@ -196,14 +196,18 @@ function localSpriteCandidates(mon){
 function spriteSources(mon){
   if (!mon) return [];
   const arr = [];
+
+  // Prefer higher-resolution PokeAPI sprites first
+  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
+  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+
+  // Fallbacks to any provided or local sprites
   if (mon.sprite) arr.push(mon.sprite);
   if (mon.sprites?.front_default) arr.push(mon.sprites.front_default);
   if (mon.image) arr.push(mon.image);
   if (mon.icon) arr.push(mon.icon);
   arr.push(...localSpriteCandidates(mon));
-  // PokeAPI fallbacks
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+
   return [...new Set(arr)].filter(Boolean);
 }
 function Sprite({ mon, size=42, alt='' }){
@@ -443,7 +447,7 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
         </button>
       )}
       <div style={{ fontWeight:700 }}>{monName}</div>
-      <Sprite mon={mon} size={48} alt={monName} />
+      <Sprite mon={mon} size={80} alt={monName} />
       <div style={styles.encWrap}>
         {encounters.map((enc, idx) => (
           <div key={idx} style={styles.encCol}>

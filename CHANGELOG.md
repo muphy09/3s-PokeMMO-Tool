@@ -3,12 +3,16 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.2.5]- 2025-08
+## [2.2.6]- 2025-08
 ### Added
 - Mac Release
   - DMG package has been added to the Releases. This is a stripped version of the App, just like the linux build. No Live tab feature currently
 - Linux Release
   - Package for linux has been patched and added to the release. Stripped version of the windows app that does not include the Live tab feature    
+
+### Fixed
+  - Duplicate Held Item Entries from appearing
+  - *Potentially* fixed the notifications Auto-Update sends
 
 ---
 
@@ -16,10 +20,6 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 ### Added
   - UI scale (App UI) slider now included in the Options Menu -- Thanks Prior-Cobbler!
   - Held Item Sprites & Tooltips on hover
-
-### Fixed
-  - Duplicate Held Item Entries from appearing
-  - *Potentially* fixed the notifications Auto-Update sends
 
 ---
 

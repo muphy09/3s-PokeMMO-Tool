@@ -32,10 +32,12 @@ let downloadedUpdate = null;
 let downloadingVersion = null;
 
 // ===== Helpers =====
+function normalizeVersion(ver) {
+  return String(ver || '').replace(/^v/i, '');
+}
 function isNewerVersion(a, b) {
   function parse(ver) {
-    return String(ver)
-      .replace(/^v/i, '')
+    return normalizeVersion(ver)
       .split('.')
       .map(n => parseInt(n, 10) || 0);
   }
@@ -196,12 +198,12 @@ function setupAutoUpdates() {
 
   autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
   autoUpdater.on('update-available', (info) => {
-    downloadingVersion = info?.version || downloadingVersion;
+    downloadingVersion = info?.version ? normalizeVersion(info.version) : downloadingVersion;
     log('update-available', downloadingVersion || '');
     try { mainWindow?.webContents?.send('update-available', downloadingVersion); } catch {}
   });
   autoUpdater.on('update-downloaded', (info) => {
-    downloadedUpdate = info?.version || downloadedUpdate;
+    downloadedUpdate = info?.version ? normalizeVersion(info.version) : downloadedUpdate;
     downloadingVersion = null;
     log('update-downloaded', info?.version || '');
     try { mainWindow?.webContents?.send('update-downloaded', downloadedUpdate); } catch {}
@@ -390,7 +392,7 @@ ipcMain.handle('check-for-updates', async () => {
       return { status: 'downloading', version: downloadingVersion, current };
     }
     const result = await autoUpdater.checkForUpdates();
-    const latest = result?.updateInfo?.version;
+    const latest = normalizeVersion(result?.updateInfo?.version);
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
       downloadingVersion = latest;
@@ -445,7 +447,7 @@ ipcMain.handle('check-updates', async () => {
       return { status: 'downloading', version: downloadingVersion, current };
     }
     const result = await autoUpdater.checkForUpdates();
-    const latest = result?.updateInfo?.version;
+    const latest = normalizeVersion(result?.updateInfo?.version);
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
       downloadingVersion = latest;
