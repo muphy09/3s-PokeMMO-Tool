@@ -44,14 +44,16 @@ function Sprite({ mon, size=32, alt='' }){
   );
 }
 
-const DEX_LIST = dexRaw.map(m => ({
-  id: m.id,
-  name: m.name,
-  sprite: m.sprite,
-  sprites: m.sprites,
-  image: m.image,
-  icon: m.icon
-}));
+const DEX_LIST = dexRaw
+  .map(m => ({
+    id: m.id,
+    name: m.name,
+    sprite: m.sprite,
+    sprites: m.sprites,
+    image: m.image,
+    icon: m.icon
+  }))
+  .sort((a, b) => a.id - b.id);
 
 function titleCase(s=''){ return String(s).split(' ').map(w => (w? w[0].toUpperCase()+w.slice(1).toLowerCase():w)).join(' '); }
 
@@ -95,15 +97,23 @@ export default function CaughtListButton(){
               onChange={e=>setQuery(e.target.value)}
               style={{ width:'100%', marginBottom:12, borderRadius:8, padding:8 }}
             />
-            <div style={{ maxHeight:'60vh', overflowY:'auto' }}>
-              {list.map(mon => (
-                <label key={mon.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0' }}>
-                  <input type="checkbox" checked={caught.has(mon.id)} onChange={()=>toggleCaught(mon.id)} />
-                  <Sprite mon={mon} size={32} alt={mon.name} />
-                  <span style={{ flex:1 }}>{titleCase(mon.name)}</span>
-                  <span className="label-muted">#{mon.id}</span>
-                </label>
-              ))}
+           <div>
+              <div style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0', paddingRight:8, fontWeight:700 }}>
+                <span style={{ width:20, textAlign:'center' }}>Caught</span>
+                <span style={{ width:32 }}></span>
+                <span style={{ flex:1 }}>Name</span>
+                <span style={{ minWidth:40, textAlign:'right', marginRight:8 }}>ID</span>
+              </div>
+              <div style={{ maxHeight:'60vh', overflowY:'auto' }}>
+                {list.map(mon => (
+                  <label key={mon.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0', paddingRight:8 }}>
+                    <input type="checkbox" checked={caught.has(mon.id)} onChange={()=>toggleCaught(mon.id)} />
+                    <Sprite mon={mon} size={32} alt={mon.name} />
+                    <span style={{ flex:1 }}>{titleCase(mon.name)}</span>
+                    <span className="label-muted" style={{ minWidth:40, textAlign:'right', marginRight:8 }}>#{mon.id}</span>
+                  </label>
+                ))}
+              </div>
             </div>
           </div>
         </div>

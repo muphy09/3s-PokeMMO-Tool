@@ -16,7 +16,8 @@
     "clean": "rimraf release",
     "dist": "npm run clean && npm run build:helper && npm run build && electron-builder --publish never",
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
-    "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir"
+    "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir",
+    "pack:linux": "npm run clean && npm run build && electron-builder --linux AppImage"
   },
   "build": {
     "appId": "com.pokemmo.tool",
@@ -78,6 +79,13 @@
             "x64"
           ]
         }
+      ]
+    },
+    "linux": {
+      "icon": "resources/icon.png",
+      "target": [
+        "AppImage",
+        "tar.gz"
       ]
     },
     "artifactName": "3s-PokeMMO-Tool-${version}-${os}-${arch}.${ext}",

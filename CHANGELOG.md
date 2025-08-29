@@ -11,6 +11,16 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
   - Custom Color Selection
     - Don't like what I've chosen for you? Pick that $@#% yourself with a new button at the top
 
+  - Caught Feature
+    - Mark which Pokemon you've caught to make it easier to see which ones you need to capture in a certain area.
+    - Introduced a panel that allows you to select which Pokemon you've already caught
+    - Can mark which Pokemon you've caught with the Pokeball icon in the top right of Pokemon boxes
+
+  - Linux Release!
+    - I don't have a great way of testing this so feedback is MUCH appreciated for this crowd!
+
+### Fixed
+  - Cleaned the repository of unused / old data to trim file size.
 ---
 
 ## [2.1.5] - 2025-08
