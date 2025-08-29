@@ -117,6 +117,9 @@ jobs:
         run: |
           if [ ! -f "LiveRouteOCR/LiveRouteOCR.zip" ]; then echo "OCR zip missing"; exit 1; fi
 
+      - name: Ensure app-builder is executable
+        run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder    
+
       - name: Build app (renderer + package)
         run: npm run pack:linux
 

@@ -3,6 +3,13 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.1.8] - 2025-08
+### Fixed
+  - Re-enabled Linux Downloads
+  - Search bar now functions with filters selected in Pokemon tab
+
+---
+
 ## [2.1.7] - 2025-08
 ### Added
   - "Lure Only" Checkbox in Area & Live Tab

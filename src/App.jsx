@@ -1422,7 +1422,7 @@ function App(){
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
 
-  const hasFilters = typeFilter || eggFilter || abilityFilter || regionFilter;
+  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter);
 
 
   const [headerSprite] = useState(() => {
@@ -1435,6 +1435,11 @@ function App(){
   useEffect(() => {
     setShowRegionMenu(false);
     if (mode !== 'pokemon') setSelected(null);
+    setQuery('');
+    setTypeFilter('');
+    setEggFilter('');
+    setAbilityFilter('');
+    setRegionFilter('');
   }, [mode]);
   useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
   useEffect(() => {
@@ -1472,30 +1477,30 @@ function App(){
   // Search by Pokémon
   const results = React.useMemo(() => {
     if (mode !== 'pokemon') return [];
-    if (hasFilters) {
-      return DEX_LIST.filter(mon => {
-        if (typeFilter) {
-          const types = (mon.types || []).map(normalizeType);
-          if (!types.includes(normalizeType(typeFilter))) return false;
-        }
-        if (eggFilter) {
-          const eggs = (mon.eggGroups || []).map(normalizeEggGroup);
-          if (!eggs.includes(normalizeEggGroup(eggFilter))) return false;
-        }
-        if (abilityFilter) {
-          const abilities = (mon.abilities || []).map(a => keyName(a.name));
-          if (!abilities.includes(keyName(abilityFilter))) return false;
-        }
-        if (regionFilter) {
-          const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
-          if (!regions.includes(normalizeRegion(regionFilter))) return false;
-        }
-        return true;
-      });
-    }
     const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return DEX_LIST.filter(p => p.name.toLowerCase().includes(q) || String(p.id) === q).slice(0, 24);
+    if (!hasFilters && !q) return [];
+    let list = DEX_LIST.filter(mon => {
+      if (typeFilter) {
+        const types = (mon.types || []).map(normalizeType);
+        if (!types.includes(normalizeType(typeFilter))) return false;
+      }
+      if (eggFilter) {
+        const eggs = (mon.eggGroups || []).map(normalizeEggGroup);
+        if (!eggs.includes(normalizeEggGroup(eggFilter))) return false;
+      }
+      if (abilityFilter) {
+        const abilities = (mon.abilities || []).map(a => keyName(a.name));
+        if (!abilities.includes(keyName(abilityFilter))) return false;
+      }
+      if (regionFilter) {
+        const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
+        if (!regions.includes(normalizeRegion(regionFilter))) return false;
+      }
+      if (q && !(mon.name.toLowerCase().includes(q) || String(mon.id) === q)) return false;
+      return true;
+    });
+    if (!hasFilters && q) list = list.slice(0, 24);
+    return list;
   }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
@@ -1818,7 +1823,6 @@ function App(){
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
-                disabled={hasFilters}
                 placeholder={mode==='pokemon'
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
