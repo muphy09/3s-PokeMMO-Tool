@@ -3,6 +3,16 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.1.6] - 2025-08
+### Added
+  - "Lure Only" Checkbox in Area & Live Tab
+    - Filter Pokemon in the specific area to only "Lure" Pokemon -- Thanks Tcsess <3!
+
+  - Custom Color Selection
+    - Don't like what I've chosen for you? Pick that $@#% yourself with a new button at the top
+
+---
+
 ## [2.1.5] - 2025-08
 ### Fixed
   - Optimized UI for Area and Live Tab

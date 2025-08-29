@@ -647,15 +647,25 @@ function useLocationsDb(){
     const idx = {};
     for (const mon of DEX_LIST) {
       const key = normalizeKey(mon.name);
-      const locations = (mon.locations || []).map(l => ({
-        region: l.region_name,
-        map: l.location,
-        method: l.type,
-        rarity: l.rarity,
-        min_level: l.min_level,
-        max_level: l.max_level,
-        items: (mon.heldItems || []).map(h => h.name)
-      }));
+      const locations = (mon.locations || []).map(l => {
+        let method = l.type;
+        let rarity = l.rarity;
+        // Some "Lure" encounters are stored as a rarity rather than a method.
+        // Promote those to a proper method so filters like "Lure Only" work.
+        if (rarity && /lure/i.test(rarity)) {
+          method = `Lure${method ? ` (${method})` : ''}`;
+          rarity = '';
+        }
+        return {
+          region: l.region_name,
+          map: l.location,
+          method,
+          rarity,
+          min_level: l.min_level,
+          max_level: l.max_level,
+          items: (mon.heldItems || []).map(h => h.name)
+        };
+      });
       idx[key] = { locations };
     }
     return idx;
@@ -678,11 +688,18 @@ function useAreasDbCleaned(){
         const region = loc.region_name || 'Unknown';
         const mapName = loc.location;
         if (!mapName) continue;
+        let method = cleanAreaMethod(loc.type || '');
+        let rarity = loc.rarity || '';
+        // Handle lure encounters represented as rarities in source data
+        if (rarity && /lure/i.test(rarity)) {
+          method = cleanAreaMethod(`Lure${method ? ` (${method})` : ''}`);
+          rarity = '';
+        }
         const entry = {
           monId: mon.id,
           monName: mon.name,
-          method: cleanAreaMethod(loc.type || ''),
-          rarity: loc.rarity || '',
+          method,
+          rarity,
           min: loc.min_level,
           max: loc.max_level,
           items,
@@ -932,7 +949,10 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lur
     grouped = grouped
       .map(g => ({
         ...g,
-        encounters: g.encounters.filter(enc => (enc.method || '').toLowerCase().includes('lure'))
+        encounters: g.encounters.filter(enc =>
+          (enc.method || '').toLowerCase().includes('lure') ||
+          (enc.rarities || []).some(r => r.toLowerCase().includes('lure'))
+        )
       }))
       .filter(g => g.encounters.length);
   }
@@ -1424,7 +1444,10 @@ function App(){
         grouped = grouped
           .map(g => ({
             ...g,
-            encounters: g.encounters.filter(enc => (enc.method || '').toLowerCase().includes('lure'))
+            encounters: g.encounters.filter(enc =>
+              (enc.method || '').toLowerCase().includes('lure') ||
+              (enc.rarities || []).some(r => r.toLowerCase().includes('lure'))
+            )
           }))
           .filter(g => g.encounters.length);
       }
