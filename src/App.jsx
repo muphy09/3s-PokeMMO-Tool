@@ -2036,14 +2036,6 @@ function App(){
                       {resolved.forms.map(f => <span key={f.form_id || f.id}>{f.name}</span>)}
                     </div>
                   )}
-                  {resolved.evolutions?.length > 0 && (
-                    <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:8 }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Evolutions:</span>
-                      {resolved.evolutions.map((e,i)=>(
-                        <span key={i}>{`${e.name} (${titleCase(e.type.toLowerCase())}${e.val?`: ${e.val}`:''})`}</span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
               {Object.keys(resolved.stats || {}).length > 0 && (
