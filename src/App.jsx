@@ -315,11 +315,11 @@ function formatGenderRatio(r){
 }
 /* ---------- Method & Rarity palettes ---------- */
 const METHOD_COLORS = {
-  grass:'#ECEFF1', 'dark grass':'#B0BEC5', cave:'#7E57C2', water:'#4C7CF0',
-  fishing:'#2BB673','old rod':'#239B63','good rod':'#1E8756','super rod':'#176A44',
+  grass:'#31d169ff', 'dark grass':'#B0BEC5', cave:'#482816ff', water:'#2263faff',
+  fishing:'#4ac6dfff','old rod':'#7fb9f0ff','good rod':'#3e9ae9ff','super rod':'#0a61e4ff',
   horde:'#E056FD', rocks:'#616161','rock smash':'#616161', headbutt:'#FF7F50',
   tree:'#C2A83E','swampy grass':'#16A085','npc interaction':'#8E9AAF', interaction:'#8E9AAF',
-  building:'#5C7AEA', inside:'#5C7AEA', outside:'#43BCCD', special:'#F4B400', lure:'#FFB84D'
+  building:'#5C7AEA', inside:'#5C7AEA', outside:'#43BCCD', special:'#F4B400', lure:'#b983f8ff'
 };
 function methodKey(m=''){ return String(m).toLowerCase().trim(); }
 
@@ -355,7 +355,7 @@ function MethodPill({ method }){
 
 /* ---- Rarity palette ---- */
 const RARITY_COLORS = {
-  'very common':'#8B5A2B','common':'#FFFFFF','uncommon':'#2ECC71','rare':'#E74C3C','very rare':'#F1C40F'
+  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#62e398ff','rare':'#de811cff','very rare':'#ff8800ff'
 };
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
 function RarityPill({ rarity }){
@@ -384,7 +384,7 @@ function LevelPill({ min, max }){
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
-      color:'#111', background:'#95a5a6', fontWeight:800, border:'1px solid #00000022'
+      color:'#111', background:'#9e50aaff', fontWeight:800, border:'1px solid #00000022'
     }}>
       {label}
     </span>
