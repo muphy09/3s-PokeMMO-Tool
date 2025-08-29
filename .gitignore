@@ -16,3 +16,9 @@ win-unpacked/
 *.msi
 *.zip
 *.asar
+
+# Generated artifacts
+release/
+reports/
+resources/LiveRouteOCR/
+resources/tessdata/
