@@ -5,6 +5,8 @@ import itemsRaw from '../itemdata.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
+import ColorPickerButton from './components/ColorPickerButton.jsx';
+import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -314,13 +316,6 @@ function formatGenderRatio(r){
   return `${male}% ♂ / ${female}% ♀`;
 }
 /* ---------- Method & Rarity palettes ---------- */
-const METHOD_COLORS = {
-  grass:'#19c254ff', 'dark grass':'#B0BEC5', cave:'#482816ff', water:'#2263faff',
-  fishing:'#4ac6dfff','old rod':'#7fb9f0ff','good rod':'#3e9ae9ff','super rod':'#0a61e4ff',
-  horde:'#fca996ff', rocks:'#616161','rock smash':'#616161', headbutt:'#FF7F50',
-  tree:'#C2A83E','swampy grass':'#16A085','npc interaction':'#8E9AAF', interaction:'#8E9AAF',
-  building:'#5C7AEA', inside:'#5C7AEA', outside:'#43BCCD', special:'#F4B400', lure:'#cb1f2dff'
-};
 function methodKey(m=''){ return String(m).toLowerCase().trim(); }
 
 // Balance methods like "Lure (Water" -> "Lure (Water)"
@@ -338,19 +333,17 @@ function cleanMethodLabel(method=''){
 }
 
 function MethodPill({ method }){
+  const { methodColors } = React.useContext(ColorContext);
   if (!method) return null;
   const label = cleanMethodLabel(method);
   const m = methodKey(label);
-  // Some methods like "Water (Horde)" or "Grass - Lure" include the keyword
-  // mid-string instead of at the beginning. Sanitize the label and look for
-  // whole-word matches so custom colors for Lure/Horde apply consistently.
   const raw = m.replace(/[^a-z]+/g, ' ');
   const base = /\blure\b/.test(raw)
     ? 'lure'
     : /\bhorde\b/.test(raw)
     ? 'horde'
-    : (METHOD_COLORS[m] ? m : m.replace(/\s*\(.*\)$/,''));
-  const bg = METHOD_COLORS[base] || '#7f8c8d';
+    : (methodColors[m] ? m : m.replace(/\s*\(.*\)$/,''));
+  const bg = methodColors[base] || '#7f8c8d';
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
@@ -362,16 +355,13 @@ function MethodPill({ method }){
 }
 
 /* ---- Rarity palette ---- */
-const RARITY_COLORS = {
-  'very common':'#fbfafaff','common':'#969696ff','uncommon':'#97e9b9ff','rare':'#eb9438cb','very rare':'#ff8800ff',
-  'lure':'#cb1f2dff','horde':'#fca996ff'
-};
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
 function RarityPill({ rarity }){
+  const { rarityColors } = React.useContext(ColorContext);
   if (!rarity) return null;
   const k = rarityKey(rarity);
   const isPercent = /^\d+%$/.test(k);
-  const bg = isPercent ? '#13B5A6' : (RARITY_COLORS[k] || '#BDC3C7');
+  const bg = isPercent ? '#13B5A6' : (rarityColors[k] || '#BDC3C7');
   const color = '#111';
   return (
     <span style={{
@@ -1303,6 +1293,23 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [lureOnly, setLureOnly] = useState(false);
 
+  const [methodColors, setMethodColors] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('methodColors') || '{}');
+      return { ...DEFAULT_METHOD_COLORS, ...saved };
+    } catch {
+      return DEFAULT_METHOD_COLORS;
+    }
+  });
+  const [rarityColors, setRarityColors] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('rarityColors') || '{}');
+      return { ...DEFAULT_RARITY_COLORS, ...saved };
+    } catch {
+      return DEFAULT_RARITY_COLORS;
+    }
+  });
+
   const locIndex   = useLocationsDb();
   const areasClean = useAreasDbCleaned();
   const tmIndex    = useTmLocations();
@@ -1576,10 +1583,12 @@ function App(){
   }, [resolved]);
 
   return (
-    <>
+    <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
+      <>
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
         <PatchNotesButton />
+        <ColorPickerButton />
         <OptionsMenu />
       </div>
 
@@ -2054,6 +2063,7 @@ function App(){
       {/* Fixed version badge */}
       <VersionBadge />
     </>
+    </ColorContext.Provider>
   );
 }
 
