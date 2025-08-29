@@ -845,16 +845,23 @@ function listRegionCandidates(areasIndex, displayMap){
   }
   return [...new Set(out)];
 }
-function buildGroupedEntries(areasIndex, displayMap, regionFilter){
+function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
   const merged = [];
   for (const [reg, maps] of Object.entries(areasIndex || {})) {
     if (regionFilter && reg !== regionFilter) continue;
     for (const [mapName, list] of Object.entries(maps || {})) {
       const norm = normalizeMapForGrouping(reg, mapName);
-      if (norm === displayMap) merged.push(...(list||[]));
+      if (norm === displayMap) merged.push(...(list || []));
     }
   }
-  return groupEntriesByMon(merged);
+  const grouped = groupEntriesByMon(merged).map(g => {
+    if (!g.rarities.length && regionFilter) {
+      const r = lookupRarity(g.monName, regionFilter, displayMap, locIndex);
+      if (r) g.rarities.push(r);
+    }
+    return g;
+  });
+  return grouped;
 }
 
 /* ======================= LIVE ROUTE: WS client + Panel ======================= */
@@ -990,7 +997,7 @@ function RegionPicker({ regions, value, onChange }) {
 
 /* ======================= LIVE ROUTE PANEL ======================= */
 
-function LiveRoutePanel({ areasIndex, onViewMon }){
+function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(null);
   const [displayMap, setDisplayMap] = useState(null);
@@ -1029,7 +1036,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
 
       setRegion(chosen);
       setDisplayMap(targetName);
-      setEntries(buildGroupedEntries(areasIndex, targetName, chosen));
+      setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex));
       });
 
     liveRouteClient.connect();
@@ -1080,7 +1087,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
       window.removeEventListener('focus', onFocus);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areasIndex, rawText]);
+  }, [areasIndex, locIndex, rawText]);
 
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
@@ -1096,7 +1103,7 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
     if (displayMap) {
       const prefKey = `regionPref:${displayMap}`;
       localStorage.setItem(prefKey, r || '');
-      setEntries(buildGroupedEntries(areasIndex, displayMap, r));
+      setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex));
     }
   };
 
@@ -1507,6 +1514,7 @@ function App(){
             <div style={{ marginTop:4 }}>
               <LiveRoutePanel
                 areasIndex={areasClean}
+                locIndex={locIndex}
                 onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}
               />
             </div>

@@ -3,6 +3,12 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.1.1] - 2025-08
+### Fixed
+  - Live tab now functions again
+
+---
+
 ## [2.1.0] - 2025-08
 ### Added
   - NEW Dataset for Pokemon Encounter information
