@@ -383,7 +383,12 @@ class LiveRouteOCR
 
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
-                crop.Save(LastCapPath, ImgFormat.Png);
+                try
+                {
+                    using var fs = new FileStream(LastCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                    crop.Save(fs, ImgFormat.Png);
+                }
+                catch (Exception ex) { Log($"Capture save failed: {ex.Message}"); }
                 Log($"Saved capture: {LastCapPath}");
 
                 // Build pass plan
@@ -420,7 +425,8 @@ class LiveRouteOCR
                             rawUsed = raw;
 
                             // on hit, save THIS pre as last-pre
-                            pre.Save(LastPrePath, ImgFormat.Png);
+                            using (var fs = new FileStream(LastPrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                                pre.Save(fs, ImgFormat.Png);
                             Log($"Saved preprocessed: {LastPrePath}");
 
                             Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} mask={(pass.Masked ? "Y" : "N")} keep={pass.KeepPct:F2} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
@@ -432,7 +438,13 @@ class LiveRouteOCR
                 // If no hit, still save the last tried pre image for the UI preview
                 if (string.IsNullOrEmpty(location) && prePreview != null)
                 {
-                    try { prePreview.Save(LastPrePath, ImgFormat.Png); Log($"Saved preprocessed (miss): {LastPrePath}"); } catch { }
+                    try
+                    {
+                        using var fs = new FileStream(LastPrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        prePreview.Save(fs, ImgFormat.Png);
+                        Log($"Saved preprocessed (miss): {LastPrePath}");
+                    }
+                    catch { }
                     prePreview.Dispose(); prePreview = null;
                 }
 
@@ -694,8 +706,7 @@ class LiveRouteOCR
     static bool IsPokeMMOWindow(IntPtr h)
     {
         if (h == IntPtr.Zero) return false;
-        var cls = GetClass(h);
-        if (!cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return false;
+
         var title = GetTitle(h);
         if (title.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
 
@@ -704,15 +715,20 @@ class LiveRouteOCR
         {
             var p = Process.GetProcessById((int)pid);
             string procName = p.ProcessName;
-            if (procName.Equals("PokeMMO", StringComparison.OrdinalIgnoreCase)) return true;
+            if (procName.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
             try
             {
                 var mod = p.MainModule?.ModuleName;
-                if (!string.IsNullOrEmpty(mod) && mod.Equals("PokeMMO.exe", StringComparison.OrdinalIgnoreCase)) return true;
+                if (!string.IsNullOrEmpty(mod) && mod.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
             }
             catch { }
         }
         catch { }
+
+        var cls = GetClass(h);
+        if (cls.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+        if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return true;
+        
         return false;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
