@@ -6,8 +6,6 @@ import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 
-const LOCATIONS_URL = `${import.meta.env.BASE_URL}data/pokemmo_locations.json`;
-const AREAS_URL     = `${import.meta.env.BASE_URL}data/areas_index.json`;
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
 
@@ -374,6 +372,35 @@ function RarityPill({ rarity }){
   );
 }
 
+function LevelPill({ min, max }){
+  const hasMin = min != null;
+  const hasMax = max != null;
+  if (!hasMin && !hasMax) return null;
+  const label = hasMin && hasMax
+    ? (min === max ? `Lv. ${min}` : `Lv. ${min}-${max}`)
+    : `Lv. ${hasMin ? min : max}`;
+  return (
+    <span style={{
+      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      color:'#111', background:'#95a5a6', fontWeight:800, border:'1px solid #00000022'
+    }}>
+      {label}
+    </span>
+  );
+}
+
+function ItemPill({ item }){
+  if (!item) return null;
+  return (
+    <span style={{
+      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      color:'#111', background:'#F8E473', fontWeight:800, border:'1px solid #00000022'
+    }}>
+      {item}
+    </span>
+  );
+}
+
 /* ---------- Move data & tables ---------- */
 
 const CATEGORY_COLORS = {
@@ -578,38 +605,26 @@ function computeWeakness(types = []){
 
 /* ---------- Loaders ---------- */
 function useLocationsDb(){
-  const [index, setIndex] = useState({});
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try{
-        const res = await fetch(LOCATIONS_URL, { cache:'no-store' });
-        const json = await res.json();
-        const idx = {};
-        for (const [k,v] of Object.entries(json)) {
-          // Drop any bogus location entries with only dashes for a map name
-          const locations = (v?.locations || []).filter(l => !/^-+$/.test(l.map || ""));
-          idx[normalizeKey(k)] = { ...v, locations };
-        }
-        if (alive) setIndex(idx);
-      }catch(e){ console.error('load locations failed', e); }
-    })();
-    return () => { alive = false; };
+  return useMemo(() => {
+    const idx = {};
+    for (const mon of DEX_LIST) {
+      const key = normalizeKey(mon.name);
+      const locations = (mon.locations || []).map(l => ({
+        region: l.region_name,
+        map: l.location,
+        method: l.type,
+        rarity: l.rarity,
+        min_level: l.min_level,
+        max_level: l.max_level,
+        items: (mon.heldItems || []).map(h => h.name)
+      }));
+      idx[key] = { locations };
+    }
+    return idx;
   }, []);
-  return index;
 }
 
 /** Cleaning helpers for Areas */
-function cleanSpeciesName(name=''){
-  let s = String(name)
-    .replace(/^[\s*•\-–—]+/g,'')
-    .replace(/\)+$/,'')
-    .replace(/\b(?:and|or)\b/gi,'')
-    .replace(/\b(?:hordes?|horde)\b/gi,'')
-    .replace(/\s{2,}/g,' ')
-    .trim();
-  return s;
-}
 /** NOTE: now balances missing ')' */
 function cleanAreaMethod(method=''){
   return cleanMethodLabel(method);
@@ -617,56 +632,30 @@ function cleanAreaMethod(method=''){
 
 /** Sanitize Areas index once at load */
 function useAreasDbCleaned(){
-  const [index, setIndex] = useState({});
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try{
-        const res = await fetch(AREAS_URL, { cache:'no-store' });
-        const raw = await res.json();
-        const out = {};
-        for (const [region, maps] of Object.entries(raw || {})) {
-          for (const [mapName, entries] of Object.entries(maps || {})) {
-            // Ignore placeholder maps made entirely of dashes
-            if (/^-+$/.test(mapName)) continue;
-            const cleaned = [];
-            let last = null;
-            for (const e of entries || []) {
-              const method = cleanAreaMethod(e.method || '');
-              let rarity = e.rarity || '';
-              const speciesRaw = cleanSpeciesName(e.pokemon || '');
-              if (!speciesRaw) continue;
-
-              const mon = getMon(speciesRaw) || getMon(titleCase(speciesRaw));
-              if (!mon) {
-                const k = rarityKey(speciesRaw);
-                const isPercent = /^\d+%$/.test(k);
-                if ((k && (RARITY_COLORS[k] || isPercent)) && last && !last.rarity) {
-                  last.rarity = titleCase(speciesRaw);
-                }
-                continue; // drop broken / unmatched
-              }
-              const entry = {
-                monId: mon.id,
-                monName: mon.name,   // canonical
-                method,
-                rarity
-              };
-              cleaned.push(entry);
-              last = entry;
-            }
-            if (cleaned.length) {
-              if (!out[region]) out[region] = {};
-              out[region][mapName] = cleaned;
-            }
-          }
-        }
-        if (alive) setIndex(out);
-      }catch(e){ console.error('load areas index failed', e); setIndex({}); }
-    })();
-    return () => { alive = false; };
+  return useMemo(() => {
+    const out = {};
+    for (const mon of DEX_LIST) {
+      const items = (mon.heldItems || []).map(h => h.name);
+      for (const loc of mon.locations || []) {
+        const region = loc.region_name || 'Unknown';
+        const mapName = loc.location;
+        if (!mapName) continue;
+        const entry = {
+          monId: mon.id,
+          monName: mon.name,
+          method: cleanAreaMethod(loc.type || ''),
+          rarity: loc.rarity || '',
+          min: loc.min_level,
+          max: loc.max_level,
+          items,
+        };
+        if (!out[region]) out[region] = {};
+        if (!out[region][mapName]) out[region][mapName] = [];
+        out[region][mapName].push(entry);
+      }
+    }
+    return out;
   }, []);
-  return index;
 }
 
 function useTmLocations(){
@@ -697,18 +686,27 @@ function groupEntriesByMon(entries){
         monId: e.monId,
         monName: e.monName,
         methods: new Set(),
-        rarities: new Set()
+        rarities: new Set(),
+        min: e.min,
+        max: e.max,
+        items: new Set(e.items || [])
       });
     }
     const g = byId.get(e.monId);
     if (e.method) g.methods.add(e.method);
     if (e.rarity) g.rarities.add(e.rarity);
+    if (e.min != null) g.min = Math.min(g.min ?? e.min, e.min);
+    if (e.max != null) g.max = Math.max(g.max ?? e.max, e.max);
+    if (Array.isArray(e.items)) e.items.forEach(i => g.items.add(i));
   }
   return [...byId.values()].map(g => ({
     monId: g.monId,
     monName: g.monName,
     methods: [...g.methods].sort(),
-    rarities: [...g.rarities].sort()
+    rarities: [...g.rarities].sort(),
+    min: g.min,
+    max: g.max,
+    items: [...g.items]
   }));
 }
 
@@ -1151,6 +1149,8 @@ function LiveRoutePanel({ areasIndex, onViewMon }){
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
                         {g.methods.map(m => <MethodPill key={`m-${idx}-${m}`} method={m} />)}
                         {g.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} />)}
+                        <LevelPill min={g.min} max={g.max} />
+                        {g.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} />)}
                       </div>
                     </div>
                     {mon && (
@@ -1190,7 +1190,10 @@ function buildReverseAreasIndex(areasClean) {
           region,
           map: normalizeMapForGrouping(region, mapName),
           methods: g.methods || [],
-          rarities: g.rarities || []
+          rarities: g.rarities || [],
+          min: g.min,
+          max: g.max,
+          items: g.items || []
         });
       }
     }
@@ -1212,6 +1215,7 @@ function App(){
   const areasClean = useAreasDbCleaned();
   const tmIndex    = useTmLocations();
   const areasRevByMon = useMemo(() => buildReverseAreasIndex(areasClean), [areasClean]); // NEW
+  const regionOptions = useMemo(() => ['All', ...Object.keys(areasClean).sort((a,b)=>a.localeCompare(b))], [areasClean]);
 
 
   const [headerSprite] = useState(() => {
@@ -1342,6 +1346,9 @@ function App(){
       map: normalizeMapForGrouping(l.region || 'Unknown', l.map || ''),
       method: Array.isArray(l.method) ? l.method.filter(Boolean) : (l.method ? [l.method] : []),
       rarity: Array.isArray(l.rarity) ? l.rarity.filter(Boolean) : (l.rarity ? [l.rarity] : []),
+      min: l.min_level ?? l.min,
+      max: l.max_level ?? l.max,
+      items: Array.isArray(l.items) ? l.items.filter(Boolean) : [],
     }));
 
     // Extra from Areas reverse index
@@ -1350,6 +1357,9 @@ function App(){
       map: e.map,
       method: (e.methods || []).filter(Boolean),
       rarity: (e.rarities || []).filter(Boolean),
+      min: e.min,
+      max: e.max,
+      items: (e.items || []).filter(Boolean),
     }));
 
 
@@ -1361,6 +1371,7 @@ function App(){
       rarity: [l.rarity].filter(Boolean),
       min: l.min_level,
       max: l.max_level,
+      items: (selected.heldItems || []).map(h => h.name),
     }));
 
     // Merge & dedupe by region+map; union methods/rarities
@@ -1368,11 +1379,12 @@ function App(){
     for (const src of [...baseLocs, ...extraLocs, ...dexLocs]) {
       if (!src.map) continue;
       const key = `${src.region}|${src.map}`;
-      const prev = byKey.get(key) || { region: src.region, map: src.map, method: [], rarity: [], min: src.min, max: src.max };
+      const prev = byKey.get(key) || { region: src.region, map: src.map, method: [], rarity: [], items: [], min: src.min, max: src.max };
       prev.method.push(...(src.method || []));
       prev.rarity.push(...(src.rarity || []));
-      prev.min = Math.min(prev.min ?? Infinity, src.min ?? Infinity);
-      prev.max = Math.max(prev.max ?? 0, src.max ?? 0);
+      prev.items.push(...(src.items || []));
+      prev.min = Math.min(prev.min ?? src.min ?? Infinity, src.min ?? Infinity);
+      prev.max = Math.max(prev.max ?? src.max ?? 0, src.max ?? 0);
       byKey.set(key, prev);
     }
 
@@ -1380,6 +1392,7 @@ function App(){
       ...l,
       method: [...new Set(l.method)],
       rarity: [...new Set(l.rarity)],
+      items: [...new Set(l.items)],
     }));
 
     const types = [...new Set((selected.types || []).map(normalizeType))];
@@ -1458,7 +1471,7 @@ function App(){
                     </button>
                     {showRegionMenu && (
                       <div className="region-menu">
-                        {['All','Kanto','Johto','Hoenn','Sinnoh','Unova'].map(r => (
+                        {regionOptions.map(r => (
                           <button
                             type="button"
                             key={r}
@@ -1549,6 +1562,8 @@ function App(){
                             <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
                               {g.methods.map(m => <MethodPill key={`m-${m}`} method={m} />)}
                               {g.rarities.map(r => <RarityPill key={`r-${r}`} rarity={r} />)}
+                              <LevelPill min={g.min} max={g.max} />
+                              {g.items.map(i => <ItemPill key={`i-${i}`} item={i} />)}
                             </div>
                           </div>
                           {mon && (

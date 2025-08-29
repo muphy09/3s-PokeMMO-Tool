@@ -1,7 +1,6 @@
 \\ Known Issues
 
-- Patch Notes button goes nowhere.
-
+- Some Pokémon Encounter Rarity doesn't display on the Area search tab, even though the data for it exists
 
 - Live updater updates, but doesn't actually tell you a new version is out
 
@@ -16,3 +15,5 @@
 - Create your own rarity and method colors.
 
 - Include pokemon natures somehow
+
+- 
