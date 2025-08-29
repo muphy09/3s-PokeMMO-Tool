@@ -1814,15 +1814,17 @@ function App(){
                 <option value="">Region</option>
                 {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              <select
+              <input
                 value={moveFilter}
                 onChange={e=>setMoveFilter(e.target.value)}
+                list="move-filter-options"
                 className="input"
-                style={{ height:44, borderRadius:10, width:160, overflowY:'auto' }}
-              >
-                <option value="">Move</option>
-                {moveOptions.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
+                style={{ height:44, borderRadius:10, width:160 }}
+                placeholder="Move"
+              />
+              <datalist id="move-filter-options">
+                {moveOptions.map(m => <option key={m} value={m} />)}
+              </datalist>
               {moveFilter && (
                 <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
                   <input
