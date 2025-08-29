@@ -3,6 +3,14 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.1.5] - 2025-08
+### Fixed
+  - Optimized UI for Area and Live Tab
+    - Redesigned the layout for Pokemon in the Areas tab and Live route to be look consistent and less cluttered
+
+
+---
+
 ## [2.1.4] - 2025-08
 ### Added
   - Advanced Pokemon Search
