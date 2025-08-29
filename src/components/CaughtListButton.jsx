@@ -44,6 +44,7 @@ function Sprite({ mon, size=32, alt='' }){
   );
 }
 
+
 const DEX_LIST = dexRaw
   .map(m => ({
     id: m.id,
@@ -116,6 +117,9 @@ export default function CaughtListButton(){
               </div>
             </div>
           </div>
+          <div style={{ marginTop:8, textAlign:'center', fontWeight:700 }}>
+              Total caught {caught.size}/{DEX_LIST.length}
+            </div>
         </div>
       )}
     </>
