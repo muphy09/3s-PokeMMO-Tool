@@ -685,28 +685,36 @@ function groupEntriesByMon(entries){
       byId.set(e.monId, {
         monId: e.monId,
         monName: e.monName,
-        methods: new Set(),
+        encounters: new Map()
+      });
+    }
+    const g = byId.get(e.monId);
+    const mKey = e.method || '';
+    if (!g.encounters.has(mKey)){
+      g.encounters.set(mKey, {
+        method: e.method,
         rarities: new Set(),
         min: e.min,
         max: e.max,
         items: new Set(e.items || [])
       });
     }
-    const g = byId.get(e.monId);
-    if (e.method) g.methods.add(e.method);
-    if (e.rarity) g.rarities.add(e.rarity);
-    if (e.min != null) g.min = Math.min(g.min ?? e.min, e.min);
-    if (e.max != null) g.max = Math.max(g.max ?? e.max, e.max);
-    if (Array.isArray(e.items)) e.items.forEach(i => g.items.add(i));
+    const enc = g.encounters.get(mKey);
+    if (e.rarity) enc.rarities.add(e.rarity);
+    if (e.min != null) enc.min = Math.min(enc.min ?? e.min, e.min);
+    if (e.max != null) enc.max = Math.max(enc.max ?? e.max, e.max);
+    if (Array.isArray(e.items)) e.items.forEach(i => enc.items.add(i));
   }
   return [...byId.values()].map(g => ({
     monId: g.monId,
     monName: g.monName,
-    methods: [...g.methods].sort(),
-    rarities: [...g.rarities].sort(),
-    min: g.min,
-    max: g.max,
-    items: [...g.items]
+    encounters: [...g.encounters.values()].map(enc => ({
+      method: enc.method,
+      rarities: [...enc.rarities].sort(),
+      min: enc.min,
+      max: enc.max,
+      items: [...enc.items]
+    }))
   }));
 }
 
@@ -874,10 +882,12 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex){
     }
   }
   const grouped = groupEntriesByMon(merged).map(g => {
-    if (!g.rarities.length && regionFilter) {
-      const r = lookupRarity(g.monName, regionFilter, stripTimeTag(displayMap), locIndex);
-      if (r) g.rarities.push(r);
-    }
+    const fallback = regionFilter
+      ? lookupRarity(g.monName, regionFilter, stripTimeTag(displayMap), locIndex)
+      : null;
+    g.encounters.forEach(enc => {
+      if (!enc.rarities.length && fallback) enc.rarities.push(fallback);
+    });
     return g;
   });
   return grouped;
@@ -1172,11 +1182,15 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
                     <Sprite mon={mon} size={36} alt={g.monName} />
                     <div style={{ flex:1, minWidth:0 }}>
                       <div style={{ fontWeight:700 }}>{g.monName}</div>
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
-                        {g.methods.map(m => <MethodPill key={`m-${idx}-${m}`} method={m} />)}
-                        {g.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} />)}
-                        <LevelPill min={g.min} max={g.max} />
-                        {g.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} />)}
+                      <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:4 }}>
+                        {g.encounters.map((enc, eIdx) => (
+                          <div key={eIdx} style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                            {enc.method && <MethodPill key={`m-${idx}-${eIdx}-${enc.method}`} method={enc.method} />}
+                            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${eIdx}-${r}`} rarity={r} />)}
+                            <LevelPill min={enc.min} max={enc.max} />
+                            {enc.items.map(i => <ItemPill key={`i-${idx}-${eIdx}-${i}`} item={i} />)}
+                          </div>
+                        ))}
                       </div>
                     </div>
                     {mon && (
@@ -1215,11 +1229,7 @@ function buildReverseAreasIndex(areasClean) {
         rev.get(g.monId).push({
           region,
           map: normalizeMapForGrouping(region, mapName),
-          methods: g.methods || [],
-          rarities: g.rarities || [],
-          min: g.min,
-          max: g.max,
-          items: g.items || []
+          encounters: g.encounters || []
         });
       }
     }
@@ -1368,10 +1378,10 @@ function App(){
       const regionNorm = normalizeRegion(region);
       if (regionKey !== 'all' && regionNorm !== regionKey) continue;
       const grouped = groupEntriesByMon(entries).map(g => {
-        if (!g.rarities.length) {
-          const r = lookupRarity(g.monName, region, map, locIndex);
-          if (r) g.rarities.push(r);
-        }
+        const fallback = lookupRarity(g.monName, region, map, locIndex);
+        g.encounters.forEach(enc => {
+          if (!enc.rarities.length && fallback) enc.rarities.push(fallback);
+        });
         return g;
       });
       if (grouped.length) hits.push({ region, map, count: grouped.length, entries: grouped });
@@ -1428,15 +1438,17 @@ function App(){
     }));
 
     // Extra from Areas reverse index
-    const extraLocs = (areasRevByMon.get(selected.id) || []).map(e => ({
-      region: titleCase(e.region),
-      map: e.map,
-      method: (e.methods || []).filter(Boolean),
-      rarity: (e.rarities || []).filter(Boolean),
-      min: e.min,
-      max: e.max,
-      items: (e.items || []).filter(Boolean),
-    }));
+    const extraLocs = (areasRevByMon.get(selected.id) || []).flatMap(e =>
+      (e.encounters || []).map(enc => ({
+        region: titleCase(e.region),
+        map: e.map,
+        method: [enc.method].filter(Boolean),
+        rarity: (enc.rarities || []).filter(Boolean),
+        min: enc.min,
+        max: enc.max,
+        items: (enc.items || []).filter(Boolean),
+      }))
+    );
 
 
     // Locations from dex data
@@ -1677,12 +1689,15 @@ function App(){
                         <div key={idx} style={styles.monRow}>
                           <Sprite mon={mon} size={36} alt={g.monName} />
                           <div style={{ flex:1, minWidth:0 }}>
-                            <div style={{ fontWeight:700 }}>{g.monName}</div>
-                            <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:4 }}>
-                              {g.methods.map(m => <MethodPill key={`m-${m}`} method={m} />)}
-                              {g.rarities.map(r => <RarityPill key={`r-${r}`} rarity={r} />)}
-                              <LevelPill min={g.min} max={g.max} />
-                              {g.items.map(i => <ItemPill key={`i-${i}`} item={i} />)}
+                            <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:4 }}>
+                              {g.encounters.map((enc, eIdx) => (
+                                <div key={eIdx} style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+                                  {enc.method && <MethodPill key={`m-${g.monId}-${eIdx}-${enc.method}`} method={enc.method} />}
+                                  {enc.rarities.map(r => <RarityPill key={`r-${g.monId}-${eIdx}-${r}`} rarity={r} />)}
+                                  <LevelPill min={enc.min} max={enc.max} />
+                                  {enc.items.map(i => <ItemPill key={`i-${g.monId}-${eIdx}-${i}`} item={i} />)}
+                                </div>
+                              ))}
                             </div>
                           </div>
                           {mon && (
