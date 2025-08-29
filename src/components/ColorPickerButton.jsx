@@ -22,12 +22,12 @@ export default function ColorPickerButton(){
   };
   const modalStyle = {
     background:'var(--surface)', color:'var(--text)', padding:20,
-    width:'90%', maxWidth:600, maxHeight:'80%', overflowY:'auto',
+    width:'fit-content', maxHeight:'80%', overflowY:'auto',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)'
   };
   const sectionStyle = { marginBottom:20 };
   const rowStyle = { display:'flex', alignItems:'center', gap:12, marginBottom:8 };
-  const labelStyle = { width:140, fontWeight:600 };
+  const labelStyle = { width:140, fontWeight:600, textTransform:'capitalize' };
 
   const onSave = () => {
     setMethodColors(mColors);

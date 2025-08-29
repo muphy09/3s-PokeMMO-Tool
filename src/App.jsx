@@ -1356,6 +1356,7 @@ function App(){
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [lureOnly, setLureOnly] = useState(false);
+  const [showCaught, setShowCaught] = useState(true);
 
   const [methodColors, setMethodColors] = useState(() => {
     try {
@@ -1731,7 +1732,42 @@ function App(){
                     ? 'Search by TM name'
                     : 'Search by item name'}
                 </div>
-                {(mode==='areas' || mode==='tm') && (
+                {mode==='areas' && (
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                      <input
+                        type="checkbox"
+                        checked={showCaught}
+                        onChange={e=>setShowCaught(e.target.checked)}
+                      />
+                      Toggle Caught
+                    </label>
+                    <div style={{ position:'relative' }}>
+                      <button
+                        type="button"
+                        onClick={()=> setShowRegionMenu(v => !v)}
+                        className="region-btn"
+                      >
+                        {areaRegion === 'All' ? 'Region' : areaRegion}
+                      </button>
+                      {showRegionMenu && (
+                        <div className="region-menu">
+                          {regionOptions.map(r => (
+                            <button
+                              type="button"
+                              key={r}
+                              onClick={()=> { setAreaRegion(r); setShowRegionMenu(false); }}
+                              className={r===areaRegion ? 'active' : undefined}
+                            >
+                              {r}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {mode==='tm' && (
                   <div style={{ position:'relative' }}>
                     <button
                       type="button"
@@ -1837,6 +1873,7 @@ function App(){
                   <div style={{ ...styles.gridCols, marginTop:10 }}>
                     {hit.entries.map((g, idx) => {
                       const mon = getMon(g.monName);
+                      const isCaught = mon ? caught.has(mon.id) : false;
                       return (
                         <AreaMonCard
                           key={idx}
@@ -1848,6 +1885,9 @@ function App(){
                             setMode('pokemon');
                             setQuery('');
                           }}
+                          caught={isCaught}
+                          showCaught={showCaught}
+                          onToggleCaught={() => mon && toggleCaught(mon.id)}
                         />
                       );
                     })}
