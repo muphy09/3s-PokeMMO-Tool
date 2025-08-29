@@ -348,14 +348,32 @@ class LiveRouteOCR
         int stableHighConfHits = 0;
         int consecutiveMisses = 0;
 
+        IntPtr hWnd = IntPtr.Zero;
+        IntPtr lastLoggedHandle = IntPtr.Zero;
+
         while (!ct.IsCancellationRequested)
         {
             try
             {
-                var hWnd = FindPokeMMO(TargetPid);
-                if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                if (hWnd == IntPtr.Zero)
+                {
+                    hWnd = FindPokeMMO(TargetPid);
+                    if (hWnd != lastLoggedHandle)
+                    {
+                        if (hWnd == IntPtr.Zero) Log("PokeMMO window not found.");
+                        else Log($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
+                        lastLoggedHandle = hWnd;
+                    }
+                    if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                }
 
-                if (!GetClientRect(hWnd, out var rc)) { await Task.Delay(700, ct); continue; }
+                if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
+                {
+                    if (hWnd != IntPtr.Zero) Log("PokeMMO window lost; re-enumerating.");
+                    hWnd = IntPtr.Zero;
+                    await Task.Delay(700, ct);
+                    continue;
+                }
                 var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
                 int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
 
@@ -372,7 +390,7 @@ class LiveRouteOCR
                 var plan = BuildPassPlan(crop, mode, autoDepth);
 
                 string location = "";
-                string rawUsed  = "";
+                string rawUsed = "";
                 float conf = 0f;
 
                 // Keep one preprocessed image for preview even if we miss
@@ -405,7 +423,7 @@ class LiveRouteOCR
                             pre.Save(LastPrePath, ImgFormat.Png);
                             Log($"Saved preprocessed: {LastPrePath}");
 
-                            Log($"HIT: mode={mode}{(mode=="auto" ? $"/{autoDepth}" : "")} mask={(pass.Masked ? "Y" : "N")} keep={pass.KeepPct:F2} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf*100)} raw='{OneLine(raw)}' loc='{location}'");
+                            Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} mask={(pass.Masked ? "Y" : "N")} keep={pass.KeepPct:F2} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
                             break;
                         }
                     }
@@ -414,7 +432,7 @@ class LiveRouteOCR
                 // If no hit, still save the last tried pre image for the UI preview
                 if (string.IsNullOrEmpty(location) && prePreview != null)
                 {
-                    try { prePreview.Save(LastPrePath, ImgFormat.Png); Log($"Saved preprocessed (miss): {LastPrePath}"); } catch {}
+                    try { prePreview.Save(LastPrePath, ImgFormat.Png); Log($"Saved preprocessed (miss): {LastPrePath}"); } catch { }
                     prePreview.Dispose(); prePreview = null;
                 }
 
@@ -465,6 +483,12 @@ class LiveRouteOCR
                         lastConfLocal = 0;
                         Log("SENT NO_ROUTE");
                         missStreak = 3;
+                    }
+
+                    if (missStreak >= 6)
+                    {
+                        Log("Miss streak; attempting to reacquire window.");
+                        hWnd = IntPtr.Zero;
                     }
                 }
 
@@ -655,13 +679,40 @@ class LiveRouteOCR
         }
 
         var h = GetForegroundWindow();
-        var title = GetTitle(h); var cls = GetClass(h);
-        if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) &&
-            title.IndexOf("pok", StringComparison.OrdinalIgnoreCase) >= 0)
-            return h;
+        if (IsPokeMMOWindow(h)) return h;
 
-        var byClass = FindWindow("GLFW30", null);
-        return byClass;
+        IntPtr foundEnum = IntPtr.Zero;
+        EnumWindows((win, l) =>
+        {
+            if (!IsWindowVisible(win)) return true;
+            if (IsPokeMMOWindow(win)) { foundEnum = win; return false; }
+            return true;
+        }, IntPtr.Zero);
+        return foundEnum;
+    }
+    static bool IsPokeMMOWindow(IntPtr h)
+    {
+        if (h == IntPtr.Zero) return false;
+        var cls = GetClass(h);
+        if (!cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return false;
+        var title = GetTitle(h);
+        if (title.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+
+        uint pid; GetWindowThreadProcessId(h, out pid);
+        try
+        {
+            var p = Process.GetProcessById((int)pid);
+            string procName = p.ProcessName;
+            if (procName.Equals("PokeMMO", StringComparison.OrdinalIgnoreCase)) return true;
+            try
+            {
+                var mod = p.MainModule?.ModuleName;
+                if (!string.IsNullOrEmpty(mod) && mod.Equals("PokeMMO.exe", StringComparison.OrdinalIgnoreCase)) return true;
+            }
+            catch { }
+        }
+        catch { }
+        return false;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
     static string GetClass (IntPtr h){ var sb=new StringBuilder(256); GetClassName (h,sb,sb.Capacity); return sb.ToString(); }

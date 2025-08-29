@@ -3,10 +3,14 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.3.0]- 2025-08
+## [2.3.5]- 2025-08
 ### Added
 - Move Filter!
   - Filter by a particular Move a Pokemon can learn, and refine it even further with a toggle for "Level up" only
+
+### Fixed
+- Improvements to the OCR to speed up detection of PokeMMO window
+  - Should hopefully fix some of the inconsistent startup times.
 
 ---
 
