@@ -44,7 +44,9 @@ const styles = {
   card: { padding:16, borderRadius:12, border:'1px solid #262626', background:'#111' },
   areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
-  monRow: { display:'flex', gap:10, alignItems:'center', border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' },
+  monCard: { display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid #262626', borderRadius:10, padding:'10px', background:'#141414', textAlign:'center' },
+  encWrap: { display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap', marginTop:8 },
+  encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 },
   viewBtn: {
     padding:'6px 10px',
     border:'1px solid var(--accent)',
@@ -398,6 +400,33 @@ function ItemPill({ item }){
     }}>
       {item}
     </span>
+  );
+}
+
+function AreaMonCard({ mon, monName, encounters, onView }){
+  return (
+    <div style={styles.monCard}>
+      <div style={{ fontWeight:700 }}>{monName}</div>
+      <Sprite mon={mon} size={48} alt={monName} />
+      <div style={styles.encWrap}>
+        {encounters.map((enc, idx) => (
+          <div key={idx} style={styles.encCol}>
+            {enc.method && <MethodPill method={enc.method} />}
+            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} />)}
+            <LevelPill min={enc.min} max={enc.max} />
+            {enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} />)}
+          </div>
+        ))}
+      </div>
+      {mon && (
+        <button
+          className="btn"
+          style={{ ...styles.viewBtn, marginTop:8 }}
+          onClick={() => onView && onView(mon)}
+          title="Open Pokémon"
+        >View</button>
+      )}
+    </div>
   );
 }
 
@@ -1178,30 +1207,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               {entries.map((g, idx) => {
                 const mon = getMon(g.monName);
                 return (
-                  <div key={idx} style={styles.monRow}>
-                    <Sprite mon={mon} size={36} alt={g.monName} />
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontWeight:700 }}>{g.monName}</div>
-                      <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:4 }}>
-                        {g.encounters.map((enc, eIdx) => (
-                          <div key={eIdx} style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                            {enc.method && <MethodPill key={`m-${idx}-${eIdx}-${enc.method}`} method={enc.method} />}
-                            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${eIdx}-${r}`} rarity={r} />)}
-                            <LevelPill min={enc.min} max={enc.max} />
-                            {enc.items.map(i => <ItemPill key={`i-${idx}-${eIdx}-${i}`} item={i} />)}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    {mon && (
-                      <button
-                        className="btn"
-                        style={styles.viewBtn}
-                        onClick={() => onViewMon && onViewMon(mon)}
-                        title="Open Pokémon"
-                      >View</button>
-                    )}
-                  </div>
+                  <AreaMonCard key={idx} mon={mon} monName={g.monName} encounters={g.encounters} onView={onViewMon} />
                 );
               })}
             </div>
@@ -1686,33 +1692,17 @@ function App(){
                     {hit.entries.map((g, idx) => {
                       const mon = getMon(g.monName);
                       return (
-                        <div key={idx} style={styles.monRow}>
-                          <Sprite mon={mon} size={36} alt={g.monName} />
-                          <div style={{ flex:1, minWidth:0 }}>
-                            <div style={{ display:'flex', flexDirection:'column', gap:4, marginTop:4 }}>
-                              {g.encounters.map((enc, eIdx) => (
-                                <div key={eIdx} style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                                  {enc.method && <MethodPill key={`m-${g.monId}-${eIdx}-${enc.method}`} method={enc.method} />}
-                                  {enc.rarities.map(r => <RarityPill key={`r-${g.monId}-${eIdx}-${r}`} rarity={r} />)}
-                                  <LevelPill min={enc.min} max={enc.max} />
-                                  {enc.items.map(i => <ItemPill key={`i-${g.monId}-${eIdx}-${i}`} item={i} />)}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          {mon && (
-                            <button
-                              className="btn"
-                              style={styles.viewBtn}
-                              onClick={() => {
-                                setSelected(mon);
-                                setMode('pokemon');
-                                setQuery('');
-                              }}
-                              title="Open Pokémon"
-                            >View</button>
-                          )}
-                        </div>
+                        <AreaMonCard
+                          key={idx}
+                          mon={mon}
+                          monName={g.monName}
+                          encounters={g.encounters}
+                          onView={(m) => {
+                            setSelected(m);
+                            setMode('pokemon');
+                            setQuery('');
+                          }}
+                        />
                       );
                     })}
                   </div>
