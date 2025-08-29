@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
+---
+
+## [2.1.0] - 2025-08
+### Added
+  - NEW Dataset for Pokemon Encounter information
+    - Much more consistent between areas
 
 ---
 

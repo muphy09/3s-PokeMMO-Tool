@@ -42,6 +42,23 @@ export default function OptionsMenu({ style = {} }) {
     };
   }, []);
 
+  // On mount, ask the main process for any pending update status so we
+  // don't miss a quick "update downloaded" event fired before listeners
+  // attach. Only surface messages when an update is in progress or ready.
+  useEffect(() => {
+    async function checkInitial() {
+      try {
+        const res = await window.app?.checkUpdates?.();
+        if (res?.status === "downloaded" && res?.version) {
+          show(`Update ${res.version} downloaded — restart to apply.`, "info");
+        } else if (res?.status === "downloading" && res?.version) {
+          show(`Downloading update ${res.version}…`, "info");
+        }
+      } catch {}
+    }
+    checkInitial();
+  }, []);
+  
   async function onCheckUpdates() {
     try {
       show("Checking for updates…", "info");

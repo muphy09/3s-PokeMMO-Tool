@@ -658,6 +658,25 @@ function useAreasDbCleaned(){
   }, []);
 }
 
+function useTmLocations(){
+  const [index, setIndex] = useState({});
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(TM_URL, { cache:'no-store' });
+        const json = await res.json();
+        if (alive) setIndex(json || {});
+      } catch (e) {
+        console.error('load tm locations failed', e);
+        if (alive) setIndex({});
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+  return index;
+}
+
 /** Group same Pokémon (per map) into one entry with multiple methods/rarities */
 function groupEntriesByMon(entries){
   const byId = new Map();
