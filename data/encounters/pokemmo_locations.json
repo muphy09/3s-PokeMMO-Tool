@@ -31576,8 +31576,8 @@
       {
         "region": "Sinnoh",
         "map": "Route 210",
-        "method": "Grass"
-	"rarity": Rare"
+        "method": "Grass",
+	      "rarity": "Rare"
       },
       {
         "region": "Unova",
