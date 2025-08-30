@@ -39,9 +39,12 @@ class LiveRouteOCR
 
     // ---------- Paths ----------
     static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
-    static string LogPath => Path.Combine(AppDataDir, "ocr.log");
-    static string LastCapPath => Path.Combine(AppDataDir, "last-capture.png");
-    static string LastPrePath => Path.Combine(AppDataDir, "last-pre.png");
+    static string RouteLogPath => Path.Combine(AppDataDir, "ocr-route.log");
+    static string BattleLogPath => Path.Combine(AppDataDir, "ocr-battle.log");
+    static string RouteCapPath  => Path.Combine(AppDataDir, "last-route-capture.png");
+    static string RoutePrePath  => Path.Combine(AppDataDir, "last-route-pre.png");
+    static string BattleCapPath => Path.Combine(AppDataDir, "last-battle-capture.png");
+    static string BattlePrePath => Path.Combine(AppDataDir, "last-battle-pre.png");
     static string StableTessDir => Path.Combine(AppDataDir, "tessdata");
     static string SettingsPath => Path.Combine(AppDataDir, "settings.json");
 
@@ -380,8 +383,8 @@ class LiveRouteOCR
                     hWnd = FindPokeMMO(TargetPid);
                     if (hWnd != lastLoggedHandle)
                     {
-                        if (hWnd == IntPtr.Zero) Log("PokeMMO window not found.");
-                        else Log($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
+                        if (hWnd == IntPtr.Zero) LogBattle("PokeMMO window not found.");
+                        else LogBattle($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
                         lastLoggedHandle = hWnd;
                     }
                     if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
@@ -389,7 +392,7 @@ class LiveRouteOCR
 
                 if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
                 {
-                    if (hWnd != IntPtr.Zero) Log("PokeMMO window lost; re-enumerating.");
+                    if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
                     hWnd = IntPtr.Zero;
                     await Task.Delay(700, ct);
                     continue;
@@ -405,11 +408,11 @@ class LiveRouteOCR
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
                 try
                 {
-                    using var fs = new FileStream(LastCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                    using var fs = new FileStream(RouteCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
                     crop.Save(fs, ImgFormat.Png);
                 }
                 catch (Exception ex) { Log($"Capture save failed: {ex.Message}"); }
-                Log($"Saved capture: {LastCapPath}");
+                Log($"Saved capture: {RouteCapPath}");
 
                 // Build pass plan
                 var plan = BuildPassPlan(crop, mode, autoDepth);
@@ -445,9 +448,9 @@ class LiveRouteOCR
                             rawUsed = raw;
 
                             // on hit, save THIS pre as last-pre
-                            using (var fs = new FileStream(LastPrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                            using (var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
                                 pre.Save(fs, ImgFormat.Png);
-                            Log($"Saved preprocessed: {LastPrePath}");
+                            Log($"Saved preprocessed: {RoutePrePath}");
 
                             Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} mask={(pass.Masked ? "Y" : "N")} keep={pass.KeepPct:F2} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
                             break;
@@ -460,9 +463,9 @@ class LiveRouteOCR
                 {
                     try
                     {
-                        using var fs = new FileStream(LastPrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        using var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
                         prePreview.Save(fs, ImgFormat.Png);
-                        Log($"Saved preprocessed (miss): {LastPrePath}");
+                        Log($"Saved preprocessed (miss): {RoutePrePath}");
                     }
                     catch { }
                     prePreview.Dispose(); prePreview = null;
@@ -552,8 +555,8 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                     hWnd = FindPokeMMO(TargetPid);
                     if (hWnd != lastLoggedHandle)
                     {
-                        if (hWnd == IntPtr.Zero) Log("PokeMMO window not found.");
-                        else Log($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
+                        if (hWnd == IntPtr.Zero) LogBattle("PokeMMO window not found.");
+                        else LogBattle($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
                         lastLoggedHandle = hWnd;
                     }
                     if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
@@ -561,7 +564,7 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
 
                 if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
                 {
-                    if (hWnd != IntPtr.Zero) Log("PokeMMO window lost; re-enumerating.");
+                    if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
                     hWnd = IntPtr.Zero;
                     await Task.Delay(700, ct);
                     continue;
@@ -573,16 +576,26 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                 int sx = pt.X + r.Left, sy = pt.Y + r.Top;
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
+                try
+                {
+                    using var fs = new FileStream(BattleCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                    crop.Save(fs, ImgFormat.Png);
+                }
+                catch (Exception ex) { LogBattle($"Capture save failed: {ex.Message}"); }
+                LogBattle($"Saved capture: {BattleCapPath}");
 
                 string name = "";
                 string rawUsed = "";
                 float conf = 0f;
+                Bitmap? prePreview = null;
                 if (engine != null)
                 {
                     foreach (var pass in BuildPassPlan(crop, mode, 1))
                     {
                         using var srcForPass = pass.Masked ? MaskLeftColumn(crop, pass.KeepPct) : (Bitmap)crop.Clone();
                         using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
+                        prePreview?.Dispose();
+                        prePreview = (Bitmap)pre.Clone();
                         using var pix = PixFromBitmap(pre);
                         using var page = engine.Process(pix, pass.Psm);
                         var raw = (page.GetText() ?? "").Trim();
@@ -592,9 +605,23 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                             name = cleaned.Split(' ')[0];
                             conf = page.GetMeanConfidence();
                             rawUsed = raw;
+                            using (var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                                pre.Save(fs, ImgFormat.Png);
+                            LogBattle($"Saved preprocessed: {BattlePrePath}");
                             break;
                         }
                     }
+                }
+if (string.IsNullOrWhiteSpace(name) && prePreview != null)
+                {
+                    try
+                    {
+                        using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        prePreview.Save(fs, ImgFormat.Png);
+                        LogBattle($"Saved preprocessed (miss): {BattlePrePath}");
+                    }
+                    catch { }
+                    prePreview.Dispose(); prePreview = null;
                 }
 
                 bool has = !string.IsNullOrWhiteSpace(name);
@@ -604,6 +631,7 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                     int confPct = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
                     Broadcast(BattleChan, name, rawUsed, confPct);
                     lastEmitLocal = name;
+                    LogBattle($"SENT BATTLE: {name} ({confPct}%)");
                 }
                 else
                 {
@@ -612,15 +640,16 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                     {
                         Broadcast(BattleChan, BattleChan.NoToken, "", 0);
                         lastEmitLocal = BattleChan.NoToken;
+                        LogBattle("SENT NO_MON");
                     }
                 }
                 await Task.Delay(has ? 150 : 350, ct);
             }
             catch (TaskCanceledException) { }
-            catch (Exception ex) { Log("Battle loop error: " + ex.Message); await Task.Delay(500, ct); }
+            catch (Exception ex) { LogBattle("Battle loop error: " + ex.Message); await Task.Delay(500, ct); }
         }
     }
-    
+
     struct OcrPass
     {
         public bool Masked;
@@ -812,28 +841,28 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
     {
         if (h == IntPtr.Zero) return false;
 
-        var title = GetTitle(h);
-        if (title.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
-
         uint pid; GetWindowThreadProcessId(h, out pid);
         try
         {
             var p = Process.GetProcessById((int)pid);
             string procName = p.ProcessName;
-            if (procName.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            if (string.Equals(procName, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
             try
             {
                 var mod = p.MainModule?.ModuleName;
-                if (!string.IsNullOrEmpty(mod) && mod.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
+                if (!string.IsNullOrEmpty(mod) && string.Equals(mod, "pokemmo.exe", StringComparison.OrdinalIgnoreCase)) return true;
             }
             catch { }
         }
         catch { }
 
         var cls = GetClass(h);
-        if (cls.IndexOf("pokemmo", StringComparison.OrdinalIgnoreCase) >= 0) return true;
         if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return true;
-        
+        if (string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
+
+        var title = GetTitle(h);
+        if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
+
         return false;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
@@ -912,12 +941,15 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
         return def;
     }
 
-    static void Log(string s)
+    static void Log(string s) => LogTo(RouteLogPath, s);
+    static void LogBattle(string s) => LogTo(BattleLogPath, s);
+
+    static void LogTo(string path, string s)
     {
         try
         {
             Directory.CreateDirectory(AppDataDir);
-            File.AppendAllText(LogPath, $"[{DateTime.Now:HH:mm:ss}] {s}{Environment.NewLine}");
+            File.AppendAllText(path, $"[{DateTime.Now:HH:mm:ss}] {s}{Environment.NewLine}");
         }
         catch { }
         Console.WriteLine(s);

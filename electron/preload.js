@@ -23,12 +23,15 @@ const localAppData = (() => {
   return path.join(os.homedir(), '.config');
 })();
 
-const pokeLiveDir   = path.join(localAppData, 'PokemmoLive');
-const settingsPath  = path.join(pokeLiveDir, 'settings.json');
-const lastCapPath   = path.join(pokeLiveDir, 'last-capture.png');
-const lastPrePath   = path.join(pokeLiveDir, 'last-preview.png');
-const lastPreAlt    = path.join(pokeLiveDir, 'last-pre.png');
-const tessdataDir   = path.join(pokeLiveDir, 'tessdata');
+const pokeLiveDir    = path.join(localAppData, 'PokemmoLive');
+const settingsPath   = path.join(pokeLiveDir, 'settings.json');
+const lastRouteCapPath  = path.join(pokeLiveDir, 'last-route-capture.png');
+const lastRoutePrePath  = path.join(pokeLiveDir, 'last-route-pre.png');
+const lastBattleCapPath = path.join(pokeLiveDir, 'last-battle-capture.png');
+const lastBattlePrePath = path.join(pokeLiveDir, 'last-battle-pre.png');
+const routeLogPath  = path.join(pokeLiveDir, 'ocr-route.log');
+const battleLogPath = path.join(pokeLiveDir, 'ocr-battle.log');
+const tessdataDir    = path.join(pokeLiveDir, 'tessdata');
 
 // ---------- Helpers ----------
 function ensureDir(dir) {
@@ -106,8 +109,12 @@ contextBridge.exposeInMainWorld('paths', {
   localAppData,
   pokeLiveDir,
   settingsPath,
-  lastCapPath,
-  lastPrePath,
+  lastRouteCapPath,
+  lastRoutePrePath,
+  lastBattleCapPath,
+  lastBattlePrePath,
+  routeLogPath,
+  battleLogPath,
   tessdataDir,
 });
 contextBridge.exposeInMainWorld('files', fileApi);
@@ -246,14 +253,24 @@ contextBridge.exposeInMainWorld('liveSetup', {
   },
 
   readPreview: async () => {
-    // main returns { capture?, preprocessed?, dir, error? }
+    // main returns { routeCapture?, battleCapture?, dir, error? }
     const viaMain = await invokeSafe('live:read-preview', undefined, null);
-    if (viaMain && (viaMain.capture || viaMain.preprocessed || viaMain.pre)) return viaMain;
+    if (viaMain && (viaMain.routeCapture || viaMain.battleCapture)) return viaMain;
 
-    const capture = fileToDataUrl(lastCapPath);
-    const pre = fileToDataUrl(lastPrePath) || fileToDataUrl(lastPreAlt);
-    const res = { capture, preprocessed: pre, dir: pokeLiveDir };
-    if (!capture || !pre) res.error = 'Preview images not found';
+    const routeCapture = fileToDataUrl(lastRouteCapPath);
+    const routePre = fileToDataUrl(lastRoutePrePath);
+    const battleCapture = fileToDataUrl(lastBattleCapPath);
+    const battlePre = fileToDataUrl(lastBattlePrePath);
+    const res = {
+      capture: routeCapture,
+      preprocessed: routePre,
+      routeCapture,
+      routePreprocessed: routePre,
+      battleCapture,
+      battlePreprocessed: battlePre,
+      dir: pokeLiveDir
+    };
+    if ((!routeCapture || !routePre) && (!battleCapture || !battlePre)) res.error = 'Preview images not found';
     return res;
   },
 
@@ -310,7 +327,9 @@ contextBridge.exposeInMainWorld('debugPreload', {
   hasSettings: () => fs.existsSync(settingsPath),
   peekSettings: () => readJSON(settingsPath, {}),
   peekImages: () => ({
-    captureExists: fs.existsSync(lastCapPath),
-    preExists: fs.existsSync(lastPrePath) || fs.existsSync(lastPreAlt),
+    routeCaptureExists: fs.existsSync(lastRouteCapPath),
+    routePreExists: fs.existsSync(lastRoutePrePath),
+    battleCaptureExists: fs.existsSync(lastBattleCapPath),
+    battlePreExists: fs.existsSync(lastBattlePrePath),
   }),
 });

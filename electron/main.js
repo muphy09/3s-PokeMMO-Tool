@@ -543,21 +543,26 @@ function readPreviewImages() {
   }
 
   const folders = ['', 'debug'];
-  const capture = readFirst(['last-capture.png', 'last-capture.jpg', 'last-capture.bmp'], folders);
-  const pre = readFirst(['last-pre.png', 'last-pre.jpg', 'last-pre.bmp', 'last-preprocessed.png', 'last-preview.png'], folders);
+  const routeCap = readFirst(['last-route-capture.png', 'last-route-capture.jpg', 'last-route-capture.bmp'], folders);
+  const routePre = readFirst(['last-route-pre.png', 'last-route-pre.jpg', 'last-route-pre.bmp', 'last-route-preprocessed.png', 'last-route-preview.png'], folders);
+  const battleCap = readFirst(['last-battle-capture.png', 'last-battle-capture.jpg', 'last-battle-capture.bmp'], folders);
+  const battlePre = readFirst(['last-battle-pre.png', 'last-battle-pre.jpg', 'last-battle-pre.bmp', 'last-battle-preprocessed.png', 'last-battle-preview.png'], folders);
 
   const res = {
-    capture: capture.data,
-    preprocessed: pre.data,
-    dir: capture.dir || pre.dir || localDir,
+    capture: routeCap.data,
+    preprocessed: routePre.data,
+    routeCapture: routeCap.data,
+    routePreprocessed: routePre.data,
+    battleCapture: battleCap.data,
+    battlePreprocessed: battlePre.data,
+    dir: routeCap.dir || routePre.dir || battleCap.dir || battlePre.dir || localDir,
 
   };
-  if (!capture.data || !pre.data) {
+  if (!routeCap.data || !routePre.data || !battleCap.data || !battlePre.data) {
     const errors = [];
-    if (!capture.data) errors.push('last-capture.[png/jpg/bmp] not found');
-    if (!pre.data) errors.push('last-pre.[png/jpg/bmp]/last-preview.png not found');
-    res.error = errors.join('; ');
-  }
+    if (!routeCap.data || !routePre.data) errors.push('route capture/pre missing');
+    if (!battleCap.data || !battlePre.data) errors.push('battle capture/pre missing');
+    if (errors.length) res.error = errors.join('; ');
   return res;
 }
 
