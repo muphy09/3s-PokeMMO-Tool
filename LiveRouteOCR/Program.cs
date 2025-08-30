@@ -768,10 +768,18 @@ static Bitmap MaskBattleHud(Bitmap src)
     {
         var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         int levelStart = (int)(src.Width * 0.7);
+        // Mask out the bottom portion where party icons are shown. These icons cause
+        // Tesseract to occasionally recognise stray characters (like "E") when more
+        // than one Pokémon is on screen.  Keeping only the upper portion with the name
+        // bars improves OCR reliability.
+        int iconStartY = (int)(src.Height * 0.6);
         using (var g = Graphics.FromImage(outBmp))
         {
             g.DrawImage(src, 0, 0);
+            // Hide level/HP portions on the right
             g.FillRectangle(Brushes.White, levelStart, 0, src.Width - levelStart, src.Height);
+            // Hide party icon area at the bottom
+            g.FillRectangle(Brushes.White, 0, iconStartY, src.Width, src.Height - iconStartY);
         }
         for (int y = 0; y < outBmp.Height; y++)
         for (int x = 0; x < levelStart; x++)
@@ -782,7 +790,7 @@ static Bitmap MaskBattleHud(Bitmap src)
         }
         return outBmp;
     }
-    
+
     static Bitmap MaskLeftColumn(Bitmap src, double keepPct)
     {
         int keepW = Math.Max(1, (int)(src.Width * keepPct));
