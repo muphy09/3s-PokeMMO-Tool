@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function MoveFilter({ value, onChange, options }) {
+export default function SearchFilter({ value, onChange, options, placeholder = '' }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value || '');
   const ref = useRef(null);
@@ -33,7 +33,7 @@ export default function MoveFilter({ value, onChange, options }) {
         onFocus={() => setOpen(true)}
         className="input"
         style={{ height:44, borderRadius:10, width:160 }}
-        placeholder="Move"
+        placeholder={placeholder}
       />
       {open && (
         <div

@@ -7,7 +7,7 @@ import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
-import MoveFilter from './components/MoveFilter.jsx';
+import SearchFilter from './components/SearchFilter.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
 
@@ -899,10 +899,12 @@ function mapNameMatches(candidate, needle){
   // If the search is a prefix of "route", do not match yet
   if ('route'.startsWith(search)) return false;
 
-  const routeMatch = search.match(/^route\s*(\d+)\b/);
+  // If the query is of the form "route <number>" require an exact
+  // route-number match.  Anchor the regex to the end of the string so
+  // that partial queries like "route 1a" are not treated as "route 1".
+  const routeMatch = search.match(/^route\s*(\d+)\s*$/);
   if (routeMatch){
     const candRoute = cand.match(/^route\s*(\d+)\b/);
-    // Compare route numbers numerically to avoid "1" matching "10", etc.
     return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
   }
 
@@ -1877,6 +1879,7 @@ function App(){
   const [regionFilter, setRegionFilter] = useState('');
   const [moveFilter, setMoveFilter] = useState('');
   const [moveLevelOnly, setMoveLevelOnly] = useState(false);
+  const [itemFilter, setItemFilter] = useState('');
   const typeOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const t of m.types || []) set.add(normalizeType(t));
@@ -1897,6 +1900,11 @@ function App(){
     for (const m of DEX_LIST) for (const mv of m.moves || []) if (mv?.name) set.add(mv.name);
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
+  const itemOptions = useMemo(() => {
+    const set = new Set();
+    for (const m of DEX_LIST) for (const h of m.heldItems || []) if (h?.name) set.add(h.name);
+    return [...set].sort((a,b)=>a.localeCompare(b));
+  }, []);
   const pokemonRegionOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const l of m.locations || []) if (l.region_name) set.add(l.region_name);
@@ -1905,7 +1913,7 @@ function App(){
 
   useEffect(() => { if (!moveFilter) setMoveLevelOnly(false); }, [moveFilter]);
 
-  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter);
+  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
 
 
   const [headerSprite] = useState(() => {
@@ -1923,6 +1931,9 @@ function App(){
     setEggFilter('');
     setAbilityFilter('');
     setRegionFilter('');
+    setMoveFilter('');
+    setMoveLevelOnly(false);
+    setItemFilter('');
   }, [mode]);
   useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
   useEffect(() => {
@@ -1990,6 +2001,10 @@ function App(){
           if (!names.includes(keyName(moveFilter))) return false;
         }
       }
+      if (itemFilter) {
+        const items = (mon.heldItems || []).map(h => keyName(h.name));
+        if (!items.includes(keyName(itemFilter))) return false;
+      }
       if (regionFilter) {
         const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
         if (!regions.includes(normalizeRegion(regionFilter))) return false;
@@ -1999,7 +2014,7 @@ function App(){
     });
     if (!hasFilters && q) list = list.slice(0, 24);
     return list;
-  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly]);
+  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly, itemFilter]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
@@ -2270,10 +2285,11 @@ function App(){
                 <option value="">Region</option>
                 {pokemonRegionOptions.map(r => <option key={r} value={r}>{r}</option>)}
               </select>
-              <MoveFilter
+              <SearchFilter
                 value={moveFilter}
                 onChange={setMoveFilter}
                 options={moveOptions}
+                placeholder="Move"
               />
               {moveFilter && (
                 <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
@@ -2285,6 +2301,12 @@ function App(){
                   Level-Up Only
                 </label>
               )}
+              <SearchFilter
+                value={itemFilter}
+                onChange={setItemFilter}
+                options={itemOptions}
+                placeholder="Held Item"
+              />
             </div>
           )}
 
