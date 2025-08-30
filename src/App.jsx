@@ -1469,8 +1469,14 @@ function LiveBattlePanel({ onViewMon }){
       const coerced = coerceBattleIncoming(msg);
       if (!coerced) return;
       const cleaned = normalizeHudText(coerced.monText);
-      setRawText(cleaned);
-      setConfidence(coerced.confidence ?? null);
+      const compacted = cleaned.replace(/\s+/g, '');
+      // When OCR returns nothing, clear state fully
+      if (!compacted) {
+        setRawText('');
+        setConfidence(coerced.confidence ?? null);
+        setMons([]);
+        return;
+      }
       let names = [];
       const nameRegex = /([A-Za-z][A-Za-z0-9.'-]*(?:\s+(?!Lv\.?\b)[A-Za-z][A-Za-z0-9.'-]*)*)\s+Lv\.?\s*\d+/gi;
       let match;
@@ -1506,6 +1512,13 @@ function LiveBattlePanel({ onViewMon }){
       }
       // Combine any discovered names with ones parsed via regex/newline splitting
       names = [...new Set([...names, ...found])];
+      // Ignore very short/noisy OCR results that would wipe previously detected names
+      if (names.length === 0 && compacted.length <= 2) {
+        if (DEBUG_LIVE) console.log('[LIVE] Ignoring short OCR:', cleaned);
+        return;
+      }
+      setRawText(cleaned);
+      setConfidence(coerced.confidence ?? null);
       setMons(names.map(n => getMon(n)).filter(Boolean));
     });
 
