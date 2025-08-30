@@ -563,6 +563,7 @@ function readPreviewImages() {
     if (!routeCap.data || !routePre.data) errors.push('route capture/pre missing');
     if (!battleCap.data || !battlePre.data) errors.push('battle capture/pre missing');
     if (errors.length) res.error = errors.join('; ');
+    }
   return res;
 }
 
