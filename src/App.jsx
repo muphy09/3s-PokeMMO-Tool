@@ -838,7 +838,9 @@ function stripTimeTag(name=''){
 function mapNameMatches(candidate, needle){
   const cand = stripTimeTag(candidate).toLowerCase();
   const search = stripTimeTag(needle).toLowerCase();
-  const routeNeedle = search.match(/^route\s*(\d+)\b/);
+  const routeNeedle =
+    search.match(/^route\s*(\d+)\b/) ||
+    search.match(/^\s*(\d+)\b/);
   if (routeNeedle){
     const routeCand = cand.match(/^route\s*(\d+)\b/);
     return routeCand && routeCand[1] === routeNeedle[1];
@@ -920,9 +922,11 @@ function scoreNames(a, b) {
 function findBestMapName(hudText, areasIndex){
   if (!hudText) return null;
   const raw = String(hudText).trim();
-  const isRoute = /^route\s*\d+/i.test(raw);
+  const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
-  const routeNeedle = isRoute ? needleKey.match(/^route\s*(\d+)/) : needleKey.match(/^route(\d+)/);
+  const routeNeedle = isRoute
+    ? (needleKey.match(/^route\s*(\d+)/) || needleKey.match(/^\s*(\d+)/))
+    : needleKey.match(/^route(\d+)/);
   let best = null, bestScore = -1;
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
