@@ -996,9 +996,13 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lur
 const STALE_AFTER_MS = 6000;
 
 function normalizeHudText(s=''){
-  let t = String(s).trim();
-  t = t.replace(/\s+Ch\.?\s*\d+\b/i, '');
-  t = t.replace(/\s{2,}/g,' ').trim();
+  let t = String(s).replace(/\r/g,'').trim();
+  const lines = t.split(/\n+/).map((line) => {
+    let l = line.replace(/\s+Ch\.?\s*\d+\b/i, '');
+    l = l.replace(/\s{2,}/g,' ').trim();
+    return l;
+  }).filter(Boolean);
+  t = lines.join('\n');
   // Treat OCR results that are just dashes as empty/no data
   if (/^-+$/.test(t)) return '';
   return t;
@@ -1405,7 +1409,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 function LiveBattlePanel({ onViewMon }){
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(null);
-  const [mon, setMon] = useState(null);
+  const [mons, setMons] = useState([]);
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
 
@@ -1416,7 +1420,8 @@ function LiveBattlePanel({ onViewMon }){
       const cleaned = normalizeHudText(coerced.monText);
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
-      setMon(getMon(cleaned));
+      const names = cleaned.split(/\n+/).map(s => s.trim()).filter(Boolean);
+      setMons(names.map(n => getMon(n)).filter(Boolean));
     });
 
     liveBattleClient.connect();
@@ -1430,7 +1435,7 @@ function LiveBattlePanel({ onViewMon }){
     const onForce = () => {
       setRawText('');
       setConfidence(null);
-      setMon(null);
+      setMons([]);
       liveBattleClient.forceReconnect();
     };
     window.addEventListener('force-live-reconnect', onForce);
@@ -1473,7 +1478,7 @@ function LiveBattlePanel({ onViewMon }){
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
         <div className="label-muted">
-          Live Battle: <span style={{ fontWeight:800 }}>{rawText || '—'}</span>
+          Live Battle: <span style={{ fontWeight:800, whiteSpace:'pre-line' }}>{rawText || '—'}</span>
           {SHOW_CONFIDENCE && (confPct !== null) && (
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
@@ -1487,12 +1492,12 @@ function LiveBattlePanel({ onViewMon }){
         </div>
       )}
 
-      {rawText && !mon && (
+      {rawText && mons.length === 0 && (
         <div className="label-muted">No matching Pokémon found.</div>
       )}
 
-      {mon && (
-        <div style={styles.areaCard}>
+      {mons.map(mon => (
+        <div key={mon.id} style={styles.areaCard}>
           <button onClick={() => onViewMon?.(mon)} style={{ display:'flex', gap:12, width:'100%', textAlign:'left' }}>
             <Sprite mon={mon} size={80} alt={mon.name} />
             <div>
@@ -1501,7 +1506,7 @@ function LiveBattlePanel({ onViewMon }){
             </div>
           </button>
         </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -2144,7 +2149,7 @@ function App(){
               />
             </div>
           )}
-          
+
           {/* Pokémon results */}
           {mode==='pokemon' && !!results.length && (
             <div className="result-grid" style={{ marginTop:12 }}>

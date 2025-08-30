@@ -330,7 +330,11 @@ class LiveRouteOCR
         }
     }
 
-    static string Escape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+    static string Escape(string s) => s
+        .Replace("\\", "\\\\")
+        .Replace("\"", "\\\"")
+        .Replace("\r", "")
+        .Replace("\n", "\\n");
 
     static async Task PeriodicRebroadcastLoop(ChannelData ch, CancellationToken ct)
     {
@@ -599,10 +603,19 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         using var pix = PixFromBitmap(pre);
                         using var page = engine.Process(pix, pass.Psm);
                         var raw = (page.GetText() ?? "").Trim();
-                        var cleaned = Regex.Replace(raw, @"[^A-Za-z0-9'\- ]", " ").Trim();
-                        if (!string.IsNullOrWhiteSpace(cleaned))
+                        var lines = raw.Split('\n');
+                        var names = new List<string>();
+                        foreach (var line in lines)
                         {
-                            name = cleaned.Split(' ')[0];
+                            var cleaned = Regex.Replace(line, @"[^A-Za-z0-9'\- ]", " ").Trim();
+                            if (!string.IsNullOrWhiteSpace(cleaned))
+                            {
+                                names.Add(cleaned.Split(' ')[0]);
+                            }
+                        }
+                        if (names.Count > 0)
+                        {
+                            name = string.Join("\n", names);
                             conf = page.GetMeanConfidence();
                             rawUsed = raw;
                             using (var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
