@@ -37,7 +37,7 @@ for (const mon of POKEDEX) {
 }
 
 for (const mon of POKEDEX) {
-  if (formIds.has(mon.id)) continue; // Skip standalone form entries
+  if (formIds.has(mon.id)) continue; // skip alternate forms
   const dexNum =
     typeof mon.dex === "number"
       ? mon.dex
@@ -59,6 +59,7 @@ for (const mon of POKEDEX) {
     // Optional scraper fields (future)
     locations: mon.locations ?? null,
     catchRate: mon.catchRate ?? null,
+    forms: [],
   };
 
   list.push(shaped);
@@ -66,7 +67,7 @@ for (const mon of POKEDEX) {
   if (shaped.slug) bySlug.set(norm(shaped.slug), shaped);
   if (shaped.name) byName.set(norm(shaped.name), shaped);
 
-  // Expand alternate forms (no dex numbers or IDs)
+  // Attach alternate forms to the base species (no dex numbers or IDs)
   if (Array.isArray(mon.forms)) {
     const baseSlug = mon.slug || norm(mon.name).replace(/\s+/g, "-");
     for (const form of mon.forms) {
@@ -91,7 +92,7 @@ for (const mon of POKEDEX) {
         locations: formBase.locations ?? null,
         catchRate: formBase.catchRate ?? null,
       };
-      list.push(fshaped);
+      shaped.forms.push(fshaped);
       if (fshaped.slug) bySlug.set(norm(fshaped.slug), fshaped);
       if (fshaped.name) byName.set(norm(fshaped.name), fshaped);
     }

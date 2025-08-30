@@ -73,6 +73,19 @@ function normalizeRegion(r=''){ return String(r||'').toLowerCase().replace(/\s+/
 const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 
 /* ---------- pokedex adapter ---------- */
+// Build lookups to help resolve form data and skip standalone form entries
+const RAW_DEX_BY_ID = new Map(dexRaw.map(m => [m.id, m]));
+const FORM_IDS = new Set();
+for (const mon of dexRaw) {
+  if (Array.isArray(mon.forms)) {
+    for (const f of mon.forms) {
+      if (typeof f.id === 'number' && f.id !== mon.id) {
+        FORM_IDS.add(f.id);
+      }
+    }
+  }
+}
+
 function toLegacyShape(m){
   const types = Array.isArray(m.types) ? [...new Set(m.types.map(normalizeType))] : [];
   return {
@@ -86,7 +99,7 @@ function toLegacyShape(m){
     weight: m.weight,
     eggGroups: m.egg_groups || [],
     abilities: m.abilities || [],
-    forms: m.forms || [],
+    forms: [],
     evolutions: m.evolutions || [],
     moves: m.moves || [],
     stats: m.stats || {},
@@ -99,7 +112,29 @@ function toLegacyShape(m){
     icon: m.icon ?? null
   };
 }
-const DEX_LIST = dexRaw.map(toLegacyShape);
+const DEX_LIST = dexRaw
+  .filter(m => !FORM_IDS.has(m.id))
+  .map(m => {
+    const base = toLegacyShape(m);
+    if (Array.isArray(m.forms)) {
+      base.forms = m.forms
+        .filter(f => f.id !== m.id)
+        .map(f => {
+          const formBase = RAW_DEX_BY_ID.get(f.id) || {};
+          const raw = f.name || '';
+          const bracket = raw.match(/\[(.+)\]/);
+          let label = bracket ? bracket[1] : raw;
+          label = label.replace(new RegExp(`\\b${m.name}\\b`, 'i'), '').trim();
+          if (!label) return null;
+          const name = `${m.name} (${label})`;
+          const shaped = toLegacyShape({ ...formBase, name, forms: [] });
+          shaped.id = null;
+          return shaped;
+        })
+        .filter(Boolean);
+    }
+    return base;
+  });
 const DEX_BY_NAME = (() => {
   const map = new Map();
   for (const m of DEX_LIST) map.set(normalizeKey(m.name), m);
@@ -851,18 +886,20 @@ function stripTimeTag(name=''){
 
 // Determine if two map names should be considered a match.
 // - Queries starting with "Route <number>" only match the exact same route number
+// - Partial queries like "r", "ro", "route" etc. never match anything
 // - Bare "Route" queries (with or without trailing spaces) never match anything
 // - Otherwise fall back to a simple substring check (case-insensitive)
 function mapNameMatches(candidate, needle){
   const cand   = stripTimeTag(candidate).toLowerCase();
   const search = stripTimeTag(needle).toLowerCase();
 
-  const routeMatch = search.match(/^route\s*(\d*)/);
+  // If the search is a prefix of "route", do not match yet
+  if ('route'.startsWith(search)) return false;
+
+  const routeMatch = search.match(/^route\s*(\d+)\b/);
   if (routeMatch){
-    const num = routeMatch[1];
-    if (!num) return false;
     const candRoute = cand.match(/^route\s*(\d+)\b/);
-    return !!candRoute && candRoute[1] === num;
+    return !!candRoute && candRoute[1] === routeMatch[1];
   }
 
   if (search.startsWith('route')) return false;
@@ -1481,22 +1518,37 @@ function LiveBattlePanel({ onViewMon }){
         setMons([]);
         return;
       }
-      let names = [];
+      let fragments = [];
       const nameRegex = /([A-Za-z][A-Za-z0-9.'-]*(?:\s+(?!Lv\.?\b)[A-Za-z][A-Za-z0-9.'-]*)*)\s+Lv\.?\s*\d+/gi;
       let match;
       while ((match = nameRegex.exec(cleaned)) !== null) {
         const n = match[1].trim();
-        if (n) names.push(n);
+        if (n) fragments.push(n);
       }
-      if (names.length === 0) {
-        names = cleaned
+      if (fragments.length === 0) {
+        fragments = cleaned
           .split(/\n+/)
           .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
           .filter(s => /[A-Za-z]/.test(s));
       }
-      // Attempt to detect known Pokémon names within the text. OCR artifacts can
-      // cause names to merge together or drop whitespace entirely. First, try to
-      // find "clean" names with word boundaries, then fall back to scanning a
+      // Keyword search each fragment for any known Pokémon name. This allows us
+      // to match names even when extra characters precede or follow the actual
+      // Pokémon name in the OCR result.
+      let names = [];
+      for (const frag of fragments) {
+        const lowerFrag = frag.toLowerCase();
+        const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
+        for (const [key, mon] of DEX_BY_NAME.entries()) {
+          const compactKey = key.replace(/[^a-z0-9]+/g, '');
+          if (lowerFrag.includes(key) || (compactKey && compactFrag.includes(compactKey))) {
+            names.push(mon.name);
+            break;
+          }
+        }
+      }
+      // Attempt to detect known Pokémon names within the full text. OCR artifacts
+      // can cause names to merge together or drop whitespace entirely. First, try
+      // to find "clean" names with word boundaries, then fall back to scanning a
       // compacted string with all non-alphanumeric characters removed.
       const lower = cleaned.toLowerCase();
       const compact = lower.replace(/[^a-z0-9]+/g, '');
@@ -1514,7 +1566,7 @@ function LiveBattlePanel({ onViewMon }){
           found.push(mon.name);
         }
       }
-      // Combine any discovered names with ones parsed via regex/newline splitting
+      // Combine any discovered names with ones parsed via fragment scanning
       names = [...new Set([...names, ...found])];
       // Ignore very short/noisy OCR results that would wipe previously detected names
       if (names.length === 0 && compacted.length <= 2) {
@@ -1854,8 +1906,10 @@ function App(){
     if (mode!=='areas') return [];
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
+    // Suppress results while user is typing the word "route"
+    if ('route'.startsWith(q)) return [];
     // If query begins with "route" but lacks a number, avoid suggesting routes yet
-    if (q.startsWith('route') && !/^route\s*\d/.test(q)) return [];
+    if (q.startsWith('route') && !/^route\s*\d+/.test(q)) return [];
     const buckets = new Map();
     const regionKey = normalizeRegion(areaRegion);
     for (const [region, maps] of Object.entries(areasClean)) {
