@@ -1420,10 +1420,19 @@ function LiveBattlePanel({ onViewMon }){
       const cleaned = normalizeHudText(coerced.monText);
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
-      const names = cleaned
-        .split(/\n+/)
-        .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
-        .filter(Boolean);
+      let names = [];
+      const nameRegex = /([A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+)*)\s+Lv\.?\s*\d+/gi;
+      let match;
+      while ((match = nameRegex.exec(cleaned)) !== null) {
+        const n = match[1].trim();
+        if (n) names.push(n);
+      }
+      if (names.length === 0) {
+        names = cleaned
+          .split(/\n+/)
+          .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
+          .filter(Boolean);
+      }
       setMons(names.map(n => getMon(n)).filter(Boolean));
     });
 
