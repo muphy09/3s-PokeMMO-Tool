@@ -1,0 +1,14 @@
+0000000000000000000000000000000000000000 fd0d3dc2b513ab3ffea693e2f3cd29f5105a0e58 muphy09 <bkummer3@gmail.com> 1755993635 -0400	commit (initial): Initial commit: source only (exclude build artifacts)
+fd0d3dc2b513ab3ffea693e2f3cd29f5105a0e58 ebe32e5e85078c76c9733c4f90190aeff4c10d57 muphy09 <bkummer3@gmail.com> 1755994237 -0400	commit: chore: bump to 1.4.0
+ebe32e5e85078c76c9733c4f90190aeff4c10d57 d619cae82ac059f84a1793c97f31e684bb2fda35 muphy09 <bkummer3@gmail.com> 1755994363 -0400	commit: ci: build & upload Windows artifacts on tag
+d619cae82ac059f84a1793c97f31e684bb2fda35 7959b731d87eff551e165346f9bac222805d23e2 muphy09 <bkummer3@gmail.com> 1755994710 -0400	commit: chore: bump to 1.4.1
+7959b731d87eff551e165346f9bac222805d23e2 05acb147b44601878973d6774466a9b624d9080a muphy09 <bkummer3@gmail.com> 1755994994 -0400	commit: build: CI-ready electron-builder config
+05acb147b44601878973d6774466a9b624d9080a 5826a70d6a36a9b1fc2df97ccff1fe8d5befe868 muphy09 <bkummer3@gmail.com> 1755995182 -0400	commit: fix: correct build output + installer target
+5826a70d6a36a9b1fc2df97ccff1fe8d5befe868 c26d649202e433f9e597ea3e5c0dd18b3eeb3941 muphy09 <bkummer3@gmail.com> 1755995560 -0400	commit: ci: ensure release workflow + build
+c26d649202e433f9e597ea3e5c0dd18b3eeb3941 c369d69468649f5779c7eed003e0d07680c7522b muphy09 <bkummer3@gmail.com> 1755995863 -0400	commit: fix(ci): valid JSON, output to release/, upload installer
+c369d69468649f5779c7eed003e0d07680c7522b 05c6c45e81bc7d94948e906165448332dc3faff5 muphy09 <bkummer3@gmail.com> 1755996318 -0400	commit: ci: disable electron-builder publish (use GH action to upload)
+05c6c45e81bc7d94948e906165448332dc3faff5 b154625525aa7be77457e1e6ce4a700e4008ba24 muphy09 <bkummer3@gmail.com> 1755997032 -0400	commit: ci: fix PowerShell listing & verification; upload artifacts
+b154625525aa7be77457e1e6ce4a700e4008ba24 6f9ce5db99b1a4ce16779588045298ed65b74c0e muphy09 <bkummer3@gmail.com> 1755997528 -0400	commit: fix: robust LiveRouteOCR path resolution + updater menu
+6f9ce5db99b1a4ce16779588045298ed65b74c0e 88d599aff5a7e159cb17a642f314d3c8f4e10c0c muphy09 <bkummer3@gmail.com> 1755998036 -0400	commit: fix(build): include prod node_modules and add electron-updater
+88d599aff5a7e159cb17a642f314d3c8f4e10c0c 5a311e37e655867706149261ed04ce2f70a83e5c muphy09 <bkummer3@gmail.com> 1755998840 -0400	commit: build: run vite build in CI and use relative asset base for Electron
+5a311e37e655867706149261ed04ce2f70a83e5c 49ca91da94e34f7dc6636ba42c9a708cee644ee9 muphy09 <bkummer3@gmail.com> 1756000231 -0400	commit: chore: include LiveRouteOCR runtime (exe + dlls)

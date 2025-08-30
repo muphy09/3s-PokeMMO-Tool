@@ -1,0 +1,12705 @@
+export default [
+	{
+		id: 1,
+		name: "Bulbasaur",
+		slug: "bulbasaur",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Overgrow",
+			"Chlorophyll"
+		],
+		forms: [
+			"Bulbasaur"
+		],
+		evolutions: [
+			2
+		]
+	},
+	{
+		id: 2,
+		name: "Ivysaur",
+		slug: "ivysaur",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Overgrow",
+			"Chlorophyll"
+		],
+		forms: [
+			"Ivysaur"
+		],
+		evolutions: [
+			3
+		]
+	},
+	{
+		id: 3,
+		name: "Venusaur",
+		slug: "venusaur",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Overgrow",
+			"Chlorophyll"
+		],
+		forms: [
+			"Venusaur"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 4,
+		name: "Charmander",
+		slug: "charmander",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Solar Power"
+		],
+		forms: [
+			"Charmander"
+		],
+		evolutions: [
+			5
+		]
+	},
+	{
+		id: 5,
+		name: "Charmeleon",
+		slug: "charmeleon",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Solar Power"
+		],
+		forms: [
+			"Charmeleon"
+		],
+		evolutions: [
+			6
+		]
+	},
+	{
+		id: 6,
+		name: "Charizard",
+		slug: "charizard",
+		types: [
+			"Fire",
+			"Flying"
+		],
+		abilities: [
+			"Blaze",
+			"Solar Power"
+		],
+		forms: [
+			"Charizard"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 7,
+		name: "Squirtle",
+		slug: "squirtle",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Rain Dish"
+		],
+		forms: [
+			"Squirtle"
+		],
+		evolutions: [
+			8
+		]
+	},
+	{
+		id: 8,
+		name: "Wartortle",
+		slug: "wartortle",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Rain Dish"
+		],
+		forms: [
+			"Wartortle"
+		],
+		evolutions: [
+			9
+		]
+	},
+	{
+		id: 9,
+		name: "Blastoise",
+		slug: "blastoise",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Rain Dish"
+		],
+		forms: [
+			"Blastoise"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 10,
+		name: "Caterpie",
+		slug: "caterpie",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shield Dust",
+			"Run Away"
+		],
+		forms: [
+			"Caterpie"
+		],
+		evolutions: [
+			11
+		]
+	},
+	{
+		id: 11,
+		name: "Metapod",
+		slug: "metapod",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shed Skin",
+			"Shed Skin"
+		],
+		forms: [
+			"Metapod"
+		],
+		evolutions: [
+			12
+		]
+	},
+	{
+		id: 12,
+		name: "Butterfree",
+		slug: "butterfree",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Compoundeyes",
+			"Tinted Lens"
+		],
+		forms: [
+			"Butterfree"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 13,
+		name: "Weedle",
+		slug: "weedle",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Shield Dust",
+			"Run Away"
+		],
+		forms: [
+			"Weedle"
+		],
+		evolutions: [
+			14
+		]
+	},
+	{
+		id: 14,
+		name: "Kakuna",
+		slug: "kakuna",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Shed Skin",
+			"Shed Skin"
+		],
+		forms: [
+			"Kakuna"
+		],
+		evolutions: [
+			15
+		]
+	},
+	{
+		id: 15,
+		name: "Beedrill",
+		slug: "beedrill",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Swarm",
+			"Sniper"
+		],
+		forms: [
+			"Beedrill"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 16,
+		name: "Pidgey",
+		slug: "pidgey",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Tangled Feet",
+			"Big Pecks"
+		],
+		forms: [
+			"Pidgey"
+		],
+		evolutions: [
+			17
+		]
+	},
+	{
+		id: 17,
+		name: "Pidgeotto",
+		slug: "pidgeotto",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Tangled Feet",
+			"Big Pecks"
+		],
+		forms: [
+			"Pidgeotto"
+		],
+		evolutions: [
+			18
+		]
+	},
+	{
+		id: 18,
+		name: "Pidgeot",
+		slug: "pidgeot",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Tangled Feet",
+			"Big Pecks"
+		],
+		forms: [
+			"Pidgeot"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 19,
+		name: "Rattata",
+		slug: "rattata",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Guts",
+			"Hustle"
+		],
+		forms: [
+			"Rattata"
+		],
+		evolutions: [
+			20
+		]
+	},
+	{
+		id: 20,
+		name: "Raticate",
+		slug: "raticate",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Guts",
+			"Hustle"
+		],
+		forms: [
+			"Raticate"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 21,
+		name: "Spearow",
+		slug: "spearow",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Sniper"
+		],
+		forms: [
+			"Spearow"
+		],
+		evolutions: [
+			22
+		]
+	},
+	{
+		id: 22,
+		name: "Fearow",
+		slug: "fearow",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Sniper"
+		],
+		forms: [
+			"Fearow"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 23,
+		name: "Ekans",
+		slug: "ekans",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Intimidate",
+			"Shed Skin",
+			"Unnerve"
+		],
+		forms: [
+			"Ekans"
+		],
+		evolutions: [
+			24
+		]
+	},
+	{
+		id: 24,
+		name: "Arbok",
+		slug: "arbok",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Intimidate",
+			"Shed Skin",
+			"Unnerve"
+		],
+		forms: [
+			"Arbok"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 25,
+		name: "Pikachu",
+		slug: "pikachu",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Lightningrod"
+		],
+		forms: [
+			"Pikachu"
+		],
+		evolutions: [
+			26
+		]
+	},
+	{
+		id: 26,
+		name: "Raichu",
+		slug: "raichu",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Lightningrod"
+		],
+		forms: [
+			"Raichu"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 27,
+		name: "Sandshrew",
+		slug: "sandshrew",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Sand Rush"
+		],
+		forms: [
+			"Sandshrew"
+		],
+		evolutions: [
+			28
+		]
+	},
+	{
+		id: 28,
+		name: "Sandslash",
+		slug: "sandslash",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Sand Rush"
+		],
+		forms: [
+			"Sandslash"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 29,
+		name: "Nidoranâ™€",
+		slug: "nidoran",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Hustle"
+		],
+		forms: [
+			"Nidoranâ™€"
+		],
+		evolutions: [
+			30
+		]
+	},
+	{
+		id: 30,
+		name: "Nidorina",
+		slug: "nidorina",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Hustle"
+		],
+		forms: [
+			"Nidorina"
+		],
+		evolutions: [
+			31
+		]
+	},
+	{
+		id: 31,
+		name: "Nidoqueen",
+		slug: "nidoqueen",
+		types: [
+			"Poison",
+			"Ground"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Sheer Force"
+		],
+		forms: [
+			"Nidoqueen"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 32,
+		name: "Nidoranâ™‚",
+		slug: "nidoran",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Hustle"
+		],
+		forms: [
+			"Nidoranâ™‚"
+		],
+		evolutions: [
+			33
+		]
+	},
+	{
+		id: 33,
+		name: "Nidorino",
+		slug: "nidorino",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Hustle"
+		],
+		forms: [
+			"Nidorino"
+		],
+		evolutions: [
+			34
+		]
+	},
+	{
+		id: 34,
+		name: "Nidoking",
+		slug: "nidoking",
+		types: [
+			"Poison",
+			"Ground"
+		],
+		abilities: [
+			"Poison Point",
+			"Rivalry",
+			"Sheer Force"
+		],
+		forms: [
+			"Nidoking"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 35,
+		name: "Clefairy",
+		slug: "clefairy",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Magic Guard",
+			"Friend Guard"
+		],
+		forms: [
+			"Clefairy"
+		],
+		evolutions: [
+			36
+		]
+	},
+	{
+		id: 36,
+		name: "Clefable",
+		slug: "clefable",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Magic Guard",
+			"Unaware"
+		],
+		forms: [
+			"Clefable"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 37,
+		name: "Vulpix",
+		slug: "vulpix",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Drought"
+		],
+		forms: [
+			"Vulpix"
+		],
+		evolutions: [
+			38
+		]
+	},
+	{
+		id: 38,
+		name: "Ninetales",
+		slug: "ninetales",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Drought"
+		],
+		forms: [
+			"Ninetales"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 39,
+		name: "Jigglypuff",
+		slug: "jigglypuff",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Competitive",
+			"Friend Guard"
+		],
+		forms: [
+			"Jigglypuff"
+		],
+		evolutions: [
+			40
+		]
+	},
+	{
+		id: 40,
+		name: "Wigglytuff",
+		slug: "wigglytuff",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Competitive",
+			"Frisk"
+		],
+		forms: [
+			"Wigglytuff"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 41,
+		name: "Zubat",
+		slug: "zubat",
+		types: [
+			"Poison",
+			"Flying"
+		],
+		abilities: [
+			"Inner Focus",
+			"Infiltrator"
+		],
+		forms: [
+			"Zubat"
+		],
+		evolutions: [
+			42
+		]
+	},
+	{
+		id: 42,
+		name: "Golbat",
+		slug: "golbat",
+		types: [
+			"Poison",
+			"Flying"
+		],
+		abilities: [
+			"Inner Focus",
+			"Infiltrator"
+		],
+		forms: [
+			"Golbat"
+		],
+		evolutions: [
+			169
+		]
+	},
+	{
+		id: 43,
+		name: "Oddish",
+		slug: "oddish",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Run Away"
+		],
+		forms: [
+			"Oddish"
+		],
+		evolutions: [
+			44
+		]
+	},
+	{
+		id: 44,
+		name: "Gloom",
+		slug: "gloom",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Stench"
+		],
+		forms: [
+			"Gloom"
+		],
+		evolutions: [
+			45,
+			182
+		]
+	},
+	{
+		id: 45,
+		name: "Vileplume",
+		slug: "vileplume",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Effect Spore"
+		],
+		forms: [
+			"Vileplume"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 46,
+		name: "Paras",
+		slug: "paras",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Effect Spore",
+			"Dry Skin",
+			"Damp"
+		],
+		forms: [
+			"Paras"
+		],
+		evolutions: [
+			47
+		]
+	},
+	{
+		id: 47,
+		name: "Parasect",
+		slug: "parasect",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Effect Spore",
+			"Dry Skin",
+			"Damp"
+		],
+		forms: [
+			"Parasect"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 48,
+		name: "Venonat",
+		slug: "venonat",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Compoundeyes",
+			"Tinted Lens",
+			"Run Away"
+		],
+		forms: [
+			"Venonat"
+		],
+		evolutions: [
+			49
+		]
+	},
+	{
+		id: 49,
+		name: "Venomoth",
+		slug: "venomoth",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Shield Dust",
+			"Tinted Lens",
+			"Wonder Skin"
+		],
+		forms: [
+			"Venomoth"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 50,
+		name: "Diglett",
+		slug: "diglett",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Arena Trap",
+			"Sand Force"
+		],
+		forms: [
+			"Diglett"
+		],
+		evolutions: [
+			51
+		]
+	},
+	{
+		id: 51,
+		name: "Dugtrio",
+		slug: "dugtrio",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Arena Trap",
+			"Sand Force"
+		],
+		forms: [
+			"Dugtrio"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 52,
+		name: "Meowth",
+		slug: "meowth",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Pickup",
+			"Technician",
+			"Unnerve"
+		],
+		forms: [
+			"Meowth"
+		],
+		evolutions: [
+			53
+		]
+	},
+	{
+		id: 53,
+		name: "Persian",
+		slug: "persian",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Limber",
+			"Technician",
+			"Unnerve"
+		],
+		forms: [
+			"Persian"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 54,
+		name: "Psyduck",
+		slug: "psyduck",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Damp",
+			"Cloud Nine",
+			"Swift Swim"
+		],
+		forms: [
+			"Psyduck"
+		],
+		evolutions: [
+			55
+		]
+	},
+	{
+		id: 55,
+		name: "Golduck",
+		slug: "golduck",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Damp",
+			"Cloud Nine",
+			"Swift Swim"
+		],
+		forms: [
+			"Golduck"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 56,
+		name: "Mankey",
+		slug: "mankey",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Vital Spirit",
+			"Anger Point",
+			"Defiant"
+		],
+		forms: [
+			"Mankey"
+		],
+		evolutions: [
+			57
+		]
+	},
+	{
+		id: 57,
+		name: "Primeape",
+		slug: "primeape",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Vital Spirit",
+			"Anger Point",
+			"Defiant"
+		],
+		forms: [
+			"Primeape"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 58,
+		name: "Growlithe",
+		slug: "growlithe",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Intimidate",
+			"Flash Fire",
+			"Justified"
+		],
+		forms: [
+			"Growlithe"
+		],
+		evolutions: [
+			59
+		]
+	},
+	{
+		id: 59,
+		name: "Arcanine",
+		slug: "arcanine",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Intimidate",
+			"Flash Fire",
+			"Justified"
+		],
+		forms: [
+			"Arcanine"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 60,
+		name: "Poliwag",
+		slug: "poliwag",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Absorb",
+			"Damp",
+			"Swift Swim"
+		],
+		forms: [
+			"Poliwag"
+		],
+		evolutions: [
+			61
+		]
+	},
+	{
+		id: 61,
+		name: "Poliwhirl",
+		slug: "poliwhirl",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Absorb",
+			"Damp",
+			"Swift Swim"
+		],
+		forms: [
+			"Poliwhirl"
+		],
+		evolutions: [
+			62,
+			186
+		]
+	},
+	{
+		id: 62,
+		name: "Poliwrath",
+		slug: "poliwrath",
+		types: [
+			"Water",
+			"Fighting"
+		],
+		abilities: [
+			"Water Absorb",
+			"Damp",
+			"Swift Swim"
+		],
+		forms: [
+			"Poliwrath"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 63,
+		name: "Abra",
+		slug: "abra",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Inner Focus",
+			"Magic Guard"
+		],
+		forms: [
+			"Abra"
+		],
+		evolutions: [
+			64
+		]
+	},
+	{
+		id: 64,
+		name: "Kadabra",
+		slug: "kadabra",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Inner Focus",
+			"Magic Guard"
+		],
+		forms: [
+			"Kadabra"
+		],
+		evolutions: [
+			65
+		]
+	},
+	{
+		id: 65,
+		name: "Alakazam",
+		slug: "alakazam",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Inner Focus",
+			"Magic Guard"
+		],
+		forms: [
+			"Alakazam"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 66,
+		name: "Machop",
+		slug: "machop",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"No Guard",
+			"Steadfast"
+		],
+		forms: [
+			"Machop"
+		],
+		evolutions: [
+			67
+		]
+	},
+	{
+		id: 67,
+		name: "Machoke",
+		slug: "machoke",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"No Guard",
+			"Steadfast"
+		],
+		forms: [
+			"Machoke"
+		],
+		evolutions: [
+			68
+		]
+	},
+	{
+		id: 68,
+		name: "Machamp",
+		slug: "machamp",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"No Guard",
+			"Steadfast"
+		],
+		forms: [
+			"Machamp"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 69,
+		name: "Bellsprout",
+		slug: "bellsprout",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Gluttony"
+		],
+		forms: [
+			"Bellsprout"
+		],
+		evolutions: [
+			70
+		]
+	},
+	{
+		id: 70,
+		name: "Weepinbell",
+		slug: "weepinbell",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Gluttony"
+		],
+		forms: [
+			"Weepinbell"
+		],
+		evolutions: [
+			71
+		]
+	},
+	{
+		id: 71,
+		name: "Victreebel",
+		slug: "victreebel",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Gluttony"
+		],
+		forms: [
+			"Victreebel"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 72,
+		name: "Tentacool",
+		slug: "tentacool",
+		types: [
+			"Water",
+			"Poison"
+		],
+		abilities: [
+			"Clear Body",
+			"Liquid Ooze",
+			"Rain Dish"
+		],
+		forms: [
+			"Tentacool"
+		],
+		evolutions: [
+			73
+		]
+	},
+	{
+		id: 73,
+		name: "Tentacruel",
+		slug: "tentacruel",
+		types: [
+			"Water",
+			"Poison"
+		],
+		abilities: [
+			"Clear Body",
+			"Liquid Ooze",
+			"Rain Dish"
+		],
+		forms: [
+			"Tentacruel"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 74,
+		name: "Geodude",
+		slug: "geodude",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Sturdy",
+			"Sand Veil"
+		],
+		forms: [
+			"Geodude"
+		],
+		evolutions: [
+			75
+		]
+	},
+	{
+		id: 75,
+		name: "Graveler",
+		slug: "graveler",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Sturdy",
+			"Sand Veil"
+		],
+		forms: [
+			"Graveler"
+		],
+		evolutions: [
+			76
+		]
+	},
+	{
+		id: 76,
+		name: "Golem",
+		slug: "golem",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Sturdy",
+			"Sand Veil"
+		],
+		forms: [
+			"Golem"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 77,
+		name: "Ponyta",
+		slug: "ponyta",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Run Away",
+			"Flash Fire",
+			"Flame Body"
+		],
+		forms: [
+			"Ponyta"
+		],
+		evolutions: [
+			78
+		]
+	},
+	{
+		id: 78,
+		name: "Rapidash",
+		slug: "rapidash",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Run Away",
+			"Flash Fire",
+			"Flame Body"
+		],
+		forms: [
+			"Rapidash"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 79,
+		name: "Slowpoke",
+		slug: "slowpoke",
+		types: [
+			"Water",
+			"Psychic"
+		],
+		abilities: [
+			"Oblivious",
+			"Own Tempo",
+			"Regenerator"
+		],
+		forms: [
+			"Slowpoke"
+		],
+		evolutions: [
+			80,
+			199
+		]
+	},
+	{
+		id: 80,
+		name: "Slowbro",
+		slug: "slowbro",
+		types: [
+			"Water",
+			"Psychic"
+		],
+		abilities: [
+			"Oblivious",
+			"Own Tempo",
+			"Regenerator"
+		],
+		forms: [
+			"Slowbro"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 81,
+		name: "Magnemite",
+		slug: "magnemite",
+		types: [
+			"Electric",
+			"Steel"
+		],
+		abilities: [
+			"Magnet Pull",
+			"Sturdy",
+			"Analytic"
+		],
+		forms: [
+			"Magnemite"
+		],
+		evolutions: [
+			82
+		]
+	},
+	{
+		id: 82,
+		name: "Magneton",
+		slug: "magneton",
+		types: [
+			"Electric",
+			"Steel"
+		],
+		abilities: [
+			"Magnet Pull",
+			"Sturdy",
+			"Analytic"
+		],
+		forms: [
+			"Magneton"
+		],
+		evolutions: [
+			462
+		]
+	},
+	{
+		id: 83,
+		name: "Farfetch'd",
+		slug: "farfetch-d",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Inner Focus",
+			"Defiant"
+		],
+		forms: [
+			"Farfetch'd"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 84,
+		name: "Doduo",
+		slug: "doduo",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Run Away",
+			"Early Bird",
+			"Tangled Feet"
+		],
+		forms: [
+			"Doduo"
+		],
+		evolutions: [
+			85
+		]
+	},
+	{
+		id: 85,
+		name: "Dodrio",
+		slug: "dodrio",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Run Away",
+			"Early Bird",
+			"Tangled Feet"
+		],
+		forms: [
+			"Dodrio"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 86,
+		name: "Seel",
+		slug: "seel",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Hydration",
+			"Ice Body"
+		],
+		forms: [
+			"Seel"
+		],
+		evolutions: [
+			87
+		]
+	},
+	{
+		id: 87,
+		name: "Dewgong",
+		slug: "dewgong",
+		types: [
+			"Water",
+			"Ice"
+		],
+		abilities: [
+			"Thick Fat",
+			"Hydration",
+			"Ice Body"
+		],
+		forms: [
+			"Dewgong"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 88,
+		name: "Grimer",
+		slug: "grimer",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Stench",
+			"Sticky Hold",
+			"Poison Touch"
+		],
+		forms: [
+			"Grimer"
+		],
+		evolutions: [
+			89
+		]
+	},
+	{
+		id: 89,
+		name: "Muk",
+		slug: "muk",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Stench",
+			"Sticky Hold",
+			"Poison Touch"
+		],
+		forms: [
+			"Muk"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 90,
+		name: "Shellder",
+		slug: "shellder",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Shell Armor",
+			"Skill Link",
+			"Overcoat"
+		],
+		forms: [
+			"Shellder"
+		],
+		evolutions: [
+			91
+		]
+	},
+	{
+		id: 91,
+		name: "Cloyster",
+		slug: "cloyster",
+		types: [
+			"Water",
+			"Ice"
+		],
+		abilities: [
+			"Shell Armor",
+			"Skill Link",
+			"Overcoat"
+		],
+		forms: [
+			"Cloyster"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 92,
+		name: "Gastly",
+		slug: "gastly",
+		types: [
+			"Ghost",
+			"Poison"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Gastly"
+		],
+		evolutions: [
+			93
+		]
+	},
+	{
+		id: 93,
+		name: "Haunter",
+		slug: "haunter",
+		types: [
+			"Ghost",
+			"Poison"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Haunter"
+		],
+		evolutions: [
+			94
+		]
+	},
+	{
+		id: 94,
+		name: "Gengar",
+		slug: "gengar",
+		types: [
+			"Ghost",
+			"Poison"
+		],
+		abilities: [
+			"Cursed Body"
+		],
+		forms: [
+			"Gengar"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 95,
+		name: "Onix",
+		slug: "onix",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Sturdy",
+			"Weak Armor"
+		],
+		forms: [
+			"Onix"
+		],
+		evolutions: [
+			208
+		]
+	},
+	{
+		id: 96,
+		name: "Drowzee",
+		slug: "drowzee",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Insomnia",
+			"Forewarn",
+			"Inner Focus"
+		],
+		forms: [
+			"Drowzee"
+		],
+		evolutions: [
+			97
+		]
+	},
+	{
+		id: 97,
+		name: "Hypno",
+		slug: "hypno",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Insomnia",
+			"Forewarn",
+			"Inner Focus"
+		],
+		forms: [
+			"Hypno"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 98,
+		name: "Krabby",
+		slug: "krabby",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Shell Armor",
+			"Sheer Force"
+		],
+		forms: [
+			"Krabby"
+		],
+		evolutions: [
+			99
+		]
+	},
+	{
+		id: 99,
+		name: "Kingler",
+		slug: "kingler",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Shell Armor",
+			"Sheer Force"
+		],
+		forms: [
+			"Kingler"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 100,
+		name: "Voltorb",
+		slug: "voltorb",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Soundproof",
+			"Static",
+			"Aftermath"
+		],
+		forms: [
+			"Voltorb"
+		],
+		evolutions: [
+			101
+		]
+	},
+	{
+		id: 101,
+		name: "Electrode",
+		slug: "electrode",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Soundproof",
+			"Static",
+			"Aftermath"
+		],
+		forms: [
+			"Electrode"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 102,
+		name: "Exeggcute",
+		slug: "exeggcute",
+		types: [
+			"Grass",
+			"Psychic"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Harvest"
+		],
+		forms: [
+			"Exeggcute"
+		],
+		evolutions: [
+			103
+		]
+	},
+	{
+		id: 103,
+		name: "Exeggutor",
+		slug: "exeggutor",
+		types: [
+			"Grass",
+			"Psychic"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Harvest"
+		],
+		forms: [
+			"Exeggutor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 104,
+		name: "Cubone",
+		slug: "cubone",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Lightningrod",
+			"Battle Armor"
+		],
+		forms: [
+			"Cubone"
+		],
+		evolutions: [
+			105
+		]
+	},
+	{
+		id: 105,
+		name: "Marowak",
+		slug: "marowak",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Lightningrod",
+			"Battle Armor"
+		],
+		forms: [
+			"Marowak"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 106,
+		name: "Hitmonlee",
+		slug: "hitmonlee",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Limber",
+			"Reckless",
+			"Unburden"
+		],
+		forms: [
+			"Hitmonlee"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 107,
+		name: "Hitmonchan",
+		slug: "hitmonchan",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Keen Eye",
+			"Iron Fist",
+			"Inner Focus"
+		],
+		forms: [
+			"Hitmonchan"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 108,
+		name: "Lickitung",
+		slug: "lickitung",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Own Tempo",
+			"Oblivious",
+			"Cloud Nine"
+		],
+		forms: [
+			"Lickitung"
+		],
+		evolutions: [
+			463
+		]
+	},
+	{
+		id: 109,
+		name: "Koffing",
+		slug: "koffing",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Levitate",
+			"Reactive Gas",
+			"Stench"
+		],
+		forms: [
+			"Koffing"
+		],
+		evolutions: [
+			110
+		]
+	},
+	{
+		id: 110,
+		name: "Weezing",
+		slug: "weezing",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Levitate",
+			"Reactive Gas",
+			"Stench"
+		],
+		forms: [
+			"Weezing"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 111,
+		name: "Rhyhorn",
+		slug: "rhyhorn",
+		types: [
+			"Ground",
+			"Rock"
+		],
+		abilities: [
+			"Lightningrod",
+			"Rock Head",
+			"Reckless"
+		],
+		forms: [
+			"Rhyhorn"
+		],
+		evolutions: [
+			112
+		]
+	},
+	{
+		id: 112,
+		name: "Rhydon",
+		slug: "rhydon",
+		types: [
+			"Ground",
+			"Rock"
+		],
+		abilities: [
+			"Lightningrod",
+			"Rock Head",
+			"Reckless"
+		],
+		forms: [
+			"Rhydon"
+		],
+		evolutions: [
+			464
+		]
+	},
+	{
+		id: 113,
+		name: "Chansey",
+		slug: "chansey",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Natural Cure",
+			"Serene Grace",
+			"Healer"
+		],
+		forms: [
+			"Chansey"
+		],
+		evolutions: [
+			242
+		]
+	},
+	{
+		id: 114,
+		name: "Tangela",
+		slug: "tangela",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Leaf Guard",
+			"Regenerator"
+		],
+		forms: [
+			"Tangela"
+		],
+		evolutions: [
+			465
+		]
+	},
+	{
+		id: 115,
+		name: "Kangaskhan",
+		slug: "kangaskhan",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Early Bird",
+			"Scrappy",
+			"Inner Focus"
+		],
+		forms: [
+			"Kangaskhan"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 116,
+		name: "Horsea",
+		slug: "horsea",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Sniper",
+			"Damp"
+		],
+		forms: [
+			"Horsea"
+		],
+		evolutions: [
+			117
+		]
+	},
+	{
+		id: 117,
+		name: "Seadra",
+		slug: "seadra",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Poison Point",
+			"Sniper",
+			"Damp"
+		],
+		forms: [
+			"Seadra"
+		],
+		evolutions: [
+			230
+		]
+	},
+	{
+		id: 118,
+		name: "Goldeen",
+		slug: "goldeen",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Veil",
+			"Lightningrod"
+		],
+		forms: [
+			"Goldeen"
+		],
+		evolutions: [
+			119
+		]
+	},
+	{
+		id: 119,
+		name: "Seaking",
+		slug: "seaking",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Veil",
+			"Lightningrod"
+		],
+		forms: [
+			"Seaking"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 120,
+		name: "Staryu",
+		slug: "staryu",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Illuminate",
+			"Natural Cure",
+			"Analytic"
+		],
+		forms: [
+			"Staryu"
+		],
+		evolutions: [
+			121
+		]
+	},
+	{
+		id: 121,
+		name: "Starmie",
+		slug: "starmie",
+		types: [
+			"Water",
+			"Psychic"
+		],
+		abilities: [
+			"Illuminate",
+			"Natural Cure",
+			"Analytic"
+		],
+		forms: [
+			"Starmie"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 122,
+		name: "Mr. Mime",
+		slug: "mr-mime",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Soundproof",
+			"Filter",
+			"Technician"
+		],
+		forms: [
+			"Mr. Mime"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 123,
+		name: "Scyther",
+		slug: "scyther",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Swarm",
+			"Technician",
+			"Steadfast"
+		],
+		forms: [
+			"Scyther"
+		],
+		evolutions: [
+			212
+		]
+	},
+	{
+		id: 124,
+		name: "Jynx",
+		slug: "jynx",
+		types: [
+			"Ice",
+			"Psychic"
+		],
+		abilities: [
+			"Oblivious",
+			"Forewarn",
+			"Dry Skin"
+		],
+		forms: [
+			"Jynx"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 125,
+		name: "Electabuzz",
+		slug: "electabuzz",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Vital Spirit"
+		],
+		forms: [
+			"Electabuzz"
+		],
+		evolutions: [
+			466
+		]
+	},
+	{
+		id: 126,
+		name: "Magmar",
+		slug: "magmar",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flame Body",
+			"Vital Spirit"
+		],
+		forms: [
+			"Magmar"
+		],
+		evolutions: [
+			467
+		]
+	},
+	{
+		id: 127,
+		name: "Pinsir",
+		slug: "pinsir",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Mold Breaker",
+			"Moxie"
+		],
+		forms: [
+			"Pinsir"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 128,
+		name: "Tauros",
+		slug: "tauros",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Anger Point",
+			"Sheer Force"
+		],
+		forms: [
+			"Tauros"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 129,
+		name: "Magikarp",
+		slug: "magikarp",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rattled"
+		],
+		forms: [
+			"Magikarp"
+		],
+		evolutions: [
+			130
+		]
+	},
+	{
+		id: 130,
+		name: "Gyarados",
+		slug: "gyarados",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Intimidate",
+			"Moxie"
+		],
+		forms: [
+			"Gyarados"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 131,
+		name: "Lapras",
+		slug: "lapras",
+		types: [
+			"Water",
+			"Ice"
+		],
+		abilities: [
+			"Water Absorb",
+			"Shell Armor",
+			"Hydration"
+		],
+		forms: [
+			"Lapras"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 132,
+		name: "Ditto",
+		slug: "ditto",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Limber",
+			"Imposter"
+		],
+		forms: [
+			"Ditto"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 133,
+		name: "Eevee",
+		slug: "eevee",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Adaptability",
+			"Anticipation"
+		],
+		forms: [
+			"Eevee"
+		],
+		evolutions: [
+			470,
+			471,
+			135,
+			134,
+			136,
+			196,
+			197
+		]
+	},
+	{
+		id: 134,
+		name: "Vaporeon",
+		slug: "vaporeon",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Absorb",
+			"Water Absorb",
+			"Hydration"
+		],
+		forms: [
+			"Vaporeon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 135,
+		name: "Jolteon",
+		slug: "jolteon",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Volt Absorb",
+			"Volt Absorb",
+			"Quick Feet"
+		],
+		forms: [
+			"Jolteon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 136,
+		name: "Flareon",
+		slug: "flareon",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Flash Fire",
+			"Guts"
+		],
+		forms: [
+			"Flareon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 137,
+		name: "Porygon",
+		slug: "porygon",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Trace",
+			"Download",
+			"Analytic"
+		],
+		forms: [
+			"Porygon"
+		],
+		evolutions: [
+			233
+		]
+	},
+	{
+		id: 138,
+		name: "Omanyte",
+		slug: "omanyte",
+		types: [
+			"Rock",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Shell Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Omanyte"
+		],
+		evolutions: [
+			139
+		]
+	},
+	{
+		id: 139,
+		name: "Omastar",
+		slug: "omastar",
+		types: [
+			"Rock",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Shell Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Omastar"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 140,
+		name: "Kabuto",
+		slug: "kabuto",
+		types: [
+			"Rock",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Battle Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Kabuto"
+		],
+		evolutions: [
+			141
+		]
+	},
+	{
+		id: 141,
+		name: "Kabutops",
+		slug: "kabutops",
+		types: [
+			"Rock",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Battle Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Kabutops"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 142,
+		name: "Aerodactyl",
+		slug: "aerodactyl",
+		types: [
+			"Rock",
+			"Flying"
+		],
+		abilities: [
+			"Rock Head",
+			"Pressure",
+			"Unnerve"
+		],
+		forms: [
+			"Aerodactyl"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 143,
+		name: "Snorlax",
+		slug: "snorlax",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Immunity",
+			"Thick Fat",
+			"Gluttony"
+		],
+		forms: [
+			"Snorlax"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 144,
+		name: "Articuno",
+		slug: "articuno",
+		types: [
+			"Ice",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Snow Cloak"
+		],
+		forms: [
+			"Articuno"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 145,
+		name: "Zapdos",
+		slug: "zapdos",
+		types: [
+			"Electric",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Static"
+		],
+		forms: [
+			"Zapdos"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 146,
+		name: "Moltres",
+		slug: "moltres",
+		types: [
+			"Fire",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Flame Body"
+		],
+		forms: [
+			"Moltres"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 147,
+		name: "Dratini",
+		slug: "dratini",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Shed Skin",
+			"Marvel Scale"
+		],
+		forms: [
+			"Dratini"
+		],
+		evolutions: [
+			148
+		]
+	},
+	{
+		id: 148,
+		name: "Dragonair",
+		slug: "dragonair",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Shed Skin",
+			"Marvel Scale"
+		],
+		forms: [
+			"Dragonair"
+		],
+		evolutions: [
+			149
+		]
+	},
+	{
+		id: 149,
+		name: "Dragonite",
+		slug: "dragonite",
+		types: [
+			"Dragon",
+			"Flying"
+		],
+		abilities: [
+			"Inner Focus",
+			"Multiscale"
+		],
+		forms: [
+			"Dragonite"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 150,
+		name: "Mewtwo",
+		slug: "mewtwo",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Pressure",
+			"Unnerve"
+		],
+		forms: [
+			"Mewtwo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 151,
+		name: "Mew",
+		slug: "mew",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize"
+		],
+		forms: [
+			"Mew"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 152,
+		name: "Chikorita",
+		slug: "chikorita",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Leaf Guard"
+		],
+		forms: [
+			"Chikorita"
+		],
+		evolutions: [
+			153
+		]
+	},
+	{
+		id: 153,
+		name: "Bayleef",
+		slug: "bayleef",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Leaf Guard"
+		],
+		forms: [
+			"Bayleef"
+		],
+		evolutions: [
+			154
+		]
+	},
+	{
+		id: 154,
+		name: "Meganium",
+		slug: "meganium",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Leaf Guard"
+		],
+		forms: [
+			"Meganium"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 155,
+		name: "Cyndaquil",
+		slug: "cyndaquil",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Flash Fire"
+		],
+		forms: [
+			"Cyndaquil"
+		],
+		evolutions: [
+			156
+		]
+	},
+	{
+		id: 156,
+		name: "Quilava",
+		slug: "quilava",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Flash Fire"
+		],
+		forms: [
+			"Quilava"
+		],
+		evolutions: [
+			157
+		]
+	},
+	{
+		id: 157,
+		name: "Typhlosion",
+		slug: "typhlosion",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Flash Fire"
+		],
+		forms: [
+			"Typhlosion"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 158,
+		name: "Totodile",
+		slug: "totodile",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Sheer Force"
+		],
+		forms: [
+			"Totodile"
+		],
+		evolutions: [
+			159
+		]
+	},
+	{
+		id: 159,
+		name: "Croconaw",
+		slug: "croconaw",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Sheer Force"
+		],
+		forms: [
+			"Croconaw"
+		],
+		evolutions: [
+			160
+		]
+	},
+	{
+		id: 160,
+		name: "Feraligatr",
+		slug: "feraligatr",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Sheer Force"
+		],
+		forms: [
+			"Feraligatr"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 161,
+		name: "Sentret",
+		slug: "sentret",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Keen Eye",
+			"Frisk"
+		],
+		forms: [
+			"Sentret"
+		],
+		evolutions: [
+			162
+		]
+	},
+	{
+		id: 162,
+		name: "Furret",
+		slug: "furret",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Keen Eye",
+			"Frisk"
+		],
+		forms: [
+			"Furret"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 163,
+		name: "Hoothoot",
+		slug: "hoothoot",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Insomnia",
+			"Keen Eye",
+			"Tinted Lens"
+		],
+		forms: [
+			"Hoothoot"
+		],
+		evolutions: [
+			164
+		]
+	},
+	{
+		id: 164,
+		name: "Noctowl",
+		slug: "noctowl",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Insomnia",
+			"Keen Eye",
+			"Tinted Lens"
+		],
+		forms: [
+			"Noctowl"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 165,
+		name: "Ledyba",
+		slug: "ledyba",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Swarm",
+			"Early Bird",
+			"Rattled"
+		],
+		forms: [
+			"Ledyba"
+		],
+		evolutions: [
+			166
+		]
+	},
+	{
+		id: 166,
+		name: "Ledian",
+		slug: "ledian",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Swarm",
+			"Early Bird",
+			"Iron Fist"
+		],
+		forms: [
+			"Ledian"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 167,
+		name: "Spinarak",
+		slug: "spinarak",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Swarm",
+			"Insomnia",
+			"Sniper"
+		],
+		forms: [
+			"Spinarak"
+		],
+		evolutions: [
+			168
+		]
+	},
+	{
+		id: 168,
+		name: "Ariados",
+		slug: "ariados",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Swarm",
+			"Insomnia",
+			"Sniper"
+		],
+		forms: [
+			"Ariados"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 169,
+		name: "Crobat",
+		slug: "crobat",
+		types: [
+			"Poison",
+			"Flying"
+		],
+		abilities: [
+			"Inner Focus",
+			"Infiltrator"
+		],
+		forms: [
+			"Crobat"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 170,
+		name: "Chinchou",
+		slug: "chinchou",
+		types: [
+			"Water",
+			"Electric"
+		],
+		abilities: [
+			"Volt Absorb",
+			"Illuminate",
+			"Water Absorb"
+		],
+		forms: [
+			"Chinchou"
+		],
+		evolutions: [
+			171
+		]
+	},
+	{
+		id: 171,
+		name: "Lanturn",
+		slug: "lanturn",
+		types: [
+			"Water",
+			"Electric"
+		],
+		abilities: [
+			"Volt Absorb",
+			"Illuminate",
+			"Water Absorb"
+		],
+		forms: [
+			"Lanturn"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 172,
+		name: "Pichu",
+		slug: "pichu",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Lightningrod"
+		],
+		forms: [
+			"Pichu"
+		],
+		evolutions: [
+			25
+		]
+	},
+	{
+		id: 173,
+		name: "Cleffa",
+		slug: "cleffa",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Magic Guard",
+			"Friend Guard"
+		],
+		forms: [
+			"Cleffa"
+		],
+		evolutions: [
+			35
+		]
+	},
+	{
+		id: 174,
+		name: "Igglybuff",
+		slug: "igglybuff",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Competitive",
+			"Friend Guard"
+		],
+		forms: [
+			"Igglybuff"
+		],
+		evolutions: [
+			39
+		]
+	},
+	{
+		id: 175,
+		name: "Togepi",
+		slug: "togepi",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Hustle",
+			"Serene Grace",
+			"Super Luck"
+		],
+		forms: [
+			"Togepi"
+		],
+		evolutions: [
+			176
+		]
+	},
+	{
+		id: 176,
+		name: "Togetic",
+		slug: "togetic",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Hustle",
+			"Serene Grace",
+			"Super Luck"
+		],
+		forms: [
+			"Togetic"
+		],
+		evolutions: [
+			468
+		]
+	},
+	{
+		id: 177,
+		name: "Natu",
+		slug: "natu",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Synchronize",
+			"Early Bird",
+			"Magic Bounce"
+		],
+		forms: [
+			"Natu"
+		],
+		evolutions: [
+			178
+		]
+	},
+	{
+		id: 178,
+		name: "Xatu",
+		slug: "xatu",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Synchronize",
+			"Early Bird",
+			"Magic Bounce"
+		],
+		forms: [
+			"Xatu"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 179,
+		name: "Mareep",
+		slug: "mareep",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Plus"
+		],
+		forms: [
+			"Mareep"
+		],
+		evolutions: [
+			180
+		]
+	},
+	{
+		id: 180,
+		name: "Flaaffy",
+		slug: "flaaffy",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Plus"
+		],
+		forms: [
+			"Flaaffy"
+		],
+		evolutions: [
+			181
+		]
+	},
+	{
+		id: 181,
+		name: "Ampharos",
+		slug: "ampharos",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Plus"
+		],
+		forms: [
+			"Ampharos"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 182,
+		name: "Bellossom",
+		slug: "bellossom",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Healer"
+		],
+		forms: [
+			"Bellossom"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 183,
+		name: "Marill",
+		slug: "marill",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Huge Power",
+			"Sap Sipper"
+		],
+		forms: [
+			"Marill"
+		],
+		evolutions: [
+			184
+		]
+	},
+	{
+		id: 184,
+		name: "Azumarill",
+		slug: "azumarill",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Huge Power",
+			"Sap Sipper"
+		],
+		forms: [
+			"Azumarill"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 185,
+		name: "Sudowoodo",
+		slug: "sudowoodo",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Rock Head",
+			"Rattled"
+		],
+		forms: [
+			"Sudowoodo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 186,
+		name: "Politoed",
+		slug: "politoed",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Absorb",
+			"Damp",
+			"Drizzle"
+		],
+		forms: [
+			"Politoed"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 187,
+		name: "Hoppip",
+		slug: "hoppip",
+		types: [
+			"Grass",
+			"Flying"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Leaf Guard",
+			"Infiltrator"
+		],
+		forms: [
+			"Hoppip"
+		],
+		evolutions: [
+			188
+		]
+	},
+	{
+		id: 188,
+		name: "Skiploom",
+		slug: "skiploom",
+		types: [
+			"Grass",
+			"Flying"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Leaf Guard",
+			"Infiltrator"
+		],
+		forms: [
+			"Skiploom"
+		],
+		evolutions: [
+			189
+		]
+	},
+	{
+		id: 189,
+		name: "Jumpluff",
+		slug: "jumpluff",
+		types: [
+			"Grass",
+			"Flying"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Leaf Guard",
+			"Infiltrator"
+		],
+		forms: [
+			"Jumpluff"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 190,
+		name: "Aipom",
+		slug: "aipom",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Pickup",
+			"Skill Link"
+		],
+		forms: [
+			"Aipom"
+		],
+		evolutions: [
+			424
+		]
+	},
+	{
+		id: 191,
+		name: "Sunkern",
+		slug: "sunkern",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Solar Power",
+			"Early Bird"
+		],
+		forms: [
+			"Sunkern"
+		],
+		evolutions: [
+			192
+		]
+	},
+	{
+		id: 192,
+		name: "Sunflora",
+		slug: "sunflora",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Solar Power",
+			"Early Bird"
+		],
+		forms: [
+			"Sunflora"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 193,
+		name: "Yanma",
+		slug: "yanma",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Speed Boost",
+			"Compoundeyes",
+			"Frisk"
+		],
+		forms: [
+			"Yanma"
+		],
+		evolutions: [
+			469
+		]
+	},
+	{
+		id: 194,
+		name: "Wooper",
+		slug: "wooper",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Damp",
+			"Water Absorb",
+			"Unaware"
+		],
+		forms: [
+			"Wooper"
+		],
+		evolutions: [
+			195
+		]
+	},
+	{
+		id: 195,
+		name: "Quagsire",
+		slug: "quagsire",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Damp",
+			"Water Absorb",
+			"Unaware"
+		],
+		forms: [
+			"Quagsire"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 196,
+		name: "Espeon",
+		slug: "espeon",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Synchronize",
+			"Magic Bounce"
+		],
+		forms: [
+			"Espeon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 197,
+		name: "Umbreon",
+		slug: "umbreon",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Synchronize",
+			"Synchronize",
+			"Inner Focus"
+		],
+		forms: [
+			"Umbreon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 198,
+		name: "Murkrow",
+		slug: "murkrow",
+		types: [
+			"Dark",
+			"Flying"
+		],
+		abilities: [
+			"Insomnia",
+			"Super Luck",
+			"Prankster"
+		],
+		forms: [
+			"Murkrow"
+		],
+		evolutions: [
+			430
+		]
+	},
+	{
+		id: 199,
+		name: "Slowking",
+		slug: "slowking",
+		types: [
+			"Water",
+			"Psychic"
+		],
+		abilities: [
+			"Oblivious",
+			"Own Tempo",
+			"Regenerator"
+		],
+		forms: [
+			"Slowking"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 200,
+		name: "Misdreavus",
+		slug: "misdreavus",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Misdreavus"
+		],
+		evolutions: [
+			429
+		]
+	},
+	{
+		id: 201,
+		name: "Unown",
+		slug: "unown",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown",
+			"Unown"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 202,
+		name: "Wobbuffet",
+		slug: "wobbuffet",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Shadow Tag",
+			"Telepathy"
+		],
+		forms: [
+			"Wobbuffet"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 203,
+		name: "Girafarig",
+		slug: "girafarig",
+		types: [
+			"Normal",
+			"Psychic"
+		],
+		abilities: [
+			"Inner Focus",
+			"Early Bird",
+			"Sap Sipper"
+		],
+		forms: [
+			"Girafarig"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 204,
+		name: "Pineco",
+		slug: "pineco",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Sturdy",
+			"Overcoat"
+		],
+		forms: [
+			"Pineco"
+		],
+		evolutions: [
+			205
+		]
+	},
+	{
+		id: 205,
+		name: "Forretress",
+		slug: "forretress",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Sturdy",
+			"Overcoat"
+		],
+		forms: [
+			"Forretress"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 206,
+		name: "Dunsparce",
+		slug: "dunsparce",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Serene Grace",
+			"Run Away",
+			"Rattled"
+		],
+		forms: [
+			"Dunsparce"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 207,
+		name: "Gligar",
+		slug: "gligar",
+		types: [
+			"Ground",
+			"Flying"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Sand Veil",
+			"Immunity"
+		],
+		forms: [
+			"Gligar"
+		],
+		evolutions: [
+			472
+		]
+	},
+	{
+		id: 208,
+		name: "Steelix",
+		slug: "steelix",
+		types: [
+			"Steel",
+			"Ground"
+		],
+		abilities: [
+			"Rock Head",
+			"Sturdy",
+			"Sheer Force"
+		],
+		forms: [
+			"Steelix"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 209,
+		name: "Snubbull",
+		slug: "snubbull",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Run Away",
+			"Rattled"
+		],
+		forms: [
+			"Snubbull"
+		],
+		evolutions: [
+			210
+		]
+	},
+	{
+		id: 210,
+		name: "Granbull",
+		slug: "granbull",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Quick Feet",
+			"Rattled"
+		],
+		forms: [
+			"Granbull"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 211,
+		name: "Qwilfish",
+		slug: "qwilfish",
+		types: [
+			"Water",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Swift Swim",
+			"Intimidate"
+		],
+		forms: [
+			"Qwilfish"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 212,
+		name: "Scizor",
+		slug: "scizor",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Swarm",
+			"Technician",
+			"Light Metal"
+		],
+		forms: [
+			"Scizor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 213,
+		name: "Shuckle",
+		slug: "shuckle",
+		types: [
+			"Bug",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Gluttony",
+			"Contrary"
+		],
+		forms: [
+			"Shuckle"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 214,
+		name: "Heracross",
+		slug: "heracross",
+		types: [
+			"Bug",
+			"Fighting"
+		],
+		abilities: [
+			"Swarm",
+			"Guts",
+			"Moxie"
+		],
+		forms: [
+			"Heracross"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 215,
+		name: "Sneasel",
+		slug: "sneasel",
+		types: [
+			"Dark",
+			"Ice"
+		],
+		abilities: [
+			"Inner Focus",
+			"Keen Eye",
+			"Pickpocket"
+		],
+		forms: [
+			"Sneasel"
+		],
+		evolutions: [
+			461
+		]
+	},
+	{
+		id: 216,
+		name: "Teddiursa",
+		slug: "teddiursa",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Pickup",
+			"Quick Feet",
+			"Honey Gather"
+		],
+		forms: [
+			"Teddiursa"
+		],
+		evolutions: [
+			217
+		]
+	},
+	{
+		id: 217,
+		name: "Ursaring",
+		slug: "ursaring",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Guts",
+			"Quick Feet",
+			"Unnerve"
+		],
+		forms: [
+			"Ursaring"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 218,
+		name: "Slugma",
+		slug: "slugma",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Magma Armor",
+			"Flame Body",
+			"Weak Armor"
+		],
+		forms: [
+			"Slugma"
+		],
+		evolutions: [
+			219
+		]
+	},
+	{
+		id: 219,
+		name: "Magcargo",
+		slug: "magcargo",
+		types: [
+			"Fire",
+			"Rock"
+		],
+		abilities: [
+			"Magma Armor",
+			"Flame Body",
+			"Weak Armor"
+		],
+		forms: [
+			"Magcargo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 220,
+		name: "Swinub",
+		slug: "swinub",
+		types: [
+			"Ice",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Snow Cloak",
+			"Thick Fat"
+		],
+		forms: [
+			"Swinub"
+		],
+		evolutions: [
+			221
+		]
+	},
+	{
+		id: 221,
+		name: "Piloswine",
+		slug: "piloswine",
+		types: [
+			"Ice",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Snow Cloak",
+			"Thick Fat"
+		],
+		forms: [
+			"Piloswine"
+		],
+		evolutions: [
+			473
+		]
+	},
+	{
+		id: 222,
+		name: "Corsola",
+		slug: "corsola",
+		types: [
+			"Water",
+			"Rock"
+		],
+		abilities: [
+			"Hustle",
+			"Natural Cure",
+			"Regenerator"
+		],
+		forms: [
+			"Corsola"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 223,
+		name: "Remoraid",
+		slug: "remoraid",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hustle",
+			"Sniper",
+			"Moody"
+		],
+		forms: [
+			"Remoraid"
+		],
+		evolutions: [
+			224
+		]
+	},
+	{
+		id: 224,
+		name: "Octillery",
+		slug: "octillery",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Suction Cups",
+			"Sniper",
+			"Moody"
+		],
+		forms: [
+			"Octillery"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 225,
+		name: "Delibird",
+		slug: "delibird",
+		types: [
+			"Ice",
+			"Flying"
+		],
+		abilities: [
+			"Vital Spirit",
+			"Hustle",
+			"Insomnia"
+		],
+		forms: [
+			"Delibird"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 226,
+		name: "Mantine",
+		slug: "mantine",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Absorb",
+			"Water Veil"
+		],
+		forms: [
+			"Mantine"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 227,
+		name: "Skarmory",
+		slug: "skarmory",
+		types: [
+			"Steel",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Sturdy",
+			"Weak Armor"
+		],
+		forms: [
+			"Skarmory"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 228,
+		name: "Houndour",
+		slug: "houndour",
+		types: [
+			"Dark",
+			"Fire"
+		],
+		abilities: [
+			"Early Bird",
+			"Flash Fire",
+			"Unnerve"
+		],
+		forms: [
+			"Houndour"
+		],
+		evolutions: [
+			229
+		]
+	},
+	{
+		id: 229,
+		name: "Houndoom",
+		slug: "houndoom",
+		types: [
+			"Dark",
+			"Fire"
+		],
+		abilities: [
+			"Early Bird",
+			"Flash Fire",
+			"Unnerve"
+		],
+		forms: [
+			"Houndoom"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 230,
+		name: "Kingdra",
+		slug: "kingdra",
+		types: [
+			"Water",
+			"Dragon"
+		],
+		abilities: [
+			"Swift Swim",
+			"Sniper",
+			"Damp"
+		],
+		forms: [
+			"Kingdra"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 231,
+		name: "Phanpy",
+		slug: "phanpy",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Pickup",
+			"Sand Veil"
+		],
+		forms: [
+			"Phanpy"
+		],
+		evolutions: [
+			232
+		]
+	},
+	{
+		id: 232,
+		name: "Donphan",
+		slug: "donphan",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sturdy",
+			"Sand Veil"
+		],
+		forms: [
+			"Donphan"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 233,
+		name: "Porygon2",
+		slug: "porygon2",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Trace",
+			"Download",
+			"Analytic"
+		],
+		forms: [
+			"Porygon2"
+		],
+		evolutions: [
+			474
+		]
+	},
+	{
+		id: 234,
+		name: "Stantler",
+		slug: "stantler",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Frisk",
+			"Sap Sipper"
+		],
+		forms: [
+			"Stantler"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 235,
+		name: "Smeargle",
+		slug: "smeargle",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Own Tempo",
+			"Technician",
+			"Moody"
+		],
+		forms: [
+			"Smeargle"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 236,
+		name: "Tyrogue",
+		slug: "tyrogue",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"Steadfast",
+			"Vital Spirit"
+		],
+		forms: [
+			"Tyrogue"
+		],
+		evolutions: [
+			107,
+			106,
+			237
+		]
+	},
+	{
+		id: 237,
+		name: "Hitmontop",
+		slug: "hitmontop",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Intimidate",
+			"Technician",
+			"Steadfast"
+		],
+		forms: [
+			"Hitmontop"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 238,
+		name: "Smoochum",
+		slug: "smoochum",
+		types: [
+			"Ice",
+			"Psychic"
+		],
+		abilities: [
+			"Oblivious",
+			"Forewarn",
+			"Hydration"
+		],
+		forms: [
+			"Smoochum"
+		],
+		evolutions: [
+			124
+		]
+	},
+	{
+		id: 239,
+		name: "Elekid",
+		slug: "elekid",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Vital Spirit"
+		],
+		forms: [
+			"Elekid"
+		],
+		evolutions: [
+			125
+		]
+	},
+	{
+		id: 240,
+		name: "Magby",
+		slug: "magby",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flame Body",
+			"Vital Spirit"
+		],
+		forms: [
+			"Magby"
+		],
+		evolutions: [
+			126
+		]
+	},
+	{
+		id: 241,
+		name: "Miltank",
+		slug: "miltank",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Thick Fat",
+			"Scrappy",
+			"Sap Sipper"
+		],
+		forms: [
+			"Miltank"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 242,
+		name: "Blissey",
+		slug: "blissey",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Natural Cure",
+			"Serene Grace",
+			"Healer"
+		],
+		forms: [
+			"Blissey"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 243,
+		name: "Raikou",
+		slug: "raikou",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Pressure",
+			"Inner Focus"
+		],
+		forms: [
+			"Raikou"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 244,
+		name: "Entei",
+		slug: "entei",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Pressure",
+			"Inner Focus"
+		],
+		forms: [
+			"Entei"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 245,
+		name: "Suicune",
+		slug: "suicune",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Pressure",
+			"Inner Focus"
+		],
+		forms: [
+			"Suicune"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 246,
+		name: "Larvitar",
+		slug: "larvitar",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Guts",
+			"Sand Veil"
+		],
+		forms: [
+			"Larvitar"
+		],
+		evolutions: [
+			247
+		]
+	},
+	{
+		id: 247,
+		name: "Pupitar",
+		slug: "pupitar",
+		types: [
+			"Rock",
+			"Ground"
+		],
+		abilities: [
+			"Shed Skin",
+			"Shed Skin"
+		],
+		forms: [
+			"Pupitar"
+		],
+		evolutions: [
+			248
+		]
+	},
+	{
+		id: 248,
+		name: "Tyranitar",
+		slug: "tyranitar",
+		types: [
+			"Rock",
+			"Dark"
+		],
+		abilities: [
+			"Sand Stream",
+			"Unnerve"
+		],
+		forms: [
+			"Tyranitar"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 249,
+		name: "Lugia",
+		slug: "lugia",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Multiscale"
+		],
+		forms: [
+			"Lugia"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 250,
+		name: "Ho-Oh",
+		slug: "ho-oh",
+		types: [
+			"Fire",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Regenerator"
+		],
+		forms: [
+			"Ho-Oh"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 251,
+		name: "Celebi",
+		slug: "celebi",
+		types: [
+			"Psychic",
+			"Grass"
+		],
+		abilities: [
+			"Natural Cure"
+		],
+		forms: [
+			"Celebi"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 252,
+		name: "Treecko",
+		slug: "treecko",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Unburden"
+		],
+		forms: [
+			"Treecko"
+		],
+		evolutions: [
+			253
+		]
+	},
+	{
+		id: 253,
+		name: "Grovyle",
+		slug: "grovyle",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Unburden"
+		],
+		forms: [
+			"Grovyle"
+		],
+		evolutions: [
+			254
+		]
+	},
+	{
+		id: 254,
+		name: "Sceptile",
+		slug: "sceptile",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Unburden"
+		],
+		forms: [
+			"Sceptile"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 255,
+		name: "Torchic",
+		slug: "torchic",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze"
+		],
+		forms: [
+			"Torchic"
+		],
+		evolutions: [
+			256
+		]
+	},
+	{
+		id: 256,
+		name: "Combusken",
+		slug: "combusken",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze"
+		],
+		forms: [
+			"Combusken"
+		],
+		evolutions: [
+			257
+		]
+	},
+	{
+		id: 257,
+		name: "Blaziken",
+		slug: "blaziken",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze"
+		],
+		forms: [
+			"Blaziken"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 258,
+		name: "Mudkip",
+		slug: "mudkip",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Damp"
+		],
+		forms: [
+			"Mudkip"
+		],
+		evolutions: [
+			259
+		]
+	},
+	{
+		id: 259,
+		name: "Marshtomp",
+		slug: "marshtomp",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Torrent",
+			"Damp"
+		],
+		forms: [
+			"Marshtomp"
+		],
+		evolutions: [
+			260
+		]
+	},
+	{
+		id: 260,
+		name: "Swampert",
+		slug: "swampert",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Torrent",
+			"Damp"
+		],
+		forms: [
+			"Swampert"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 261,
+		name: "Poochyena",
+		slug: "poochyena",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Run Away",
+			"Quick Feet",
+			"Rattled"
+		],
+		forms: [
+			"Poochyena"
+		],
+		evolutions: [
+			262
+		]
+	},
+	{
+		id: 262,
+		name: "Mightyena",
+		slug: "mightyena",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Intimidate",
+			"Quick Feet",
+			"Moxie"
+		],
+		forms: [
+			"Mightyena"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 263,
+		name: "Zigzagoon",
+		slug: "zigzagoon",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Pickup",
+			"Gluttony",
+			"Quick Feet"
+		],
+		forms: [
+			"Zigzagoon"
+		],
+		evolutions: [
+			264
+		]
+	},
+	{
+		id: 264,
+		name: "Linoone",
+		slug: "linoone",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Pickup",
+			"Gluttony",
+			"Quick Feet"
+		],
+		forms: [
+			"Linoone"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 265,
+		name: "Wurmple",
+		slug: "wurmple",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shield Dust",
+			"Run Away"
+		],
+		forms: [
+			"Wurmple"
+		],
+		evolutions: [
+			266,
+			268
+		]
+	},
+	{
+		id: 266,
+		name: "Silcoon",
+		slug: "silcoon",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shed Skin",
+			"Shed Skin"
+		],
+		forms: [
+			"Silcoon"
+		],
+		evolutions: [
+			267
+		]
+	},
+	{
+		id: 267,
+		name: "Beautifly",
+		slug: "beautifly",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Swarm",
+			"Rivalry"
+		],
+		forms: [
+			"Beautifly"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 268,
+		name: "Cascoon",
+		slug: "cascoon",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shed Skin",
+			"Shed Skin"
+		],
+		forms: [
+			"Cascoon"
+		],
+		evolutions: [
+			269
+		]
+	},
+	{
+		id: 269,
+		name: "Dustox",
+		slug: "dustox",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Shield Dust",
+			"Compoundeyes"
+		],
+		forms: [
+			"Dustox"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 270,
+		name: "Lotad",
+		slug: "lotad",
+		types: [
+			"Water",
+			"Grass"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rain Dish",
+			"Own Tempo"
+		],
+		forms: [
+			"Lotad"
+		],
+		evolutions: [
+			271
+		]
+	},
+	{
+		id: 271,
+		name: "Lombre",
+		slug: "lombre",
+		types: [
+			"Water",
+			"Grass"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rain Dish",
+			"Own Tempo"
+		],
+		forms: [
+			"Lombre"
+		],
+		evolutions: [
+			272
+		]
+	},
+	{
+		id: 272,
+		name: "Ludicolo",
+		slug: "ludicolo",
+		types: [
+			"Water",
+			"Grass"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rain Dish",
+			"Own Tempo"
+		],
+		forms: [
+			"Ludicolo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 273,
+		name: "Seedot",
+		slug: "seedot",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Early Bird",
+			"Pickpocket"
+		],
+		forms: [
+			"Seedot"
+		],
+		evolutions: [
+			274
+		]
+	},
+	{
+		id: 274,
+		name: "Nuzleaf",
+		slug: "nuzleaf",
+		types: [
+			"Grass",
+			"Dark"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Early Bird",
+			"Pickpocket"
+		],
+		forms: [
+			"Nuzleaf"
+		],
+		evolutions: [
+			275
+		]
+	},
+	{
+		id: 275,
+		name: "Shiftry",
+		slug: "shiftry",
+		types: [
+			"Grass",
+			"Dark"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Early Bird",
+			"Pickpocket"
+		],
+		forms: [
+			"Shiftry"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 276,
+		name: "Taillow",
+		slug: "taillow",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Guts",
+			"Scrappy"
+		],
+		forms: [
+			"Taillow"
+		],
+		evolutions: [
+			277
+		]
+	},
+	{
+		id: 277,
+		name: "Swellow",
+		slug: "swellow",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Guts",
+			"Scrappy"
+		],
+		forms: [
+			"Swellow"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 278,
+		name: "Wingull",
+		slug: "wingull",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Hydration",
+			"Rain Dish"
+		],
+		forms: [
+			"Wingull"
+		],
+		evolutions: [
+			279
+		]
+	},
+	{
+		id: 279,
+		name: "Pelipper",
+		slug: "pelipper",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Drizzle",
+			"Rain Dish"
+		],
+		forms: [
+			"Pelipper"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 280,
+		name: "Ralts",
+		slug: "ralts",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Trace",
+			"Telepathy"
+		],
+		forms: [
+			"Ralts"
+		],
+		evolutions: [
+			281
+		]
+	},
+	{
+		id: 281,
+		name: "Kirlia",
+		slug: "kirlia",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Trace",
+			"Telepathy"
+		],
+		forms: [
+			"Kirlia"
+		],
+		evolutions: [
+			282,
+			475
+		]
+	},
+	{
+		id: 282,
+		name: "Gardevoir",
+		slug: "gardevoir",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Synchronize",
+			"Trace",
+			"Telepathy"
+		],
+		forms: [
+			"Gardevoir"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 283,
+		name: "Surskit",
+		slug: "surskit",
+		types: [
+			"Bug",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rain Dish"
+		],
+		forms: [
+			"Surskit"
+		],
+		evolutions: [
+			284
+		]
+	},
+	{
+		id: 284,
+		name: "Masquerain",
+		slug: "masquerain",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Intimidate",
+			"Unnerve"
+		],
+		forms: [
+			"Masquerain"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 285,
+		name: "Shroomish",
+		slug: "shroomish",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Effect Spore",
+			"Poison Heal",
+			"Quick Feet"
+		],
+		forms: [
+			"Shroomish"
+		],
+		evolutions: [
+			286
+		]
+	},
+	{
+		id: 286,
+		name: "Breloom",
+		slug: "breloom",
+		types: [
+			"Grass",
+			"Fighting"
+		],
+		abilities: [
+			"Effect Spore",
+			"Poison Heal",
+			"Technician"
+		],
+		forms: [
+			"Breloom"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 287,
+		name: "Slakoth",
+		slug: "slakoth",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Truant"
+		],
+		forms: [
+			"Slakoth"
+		],
+		evolutions: [
+			288
+		]
+	},
+	{
+		id: 288,
+		name: "Vigoroth",
+		slug: "vigoroth",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Vital Spirit"
+		],
+		forms: [
+			"Vigoroth"
+		],
+		evolutions: [
+			289
+		]
+	},
+	{
+		id: 289,
+		name: "Slaking",
+		slug: "slaking",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Truant"
+		],
+		forms: [
+			"Slaking"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 290,
+		name: "Nincada",
+		slug: "nincada",
+		types: [
+			"Bug",
+			"Ground"
+		],
+		abilities: [
+			"Compoundeyes",
+			"Run Away"
+		],
+		forms: [
+			"Nincada"
+		],
+		evolutions: [
+			291,
+			292
+		]
+	},
+	{
+		id: 291,
+		name: "Ninjask",
+		slug: "ninjask",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Speed Boost",
+			"Infiltrator"
+		],
+		forms: [
+			"Ninjask"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 292,
+		name: "Shedinja",
+		slug: "shedinja",
+		types: [
+			"Bug",
+			"Ghost"
+		],
+		abilities: [
+			"Wonder Guard",
+			"Wonder Guard"
+		],
+		forms: [
+			"Shedinja"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 293,
+		name: "Whismur",
+		slug: "whismur",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Soundproof",
+			"Rattled"
+		],
+		forms: [
+			"Whismur"
+		],
+		evolutions: [
+			294
+		]
+	},
+	{
+		id: 294,
+		name: "Loudred",
+		slug: "loudred",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Soundproof",
+			"Scrappy"
+		],
+		forms: [
+			"Loudred"
+		],
+		evolutions: [
+			295
+		]
+	},
+	{
+		id: 295,
+		name: "Exploud",
+		slug: "exploud",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Soundproof",
+			"Scrappy"
+		],
+		forms: [
+			"Exploud"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 296,
+		name: "Makuhita",
+		slug: "makuhita",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Thick Fat",
+			"Guts",
+			"Sheer Force"
+		],
+		forms: [
+			"Makuhita"
+		],
+		evolutions: [
+			297
+		]
+	},
+	{
+		id: 297,
+		name: "Hariyama",
+		slug: "hariyama",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Thick Fat",
+			"Guts",
+			"Sheer Force"
+		],
+		forms: [
+			"Hariyama"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 298,
+		name: "Azurill",
+		slug: "azurill",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Thick Fat",
+			"Huge Power",
+			"Sap Sipper"
+		],
+		forms: [
+			"Azurill"
+		],
+		evolutions: [
+			183
+		]
+	},
+	{
+		id: 299,
+		name: "Nosepass",
+		slug: "nosepass",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Magnet Pull",
+			"Sand Force"
+		],
+		forms: [
+			"Nosepass"
+		],
+		evolutions: [
+			476
+		]
+	},
+	{
+		id: 300,
+		name: "Skitty",
+		slug: "skitty",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Normalize",
+			"Wonder Skin"
+		],
+		forms: [
+			"Skitty"
+		],
+		evolutions: [
+			301
+		]
+	},
+	{
+		id: 301,
+		name: "Delcatty",
+		slug: "delcatty",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Normalize",
+			"Wonder Skin"
+		],
+		forms: [
+			"Delcatty"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 302,
+		name: "Sableye",
+		slug: "sableye",
+		types: [
+			"Dark",
+			"Ghost"
+		],
+		abilities: [
+			"Keen Eye",
+			"Stall",
+			"Prankster"
+		],
+		forms: [
+			"Sableye"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 303,
+		name: "Mawile",
+		slug: "mawile",
+		types: [
+			"Steel",
+			"Steel"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Intimidate",
+			"Sheer Force"
+		],
+		forms: [
+			"Mawile"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 304,
+		name: "Aron",
+		slug: "aron",
+		types: [
+			"Steel",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Rock Head",
+			"Heavy Metal"
+		],
+		forms: [
+			"Aron"
+		],
+		evolutions: [
+			305
+		]
+	},
+	{
+		id: 305,
+		name: "Lairon",
+		slug: "lairon",
+		types: [
+			"Steel",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Rock Head",
+			"Heavy Metal"
+		],
+		forms: [
+			"Lairon"
+		],
+		evolutions: [
+			306
+		]
+	},
+	{
+		id: 306,
+		name: "Aggron",
+		slug: "aggron",
+		types: [
+			"Steel",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Rock Head",
+			"Heavy Metal"
+		],
+		forms: [
+			"Aggron"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 307,
+		name: "Meditite",
+		slug: "meditite",
+		types: [
+			"Fighting",
+			"Psychic"
+		],
+		abilities: [
+			"Pure Power",
+			"Telepathy"
+		],
+		forms: [
+			"Meditite"
+		],
+		evolutions: [
+			308
+		]
+	},
+	{
+		id: 308,
+		name: "Medicham",
+		slug: "medicham",
+		types: [
+			"Fighting",
+			"Psychic"
+		],
+		abilities: [
+			"Pure Power",
+			"Telepathy"
+		],
+		forms: [
+			"Medicham"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 309,
+		name: "Electrike",
+		slug: "electrike",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Lightningrod",
+			"Minus"
+		],
+		forms: [
+			"Electrike"
+		],
+		evolutions: [
+			310
+		]
+	},
+	{
+		id: 310,
+		name: "Manectric",
+		slug: "manectric",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Lightningrod",
+			"Minus"
+		],
+		forms: [
+			"Manectric"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 311,
+		name: "Plusle",
+		slug: "plusle",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Plus",
+			"Lightningrod"
+		],
+		forms: [
+			"Plusle"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 312,
+		name: "Minun",
+		slug: "minun",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Minus",
+			"Volt Absorb"
+		],
+		forms: [
+			"Minun"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 313,
+		name: "Volbeat",
+		slug: "volbeat",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Illuminate",
+			"Swarm",
+			"Prankster"
+		],
+		forms: [
+			"Volbeat"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 314,
+		name: "Illumise",
+		slug: "illumise",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Oblivious",
+			"Tinted Lens",
+			"Prankster"
+		],
+		forms: [
+			"Illumise"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 315,
+		name: "Roselia",
+		slug: "roselia",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Natural Cure",
+			"Poison Point",
+			"Leaf Guard"
+		],
+		forms: [
+			"Roselia"
+		],
+		evolutions: [
+			407
+		]
+	},
+	{
+		id: 316,
+		name: "Gulpin",
+		slug: "gulpin",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Liquid Ooze",
+			"Sticky Hold",
+			"Gluttony"
+		],
+		forms: [
+			"Gulpin"
+		],
+		evolutions: [
+			317
+		]
+	},
+	{
+		id: 317,
+		name: "Swalot",
+		slug: "swalot",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Liquid Ooze",
+			"Sticky Hold",
+			"Gluttony"
+		],
+		forms: [
+			"Swalot"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 318,
+		name: "Carvanha",
+		slug: "carvanha",
+		types: [
+			"Water",
+			"Dark"
+		],
+		abilities: [
+			"Rough Skin",
+			"Speed Boost"
+		],
+		forms: [
+			"Carvanha"
+		],
+		evolutions: [
+			319
+		]
+	},
+	{
+		id: 319,
+		name: "Sharpedo",
+		slug: "sharpedo",
+		types: [
+			"Water",
+			"Dark"
+		],
+		abilities: [
+			"Rough Skin",
+			"Speed Boost"
+		],
+		forms: [
+			"Sharpedo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 320,
+		name: "Wailmer",
+		slug: "wailmer",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Veil",
+			"Oblivious",
+			"Pressure"
+		],
+		forms: [
+			"Wailmer"
+		],
+		evolutions: [
+			321
+		]
+	},
+	{
+		id: 321,
+		name: "Wailord",
+		slug: "wailord",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Water Veil",
+			"Oblivious",
+			"Pressure"
+		],
+		forms: [
+			"Wailord"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 322,
+		name: "Numel",
+		slug: "numel",
+		types: [
+			"Fire",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Simple",
+			"Own Tempo"
+		],
+		forms: [
+			"Numel"
+		],
+		evolutions: [
+			323
+		]
+	},
+	{
+		id: 323,
+		name: "Camerupt",
+		slug: "camerupt",
+		types: [
+			"Fire",
+			"Ground"
+		],
+		abilities: [
+			"Magma Armor",
+			"Solid Rock",
+			"Anger Point"
+		],
+		forms: [
+			"Camerupt"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 324,
+		name: "Torkoal",
+		slug: "torkoal",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"White Smoke",
+			"Drought",
+			"Shell Armor"
+		],
+		forms: [
+			"Torkoal"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 325,
+		name: "Spoink",
+		slug: "spoink",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Thick Fat",
+			"Own Tempo",
+			"Gluttony"
+		],
+		forms: [
+			"Spoink"
+		],
+		evolutions: [
+			326
+		]
+	},
+	{
+		id: 326,
+		name: "Grumpig",
+		slug: "grumpig",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Thick Fat",
+			"Own Tempo",
+			"Gluttony"
+		],
+		forms: [
+			"Grumpig"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 327,
+		name: "Spinda",
+		slug: "spinda",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Own Tempo",
+			"Tangled Feet",
+			"Contrary"
+		],
+		forms: [
+			"Spinda"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 328,
+		name: "Trapinch",
+		slug: "trapinch",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Arena Trap",
+			"Sheer Force"
+		],
+		forms: [
+			"Trapinch"
+		],
+		evolutions: [
+			329
+		]
+	},
+	{
+		id: 329,
+		name: "Vibrava",
+		slug: "vibrava",
+		types: [
+			"Ground",
+			"Dragon"
+		],
+		abilities: [
+			"Levitate",
+			"Levitate",
+			"Levitate"
+		],
+		forms: [
+			"Vibrava"
+		],
+		evolutions: [
+			330
+		]
+	},
+	{
+		id: 330,
+		name: "Flygon",
+		slug: "flygon",
+		types: [
+			"Ground",
+			"Dragon"
+		],
+		abilities: [
+			"Levitate",
+			"Levitate",
+			"Levitate"
+		],
+		forms: [
+			"Flygon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 331,
+		name: "Cacnea",
+		slug: "cacnea",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Sand Veil",
+			"Water Absorb"
+		],
+		forms: [
+			"Cacnea"
+		],
+		evolutions: [
+			332
+		]
+	},
+	{
+		id: 332,
+		name: "Cacturne",
+		slug: "cacturne",
+		types: [
+			"Grass",
+			"Dark"
+		],
+		abilities: [
+			"Sand Veil",
+			"Water Absorb"
+		],
+		forms: [
+			"Cacturne"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 333,
+		name: "Swablu",
+		slug: "swablu",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Natural Cure",
+			"Cloud Nine"
+		],
+		forms: [
+			"Swablu"
+		],
+		evolutions: [
+			334
+		]
+	},
+	{
+		id: 334,
+		name: "Altaria",
+		slug: "altaria",
+		types: [
+			"Dragon",
+			"Flying"
+		],
+		abilities: [
+			"Natural Cure",
+			"Cloud Nine"
+		],
+		forms: [
+			"Altaria"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 335,
+		name: "Zangoose",
+		slug: "zangoose",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Immunity",
+			"Toxic Boost"
+		],
+		forms: [
+			"Zangoose"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 336,
+		name: "Seviper",
+		slug: "seviper",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Shed Skin",
+			"Infiltrator"
+		],
+		forms: [
+			"Seviper"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 337,
+		name: "Lunatone",
+		slug: "lunatone",
+		types: [
+			"Rock",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Lunatone"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 338,
+		name: "Solrock",
+		slug: "solrock",
+		types: [
+			"Rock",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Solrock"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 339,
+		name: "Barboach",
+		slug: "barboach",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Anticipation",
+			"Hydration"
+		],
+		forms: [
+			"Barboach"
+		],
+		evolutions: [
+			340
+		]
+	},
+	{
+		id: 340,
+		name: "Whiscash",
+		slug: "whiscash",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Anticipation",
+			"Hydration"
+		],
+		forms: [
+			"Whiscash"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 341,
+		name: "Corphish",
+		slug: "corphish",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Shell Armor",
+			"Adaptability"
+		],
+		forms: [
+			"Corphish"
+		],
+		evolutions: [
+			342
+		]
+	},
+	{
+		id: 342,
+		name: "Crawdaunt",
+		slug: "crawdaunt",
+		types: [
+			"Water",
+			"Dark"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Shell Armor",
+			"Adaptability"
+		],
+		forms: [
+			"Crawdaunt"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 343,
+		name: "Baltoy",
+		slug: "baltoy",
+		types: [
+			"Ground",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Baltoy"
+		],
+		evolutions: [
+			344
+		]
+	},
+	{
+		id: 344,
+		name: "Claydol",
+		slug: "claydol",
+		types: [
+			"Ground",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Claydol"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 345,
+		name: "Lileep",
+		slug: "lileep",
+		types: [
+			"Rock",
+			"Grass"
+		],
+		abilities: [
+			"Suction Cups",
+			"Storm Drain"
+		],
+		forms: [
+			"Lileep"
+		],
+		evolutions: [
+			346
+		]
+	},
+	{
+		id: 346,
+		name: "Cradily",
+		slug: "cradily",
+		types: [
+			"Rock",
+			"Grass"
+		],
+		abilities: [
+			"Suction Cups",
+			"Storm Drain"
+		],
+		forms: [
+			"Cradily"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 347,
+		name: "Anorith",
+		slug: "anorith",
+		types: [
+			"Rock",
+			"Bug"
+		],
+		abilities: [
+			"Battle Armor",
+			"Swift Swim"
+		],
+		forms: [
+			"Anorith"
+		],
+		evolutions: [
+			348
+		]
+	},
+	{
+		id: 348,
+		name: "Armaldo",
+		slug: "armaldo",
+		types: [
+			"Rock",
+			"Bug"
+		],
+		abilities: [
+			"Battle Armor",
+			"Swift Swim"
+		],
+		forms: [
+			"Armaldo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 349,
+		name: "Feebas",
+		slug: "feebas",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Oblivious",
+			"Adaptability"
+		],
+		forms: [
+			"Feebas"
+		],
+		evolutions: [
+			350
+		]
+	},
+	{
+		id: 350,
+		name: "Milotic",
+		slug: "milotic",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Marvel Scale",
+			"Competitive",
+			"Cute Charm"
+		],
+		forms: [
+			"Milotic"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 351,
+		name: "Castform",
+		slug: "castform",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Forecast"
+		],
+		forms: [
+			"Castform",
+			"Castform [Sunny Form]",
+			"Castform [Rainy Form]",
+			"Castform [Snowy Form]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 352,
+		name: "Kecleon",
+		slug: "kecleon",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Color Change",
+			"Protean"
+		],
+		forms: [
+			"Kecleon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 353,
+		name: "Shuppet",
+		slug: "shuppet",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Insomnia",
+			"Frisk",
+			"Cursed Body"
+		],
+		forms: [
+			"Shuppet"
+		],
+		evolutions: [
+			354
+		]
+	},
+	{
+		id: 354,
+		name: "Banette",
+		slug: "banette",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Insomnia",
+			"Frisk",
+			"Cursed Body"
+		],
+		forms: [
+			"Banette"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 355,
+		name: "Duskull",
+		slug: "duskull",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Levitate",
+			"Frisk"
+		],
+		forms: [
+			"Duskull"
+		],
+		evolutions: [
+			356
+		]
+	},
+	{
+		id: 356,
+		name: "Dusclops",
+		slug: "dusclops",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Pressure",
+			"Frisk"
+		],
+		forms: [
+			"Dusclops"
+		],
+		evolutions: [
+			477
+		]
+	},
+	{
+		id: 357,
+		name: "Tropius",
+		slug: "tropius",
+		types: [
+			"Grass",
+			"Flying"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Solar Power",
+			"Harvest"
+		],
+		forms: [
+			"Tropius"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 358,
+		name: "Chimecho",
+		slug: "chimecho",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Chimecho"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 359,
+		name: "Absol",
+		slug: "absol",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Pressure",
+			"Super Luck",
+			"Justified"
+		],
+		forms: [
+			"Absol"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 360,
+		name: "Wynaut",
+		slug: "wynaut",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Shadow Tag",
+			"Telepathy"
+		],
+		forms: [
+			"Wynaut"
+		],
+		evolutions: [
+			202
+		]
+	},
+	{
+		id: 361,
+		name: "Snorunt",
+		slug: "snorunt",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Inner Focus",
+			"Ice Body",
+			"Moody"
+		],
+		forms: [
+			"Snorunt"
+		],
+		evolutions: [
+			362,
+			478
+		]
+	},
+	{
+		id: 362,
+		name: "Glalie",
+		slug: "glalie",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Inner Focus",
+			"Ice Body",
+			"Moody"
+		],
+		forms: [
+			"Glalie"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 363,
+		name: "Spheal",
+		slug: "spheal",
+		types: [
+			"Ice",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Ice Body",
+			"Oblivious"
+		],
+		forms: [
+			"Spheal"
+		],
+		evolutions: [
+			364
+		]
+	},
+	{
+		id: 364,
+		name: "Sealeo",
+		slug: "sealeo",
+		types: [
+			"Ice",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Ice Body",
+			"Oblivious"
+		],
+		forms: [
+			"Sealeo"
+		],
+		evolutions: [
+			365
+		]
+	},
+	{
+		id: 365,
+		name: "Walrein",
+		slug: "walrein",
+		types: [
+			"Ice",
+			"Water"
+		],
+		abilities: [
+			"Thick Fat",
+			"Ice Body",
+			"Oblivious"
+		],
+		forms: [
+			"Walrein"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 366,
+		name: "Clamperl",
+		slug: "clamperl",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Shell Armor",
+			"Rattled"
+		],
+		forms: [
+			"Clamperl"
+		],
+		evolutions: [
+			367,
+			368
+		]
+	},
+	{
+		id: 367,
+		name: "Huntail",
+		slug: "huntail",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Veil"
+		],
+		forms: [
+			"Huntail"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 368,
+		name: "Gorebyss",
+		slug: "gorebyss",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Hydration"
+		],
+		forms: [
+			"Gorebyss"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 369,
+		name: "Relicanth",
+		slug: "relicanth",
+		types: [
+			"Water",
+			"Rock"
+		],
+		abilities: [
+			"Swift Swim",
+			"Rock Head",
+			"Sturdy"
+		],
+		forms: [
+			"Relicanth"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 370,
+		name: "Luvdisc",
+		slug: "luvdisc",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Hydration"
+		],
+		forms: [
+			"Luvdisc"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 371,
+		name: "Bagon",
+		slug: "bagon",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rock Head",
+			"Sheer Force"
+		],
+		forms: [
+			"Bagon"
+		],
+		evolutions: [
+			372
+		]
+	},
+	{
+		id: 372,
+		name: "Shelgon",
+		slug: "shelgon",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rock Head",
+			"Overcoat"
+		],
+		forms: [
+			"Shelgon"
+		],
+		evolutions: [
+			373
+		]
+	},
+	{
+		id: 373,
+		name: "Salamence",
+		slug: "salamence",
+		types: [
+			"Dragon",
+			"Flying"
+		],
+		abilities: [
+			"Intimidate",
+			"Moxie"
+		],
+		forms: [
+			"Salamence"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 374,
+		name: "Beldum",
+		slug: "beldum",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Clear Body",
+			"Light Metal"
+		],
+		forms: [
+			"Beldum"
+		],
+		evolutions: [
+			375
+		]
+	},
+	{
+		id: 375,
+		name: "Metang",
+		slug: "metang",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Clear Body",
+			"Light Metal"
+		],
+		forms: [
+			"Metang"
+		],
+		evolutions: [
+			376
+		]
+	},
+	{
+		id: 376,
+		name: "Metagross",
+		slug: "metagross",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Clear Body",
+			"Light Metal"
+		],
+		forms: [
+			"Metagross"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 377,
+		name: "Regirock",
+		slug: "regirock",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Clear Body",
+			"Sturdy"
+		],
+		forms: [
+			"Regirock"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 378,
+		name: "Regice",
+		slug: "regice",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Clear Body",
+			"Ice Body"
+		],
+		forms: [
+			"Regice"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 379,
+		name: "Registeel",
+		slug: "registeel",
+		types: [
+			"Steel",
+			"Steel"
+		],
+		abilities: [
+			"Clear Body",
+			"Light Metal"
+		],
+		forms: [
+			"Registeel"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 380,
+		name: "Latias",
+		slug: "latias",
+		types: [
+			"Dragon",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Latias"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 381,
+		name: "Latios",
+		slug: "latios",
+		types: [
+			"Dragon",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Latios"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 382,
+		name: "Kyogre",
+		slug: "kyogre",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Drizzle"
+		],
+		forms: [
+			"Kyogre"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 383,
+		name: "Groudon",
+		slug: "groudon",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Drought"
+		],
+		forms: [
+			"Groudon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 384,
+		name: "Rayquaza",
+		slug: "rayquaza",
+		types: [
+			"Dragon",
+			"Flying"
+		],
+		abilities: [
+			"Air Lock"
+		],
+		forms: [
+			"Rayquaza"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 385,
+		name: "Jirachi",
+		slug: "jirachi",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Serene Grace"
+		],
+		forms: [
+			"Jirachi"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 386,
+		name: "Deoxys",
+		slug: "deoxys",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Pressure"
+		],
+		forms: [
+			"Deoxys",
+			"Egg",
+			"Egg",
+			"Deoxys [Speed Forme]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 387,
+		name: "Turtwig",
+		slug: "turtwig",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Shell Armor"
+		],
+		forms: [
+			"Turtwig"
+		],
+		evolutions: [
+			388
+		]
+	},
+	{
+		id: 388,
+		name: "Grotle",
+		slug: "grotle",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Shell Armor"
+		],
+		forms: [
+			"Grotle"
+		],
+		evolutions: [
+			389
+		]
+	},
+	{
+		id: 389,
+		name: "Torterra",
+		slug: "torterra",
+		types: [
+			"Grass",
+			"Ground"
+		],
+		abilities: [
+			"Overgrow",
+			"Shell Armor"
+		],
+		forms: [
+			"Torterra"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 390,
+		name: "Chimchar",
+		slug: "chimchar",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Iron Fist"
+		],
+		forms: [
+			"Chimchar"
+		],
+		evolutions: [
+			391
+		]
+	},
+	{
+		id: 391,
+		name: "Monferno",
+		slug: "monferno",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze",
+			"Iron Fist"
+		],
+		forms: [
+			"Monferno"
+		],
+		evolutions: [
+			392
+		]
+	},
+	{
+		id: 392,
+		name: "Infernape",
+		slug: "infernape",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze",
+			"Iron Fist"
+		],
+		forms: [
+			"Infernape"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 393,
+		name: "Piplup",
+		slug: "piplup",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Defiant"
+		],
+		forms: [
+			"Piplup"
+		],
+		evolutions: [
+			394
+		]
+	},
+	{
+		id: 394,
+		name: "Prinplup",
+		slug: "prinplup",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Defiant"
+		],
+		forms: [
+			"Prinplup"
+		],
+		evolutions: [
+			395
+		]
+	},
+	{
+		id: 395,
+		name: "Empoleon",
+		slug: "empoleon",
+		types: [
+			"Water",
+			"Steel"
+		],
+		abilities: [
+			"Torrent",
+			"Defiant"
+		],
+		forms: [
+			"Empoleon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 396,
+		name: "Starly",
+		slug: "starly",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Reckless"
+		],
+		forms: [
+			"Starly"
+		],
+		evolutions: [
+			397
+		]
+	},
+	{
+		id: 397,
+		name: "Staravia",
+		slug: "staravia",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Intimidate",
+			"Reckless"
+		],
+		forms: [
+			"Staravia"
+		],
+		evolutions: [
+			398
+		]
+	},
+	{
+		id: 398,
+		name: "Staraptor",
+		slug: "staraptor",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Intimidate",
+			"Reckless"
+		],
+		forms: [
+			"Staraptor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 399,
+		name: "Bidoof",
+		slug: "bidoof",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Simple",
+			"Unaware",
+			"Moody"
+		],
+		forms: [
+			"Bidoof"
+		],
+		evolutions: [
+			400
+		]
+	},
+	{
+		id: 400,
+		name: "Bibarel",
+		slug: "bibarel",
+		types: [
+			"Normal",
+			"Water"
+		],
+		abilities: [
+			"Simple",
+			"Unaware",
+			"Moody"
+		],
+		forms: [
+			"Bibarel"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 401,
+		name: "Kricketot",
+		slug: "kricketot",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shed Skin",
+			"Run Away"
+		],
+		forms: [
+			"Kricketot"
+		],
+		evolutions: [
+			402
+		]
+	},
+	{
+		id: 402,
+		name: "Kricketune",
+		slug: "kricketune",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Swarm",
+			"Technician"
+		],
+		forms: [
+			"Kricketune"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 403,
+		name: "Shinx",
+		slug: "shinx",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Rivalry",
+			"Intimidate",
+			"Guts"
+		],
+		forms: [
+			"Shinx"
+		],
+		evolutions: [
+			404
+		]
+	},
+	{
+		id: 404,
+		name: "Luxio",
+		slug: "luxio",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Rivalry",
+			"Intimidate",
+			"Guts"
+		],
+		forms: [
+			"Luxio"
+		],
+		evolutions: [
+			405
+		]
+	},
+	{
+		id: 405,
+		name: "Luxray",
+		slug: "luxray",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Rivalry",
+			"Intimidate",
+			"Guts"
+		],
+		forms: [
+			"Luxray"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 406,
+		name: "Budew",
+		slug: "budew",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Natural Cure",
+			"Poison Point",
+			"Leaf Guard"
+		],
+		forms: [
+			"Budew"
+		],
+		evolutions: [
+			315
+		]
+	},
+	{
+		id: 407,
+		name: "Roserade",
+		slug: "roserade",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Natural Cure",
+			"Poison Point",
+			"Technician"
+		],
+		forms: [
+			"Roserade"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 408,
+		name: "Cranidos",
+		slug: "cranidos",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Mold Breaker",
+			"Sheer Force"
+		],
+		forms: [
+			"Cranidos"
+		],
+		evolutions: [
+			409
+		]
+	},
+	{
+		id: 409,
+		name: "Rampardos",
+		slug: "rampardos",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Mold Breaker",
+			"Sheer Force"
+		],
+		forms: [
+			"Rampardos"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 410,
+		name: "Shieldon",
+		slug: "shieldon",
+		types: [
+			"Rock",
+			"Steel"
+		],
+		abilities: [
+			"Sturdy",
+			"Soundproof"
+		],
+		forms: [
+			"Shieldon"
+		],
+		evolutions: [
+			411
+		]
+	},
+	{
+		id: 411,
+		name: "Bastiodon",
+		slug: "bastiodon",
+		types: [
+			"Rock",
+			"Steel"
+		],
+		abilities: [
+			"Sturdy",
+			"Soundproof"
+		],
+		forms: [
+			"Bastiodon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 412,
+		name: "Burmy",
+		slug: "burmy",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Shed Skin",
+			"Overcoat"
+		],
+		forms: [
+			"Burmy",
+			"Burmy",
+			"Burmy"
+		],
+		evolutions: [
+			413,
+			414
+		]
+	},
+	{
+		id: 413,
+		name: "Wormadam",
+		slug: "wormadam",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Anticipation",
+			"Overcoat"
+		],
+		forms: [
+			"Wormadam",
+			"Wormadam [Sandy Cloak]",
+			"Wormadam [Trash Cloak]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 414,
+		name: "Mothim",
+		slug: "mothim",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Swarm",
+			"Tinted Lens"
+		],
+		forms: [
+			"Mothim"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 415,
+		name: "Combee",
+		slug: "combee",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Honey Gather",
+			"Hustle"
+		],
+		forms: [
+			"Combee"
+		],
+		evolutions: [
+			416
+		]
+	},
+	{
+		id: 416,
+		name: "Vespiquen",
+		slug: "vespiquen",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Pressure",
+			"Unnerve"
+		],
+		forms: [
+			"Vespiquen"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 417,
+		name: "Pachirisu",
+		slug: "pachirisu",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Run Away",
+			"Pickup",
+			"Volt Absorb"
+		],
+		forms: [
+			"Pachirisu"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 418,
+		name: "Buizel",
+		slug: "buizel",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Veil"
+		],
+		forms: [
+			"Buizel"
+		],
+		evolutions: [
+			419
+		]
+	},
+	{
+		id: 419,
+		name: "Floatzel",
+		slug: "floatzel",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Veil"
+		],
+		forms: [
+			"Floatzel"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 420,
+		name: "Cherubi",
+		slug: "cherubi",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll"
+		],
+		forms: [
+			"Cherubi"
+		],
+		evolutions: [
+			421
+		]
+	},
+	{
+		id: 421,
+		name: "Cherrim",
+		slug: "cherrim",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Flower Gift"
+		],
+		forms: [
+			"Cherrim",
+			"Cherrim"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 422,
+		name: "Shellos",
+		slug: "shellos",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Sticky Hold",
+			"Storm Drain",
+			"Sand Force"
+		],
+		forms: [
+			"Shellos",
+			"Shellos"
+		],
+		evolutions: [
+			423
+		]
+	},
+	{
+		id: 423,
+		name: "Gastrodon",
+		slug: "gastrodon",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Sticky Hold",
+			"Storm Drain",
+			"Sand Force"
+		],
+		forms: [
+			"Gastrodon",
+			"Gastrodon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 424,
+		name: "Ambipom",
+		slug: "ambipom",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Technician",
+			"Pickup",
+			"Skill Link"
+		],
+		forms: [
+			"Ambipom"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 425,
+		name: "Drifloon",
+		slug: "drifloon",
+		types: [
+			"Ghost",
+			"Flying"
+		],
+		abilities: [
+			"Aftermath",
+			"Unburden",
+			"Flare Boost"
+		],
+		forms: [
+			"Drifloon"
+		],
+		evolutions: [
+			426
+		]
+	},
+	{
+		id: 426,
+		name: "Drifblim",
+		slug: "drifblim",
+		types: [
+			"Ghost",
+			"Flying"
+		],
+		abilities: [
+			"Aftermath",
+			"Unburden",
+			"Flare Boost"
+		],
+		forms: [
+			"Drifblim"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 427,
+		name: "Buneary",
+		slug: "buneary",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Klutz",
+			"Limber"
+		],
+		forms: [
+			"Buneary"
+		],
+		evolutions: [
+			428
+		]
+	},
+	{
+		id: 428,
+		name: "Lopunny",
+		slug: "lopunny",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Klutz",
+			"Limber"
+		],
+		forms: [
+			"Lopunny"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 429,
+		name: "Mismagius",
+		slug: "mismagius",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Mismagius"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 430,
+		name: "Honchkrow",
+		slug: "honchkrow",
+		types: [
+			"Dark",
+			"Flying"
+		],
+		abilities: [
+			"Insomnia",
+			"Super Luck",
+			"Moxie"
+		],
+		forms: [
+			"Honchkrow"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 431,
+		name: "Glameow",
+		slug: "glameow",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Limber",
+			"Own Tempo",
+			"Keen Eye"
+		],
+		forms: [
+			"Glameow"
+		],
+		evolutions: [
+			432
+		]
+	},
+	{
+		id: 432,
+		name: "Purugly",
+		slug: "purugly",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Thick Fat",
+			"Own Tempo",
+			"Defiant"
+		],
+		forms: [
+			"Purugly"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 433,
+		name: "Chingling",
+		slug: "chingling",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Chingling"
+		],
+		evolutions: [
+			358
+		]
+	},
+	{
+		id: 434,
+		name: "Stunky",
+		slug: "stunky",
+		types: [
+			"Poison",
+			"Dark"
+		],
+		abilities: [
+			"Stench",
+			"Aftermath",
+			"Keen Eye"
+		],
+		forms: [
+			"Stunky"
+		],
+		evolutions: [
+			435
+		]
+	},
+	{
+		id: 435,
+		name: "Skuntank",
+		slug: "skuntank",
+		types: [
+			"Poison",
+			"Dark"
+		],
+		abilities: [
+			"Stench",
+			"Aftermath",
+			"Keen Eye"
+		],
+		forms: [
+			"Skuntank"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 436,
+		name: "Bronzor",
+		slug: "bronzor",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate",
+			"Heatproof",
+			"Heavy Metal"
+		],
+		forms: [
+			"Bronzor"
+		],
+		evolutions: [
+			437
+		]
+	},
+	{
+		id: 437,
+		name: "Bronzong",
+		slug: "bronzong",
+		types: [
+			"Steel",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate",
+			"Heatproof",
+			"Heavy Metal"
+		],
+		forms: [
+			"Bronzong"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 438,
+		name: "Bonsly",
+		slug: "bonsly",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Rock Head",
+			"Rattled"
+		],
+		forms: [
+			"Bonsly"
+		],
+		evolutions: [
+			185
+		]
+	},
+	{
+		id: 439,
+		name: "Mime Jr.",
+		slug: "mime-jr",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Soundproof",
+			"Filter",
+			"Technician"
+		],
+		forms: [
+			"Mime Jr."
+		],
+		evolutions: [
+			122
+		]
+	},
+	{
+		id: 440,
+		name: "Happiny",
+		slug: "happiny",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Natural Cure",
+			"Serene Grace",
+			"Friend Guard"
+		],
+		forms: [
+			"Happiny"
+		],
+		evolutions: [
+			113
+		]
+	},
+	{
+		id: 441,
+		name: "Chatot",
+		slug: "chatot",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Tangled Feet",
+			"Big Pecks"
+		],
+		forms: [
+			"Chatot"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 442,
+		name: "Spiritomb",
+		slug: "spiritomb",
+		types: [
+			"Ghost",
+			"Dark"
+		],
+		abilities: [
+			"Pressure",
+			"Infiltrator"
+		],
+		forms: [
+			"Spiritomb"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 443,
+		name: "Gible",
+		slug: "gible",
+		types: [
+			"Dragon",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Rough Skin"
+		],
+		forms: [
+			"Gible"
+		],
+		evolutions: [
+			444
+		]
+	},
+	{
+		id: 444,
+		name: "Gabite",
+		slug: "gabite",
+		types: [
+			"Dragon",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Rough Skin"
+		],
+		forms: [
+			"Gabite"
+		],
+		evolutions: [
+			445
+		]
+	},
+	{
+		id: 445,
+		name: "Garchomp",
+		slug: "garchomp",
+		types: [
+			"Dragon",
+			"Ground"
+		],
+		abilities: [
+			"Sand Veil",
+			"Rough Skin"
+		],
+		forms: [
+			"Garchomp"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 446,
+		name: "Munchlax",
+		slug: "munchlax",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Pickup",
+			"Thick Fat",
+			"Gluttony"
+		],
+		forms: [
+			"Munchlax"
+		],
+		evolutions: [
+			143
+		]
+	},
+	{
+		id: 447,
+		name: "Riolu",
+		slug: "riolu",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Steadfast",
+			"Inner Focus",
+			"Prankster"
+		],
+		forms: [
+			"Riolu"
+		],
+		evolutions: [
+			448
+		]
+	},
+	{
+		id: 448,
+		name: "Lucario",
+		slug: "lucario",
+		types: [
+			"Fighting",
+			"Steel"
+		],
+		abilities: [
+			"Steadfast",
+			"Inner Focus",
+			"Justified"
+		],
+		forms: [
+			"Lucario"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 449,
+		name: "Hippopotas",
+		slug: "hippopotas",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Stream",
+			"Sand Force"
+		],
+		forms: [
+			"Hippopotas"
+		],
+		evolutions: [
+			450
+		]
+	},
+	{
+		id: 450,
+		name: "Hippowdon",
+		slug: "hippowdon",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Stream",
+			"Sand Force"
+		],
+		forms: [
+			"Hippowdon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 451,
+		name: "Skorupi",
+		slug: "skorupi",
+		types: [
+			"Poison",
+			"Bug"
+		],
+		abilities: [
+			"Battle Armor",
+			"Sniper",
+			"Keen Eye"
+		],
+		forms: [
+			"Skorupi"
+		],
+		evolutions: [
+			452
+		]
+	},
+	{
+		id: 452,
+		name: "Drapion",
+		slug: "drapion",
+		types: [
+			"Poison",
+			"Dark"
+		],
+		abilities: [
+			"Battle Armor",
+			"Sniper",
+			"Keen Eye"
+		],
+		forms: [
+			"Drapion"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 453,
+		name: "Croagunk",
+		slug: "croagunk",
+		types: [
+			"Poison",
+			"Fighting"
+		],
+		abilities: [
+			"Anticipation",
+			"Dry Skin",
+			"Poison Touch"
+		],
+		forms: [
+			"Croagunk"
+		],
+		evolutions: [
+			454
+		]
+	},
+	{
+		id: 454,
+		name: "Toxicroak",
+		slug: "toxicroak",
+		types: [
+			"Poison",
+			"Fighting"
+		],
+		abilities: [
+			"Anticipation",
+			"Dry Skin",
+			"Poison Touch"
+		],
+		forms: [
+			"Toxicroak"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 455,
+		name: "Carnivine",
+		slug: "carnivine",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Carnivine"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 456,
+		name: "Finneon",
+		slug: "finneon",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Storm Drain",
+			"Water Veil"
+		],
+		forms: [
+			"Finneon"
+		],
+		evolutions: [
+			457
+		]
+	},
+	{
+		id: 457,
+		name: "Lumineon",
+		slug: "lumineon",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Storm Drain",
+			"Water Veil"
+		],
+		forms: [
+			"Lumineon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 458,
+		name: "Mantyke",
+		slug: "mantyke",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Swift Swim",
+			"Water Absorb",
+			"Water Veil"
+		],
+		forms: [
+			"Mantyke"
+		],
+		evolutions: [
+			226
+		]
+	},
+	{
+		id: 459,
+		name: "Snover",
+		slug: "snover",
+		types: [
+			"Grass",
+			"Ice"
+		],
+		abilities: [
+			"Snow Warning",
+			"Soundproof"
+		],
+		forms: [
+			"Snover"
+		],
+		evolutions: [
+			460
+		]
+	},
+	{
+		id: 460,
+		name: "Abomasnow",
+		slug: "abomasnow",
+		types: [
+			"Grass",
+			"Ice"
+		],
+		abilities: [
+			"Snow Warning",
+			"Soundproof"
+		],
+		forms: [
+			"Abomasnow"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 461,
+		name: "Weavile",
+		slug: "weavile",
+		types: [
+			"Dark",
+			"Ice"
+		],
+		abilities: [
+			"Pressure",
+			"Pressure",
+			"Pickpocket"
+		],
+		forms: [
+			"Weavile"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 462,
+		name: "Magnezone",
+		slug: "magnezone",
+		types: [
+			"Electric",
+			"Steel"
+		],
+		abilities: [
+			"Magnet Pull",
+			"Sturdy",
+			"Analytic"
+		],
+		forms: [
+			"Magnezone"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 463,
+		name: "Lickilicky",
+		slug: "lickilicky",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Own Tempo",
+			"Oblivious",
+			"Cloud Nine"
+		],
+		forms: [
+			"Lickilicky"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 464,
+		name: "Rhyperior",
+		slug: "rhyperior",
+		types: [
+			"Ground",
+			"Rock"
+		],
+		abilities: [
+			"Lightningrod",
+			"Solid Rock",
+			"Reckless"
+		],
+		forms: [
+			"Rhyperior"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 465,
+		name: "Tangrowth",
+		slug: "tangrowth",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Leaf Guard",
+			"Regenerator"
+		],
+		forms: [
+			"Tangrowth"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 466,
+		name: "Electivire",
+		slug: "electivire",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Motor Drive",
+			"Vital Spirit"
+		],
+		forms: [
+			"Electivire"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 467,
+		name: "Magmortar",
+		slug: "magmortar",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Flame Body",
+			"Vital Spirit"
+		],
+		forms: [
+			"Magmortar"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 468,
+		name: "Togekiss",
+		slug: "togekiss",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Hustle",
+			"Serene Grace",
+			"Super Luck"
+		],
+		forms: [
+			"Togekiss"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 469,
+		name: "Yanmega",
+		slug: "yanmega",
+		types: [
+			"Bug",
+			"Flying"
+		],
+		abilities: [
+			"Speed Boost",
+			"Tinted Lens",
+			"Frisk"
+		],
+		forms: [
+			"Yanmega"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 470,
+		name: "Leafeon",
+		slug: "leafeon",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Leaf Guard",
+			"Leaf Guard",
+			"Chlorophyll"
+		],
+		forms: [
+			"Leafeon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 471,
+		name: "Glaceon",
+		slug: "glaceon",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Snow Cloak",
+			"Snow Cloak",
+			"Ice Body"
+		],
+		forms: [
+			"Glaceon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 472,
+		name: "Gliscor",
+		slug: "gliscor",
+		types: [
+			"Ground",
+			"Flying"
+		],
+		abilities: [
+			"Hyper Cutter",
+			"Sand Veil",
+			"Poison Heal"
+		],
+		forms: [
+			"Gliscor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 473,
+		name: "Mamoswine",
+		slug: "mamoswine",
+		types: [
+			"Ice",
+			"Ground"
+		],
+		abilities: [
+			"Oblivious",
+			"Snow Cloak",
+			"Thick Fat"
+		],
+		forms: [
+			"Mamoswine"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 474,
+		name: "Porygon-Z",
+		slug: "porygon-z",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Adaptability",
+			"Download",
+			"Analytic"
+		],
+		forms: [
+			"Porygon-Z"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 475,
+		name: "Gallade",
+		slug: "gallade",
+		types: [
+			"Psychic",
+			"Fighting"
+		],
+		abilities: [
+			"Steadfast",
+			"Sharpness",
+			"Justified"
+		],
+		forms: [
+			"Gallade"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 476,
+		name: "Probopass",
+		slug: "probopass",
+		types: [
+			"Rock",
+			"Steel"
+		],
+		abilities: [
+			"Sturdy",
+			"Magnet Pull",
+			"Sand Force"
+		],
+		forms: [
+			"Probopass"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 477,
+		name: "Dusknoir",
+		slug: "dusknoir",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Pressure",
+			"Frisk"
+		],
+		forms: [
+			"Dusknoir"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 478,
+		name: "Froslass",
+		slug: "froslass",
+		types: [
+			"Ice",
+			"Ghost"
+		],
+		abilities: [
+			"Snow Cloak",
+			"Snow Cloak",
+			"Cursed Body"
+		],
+		forms: [
+			"Froslass"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 479,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Ghost"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Rotom",
+			"Rotom [Heat Rotom]",
+			"Rotom [Wash Rotom]",
+			"Rotom [Frost Rotom]",
+			"Rotom [Fan Rotom]",
+			"Rotom [Mow Rotom]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 480,
+		name: "Uxie",
+		slug: "uxie",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Uxie"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 481,
+		name: "Mesprit",
+		slug: "mesprit",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Mesprit"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 482,
+		name: "Azelf",
+		slug: "azelf",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Azelf"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 483,
+		name: "Dialga",
+		slug: "dialga",
+		types: [
+			"Steel",
+			"Dragon"
+		],
+		abilities: [
+			"Pressure",
+			"Telepathy"
+		],
+		forms: [
+			"Dialga"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 484,
+		name: "Palkia",
+		slug: "palkia",
+		types: [
+			"Water",
+			"Dragon"
+		],
+		abilities: [
+			"Pressure",
+			"Telepathy"
+		],
+		forms: [
+			"Palkia"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 485,
+		name: "Heatran",
+		slug: "heatran",
+		types: [
+			"Fire",
+			"Steel"
+		],
+		abilities: [
+			"Flash Fire",
+			"Flame Body"
+		],
+		forms: [
+			"Heatran"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 486,
+		name: "Regigigas",
+		slug: "regigigas",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Slow Start"
+		],
+		forms: [
+			"Regigigas"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 487,
+		name: "Giratina",
+		slug: "giratina",
+		types: [
+			"Ghost",
+			"Dragon"
+		],
+		abilities: [
+			"Pressure",
+			"Telepathy"
+		],
+		forms: [
+			"Giratina",
+			"Giratina [Origin Forme]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 488,
+		name: "Cresselia",
+		slug: "cresselia",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Cresselia"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 489,
+		name: "Phione",
+		slug: "phione",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hydration"
+		],
+		forms: [
+			"Phione"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 490,
+		name: "Manaphy",
+		slug: "manaphy",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Hydration"
+		],
+		forms: [
+			"Manaphy"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 491,
+		name: "Darkrai",
+		slug: "darkrai",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Bad Dreams"
+		],
+		forms: [
+			"Darkrai"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 492,
+		name: "Shaymin",
+		slug: "shaymin",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Natural Cure"
+		],
+		forms: [
+			"Shaymin",
+			"Shaymin [Sky Forme]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 493,
+		name: "Arceus",
+		slug: "arceus",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Multitype"
+		],
+		forms: [
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus",
+			"Arceus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 494,
+		name: "Victini",
+		slug: "victini",
+		types: [
+			"Psychic",
+			"Fire"
+		],
+		abilities: [
+			"Victory Star"
+		],
+		forms: [
+			"Victini"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 495,
+		name: "Snivy",
+		slug: "snivy",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Overgrow",
+			"Contrary"
+		],
+		forms: [
+			"Snivy"
+		],
+		evolutions: [
+			496
+		]
+	},
+	{
+		id: 496,
+		name: "Servine",
+		slug: "servine",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Overgrow",
+			"Contrary"
+		],
+		forms: [
+			"Servine"
+		],
+		evolutions: [
+			497
+		]
+	},
+	{
+		id: 497,
+		name: "Serperior",
+		slug: "serperior",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Overgrow",
+			"Overgrow",
+			"Contrary"
+		],
+		forms: [
+			"Serperior"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 498,
+		name: "Tepig",
+		slug: "tepig",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Blaze",
+			"Blaze",
+			"Thick Fat"
+		],
+		forms: [
+			"Tepig"
+		],
+		evolutions: [
+			499
+		]
+	},
+	{
+		id: 499,
+		name: "Pignite",
+		slug: "pignite",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze",
+			"Blaze",
+			"Thick Fat"
+		],
+		forms: [
+			"Pignite"
+		],
+		evolutions: [
+			500
+		]
+	},
+	{
+		id: 500,
+		name: "Emboar",
+		slug: "emboar",
+		types: [
+			"Fire",
+			"Fighting"
+		],
+		abilities: [
+			"Blaze",
+			"Blaze",
+			"Reckless"
+		],
+		forms: [
+			"Emboar"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 501,
+		name: "Oshawott",
+		slug: "oshawott",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Torrent",
+			"Shell Armor"
+		],
+		forms: [
+			"Oshawott"
+		],
+		evolutions: [
+			502
+		]
+	},
+	{
+		id: 502,
+		name: "Dewott",
+		slug: "dewott",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Torrent",
+			"Shell Armor"
+		],
+		forms: [
+			"Dewott"
+		],
+		evolutions: [
+			503
+		]
+	},
+	{
+		id: 503,
+		name: "Samurott",
+		slug: "samurott",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Torrent",
+			"Torrent",
+			"Shell Armor"
+		],
+		forms: [
+			"Samurott"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 504,
+		name: "Patrat",
+		slug: "patrat",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Run Away",
+			"Keen Eye",
+			"Analytic"
+		],
+		forms: [
+			"Patrat"
+		],
+		evolutions: [
+			505
+		]
+	},
+	{
+		id: 505,
+		name: "Watchog",
+		slug: "watchog",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Illuminate",
+			"Keen Eye",
+			"Analytic"
+		],
+		forms: [
+			"Watchog"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 506,
+		name: "Lillipup",
+		slug: "lillipup",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Vital Spirit",
+			"Pickup",
+			"Run Away"
+		],
+		forms: [
+			"Lillipup"
+		],
+		evolutions: [
+			507
+		]
+	},
+	{
+		id: 507,
+		name: "Herdier",
+		slug: "herdier",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Sand Rush",
+			"Scrappy"
+		],
+		forms: [
+			"Herdier"
+		],
+		evolutions: [
+			508
+		]
+	},
+	{
+		id: 508,
+		name: "Stoutland",
+		slug: "stoutland",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Intimidate",
+			"Sand Rush",
+			"Scrappy"
+		],
+		forms: [
+			"Stoutland"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 509,
+		name: "Purrloin",
+		slug: "purrloin",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Limber",
+			"Unburden",
+			"Prankster"
+		],
+		forms: [
+			"Purrloin"
+		],
+		evolutions: [
+			510
+		]
+	},
+	{
+		id: 510,
+		name: "Liepard",
+		slug: "liepard",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Limber",
+			"Unburden",
+			"Prankster"
+		],
+		forms: [
+			"Liepard"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 511,
+		name: "Pansage",
+		slug: "pansage",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Gluttony",
+			"Overgrow"
+		],
+		forms: [
+			"Pansage"
+		],
+		evolutions: [
+			512
+		]
+	},
+	{
+		id: 512,
+		name: "Simisage",
+		slug: "simisage",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Gluttony",
+			"Overgrow"
+		],
+		forms: [
+			"Simisage"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 513,
+		name: "Pansear",
+		slug: "pansear",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Gluttony",
+			"Blaze"
+		],
+		forms: [
+			"Pansear"
+		],
+		evolutions: [
+			514
+		]
+	},
+	{
+		id: 514,
+		name: "Simisear",
+		slug: "simisear",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Gluttony",
+			"Blaze"
+		],
+		forms: [
+			"Simisear"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 515,
+		name: "Panpour",
+		slug: "panpour",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Gluttony",
+			"Torrent"
+		],
+		forms: [
+			"Panpour"
+		],
+		evolutions: [
+			516
+		]
+	},
+	{
+		id: 516,
+		name: "Simipour",
+		slug: "simipour",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Gluttony",
+			"Torrent"
+		],
+		forms: [
+			"Simipour"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 517,
+		name: "Munna",
+		slug: "munna",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Forewarn",
+			"Synchronize",
+			"Telepathy"
+		],
+		forms: [
+			"Munna"
+		],
+		evolutions: [
+			518
+		]
+	},
+	{
+		id: 518,
+		name: "Musharna",
+		slug: "musharna",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Forewarn",
+			"Synchronize",
+			"Telepathy"
+		],
+		forms: [
+			"Musharna"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 519,
+		name: "Pidove",
+		slug: "pidove",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Big Pecks",
+			"Super Luck",
+			"Rivalry"
+		],
+		forms: [
+			"Pidove"
+		],
+		evolutions: [
+			520
+		]
+	},
+	{
+		id: 520,
+		name: "Tranquill",
+		slug: "tranquill",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Big Pecks",
+			"Super Luck",
+			"Rivalry"
+		],
+		forms: [
+			"Tranquill"
+		],
+		evolutions: [
+			521
+		]
+	},
+	{
+		id: 521,
+		name: "Unfezant",
+		slug: "unfezant",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Big Pecks",
+			"Super Luck",
+			"Rivalry"
+		],
+		forms: [
+			"Unfezant"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 522,
+		name: "Blitzle",
+		slug: "blitzle",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Lightningrod",
+			"Motor Drive",
+			"Sap Sipper"
+		],
+		forms: [
+			"Blitzle"
+		],
+		evolutions: [
+			523
+		]
+	},
+	{
+		id: 523,
+		name: "Zebstrika",
+		slug: "zebstrika",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Lightningrod",
+			"Motor Drive",
+			"Sap Sipper"
+		],
+		forms: [
+			"Zebstrika"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 524,
+		name: "Roggenrola",
+		slug: "roggenrola",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Weak Armor",
+			"Sand Force"
+		],
+		forms: [
+			"Roggenrola"
+		],
+		evolutions: [
+			525
+		]
+	},
+	{
+		id: 525,
+		name: "Boldore",
+		slug: "boldore",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Weak Armor",
+			"Sand Force"
+		],
+		forms: [
+			"Boldore"
+		],
+		evolutions: [
+			526
+		]
+	},
+	{
+		id: 526,
+		name: "Gigalith",
+		slug: "gigalith",
+		types: [
+			"Rock",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Sand Stream",
+			"Sand Force"
+		],
+		forms: [
+			"Gigalith"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 527,
+		name: "Woobat",
+		slug: "woobat",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Unaware",
+			"Klutz",
+			"Simple"
+		],
+		forms: [
+			"Woobat"
+		],
+		evolutions: [
+			528
+		]
+	},
+	{
+		id: 528,
+		name: "Swoobat",
+		slug: "swoobat",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Unaware",
+			"Klutz",
+			"Simple"
+		],
+		forms: [
+			"Swoobat"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 529,
+		name: "Drilbur",
+		slug: "drilbur",
+		types: [
+			"Ground",
+			"Ground"
+		],
+		abilities: [
+			"Sand Rush",
+			"Sand Force",
+			"Mold Breaker"
+		],
+		forms: [
+			"Drilbur"
+		],
+		evolutions: [
+			530
+		]
+	},
+	{
+		id: 530,
+		name: "Excadrill",
+		slug: "excadrill",
+		types: [
+			"Ground",
+			"Steel"
+		],
+		abilities: [
+			"Sand Rush",
+			"Sand Force",
+			"Mold Breaker"
+		],
+		forms: [
+			"Excadrill"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 531,
+		name: "Audino",
+		slug: "audino",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Healer",
+			"Regenerator",
+			"Klutz"
+		],
+		forms: [
+			"Audino"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 532,
+		name: "Timburr",
+		slug: "timburr",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"Sheer Force",
+			"Iron Fist"
+		],
+		forms: [
+			"Timburr"
+		],
+		evolutions: [
+			533
+		]
+	},
+	{
+		id: 533,
+		name: "Gurdurr",
+		slug: "gurdurr",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"Sheer Force",
+			"Iron Fist"
+		],
+		forms: [
+			"Gurdurr"
+		],
+		evolutions: [
+			534
+		]
+	},
+	{
+		id: 534,
+		name: "Conkeldurr",
+		slug: "conkeldurr",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"Sheer Force",
+			"Iron Fist"
+		],
+		forms: [
+			"Conkeldurr"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 535,
+		name: "Tympole",
+		slug: "tympole",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Swift Swim",
+			"Hydration",
+			"Water Absorb"
+		],
+		forms: [
+			"Tympole"
+		],
+		evolutions: [
+			536
+		]
+	},
+	{
+		id: 536,
+		name: "Palpitoad",
+		slug: "palpitoad",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Swift Swim",
+			"Hydration",
+			"Water Absorb"
+		],
+		forms: [
+			"Palpitoad"
+		],
+		evolutions: [
+			537
+		]
+	},
+	{
+		id: 537,
+		name: "Seismitoad",
+		slug: "seismitoad",
+		types: [
+			"Water",
+			"Ground"
+		],
+		abilities: [
+			"Swift Swim",
+			"Poison Touch",
+			"Water Absorb"
+		],
+		forms: [
+			"Seismitoad"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 538,
+		name: "Throh",
+		slug: "throh",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Guts",
+			"Inner Focus",
+			"Mold Breaker"
+		],
+		forms: [
+			"Throh"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 539,
+		name: "Sawk",
+		slug: "sawk",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Sturdy",
+			"Inner Focus",
+			"Mold Breaker"
+		],
+		forms: [
+			"Sawk"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 540,
+		name: "Sewaddle",
+		slug: "sewaddle",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Swarm",
+			"Chlorophyll",
+			"Overcoat"
+		],
+		forms: [
+			"Sewaddle"
+		],
+		evolutions: [
+			541
+		]
+	},
+	{
+		id: 541,
+		name: "Swadloon",
+		slug: "swadloon",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Leaf Guard",
+			"Chlorophyll",
+			"Overcoat"
+		],
+		forms: [
+			"Swadloon"
+		],
+		evolutions: [
+			542
+		]
+	},
+	{
+		id: 542,
+		name: "Leavanny",
+		slug: "leavanny",
+		types: [
+			"Bug",
+			"Grass"
+		],
+		abilities: [
+			"Swarm",
+			"Chlorophyll",
+			"Overcoat"
+		],
+		forms: [
+			"Leavanny"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 543,
+		name: "Venipede",
+		slug: "venipede",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Swarm",
+			"Speed Boost"
+		],
+		forms: [
+			"Venipede"
+		],
+		evolutions: [
+			544
+		]
+	},
+	{
+		id: 544,
+		name: "Whirlipede",
+		slug: "whirlipede",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Swarm",
+			"Speed Boost"
+		],
+		forms: [
+			"Whirlipede"
+		],
+		evolutions: [
+			545
+		]
+	},
+	{
+		id: 545,
+		name: "Scolipede",
+		slug: "scolipede",
+		types: [
+			"Bug",
+			"Poison"
+		],
+		abilities: [
+			"Poison Point",
+			"Swarm",
+			"Speed Boost"
+		],
+		forms: [
+			"Scolipede"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 546,
+		name: "Cottonee",
+		slug: "cottonee",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Prankster",
+			"Infiltrator",
+			"Chlorophyll"
+		],
+		forms: [
+			"Cottonee"
+		],
+		evolutions: [
+			547
+		]
+	},
+	{
+		id: 547,
+		name: "Whimsicott",
+		slug: "whimsicott",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Prankster",
+			"Infiltrator",
+			"Chlorophyll"
+		],
+		forms: [
+			"Whimsicott"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 548,
+		name: "Petilil",
+		slug: "petilil",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Own Tempo",
+			"Leaf Guard"
+		],
+		forms: [
+			"Petilil"
+		],
+		evolutions: [
+			549
+		]
+	},
+	{
+		id: 549,
+		name: "Lilligant",
+		slug: "lilligant",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Own Tempo",
+			"Leaf Guard"
+		],
+		forms: [
+			"Lilligant"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 550,
+		name: "Basculin",
+		slug: "basculin",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Reckless",
+			"Adaptability",
+			"Mold Breaker"
+		],
+		forms: [
+			"Basculin",
+			"Basculin [Blue-Striped Form]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 551,
+		name: "Sandile",
+		slug: "sandile",
+		types: [
+			"Ground",
+			"Dark"
+		],
+		abilities: [
+			"Intimidate",
+			"Moxie",
+			"Anger Point"
+		],
+		forms: [
+			"Sandile"
+		],
+		evolutions: [
+			552
+		]
+	},
+	{
+		id: 552,
+		name: "Krokorok",
+		slug: "krokorok",
+		types: [
+			"Ground",
+			"Dark"
+		],
+		abilities: [
+			"Intimidate",
+			"Moxie",
+			"Anger Point"
+		],
+		forms: [
+			"Krokorok"
+		],
+		evolutions: [
+			553
+		]
+	},
+	{
+		id: 553,
+		name: "Krookodile",
+		slug: "krookodile",
+		types: [
+			"Ground",
+			"Dark"
+		],
+		abilities: [
+			"Intimidate",
+			"Moxie",
+			"Anger Point"
+		],
+		forms: [
+			"Krookodile"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 554,
+		name: "Darumaka",
+		slug: "darumaka",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Hustle",
+			"Inner Focus"
+		],
+		forms: [
+			"Darumaka"
+		],
+		evolutions: [
+			555
+		]
+	},
+	{
+		id: 555,
+		name: "Darmanitan",
+		slug: "darmanitan",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Sheer Force",
+			"Zen Mode"
+		],
+		forms: [
+			"Darmanitan",
+			"Darmanitan [Zen Mode]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 556,
+		name: "Maractus",
+		slug: "maractus",
+		types: [
+			"Grass",
+			"Grass"
+		],
+		abilities: [
+			"Water Absorb",
+			"Chlorophyll",
+			"Storm Drain"
+		],
+		forms: [
+			"Maractus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 557,
+		name: "Dwebble",
+		slug: "dwebble",
+		types: [
+			"Bug",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Shell Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Dwebble"
+		],
+		evolutions: [
+			558
+		]
+	},
+	{
+		id: 558,
+		name: "Crustle",
+		slug: "crustle",
+		types: [
+			"Bug",
+			"Rock"
+		],
+		abilities: [
+			"Sturdy",
+			"Shell Armor",
+			"Weak Armor"
+		],
+		forms: [
+			"Crustle"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 559,
+		name: "Scraggy",
+		slug: "scraggy",
+		types: [
+			"Dark",
+			"Fighting"
+		],
+		abilities: [
+			"Shed Skin",
+			"Moxie",
+			"Intimidate"
+		],
+		forms: [
+			"Scraggy"
+		],
+		evolutions: [
+			560
+		]
+	},
+	{
+		id: 560,
+		name: "Scrafty",
+		slug: "scrafty",
+		types: [
+			"Dark",
+			"Fighting"
+		],
+		abilities: [
+			"Shed Skin",
+			"Moxie",
+			"Intimidate"
+		],
+		forms: [
+			"Scrafty"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 561,
+		name: "Sigilyph",
+		slug: "sigilyph",
+		types: [
+			"Psychic",
+			"Flying"
+		],
+		abilities: [
+			"Wonder Skin",
+			"Magic Guard",
+			"Tinted Lens"
+		],
+		forms: [
+			"Sigilyph"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 562,
+		name: "Yamask",
+		slug: "yamask",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Mummy"
+		],
+		forms: [
+			"Yamask"
+		],
+		evolutions: [
+			563
+		]
+	},
+	{
+		id: 563,
+		name: "Cofagrigus",
+		slug: "cofagrigus",
+		types: [
+			"Ghost",
+			"Ghost"
+		],
+		abilities: [
+			"Mummy"
+		],
+		forms: [
+			"Cofagrigus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 564,
+		name: "Tirtouga",
+		slug: "tirtouga",
+		types: [
+			"Water",
+			"Rock"
+		],
+		abilities: [
+			"Solid Rock",
+			"Sturdy",
+			"Swift Swim"
+		],
+		forms: [
+			"Tirtouga"
+		],
+		evolutions: [
+			565
+		]
+	},
+	{
+		id: 565,
+		name: "Carracosta",
+		slug: "carracosta",
+		types: [
+			"Water",
+			"Rock"
+		],
+		abilities: [
+			"Solid Rock",
+			"Sturdy",
+			"Swift Swim"
+		],
+		forms: [
+			"Carracosta"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 566,
+		name: "Archen",
+		slug: "archen",
+		types: [
+			"Rock",
+			"Flying"
+		],
+		abilities: [
+			"Defeatist"
+		],
+		forms: [
+			"Archen"
+		],
+		evolutions: [
+			567
+		]
+	},
+	{
+		id: 567,
+		name: "Archeops",
+		slug: "archeops",
+		types: [
+			"Rock",
+			"Flying"
+		],
+		abilities: [
+			"Defeatist"
+		],
+		forms: [
+			"Archeops"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 568,
+		name: "Trubbish",
+		slug: "trubbish",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Stench",
+			"Sticky Hold",
+			"Aftermath"
+		],
+		forms: [
+			"Trubbish"
+		],
+		evolutions: [
+			569
+		]
+	},
+	{
+		id: 569,
+		name: "Garbodor",
+		slug: "garbodor",
+		types: [
+			"Poison",
+			"Poison"
+		],
+		abilities: [
+			"Stench",
+			"Weak Armor",
+			"Aftermath"
+		],
+		forms: [
+			"Garbodor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 570,
+		name: "Zorua",
+		slug: "zorua",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Illusion"
+		],
+		forms: [
+			"Zorua"
+		],
+		evolutions: [
+			571
+		]
+	},
+	{
+		id: 571,
+		name: "Zoroark",
+		slug: "zoroark",
+		types: [
+			"Dark",
+			"Dark"
+		],
+		abilities: [
+			"Illusion"
+		],
+		forms: [
+			"Zoroark"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 572,
+		name: "Minccino",
+		slug: "minccino",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Technician",
+			"Skill Link"
+		],
+		forms: [
+			"Minccino"
+		],
+		evolutions: [
+			573
+		]
+	},
+	{
+		id: 573,
+		name: "Cinccino",
+		slug: "cinccino",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Cute Charm",
+			"Technician",
+			"Skill Link"
+		],
+		forms: [
+			"Cinccino"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 574,
+		name: "Gothita",
+		slug: "gothita",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Frisk",
+			"Competitive",
+			"Shadow Tag"
+		],
+		forms: [
+			"Gothita"
+		],
+		evolutions: [
+			575
+		]
+	},
+	{
+		id: 575,
+		name: "Gothorita",
+		slug: "gothorita",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Frisk",
+			"Competitive",
+			"Shadow Tag"
+		],
+		forms: [
+			"Gothorita"
+		],
+		evolutions: [
+			576
+		]
+	},
+	{
+		id: 576,
+		name: "Gothitelle",
+		slug: "gothitelle",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Frisk",
+			"Competitive",
+			"Shadow Tag"
+		],
+		forms: [
+			"Gothitelle"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 577,
+		name: "Solosis",
+		slug: "solosis",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Overcoat",
+			"Magic Guard",
+			"Regenerator"
+		],
+		forms: [
+			"Solosis"
+		],
+		evolutions: [
+			578
+		]
+	},
+	{
+		id: 578,
+		name: "Duosion",
+		slug: "duosion",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Overcoat",
+			"Magic Guard",
+			"Regenerator"
+		],
+		forms: [
+			"Duosion"
+		],
+		evolutions: [
+			579
+		]
+	},
+	{
+		id: 579,
+		name: "Reuniclus",
+		slug: "reuniclus",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Overcoat",
+			"Magic Guard",
+			"Regenerator"
+		],
+		forms: [
+			"Reuniclus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 580,
+		name: "Ducklett",
+		slug: "ducklett",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Big Pecks",
+			"Hydration"
+		],
+		forms: [
+			"Ducklett"
+		],
+		evolutions: [
+			581
+		]
+	},
+	{
+		id: 581,
+		name: "Swanna",
+		slug: "swanna",
+		types: [
+			"Water",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Big Pecks",
+			"Hydration"
+		],
+		forms: [
+			"Swanna"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 582,
+		name: "Vanillite",
+		slug: "vanillite",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Ice Body",
+			"Snow Cloak",
+			"Weak Armor"
+		],
+		forms: [
+			"Vanillite"
+		],
+		evolutions: [
+			583
+		]
+	},
+	{
+		id: 583,
+		name: "Vanillish",
+		slug: "vanillish",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Ice Body",
+			"Snow Cloak",
+			"Weak Armor"
+		],
+		forms: [
+			"Vanillish"
+		],
+		evolutions: [
+			584
+		]
+	},
+	{
+		id: 584,
+		name: "Vanilluxe",
+		slug: "vanilluxe",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Ice Body",
+			"Snow Warning",
+			"Weak Armor"
+		],
+		forms: [
+			"Vanilluxe"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 585,
+		name: "Deerling",
+		slug: "deerling",
+		types: [
+			"Normal",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Sap Sipper",
+			"Serene Grace"
+		],
+		forms: [
+			"Deerling",
+			"Deerling",
+			"Deerling",
+			"Deerling"
+		],
+		evolutions: [
+			586
+		]
+	},
+	{
+		id: 586,
+		name: "Sawsbuck",
+		slug: "sawsbuck",
+		types: [
+			"Normal",
+			"Grass"
+		],
+		abilities: [
+			"Chlorophyll",
+			"Sap Sipper",
+			"Serene Grace"
+		],
+		forms: [
+			"Sawsbuck",
+			"Sawsbuck",
+			"Sawsbuck",
+			"Sawsbuck"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 587,
+		name: "Emolga",
+		slug: "emolga",
+		types: [
+			"Electric",
+			"Flying"
+		],
+		abilities: [
+			"Static",
+			"Motor Drive"
+		],
+		forms: [
+			"Emolga"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 588,
+		name: "Karrablast",
+		slug: "karrablast",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Swarm",
+			"Shed Skin",
+			"No Guard"
+		],
+		forms: [
+			"Karrablast"
+		],
+		evolutions: [
+			589
+		]
+	},
+	{
+		id: 589,
+		name: "Escavalier",
+		slug: "escavalier",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Swarm",
+			"Shell Armor",
+			"Overcoat"
+		],
+		forms: [
+			"Escavalier"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 590,
+		name: "Foongus",
+		slug: "foongus",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Effect Spore",
+			"Regenerator"
+		],
+		forms: [
+			"Foongus"
+		],
+		evolutions: [
+			591
+		]
+	},
+	{
+		id: 591,
+		name: "Amoonguss",
+		slug: "amoonguss",
+		types: [
+			"Grass",
+			"Poison"
+		],
+		abilities: [
+			"Effect Spore",
+			"Regenerator"
+		],
+		forms: [
+			"Amoonguss"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 592,
+		name: "Frillish",
+		slug: "frillish",
+		types: [
+			"Water",
+			"Ghost"
+		],
+		abilities: [
+			"Water Absorb",
+			"Cursed Body",
+			"Damp"
+		],
+		forms: [
+			"Frillish"
+		],
+		evolutions: [
+			593
+		]
+	},
+	{
+		id: 593,
+		name: "Jellicent",
+		slug: "jellicent",
+		types: [
+			"Water",
+			"Ghost"
+		],
+		abilities: [
+			"Water Absorb",
+			"Cursed Body",
+			"Damp"
+		],
+		forms: [
+			"Jellicent"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 594,
+		name: "Alomomola",
+		slug: "alomomola",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Healer",
+			"Hydration",
+			"Regenerator"
+		],
+		forms: [
+			"Alomomola"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 595,
+		name: "Joltik",
+		slug: "joltik",
+		types: [
+			"Bug",
+			"Electric"
+		],
+		abilities: [
+			"Compoundeyes",
+			"Unnerve",
+			"Swarm"
+		],
+		forms: [
+			"Joltik"
+		],
+		evolutions: [
+			596
+		]
+	},
+	{
+		id: 596,
+		name: "Galvantula",
+		slug: "galvantula",
+		types: [
+			"Bug",
+			"Electric"
+		],
+		abilities: [
+			"Compoundeyes",
+			"Unnerve",
+			"Swarm"
+		],
+		forms: [
+			"Galvantula"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 597,
+		name: "Ferroseed",
+		slug: "ferroseed",
+		types: [
+			"Grass",
+			"Steel"
+		],
+		abilities: [
+			"Iron Barbs"
+		],
+		forms: [
+			"Ferroseed"
+		],
+		evolutions: [
+			598
+		]
+	},
+	{
+		id: 598,
+		name: "Ferrothorn",
+		slug: "ferrothorn",
+		types: [
+			"Grass",
+			"Steel"
+		],
+		abilities: [
+			"Iron Barbs",
+			"Anticipation"
+		],
+		forms: [
+			"Ferrothorn"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 599,
+		name: "Klink",
+		slug: "klink",
+		types: [
+			"Steel",
+			"Steel"
+		],
+		abilities: [
+			"Plus",
+			"Minus",
+			"Clear Body"
+		],
+		forms: [
+			"Klink"
+		],
+		evolutions: [
+			600
+		]
+	},
+	{
+		id: 600,
+		name: "Klang",
+		slug: "klang",
+		types: [
+			"Steel",
+			"Steel"
+		],
+		abilities: [
+			"Plus",
+			"Minus",
+			"Clear Body"
+		],
+		forms: [
+			"Klang"
+		],
+		evolutions: [
+			601
+		]
+	},
+	{
+		id: 601,
+		name: "Klinklang",
+		slug: "klinklang",
+		types: [
+			"Steel",
+			"Steel"
+		],
+		abilities: [
+			"Plus",
+			"Minus",
+			"Clear Body"
+		],
+		forms: [
+			"Klinklang"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 602,
+		name: "Tynamo",
+		slug: "tynamo",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Tynamo"
+		],
+		evolutions: [
+			603
+		]
+	},
+	{
+		id: 603,
+		name: "Eelektrik",
+		slug: "eelektrik",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Eelektrik"
+		],
+		evolutions: [
+			604
+		]
+	},
+	{
+		id: 604,
+		name: "Eelektross",
+		slug: "eelektross",
+		types: [
+			"Electric",
+			"Electric"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Eelektross"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 605,
+		name: "Elgyem",
+		slug: "elgyem",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Telepathy",
+			"Synchronize",
+			"Analytic"
+		],
+		forms: [
+			"Elgyem"
+		],
+		evolutions: [
+			606
+		]
+	},
+	{
+		id: 606,
+		name: "Beheeyem",
+		slug: "beheeyem",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Telepathy",
+			"Synchronize",
+			"Analytic"
+		],
+		forms: [
+			"Beheeyem"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 607,
+		name: "Litwick",
+		slug: "litwick",
+		types: [
+			"Ghost",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Flame Body",
+			"Infiltrator"
+		],
+		forms: [
+			"Litwick"
+		],
+		evolutions: [
+			608
+		]
+	},
+	{
+		id: 608,
+		name: "Lampent",
+		slug: "lampent",
+		types: [
+			"Ghost",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Flame Body",
+			"Infiltrator"
+		],
+		forms: [
+			"Lampent"
+		],
+		evolutions: [
+			609
+		]
+	},
+	{
+		id: 609,
+		name: "Chandelure",
+		slug: "chandelure",
+		types: [
+			"Ghost",
+			"Fire"
+		],
+		abilities: [
+			"Flash Fire",
+			"Flame Body",
+			"Infiltrator"
+		],
+		forms: [
+			"Chandelure"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 610,
+		name: "Axew",
+		slug: "axew",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rivalry",
+			"Mold Breaker",
+			"Unnerve"
+		],
+		forms: [
+			"Axew"
+		],
+		evolutions: [
+			611
+		]
+	},
+	{
+		id: 611,
+		name: "Fraxure",
+		slug: "fraxure",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rivalry",
+			"Mold Breaker",
+			"Unnerve"
+		],
+		forms: [
+			"Fraxure"
+		],
+		evolutions: [
+			612
+		]
+	},
+	{
+		id: 612,
+		name: "Haxorus",
+		slug: "haxorus",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rivalry",
+			"Mold Breaker",
+			"Unnerve"
+		],
+		forms: [
+			"Haxorus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 613,
+		name: "Cubchoo",
+		slug: "cubchoo",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Snow Cloak",
+			"Snow Plow",
+			"Rattled"
+		],
+		forms: [
+			"Cubchoo"
+		],
+		evolutions: [
+			614
+		]
+	},
+	{
+		id: 614,
+		name: "Beartic",
+		slug: "beartic",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Snow Cloak",
+			"Snow Plow",
+			"Swift Swim"
+		],
+		forms: [
+			"Beartic"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 615,
+		name: "Cryogonal",
+		slug: "cryogonal",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Cryogonal"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 616,
+		name: "Shelmet",
+		slug: "shelmet",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Hydration",
+			"Shell Armor",
+			"Overcoat"
+		],
+		forms: [
+			"Shelmet"
+		],
+		evolutions: [
+			617
+		]
+	},
+	{
+		id: 617,
+		name: "Accelgor",
+		slug: "accelgor",
+		types: [
+			"Bug",
+			"Bug"
+		],
+		abilities: [
+			"Hydration",
+			"Sticky Hold",
+			"Unburden"
+		],
+		forms: [
+			"Accelgor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 618,
+		name: "Stunfisk",
+		slug: "stunfisk",
+		types: [
+			"Ground",
+			"Electric"
+		],
+		abilities: [
+			"Static",
+			"Limber",
+			"Sand Veil"
+		],
+		forms: [
+			"Stunfisk"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 619,
+		name: "Mienfoo",
+		slug: "mienfoo",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Inner Focus",
+			"Regenerator",
+			"Reckless"
+		],
+		forms: [
+			"Mienfoo"
+		],
+		evolutions: [
+			620
+		]
+	},
+	{
+		id: 620,
+		name: "Mienshao",
+		slug: "mienshao",
+		types: [
+			"Fighting",
+			"Fighting"
+		],
+		abilities: [
+			"Inner Focus",
+			"Regenerator",
+			"Reckless"
+		],
+		forms: [
+			"Mienshao"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 621,
+		name: "Druddigon",
+		slug: "druddigon",
+		types: [
+			"Dragon",
+			"Dragon"
+		],
+		abilities: [
+			"Rough Skin",
+			"Sheer Force",
+			"Mold Breaker"
+		],
+		forms: [
+			"Druddigon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 622,
+		name: "Golett",
+		slug: "golett",
+		types: [
+			"Ground",
+			"Ghost"
+		],
+		abilities: [
+			"Iron Fist",
+			"Klutz",
+			"No Guard"
+		],
+		forms: [
+			"Golett"
+		],
+		evolutions: [
+			623
+		]
+	},
+	{
+		id: 623,
+		name: "Golurk",
+		slug: "golurk",
+		types: [
+			"Ground",
+			"Ghost"
+		],
+		abilities: [
+			"Iron Fist",
+			"Klutz",
+			"No Guard"
+		],
+		forms: [
+			"Golurk"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 624,
+		name: "Pawniard",
+		slug: "pawniard",
+		types: [
+			"Dark",
+			"Steel"
+		],
+		abilities: [
+			"Defiant",
+			"Inner Focus",
+			"Pressure"
+		],
+		forms: [
+			"Pawniard"
+		],
+		evolutions: [
+			625
+		]
+	},
+	{
+		id: 625,
+		name: "Bisharp",
+		slug: "bisharp",
+		types: [
+			"Dark",
+			"Steel"
+		],
+		abilities: [
+			"Defiant",
+			"Inner Focus",
+			"Pressure"
+		],
+		forms: [
+			"Bisharp"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 626,
+		name: "Bouffalant",
+		slug: "bouffalant",
+		types: [
+			"Normal",
+			"Normal"
+		],
+		abilities: [
+			"Reckless",
+			"Sap Sipper",
+			"Soundproof"
+		],
+		forms: [
+			"Bouffalant"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 627,
+		name: "Rufflet",
+		slug: "rufflet",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Sheer Force",
+			"Hustle"
+		],
+		forms: [
+			"Rufflet"
+		],
+		evolutions: [
+			628
+		]
+	},
+	{
+		id: 628,
+		name: "Braviary",
+		slug: "braviary",
+		types: [
+			"Normal",
+			"Flying"
+		],
+		abilities: [
+			"Keen Eye",
+			"Sheer Force",
+			"Defiant"
+		],
+		forms: [
+			"Braviary"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 629,
+		name: "Vullaby",
+		slug: "vullaby",
+		types: [
+			"Dark",
+			"Flying"
+		],
+		abilities: [
+			"Big Pecks",
+			"Overcoat",
+			"Weak Armor"
+		],
+		forms: [
+			"Vullaby"
+		],
+		evolutions: [
+			630
+		]
+	},
+	{
+		id: 630,
+		name: "Mandibuzz",
+		slug: "mandibuzz",
+		types: [
+			"Dark",
+			"Flying"
+		],
+		abilities: [
+			"Big Pecks",
+			"Overcoat",
+			"Weak Armor"
+		],
+		forms: [
+			"Mandibuzz"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 631,
+		name: "Heatmor",
+		slug: "heatmor",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Gluttony",
+			"Flash Fire",
+			"White Smoke"
+		],
+		forms: [
+			"Heatmor"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 632,
+		name: "Durant",
+		slug: "durant",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Swarm",
+			"Hustle",
+			"Truant"
+		],
+		forms: [
+			"Durant"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 633,
+		name: "Deino",
+		slug: "deino",
+		types: [
+			"Dark",
+			"Dragon"
+		],
+		abilities: [
+			"Hustle"
+		],
+		forms: [
+			"Deino"
+		],
+		evolutions: [
+			634
+		]
+	},
+	{
+		id: 634,
+		name: "Zweilous",
+		slug: "zweilous",
+		types: [
+			"Dark",
+			"Dragon"
+		],
+		abilities: [
+			"Hustle"
+		],
+		forms: [
+			"Zweilous"
+		],
+		evolutions: [
+			635
+		]
+	},
+	{
+		id: 635,
+		name: "Hydreigon",
+		slug: "hydreigon",
+		types: [
+			"Dark",
+			"Dragon"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+			"Hydreigon"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 636,
+		name: "Larvesta",
+		slug: "larvesta",
+		types: [
+			"Bug",
+			"Fire"
+		],
+		abilities: [
+			"Flame Body",
+			"Swarm"
+		],
+		forms: [
+			"Larvesta"
+		],
+		evolutions: [
+			637
+		]
+	},
+	{
+		id: 637,
+		name: "Volcarona",
+		slug: "volcarona",
+		types: [
+			"Bug",
+			"Fire"
+		],
+		abilities: [
+			"Flame Body",
+			"Swarm"
+		],
+		forms: [
+			"Volcarona"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 638,
+		name: "Cobalion",
+		slug: "cobalion",
+		types: [
+			"Steel",
+			"Fighting"
+		],
+		abilities: [
+			"Justified"
+		],
+		forms: [
+			"Cobalion"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 639,
+		name: "Terrakion",
+		slug: "terrakion",
+		types: [
+			"Rock",
+			"Fighting"
+		],
+		abilities: [
+			"Justified"
+		],
+		forms: [
+			"Terrakion"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 640,
+		name: "Virizion",
+		slug: "virizion",
+		types: [
+			"Grass",
+			"Fighting"
+		],
+		abilities: [
+			"Justified"
+		],
+		forms: [
+			"Virizion"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 641,
+		name: "Tornadus",
+		slug: "tornadus",
+		types: [
+			"Flying",
+			"Flying"
+		],
+		abilities: [
+			"Prankster",
+			"Defiant"
+		],
+		forms: [
+			"Tornadus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 642,
+		name: "Thundurus",
+		slug: "thundurus",
+		types: [
+			"Electric",
+			"Flying"
+		],
+		abilities: [
+			"Prankster",
+			"Defiant"
+		],
+		forms: [
+			"Thundurus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 643,
+		name: "Reshiram",
+		slug: "reshiram",
+		types: [
+			"Dragon",
+			"Fire"
+		],
+		abilities: [
+			"Turboblaze"
+		],
+		forms: [
+			"Reshiram"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 644,
+		name: "Zekrom",
+		slug: "zekrom",
+		types: [
+			"Dragon",
+			"Electric"
+		],
+		abilities: [
+			"Teravolt"
+		],
+		forms: [
+			"Zekrom"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 645,
+		name: "Landorus",
+		slug: "landorus",
+		types: [
+			"Ground",
+			"Flying"
+		],
+		abilities: [
+			"Sand Force",
+			"Sheer Force"
+		],
+		forms: [
+			"Landorus"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 646,
+		name: "Kyurem",
+		slug: "kyurem",
+		types: [
+			"Dragon",
+			"Ice"
+		],
+		abilities: [
+			"Pressure"
+		],
+		forms: [
+			"Kyurem"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 647,
+		name: "Keldeo",
+		slug: "keldeo",
+		types: [
+			"Water",
+			"Fighting"
+		],
+		abilities: [
+			"Justified"
+		],
+		forms: [
+			"Keldeo"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 648,
+		name: "Meloetta",
+		slug: "meloetta",
+		types: [
+			"Normal",
+			"Psychic"
+		],
+		abilities: [
+			"Serene Grace"
+		],
+		forms: [
+			"Meloetta",
+			"Meloetta [Pirouette Forme]"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 649,
+		name: "Genesect",
+		slug: "genesect",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Download"
+		],
+		forms: [
+			"Genesect",
+			"Genesect",
+			"Genesect",
+			"Genesect",
+			"Genesect"
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 650,
+		name: "Deoxys",
+		slug: "deoxys",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Pressure"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 651,
+		name: "Deoxys",
+		slug: "deoxys",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Pressure"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 652,
+		name: "Deoxys",
+		slug: "deoxys",
+		types: [
+			"Psychic",
+			"Psychic"
+		],
+		abilities: [
+			"Pressure"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 653,
+		name: "Wormadam",
+		slug: "wormadam",
+		types: [
+			"Bug",
+			"Ground"
+		],
+		abilities: [
+			"Anticipation",
+			"Overcoat"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 654,
+		name: "Wormadam",
+		slug: "wormadam",
+		types: [
+			"Bug",
+			"Steel"
+		],
+		abilities: [
+			"Anticipation",
+			"Overcoat"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 655,
+		name: "Shaymin",
+		slug: "shaymin",
+		types: [
+			"Grass",
+			"Flying"
+		],
+		abilities: [
+			"Serene Grace"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 656,
+		name: "Giratina",
+		slug: "giratina",
+		types: [
+			"Ghost",
+			"Dragon"
+		],
+		abilities: [
+			"Levitate",
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 657,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Fire"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 658,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Water"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 659,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Ice"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 660,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Flying"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 661,
+		name: "Rotom",
+		slug: "rotom",
+		types: [
+			"Electric",
+			"Grass"
+		],
+		abilities: [
+			"Levitate"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 662,
+		name: "Castform",
+		slug: "castform",
+		types: [
+			"Fire",
+			"Fire"
+		],
+		abilities: [
+			"Forecast"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 663,
+		name: "Castform",
+		slug: "castform",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Forecast"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 664,
+		name: "Castform",
+		slug: "castform",
+		types: [
+			"Ice",
+			"Ice"
+		],
+		abilities: [
+			"Forecast"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 665,
+		name: "Basculin",
+		slug: "basculin",
+		types: [
+			"Water",
+			"Water"
+		],
+		abilities: [
+			"Rock Head",
+			"Adaptability",
+			"Mold Breaker"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 666,
+		name: "Darmanitan",
+		slug: "darmanitan",
+		types: [
+			"Fire",
+			"Psychic"
+		],
+		abilities: [
+			"Sheer Force",
+			"Zen Mode"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	},
+	{
+		id: 667,
+		name: "Meloetta",
+		slug: "meloetta",
+		types: [
+			"Normal",
+			"Fighting"
+		],
+		abilities: [
+			"Serene Grace"
+		],
+		forms: [
+		],
+		evolutions: [
+		]
+	}
+];

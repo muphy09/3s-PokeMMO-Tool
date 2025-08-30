@@ -1,0 +1,56 @@
+{
+  "name": "poke-mmo-tool",
+  "version": "1.2.0",
+  "private": true,
+  "productName": "3's PokeMMO Tool",
+  "main": "electron/main.js",
+  "type": "commonjs",
+
+  "scripts": {
+    "dev": "vite",
+    "build:web": "vite build",
+    "preview": "vite preview",
+    "clean:data": "node tools/clean-locations.cjs",
+    "build:app": "npm run clean:data && npm run build:web && electron-builder -w portable"
+  },
+
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.3.5",
+    "wait-on": "^7.2.0"
+  },
+
+  "build": {
+    "appId": "com.yourname.weaknessfinder",
+    "productName": "Weakness Finder",
+    "asar": true,
+    "files": [
+      "dist/**",
+      "electron/**",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "dist/data", "to": "data", "filter": ["**/*"] },
+      { "from": "dist/sprites", "to": "sprites", "filter": ["**/*"] }
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "weakness-finder-${version}-${os}-${arch}.exe"
+    }
+  }
+}

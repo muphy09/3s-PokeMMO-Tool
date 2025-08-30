@@ -1,0 +1,2 @@
+URL: https://pokemmohub.com/page-data/items/payapa-berry/page-data.json
+Keys: componentChunkName, path, result, staticQueryHashes, data, pageContext, pokemmo, item_id, _id, slug, n, d, category, en, cn, tw, de, fr, it, es, id, __params, breadcrumb, location, crumbs, pathname, crumbLabel

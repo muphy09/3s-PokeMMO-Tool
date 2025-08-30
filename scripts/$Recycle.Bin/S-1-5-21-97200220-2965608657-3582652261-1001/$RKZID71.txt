@@ -1,0 +1,25 @@
+$gi = @"
+# Node/Electron
+node_modules/
+npm-debug.log*
+yarn-error.log*
+*.log
+.DS_Store
+
+# Build / packaging output
+dist/
+out/
+build/
+win-unpacked/
+*.exe
+*.msi
+*.zip
+*.asar
+"@
+$gi | Set-Content -Encoding UTF8 .gitignore
+# keep build artifacts ignored, but ship our runtime binary
+!LiveRouteOCR/LiveRouteOCR.exe
+# keep exes ignored globally, but include our runtime bundle
+!LiveRouteOCR/**
+
+

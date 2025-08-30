@@ -1,0 +1,51 @@
+{
+  "regions": [
+    {
+      "region": "Kanto",
+      "total_lines": 1635,
+      "parsed_lines": 331,
+      "maps": 97,
+      "sections": 293,
+      "entries": 1575
+    },
+    {
+      "region": "Johto",
+      "total_lines": 1439,
+      "parsed_lines": 328,
+      "maps": 59,
+      "sections": 300,
+      "entries": 1299
+    },
+    {
+      "region": "Hoenn",
+      "total_lines": 1693,
+      "parsed_lines": 373,
+      "maps": 73,
+      "sections": 351,
+      "entries": 1123
+    },
+    {
+      "region": "Sinnoh",
+      "total_lines": 1899,
+      "parsed_lines": 421,
+      "maps": 90,
+      "sections": 396,
+      "entries": 1403
+    },
+    {
+      "region": "Unova",
+      "total_lines": 1423,
+      "parsed_lines": 311,
+      "maps": 56,
+      "sections": 293,
+      "entries": 1236
+    }
+  ],
+  "totals": {
+    "pokemonWithLocations": 836,
+    "totalLocationEntries": 6636,
+    "areasCount": 342,
+    "unmatchedLines": 6,
+    "unknownNames": 1797
+  }
+}

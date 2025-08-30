@@ -48,13 +48,22 @@ class LiveRouteOCR
     // ---------- WS ----------
     static readonly int[] DefaultPorts = { 8765, 8766, 8767, 8768, 8769, 8770, 8780 };
     static readonly List<HttpListener> Servers = new();
-    static readonly ConcurrentDictionary<WebSocket, byte> Clients = new();
 
-    static readonly object SnapshotLock = new();
-    static volatile string LastEmit = "";
-    static volatile string LastRaw  = "";
-    static volatile int LastConfPct = 0;
-    static long LastBroadcastTicks = 0; // DateTime.UtcNow.Ticks
+    class ChannelData
+    {
+        public readonly object LockObj = new();
+        public readonly ConcurrentDictionary<WebSocket, byte> Clients = new();
+        public string LastEmit = "";
+        public string LastRaw = "";
+        public int LastConfPct = 0;
+        public long LastBroadcastTicks = 0;
+        public readonly string Kind;
+        public readonly string NoToken;
+        public ChannelData(string kind, string noToken) { Kind = kind; NoToken = noToken; }
+    }
+
+    static readonly ChannelData LiveChan   = new("route", "NO_ROUTE");
+    static readonly ChannelData BattleChan = new("mon",   "NO_MON");
 
     // ---------- ROI (% of client area) ----------
     struct Roi
@@ -120,6 +129,8 @@ class LiveRouteOCR
             Height = GetArg(args, "--height",0.150)
         };
         Log($"ROI base: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
+        var battleRoi = new Roi { Left = 0.05, Top = 0.40, Width = 0.25, Height = 0.15 };
+        Log($"Battle ROI: L={battleRoi.Left:P0} T={battleRoi.Top:P0} W={battleRoi.Width:P0} H={battleRoi.Height:P0}");
 
         // Settings & env
         var cfg = LoadSettings();
@@ -134,7 +145,8 @@ class LiveRouteOCR
 
         // WS listeners
         StartServers(ParsePorts(args));
-        BroadcastAll("NO_ROUTE", "", 0);
+        Broadcast(LiveChan, LiveChan.NoToken, "", 0);
+        Broadcast(BattleChan, BattleChan.NoToken, "", 0);
 
         // tessdata
         var sourceTess = FindTessdataSource();
@@ -170,9 +182,12 @@ class LiveRouteOCR
 
         var cts = new CancellationTokenSource();
         Console.CancelKeyPress += (_, __) => cts.Cancel();
-        _ = Task.Run(() => PeriodicRebroadcastLoop(cts.Token));
+        _ = Task.Run(() => PeriodicRebroadcastLoop(LiveChan, cts.Token));
+        _ = Task.Run(() => PeriodicRebroadcastLoop(BattleChan, cts.Token));
 
-        await OcrLoop(engine, roi, mode, TargetPid, CaptureZoom, cts.Token);
+        var tRoute = OcrLoop(engine, roi, mode, TargetPid, CaptureZoom, cts.Token);
+        var tBattle = BattleLoop(engine, battleRoi, mode, TargetPid, CaptureZoom, cts.Token);
+        await Task.WhenAll(tRoute, tBattle);
     }
 
     static string FindTessdataSource()
@@ -209,10 +224,12 @@ class LiveRouteOCR
                 var h = new HttpListener();
                 h.Prefixes.Add($"http://127.0.0.1:{p}/live/");
                 h.Prefixes.Add($"http://localhost:{p}/live/");
+                h.Prefixes.Add($"http://127.0.0.1:{p}/battle/");
+                h.Prefixes.Add($"http://localhost:{p}/battle/");
                 h.Start();
                 Servers.Add(h);
                 _ = Task.Run(() => AcceptLoop(h));
-                Log($"WebSocket: ws://127.0.0.1:{p}/live");
+                Log($"WebSocket: ws://127.0.0.1:{p}/live and /battle");
             }
             catch (Exception ex) { Log($"Port {p} failed: {ex.Message}"); }
         }
@@ -234,22 +251,24 @@ class LiveRouteOCR
                 if (ctx.Request.IsWebSocketRequest)
                 {
                     var wsctx = await ctx.AcceptWebSocketAsync(null);
-                    Log("WS client connected");
+                    var path = ctx.Request.Url?.AbsolutePath.ToLowerInvariant() ?? "";
+                    var ch = path.Contains("battle") ? BattleChan : LiveChan;
+                    Log($"WS client connected [{ch.Kind}]");
                     var ws = wsctx.WebSocket;
-                    Clients.TryAdd(ws, 1);
+                    ch.Clients.TryAdd(ws, 1);
 
                     string emit, raw; int conf;
-                    lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConfPct; }
+                    lock (ch.LockObj) { emit = ch.LastEmit; raw = ch.LastRaw; conf = ch.LastConfPct; }
                     if (!string.IsNullOrWhiteSpace(emit))
                     {
-                        try { SendAllFormats(ws, emit, raw, conf); Log($"SNAPSHOT -> client: {emit}"); } catch { }
+                        try { SendAllFormats(ws, ch, emit, raw, conf); Log($"SNAPSHOT -> client: {emit}"); } catch { }
                     }
                     else
                     {
-                        try { SendAllFormats(ws, "NO_ROUTE", "", 0); } catch { }
+                        try { SendAllFormats(ws, ch, ch.NoToken, "", 0); } catch { }
                     }
 
-                    _ = Task.Run(() => WsPump(ws));
+                    _ = Task.Run(() => WsPump(ch, ws));
                 }
                 else { ctx.Response.StatusCode = 426; ctx.Response.Close(); }
             }
@@ -257,7 +276,7 @@ class LiveRouteOCR
         }
     }
 
-    static async Task WsPump(WebSocket ws)
+    static async Task WsPump(ChannelData ch, WebSocket ws)
     {
         var buf = new byte[2];
         try
@@ -268,36 +287,37 @@ class LiveRouteOCR
         catch { }
         finally
         {
-            Clients.TryRemove(ws, out _);
+            ch.Clients.TryRemove(ws, out _);
             try { await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "bye", CancellationToken.None); } catch { }
             ws.Dispose();
         }
     }
 
-    static void BroadcastAll(string routeOrToken, string raw, int confPct)
+    static void Broadcast(ChannelData ch, string token, string raw, int confPct)
     {
-        lock (SnapshotLock)
+        lock (ch.LockObj)
         {
-            LastEmit = routeOrToken;
-            LastRaw  = raw ?? "";
-            LastConfPct = Math.Clamp(confPct, 0, 100);
-            LastBroadcastTicks = DateTime.UtcNow.Ticks;
+            ch.LastEmit = token;
+            ch.LastRaw = raw ?? "";
+            ch.LastConfPct = Math.Clamp(confPct, 0, 100);
+            ch.LastBroadcastTicks = DateTime.UtcNow.Ticks;
         }
 
-        foreach (var ws in Clients.Keys)
+        foreach (var ws in ch.Clients.Keys)
         {
-            if (ws.State != WebSocketState.Open) { Clients.TryRemove(ws, out _); continue; }
-            try { SendAllFormats(ws, routeOrToken, raw, confPct); }
-            catch { Clients.TryRemove(ws, out _); }
+            if (ws.State != WebSocketState.Open) { ch.Clients.TryRemove(ws, out _); continue; }
+            try { SendAllFormats(ws, ch, token, raw, confPct); }
+            catch { ch.Clients.TryRemove(ws, out _); }
         }
     }
 
-    static void SendAllFormats(WebSocket ws, string routeOrToken, string raw, int confPct)
+    static void SendAllFormats(WebSocket ws, ChannelData ch, string token, string raw, int confPct)
     {
-        var plain      = routeOrToken;
-        var piped      = (routeOrToken == "NO_ROUTE") ? "NO_ROUTE" : $"ROUTE|{routeOrToken}";
-        var jsonSimple = $"{{\"route\":\"{Escape(routeOrToken)}\"}}";
-        var jsonRich   = $"{{\"type\":\"{(routeOrToken=="NO_ROUTE"?"no_route":"route")}\",\"text\":\"{Escape(routeOrToken)}\",\"raw\":\"{Escape(raw ?? "")}\",\"conf\":{confPct}}}";
+        var plain = token;
+        var piped = (token == ch.NoToken) ? ch.NoToken : $"{ch.Kind.ToUpper()}|{token}";
+        var key = ch.Kind == "route" ? "route" : "mon";
+        var jsonSimple = $"{{\"{key}\":\"{Escape(token)}\"}}";
+        var jsonRich = $"{{\"type\":\"{ch.Kind}\",\"text\":\"{Escape(token)}\",\"raw\":\"{Escape(raw ?? "")}\",\"conf\":{confPct}}}";
 
         var payloads = new[] { plain, piped, jsonSimple, jsonRich };
         foreach (var msg in payloads)
@@ -309,7 +329,7 @@ class LiveRouteOCR
 
     static string Escape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
-    static async Task PeriodicRebroadcastLoop(CancellationToken ct)
+    static async Task PeriodicRebroadcastLoop(ChannelData ch, CancellationToken ct)
     {
         const int intervalMs = 2000;
         while (!ct.IsCancellationRequested)
@@ -318,18 +338,18 @@ class LiveRouteOCR
             {
                 await Task.Delay(intervalMs, ct);
                 string emit, raw; int conf; long lastTicks;
-                lock (SnapshotLock) { emit = LastEmit; raw = LastRaw; conf = LastConfPct; lastTicks = LastBroadcastTicks; }
+                lock (ch.LockObj) { emit = ch.LastEmit; raw = ch.LastRaw; conf = ch.LastConfPct; lastTicks = ch.LastBroadcastTicks; }
                 if (string.IsNullOrWhiteSpace(emit)) continue;
 
                 if ((DateTime.UtcNow - new DateTime(lastTicks, DateTimeKind.Utc)).TotalSeconds >= 1)
                 {
-                    foreach (var ws in Clients.Keys)
+                    foreach (var ws in ch.Clients.Keys)
                     {
-                        if (ws.State != WebSocketState.Open) { Clients.TryRemove(ws, out _); continue; }
-                        try { SendAllFormats(ws, emit, raw, conf); } catch { Clients.TryRemove(ws, out _); }
+                        if (ws.State != WebSocketState.Open) { ch.Clients.TryRemove(ws, out _); continue; }
+                        try { SendAllFormats(ws, ch, emit, raw, conf); } catch { ch.Clients.TryRemove(ws, out _); }
                     }
-                    lock (SnapshotLock) { LastBroadcastTicks = DateTime.UtcNow.Ticks; }
-                    Log($"REBROADCAST: {emit} ({conf}%)");
+                    lock (ch.LockObj) { ch.LastBroadcastTicks = DateTime.UtcNow.Ticks; }
+                    Log($"REBROADCAST[{ch.Kind}]: {emit} ({conf}%)");
                 }
             }
             catch (TaskCanceledException) { }
@@ -469,7 +489,7 @@ class LiveRouteOCR
                     var clean = Regex.Replace(location, @"\s+", " ").Trim();
                     if (!string.Equals(clean, lastEmitLocal, StringComparison.OrdinalIgnoreCase) || confPct != lastConfLocal)
                     {
-                        BroadcastAll(clean, rawUsed, confPct);
+                        Broadcast(LiveChan, clean, rawUsed, confPct);
                         lastEmitLocal = clean;
                         lastConfLocal = confPct;
                         Log($"SENT ROUTE: {clean} ({confPct}%)");
@@ -490,7 +510,7 @@ class LiveRouteOCR
 
                     if (missStreak >= 3 && !string.Equals(lastEmitLocal, "NO_ROUTE", StringComparison.Ordinal))
                     {
-                        BroadcastAll("NO_ROUTE", "", 0);
+                        Broadcast(LiveChan, LiveChan.NoToken, "", 0);
                         lastEmitLocal = "NO_ROUTE";
                         lastConfLocal = 0;
                         Log("SENT NO_ROUTE");
@@ -516,6 +536,91 @@ class LiveRouteOCR
         }
     }
 
+static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int? TargetPid, double CaptureZoom, CancellationToken ct)
+    {
+        int missStreak = 0;
+        string lastEmitLocal = "";
+        IntPtr hWnd = IntPtr.Zero;
+        IntPtr lastLoggedHandle = IntPtr.Zero;
+
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                if (hWnd == IntPtr.Zero)
+                {
+                    hWnd = FindPokeMMO(TargetPid);
+                    if (hWnd != lastLoggedHandle)
+                    {
+                        if (hWnd == IntPtr.Zero) Log("PokeMMO window not found.");
+                        else Log($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
+                        lastLoggedHandle = hWnd;
+                    }
+                    if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                }
+
+                if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
+                {
+                    if (hWnd != IntPtr.Zero) Log("PokeMMO window lost; re-enumerating.");
+                    hWnd = IntPtr.Zero;
+                    await Task.Delay(700, ct);
+                    continue;
+                }
+                var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
+                int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
+                var rBase = roi.ToRectangle(cw, ch);
+                var r = ZoomRectangle(rBase, cw, ch, CaptureZoom);
+                int sx = pt.X + r.Left, sy = pt.Y + r.Top;
+                using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
+                using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
+
+                string name = "";
+                string rawUsed = "";
+                float conf = 0f;
+                if (engine != null)
+                {
+                    foreach (var pass in BuildPassPlan(crop, mode, 1))
+                    {
+                        using var srcForPass = pass.Masked ? MaskLeftColumn(crop, pass.KeepPct) : (Bitmap)crop.Clone();
+                        using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
+                        using var pix = PixFromBitmap(pre);
+                        using var page = engine.Process(pix, pass.Psm);
+                        var raw = (page.GetText() ?? "").Trim();
+                        var cleaned = Regex.Replace(raw, @"[^A-Za-z0-9'\- ]", " ").Trim();
+                        if (!string.IsNullOrWhiteSpace(cleaned))
+                        {
+                            name = cleaned.Split(' ')[0];
+                            conf = page.GetMeanConfidence();
+                            rawUsed = raw;
+                            break;
+                        }
+                    }
+                }
+
+                bool has = !string.IsNullOrWhiteSpace(name);
+                if (has)
+                {
+                    missStreak = 0;
+                    int confPct = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
+                    Broadcast(BattleChan, name, rawUsed, confPct);
+                    lastEmitLocal = name;
+                }
+                else
+                {
+                    missStreak++;
+                    if (missStreak >= 3 && lastEmitLocal != BattleChan.NoToken)
+                    {
+                        Broadcast(BattleChan, BattleChan.NoToken, "", 0);
+                        lastEmitLocal = BattleChan.NoToken;
+                    }
+                }
+                await Task.Delay(has ? 150 : 350, ct);
+            }
+            catch (TaskCanceledException) { }
+            catch (Exception ex) { Log("Battle loop error: " + ex.Message); await Task.Delay(500, ct); }
+        }
+    }
+    
     struct OcrPass
     {
         public bool Masked;

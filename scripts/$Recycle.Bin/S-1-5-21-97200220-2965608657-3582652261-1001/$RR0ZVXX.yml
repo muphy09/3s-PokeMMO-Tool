@@ -1,0 +1,70 @@
+name: 3's PokeMMO Tool
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        shell: pwsh
+        run: npm ci
+
+      - name: Build helper (optional)
+        shell: pwsh
+        run: npm run build:helper
+        continue-on-error: true
+
+      - name: Build app
+        shell: pwsh
+        run: npm run dist    # package.json uses: electron-builder --publish never
+
+      - name: List release contents
+        shell: pwsh
+        run: |
+          Write-Host "---- RELEASE TREE ----"
+          if (-not (Test-Path "release")) { Write-Host "no release dir"; exit 0 }
+          Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length,LastWriteTime
+
+      - name: Verify artifacts exist
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "release")) {
+            Write-Error "release folder missing"; exit 1
+          }
+          $exes = Get-ChildItem -Path "release" -Filter *.exe -Recurse
+          if (-not $exes) {
+            Write-Host "Release tree:"
+            Get-ChildItem -Path "release" -Recurse | Select-Object FullName,Length
+            Write-Error "No .exe found in release"; exit 1
+          }
+          $exes | ForEach-Object { Write-Host "Found EXE: $($_.FullName)" }
+
+      - name: Create/Update GitHub Release and upload
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/**/*.exe
+            release/**/*.msi
+            release/**/*.zip
+            release/**/*.yml
+            release/**/*.blockmap
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

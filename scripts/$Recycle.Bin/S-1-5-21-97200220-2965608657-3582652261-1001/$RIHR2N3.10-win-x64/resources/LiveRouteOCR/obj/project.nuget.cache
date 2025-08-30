@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "iWGReiCAIX3A03tqLePMIn4Clx76ClRL1Du4DfrYQuJqZ6uzjPdTRcgyAo1img1QpISg+YqcsdSWUdgrHsM9Xg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\bkumm\\Downloads\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\tesseract\\5.2.0\\tesseract.5.2.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.36\\microsoft.netcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.36\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.36\\microsoft.aspnetcore.app.runtime.win-x64.6.0.36.nupkg.sha512"
+  ],
+  "logs": []
+}

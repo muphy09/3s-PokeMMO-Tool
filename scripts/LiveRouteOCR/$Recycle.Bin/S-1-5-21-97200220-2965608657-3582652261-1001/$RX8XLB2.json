@@ -1,0 +1,68 @@
+{
+  "pokemmo hub": {
+    "name": "pokemmo hub",
+    "locations": [
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      }
+    ],
+    "catchRates": {}
+  },
+  "pokédex": {
+    "name": "pokédex",
+    "locations": [
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      },
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      },
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      },
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      },
+      {
+        "region": "Kanto",
+        "map": "Viridian Forest",
+        "subarea": "",
+        "method": "Lure",
+        "levels": "10",
+        "time": "",
+        "rate": ""
+      }
+    ],
+    "catchRates": {}
+  }
+}

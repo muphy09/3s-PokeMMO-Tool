@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<root>
+    <header>ASUS_AURA</header>
+    <version></version>
+    <funcid>0</funcid>
+    <connecteddevice key="GSkillDram">5</connecteddevice>
+    <ingroupdevice key="GSkillDram">1</ingroupdevice>
+    <device key="Group">
+        <isenabled>1</isenabled>
+        <scene key="S0">
+            <state>S0</state>
+            <mode key="5">
+                <led key="0">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="1">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="2">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="3">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="4">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="5">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="6">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="7">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="8">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="9">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="10">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="11">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="12">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="13">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="14">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="15">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="16">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="17">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="18">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <led key="19">
+                    <color>0</color>
+                    <hue>0.000000</hue>
+                    <saturation>1.000000</saturation>
+                    <lightness>0.500000</lightness>
+                    <hashue2>0</hashue2>
+                    <hue2>0.000000</hue2>
+                    <speed>0</speed>
+                    <direction>0</direction>
+                </led>
+                <color_type>Plain</color_type>
+                <start_end_color_cycle_start>0.000000</start_end_color_cycle_start>
+                <start_end_color_cycle_range>0.750000</start_end_color_cycle_range>
+                <start_end_color_cycle_end>0.750000</start_end_color_cycle_end>
+                <start_to_end_or_end_to_start>1</start_to_end_or_end_to_start>
+                <effect_path_order>
+                    <order key="Mainboard">-1</order>
+                    <order key="Vga">-1</order>
+                    <order key="Keyboard">-1</order>
+                    <order key="Mouse">-1</order>
+                    <order key="GSkillDram">4</order>
+                    <order key="RogAudioDevices_Microphone">-1</order>
+                    <order key="RogDisplay">-1</order>
+                    <order key="AddressableStrip">-1</order>
+                    <order key="RogAudioDevices_Headset">-1</order>
+                    <order key="ODD">-1</order>
+                    <order key="HDD">-1</order>
+                    <order key="HUE">-1</order>
+                    <order key="NB_Keyboard">-1</order>
+                    <order key="Projecter">-1</order>
+                    <order key="Desktop">-1</order>
+                    <order key="NB_Keyboard_LED">-1</order>
+                    <order key="Terminal">-1</order>
+                    <order key="WaterCooler">-1</order>
+                    <order key="Extension_Card">-1</order>
+                </effect_path_order>
+                <effect_speed>0</effect_speed>
+                <thermal_threshold_one>40</thermal_threshold_one>
+                <thermal_threshold_two>60</thermal_threshold_two>
+                <thermal_value_type>Thermal</thermal_value_type>
+                <music_index>1</music_index>
+                <singlecolor>1</singlecolor>
+            </mode>
+        </scene>
+        <scene key="Non-S0">
+            <state>Non-S0</state>
+        </scene>
+    </device>
+    <strip_rgb_adjust />
+    <addressable_strip_terminal_using>0</addressable_strip_terminal_using>
+</root>

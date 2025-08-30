@@ -1,0 +1,2 @@
+C:\Users\bkumm\Downloads\pokemmo-tool\live-helper\dist\live-helper\LiveRouteOCR.pdb
+C:\Users\bkumm\Downloads\pokemmo-tool\live-helper\dist\live-helper\LiveRouteOCR.exe

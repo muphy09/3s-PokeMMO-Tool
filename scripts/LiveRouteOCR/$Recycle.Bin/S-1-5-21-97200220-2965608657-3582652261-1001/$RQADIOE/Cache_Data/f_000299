@@ -1,0 +1,185 @@
+import { createHotContext as __vite__createHotContext } from "/@vite/client";import.meta.hot = __vite__createHotContext("/src/components/ColorPickerButton.jsx");import __vite__cjsImport0_react_jsxDevRuntime from "/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=c71b5a9b"; const Fragment = __vite__cjsImport0_react_jsxDevRuntime["Fragment"]; const jsxDEV = __vite__cjsImport0_react_jsxDevRuntime["jsxDEV"];
+import * as RefreshRuntime from "/@react-refresh";
+const inWebWorker = typeof WorkerGlobalScope !== "undefined" && self instanceof WorkerGlobalScope;
+let prevRefreshReg;
+let prevRefreshSig;
+if (import.meta.hot && !inWebWorker) {
+  if (!window.$RefreshReg$) {
+    throw new Error(
+      "@vitejs/plugin-react can't detect preamble. Something is wrong."
+    );
+  }
+  prevRefreshReg = window.$RefreshReg$;
+  prevRefreshSig = window.$RefreshSig$;
+  window.$RefreshReg$ = RefreshRuntime.getRefreshReg("C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx");
+  window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
+}
+var _s = $RefreshSig$();
+import __vite__cjsImport3_react from "/node_modules/.vite/deps/react.js?v=c71b5a9b"; const React = __vite__cjsImport3_react.__esModule ? __vite__cjsImport3_react.default : __vite__cjsImport3_react; const useContext = __vite__cjsImport3_react["useContext"]; const useEffect = __vite__cjsImport3_react["useEffect"]; const useState = __vite__cjsImport3_react["useState"];
+import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from "/src/colorConfig.js?t=1756449913242";
+export default function ColorPickerButton() {
+  _s();
+  const { methodColors, rarityColors, setMethodColors, setRarityColors } = useContext(ColorContext);
+  const [open, setOpen] = useState(false);
+  const [mColors, setMColors] = useState(methodColors);
+  const [rColors, setRColors] = useState(rarityColors);
+  useEffect(() => {
+    setMColors(methodColors);
+  }, [methodColors]);
+  useEffect(() => {
+    setRColors(rarityColors);
+  }, [rarityColors]);
+  const btnStyle = {
+    padding: "6px 10px",
+    borderRadius: 10,
+    border: "1px solid #2a2a2a",
+    background: "linear-gradient(180deg,#2b2b2b,#1b1b1b)",
+    color: "#eaeaea",
+    fontWeight: 700,
+    cursor: "pointer",
+    boxShadow: "0 4px 16px rgba(0,0,0,.3)"
+  };
+  const overlayStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    background: "rgba(0,0,0,0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1e3
+  };
+  const modalStyle = {
+    background: "var(--surface)",
+    color: "var(--text)",
+    padding: 20,
+    width: "90%",
+    maxWidth: 600,
+    maxHeight: "80%",
+    overflowY: "auto",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-2)"
+  };
+  const sectionStyle = { marginBottom: 20 };
+  const rowStyle = { display: "flex", alignItems: "center", gap: 12, marginBottom: 8 };
+  const labelStyle = { width: 140, fontWeight: 600 };
+  const onSave = () => {
+    setMethodColors(mColors);
+    setRarityColors(rColors);
+    try {
+      localStorage.setItem("methodColors", JSON.stringify(mColors));
+      localStorage.setItem("rarityColors", JSON.stringify(rColors));
+    } catch {
+    }
+    setOpen(false);
+  };
+  const onDefault = () => {
+    setMColors(DEFAULT_METHOD_COLORS);
+    setRColors(DEFAULT_RARITY_COLORS);
+  };
+  const renderInputs = (colors, setter) => Object.entries(colors).map(
+    ([key, val]) => /* @__PURE__ */ jsxDEV("div", { style: rowStyle, children: [
+      /* @__PURE__ */ jsxDEV("span", { style: labelStyle, children: key }, void 0, false, {
+        fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+        lineNumber: 68,
+        columnNumber: 9
+      }, this),
+      /* @__PURE__ */ jsxDEV("input", { type: "color", value: stripAlpha(val), onChange: (e) => setter((prev) => ({ ...prev, [key]: e.target.value + "ff" })) }, void 0, false, {
+        fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+        lineNumber: 69,
+        columnNumber: 9
+      }, this)
+    ] }, key, true, {
+      fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+      lineNumber: 67,
+      columnNumber: 3
+    }, this)
+  );
+  return /* @__PURE__ */ jsxDEV(Fragment, { children: [
+    /* @__PURE__ */ jsxDEV("button", { style: btnStyle, onClick: () => setOpen(true), title: "Choose Colors", children: "Choose Colors" }, void 0, false, {
+      fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+      lineNumber: 76,
+      columnNumber: 7
+    }, this),
+    open && /* @__PURE__ */ jsxDEV("div", { style: overlayStyle, onClick: () => setOpen(false), children: /* @__PURE__ */ jsxDEV("div", { style: modalStyle, onClick: (e) => e.stopPropagation(), children: [
+      /* @__PURE__ */ jsxDEV("div", { style: sectionStyle, children: [
+        /* @__PURE__ */ jsxDEV("div", { style: { fontWeight: 800, marginBottom: 8 }, children: "Method Colors" }, void 0, false, {
+          fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+          lineNumber: 81,
+          columnNumber: 15
+        }, this),
+        renderInputs(mColors, setMColors)
+      ] }, void 0, true, {
+        fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+        lineNumber: 80,
+        columnNumber: 13
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { style: sectionStyle, children: [
+        /* @__PURE__ */ jsxDEV("div", { style: { fontWeight: 800, marginBottom: 8 }, children: "Rarity Colors" }, void 0, false, {
+          fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+          lineNumber: 85,
+          columnNumber: 15
+        }, this),
+        renderInputs(rColors, setRColors)
+      ] }, void 0, true, {
+        fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+        lineNumber: 84,
+        columnNumber: 13
+      }, this),
+      /* @__PURE__ */ jsxDEV("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 12 }, children: [
+        /* @__PURE__ */ jsxDEV("button", { style: btnStyle, onClick: onDefault, children: "Default" }, void 0, false, {
+          fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+          lineNumber: 89,
+          columnNumber: 15
+        }, this),
+        /* @__PURE__ */ jsxDEV("button", { style: btnStyle, onClick: onSave, children: "Save" }, void 0, false, {
+          fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+          lineNumber: 90,
+          columnNumber: 15
+        }, this)
+      ] }, void 0, true, {
+        fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+        lineNumber: 88,
+        columnNumber: 13
+      }, this)
+    ] }, void 0, true, {
+      fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+      lineNumber: 79,
+      columnNumber: 11
+    }, this) }, void 0, false, {
+      fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+      lineNumber: 78,
+      columnNumber: 7
+    }, this)
+  ] }, void 0, true, {
+    fileName: "C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx",
+    lineNumber: 75,
+    columnNumber: 5
+  }, this);
+}
+_s(ColorPickerButton, "/Adzcz5uM8/NMlIjWeYJUVHVb8A=");
+_c = ColorPickerButton;
+function stripAlpha(hex) {
+  if (typeof hex !== "string") return "#000000";
+  return hex.length === 9 ? hex.slice(0, 7) : hex;
+}
+var _c;
+$RefreshReg$(_c, "ColorPickerButton");
+if (import.meta.hot && !inWebWorker) {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+if (import.meta.hot && !inWebWorker) {
+  RefreshRuntime.__hmr_import(import.meta.url).then((currentExports) => {
+    RefreshRuntime.registerExportsForReactRefresh("C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx", currentExports);
+    import.meta.hot.accept((nextExports) => {
+      if (!nextExports) return;
+      const invalidateMessage = RefreshRuntime.validateRefreshBoundaryAndEnqueueUpdate("C:/dev/pokemmo-tool/src/components/ColorPickerButton.jsx", currentExports, nextExports);
+      if (invalidateMessage) import.meta.hot.invalidate(invalidateMessage);
+    });
+  });
+}
+
+//# sourceMappingURL=data:application/json;base64,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QUFBO0FBQUE7QUFBQSxlQUE4QztBQUFBLFdBRmhEO0FBQUE7QUFBQTtBQUFBO0FBQUEsYUFHQTtBQUFBLFNBWkY7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQWFBLEtBZEY7QUFBQTtBQUFBO0FBQUE7QUFBQSxXQWVBO0FBQUEsT0FsQko7QUFBQTtBQUFBO0FBQUE7QUFBQSxTQW9CQTtBQUVKO0FBQUN2QyxHQTFFdUJELG1CQUFpQjtBQUFBNkQsS0FBakI3RDtBQTRFeEIsU0FBU3NELFdBQVdRLEtBQUk7QUFDdEIsTUFBSSxPQUFPQSxRQUFRLFNBQVUsUUFBTztBQUNwQyxTQUFPQSxJQUFJQyxXQUFXLElBQUlELElBQUlFLE1BQU0sR0FBRSxDQUFDLElBQUlGO0FBQzdDO0FBQUMsSUFBQUQ7QUFBQUksYUFBQUosSUFBQSIsIm5hbWVzIjpbIlJlYWN0IiwidXNlQ29udGV4dCIsInVzZUVmZmVjdCIsInVzZVN0YXRlIiwiQ29sb3JDb250ZXh0IiwiREVGQVVMVF9NRVRIT0RfQ09MT1JTIiwiREVGQVVMVF9SQVJJVFlfQ09MT1JTIiwiQ29sb3JQaWNrZXJCdXR0b24iLCJfcyIsIm1ldGhvZENvbG9ycyIsInJhcml0eUNvbG9ycyIsInNldE1ldGhvZENvbG9ycyIsInNldFJhcml0eUNvbG9ycyIsIm9wZW4iLCJzZXRPcGVuIiwibUNvbG9ycyIsInNldE1Db2xvcnMiLCJyQ29sb3JzIiwic2V0UkNvbG9ycyIsImJ0blN0eWxlIiwicGFkZGluZyIsImJvcmRlclJhZGl1cyIsImJvcmRlciIsImJhY2tncm91bmQiLCJjb2xvciIsImZvbnRXZWlnaHQiLCJjdXJzb3IiLCJib3hTaGFkb3ciLCJvdmVybGF5U3R5bGUiLCJwb3NpdGlvbiIsInRvcCIsImxlZnQiLCJ3aWR0aCIsImhlaWdodCIsImRpc3BsYXkiLCJhbGlnbkl0ZW1zIiwianVzdGlmeUNvbnRlbnQiLCJ6SW5kZXgiLCJtb2RhbFN0eWxlIiwibWF4V2lkdGgiLCJtYXhIZWlnaHQiLCJvdmVyZmxvd1kiLCJzZWN0aW9uU3R5bGUiLCJtYXJnaW5Cb3R0b20iLCJyb3dTdHlsZSIsImdhcCIsImxhYmVsU3R5bGUiLCJvblNhdmUiLCJsb2NhbFN0b3JhZ2UiLCJzZXRJdGVtIiwiSlNPTiIsInN0cmluZ2lmeSIsIm9uRGVmYXVsdCIsInJlbmRlcklucHV0cyIsImNvbG9ycyIsInNldHRlciIsIk9iamVjdCIsImVudHJpZXMiLCJtYXAiLCJrZXkiLCJ2YWwiLCJzdHJpcEFscGhhIiwiZSIsInByZXYiLCJ0YXJnZXQiLCJ2YWx1ZSIsInN0b3BQcm9wYWdhdGlvbiIsIm1hcmdpblRvcCIsIl9jIiwiaGV4IiwibGVuZ3RoIiwic2xpY2UiLCIkUmVmcmVzaFJlZyQiXSwiaWdub3JlTGlzdCI6W10sInNvdXJjZXMiOlsiQ29sb3JQaWNrZXJCdXR0b24uanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VDb250ZXh0LCB1c2VFZmZlY3QsIHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnO1xyXG5pbXBvcnQgeyBDb2xvckNvbnRleHQsIERFRkFVTFRfTUVUSE9EX0NPTE9SUywgREVGQVVMVF9SQVJJVFlfQ09MT1JTIH0gZnJvbSAnLi4vY29sb3JDb25maWcuanMnO1xyXG5cclxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gQ29sb3JQaWNrZXJCdXR0b24oKXtcclxuICBjb25zdCB7IG1ldGhvZENvbG9ycywgcmFyaXR5Q29sb3JzLCBzZXRNZXRob2RDb2xvcnMsIHNldFJhcml0eUNvbG9ycyB9ID0gdXNlQ29udGV4dChDb2xvckNvbnRleHQpO1xyXG4gIGNvbnN0IFtvcGVuLCBzZXRPcGVuXSA9IHVzZVN0YXRlKGZhbHNlKTtcclxuICBjb25zdCBbbUNvbG9ycywgc2V0TUNvbG9yc10gPSB1c2VTdGF0ZShtZXRob2RDb2xvcnMpO1xyXG4gIGNvbnN0IFtyQ29sb3JzLCBzZXRSQ29sb3JzXSA9IHVzZVN0YXRlKHJhcml0eUNvbG9ycyk7XHJcblxyXG4gIHVzZUVmZmVjdCgoKT0+eyBzZXRNQ29sb3JzKG1ldGhvZENvbG9ycyk7IH0sIFttZXRob2RDb2xvcnNdKTtcclxuICB1c2VFZmZlY3QoKCk9Pnsgc2V0UkNvbG9ycyhyYXJpdHlDb2xvcnMpOyB9LCBbcmFyaXR5Q29sb3JzXSk7XHJcblxyXG4gIGNvbnN0IGJ0blN0eWxlID0ge1xyXG4gICAgcGFkZGluZzonNnB4IDEwcHgnLCBib3JkZXJSYWRpdXM6MTAsIGJvcmRlcjonMXB4IHNvbGlkICMyYTJhMmEnLFxyXG4gICAgYmFja2dyb3VuZDonbGluZWFyLWdyYWRpZW50KDE4MGRlZywjMmIyYjJiLCMxYjFiMWIpJywgY29sb3I6JyNlYWVhZWEnLFxyXG4gICAgZm9udFdlaWdodDo3MDAsIGN1cnNvcjoncG9pbnRlcicsIGJveFNoYWRvdzonMCA0cHggMTZweCByZ2JhKDAsMCwwLC4zKSdcclxuICB9O1xyXG4gIGNvbnN0IG92ZXJsYXlTdHlsZSA9IHtcclxuICAgIHBvc2l0aW9uOidmaXhlZCcsIHRvcDowLCBsZWZ0OjAsIHdpZHRoOicxMDB2dycsIGhlaWdodDonMTAwdmgnLFxyXG4gICAgYmFja2dyb3VuZDoncmdiYSgwLDAsMCwwLjcpJywgZGlzcGxheTonZmxleCcsIGFsaWduSXRlbXM6J2NlbnRlcicsXHJcbiAgICBqdXN0aWZ5Q29udGVudDonY2VudGVyJywgekluZGV4OjEwMDBcclxuICB9O1xyXG4gIGNvbnN0IG1vZGFsU3R5bGUgPSB7XHJcbiAgICBiYWNrZ3JvdW5kOid2YXIoLS1zdXJmYWNlKScsIGNvbG9yOid2YXIoLS10ZXh0KScsIHBhZGRpbmc6MjAsXHJcbiAgICB3aWR0aDonOTAlJywgbWF4V2lkdGg6NjAwLCBtYXhIZWlnaHQ6JzgwJScsIG92ZXJmbG93WTonYXV0bycsXHJcbiAgICBib3JkZXJSYWRpdXM6J3ZhcigtLXJhZGl1cy1sZyknLCBib3hTaGFkb3c6J3ZhcigtLXNoYWRvdy0yKSdcclxuICB9O1xyXG4gIGNvbnN0IHNlY3Rpb25TdHlsZSA9IHsgbWFyZ2luQm90dG9tOjIwIH07XHJcbiAgY29uc3Qgcm93U3R5bGUgPSB7IGRpc3BsYXk6J2ZsZXgnLCBhbGlnbkl0ZW1zOidjZW50ZXInLCBnYXA6MTIsIG1hcmdpbkJvdHRvbTo4IH07XHJcbiAgY29uc3QgbGFiZWxTdHlsZSA9IHsgd2lkdGg6MTQwLCBmb250V2VpZ2h0OjYwMCB9O1xyXG5cclxuICBjb25zdCBvblNhdmUgPSAoKSA9PiB7XHJcbiAgICBzZXRNZXRob2RDb2xvcnMobUNvbG9ycyk7XHJcbiAgICBzZXRSYXJpdHlDb2xvcnMockNvbG9ycyk7XHJcbiAgICB0cnkge1xyXG4gICAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgnbWV0aG9kQ29sb3JzJywgSlNPTi5zdHJpbmdpZnkobUNvbG9ycykpO1xyXG4gICAgICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbSgncmFyaXR5Q29sb3JzJywgSlNPTi5zdHJpbmdpZnkockNvbG9ycykpO1xyXG4gICAgfSBjYXRjaCB7fVxyXG4gICAgc2V0T3BlbihmYWxzZSk7XHJcbiAgfTtcclxuICBjb25zdCBvbkRlZmF1bHQgPSAoKSA9PiB7XHJcbiAgICBzZXRNQ29sb3JzKERFRkFVTFRfTUVUSE9EX0NPTE9SUyk7XHJcbiAgICBzZXRSQ29sb3JzKERFRkFVTFRfUkFSSVRZX0NPTE9SUyk7XHJcbiAgfTtcclxuXHJcbiAgY29uc3QgcmVuZGVySW5wdXRzID0gKGNvbG9ycywgc2V0dGVyKSA9PiAoXHJcbiAgICBPYmplY3QuZW50cmllcyhjb2xvcnMpLm1hcCgoW2tleSx2YWxdKSA9PiAoXHJcbiAgICAgIDxkaXYga2V5PXtrZXl9IHN0eWxlPXtyb3dTdHlsZX0+XHJcbiAgICAgICAgPHNwYW4gc3R5bGU9e2xhYmVsU3R5bGV9PntrZXl9PC9zcGFuPlxyXG4gICAgICAgIDxpbnB1dCB0eXBlPVwiY29sb3JcIiB2YWx1ZT17c3RyaXBBbHBoYSh2YWwpfSBvbkNoYW5nZT17ZT0+IHNldHRlcihwcmV2PT4oeyAuLi5wcmV2LCBba2V5XTogZS50YXJnZXQudmFsdWUgKyAnZmYnIH0pKX0gLz5cclxuICAgICAgPC9kaXY+XHJcbiAgICApKVxyXG4gICk7XHJcblxyXG4gIHJldHVybiAoXHJcbiAgICA8PlxyXG4gICAgICA8YnV0dG9uIHN0eWxlPXtidG5TdHlsZX0gb25DbGljaz17KCk9PnNldE9wZW4odHJ1ZSl9IHRpdGxlPVwiQ2hvb3NlIENvbG9yc1wiPkNob29zZSBDb2xvcnM8L2J1dHRvbj5cclxuICAgICAge29wZW4gJiYgKFxyXG4gICAgICAgIDxkaXYgc3R5bGU9e292ZXJsYXlTdHlsZX0gb25DbGljaz17KCk9PnNldE9wZW4oZmFsc2UpfT5cclxuICAgICAgICAgIDxkaXYgc3R5bGU9e21vZGFsU3R5bGV9IG9uQ2xpY2s9e2U9PmUuc3RvcFByb3BhZ2F0aW9uKCl9PlxyXG4gICAgICAgICAgICA8ZGl2IHN0eWxlPXtzZWN0aW9uU3R5bGV9PlxyXG4gICAgICAgICAgICAgIDxkaXYgc3R5bGU9e3sgZm9udFdlaWdodDo4MDAsIG1hcmdpbkJvdHRvbTo4IH19Pk1ldGhvZCBDb2xvcnM8L2Rpdj5cclxuICAgICAgICAgICAgICB7cmVuZGVySW5wdXRzKG1Db2xvcnMsIHNldE1Db2xvcnMpfVxyXG4gICAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICAgICAgPGRpdiBzdHlsZT17c2VjdGlvblN0eWxlfT5cclxuICAgICAgICAgICAgICA8ZGl2IHN0eWxlPXt7IGZvbnRXZWlnaHQ6ODAwLCBtYXJnaW5Cb3R0b206OCB9fT5SYXJpdHkgQ29sb3JzPC9kaXY+XHJcbiAgICAgICAgICAgICAge3JlbmRlcklucHV0cyhyQ29sb3JzLCBzZXRSQ29sb3JzKX1cclxuICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICAgIDxkaXYgc3R5bGU9e3sgZGlzcGxheTonZmxleCcsIGp1c3RpZnlDb250ZW50OidmbGV4LWVuZCcsIGdhcDo4LCBtYXJnaW5Ub3A6MTIgfX0+XHJcbiAgICAgICAgICAgICAgPGJ1dHRvbiBzdHlsZT17YnRuU3R5bGV9IG9uQ2xpY2s9e29uRGVmYXVsdH0+RGVmYXVsdDwvYnV0dG9uPlxyXG4gICAgICAgICAgICAgIDxidXR0b24gc3R5bGU9e2J0blN0eWxlfSBvbkNsaWNrPXtvblNhdmV9PlNhdmU8L2J1dHRvbj5cclxuICAgICAgICAgICAgPC9kaXY+XHJcbiAgICAgICAgICA8L2Rpdj5cclxuICAgICAgICA8L2Rpdj5cclxuICAgICAgKX1cclxuICAgIDwvPlxyXG4gICk7XHJcbn1cclxuXHJcbmZ1bmN0aW9uIHN0cmlwQWxwaGEoaGV4KXtcclxuICBpZiAodHlwZW9mIGhleCAhPT0gJ3N0cmluZycpIHJldHVybiAnIzAwMDAwMCc7XHJcbiAgcmV0dXJuIGhleC5sZW5ndGggPT09IDkgPyBoZXguc2xpY2UoMCw3KSA6IGhleDtcclxufSJdLCJmaWxlIjoiQzovZGV2L3Bva2VtbW8tdG9vbC9zcmMvY29tcG9uZW50cy9Db2xvclBpY2tlckJ1dHRvbi5qc3gifQ==

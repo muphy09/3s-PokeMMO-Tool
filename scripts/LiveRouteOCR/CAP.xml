@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<root>
+    <header>ASUS_AURA</header>
+    <funcid>2</funcid>
+    <device key="Group">
+        <ledlist>
+            <ledcount>20</ledcount>
+            <led key="0">
+                <location>1004</location>
+                <locationname>Location_Mem_0</locationname>
+                <type>-1</type>
+            </led>
+            <led key="1">
+                <location>1004</location>
+                <locationname>Location_Mem_1</locationname>
+                <type>-1</type>
+            </led>
+            <led key="2">
+                <location>1004</location>
+                <locationname>Location_Mem_2</locationname>
+                <type>-1</type>
+            </led>
+            <led key="3">
+                <location>1004</location>
+                <locationname>Location_Mem_3</locationname>
+                <type>-1</type>
+            </led>
+            <led key="4">
+                <location>1004</location>
+                <locationname>Location_Mem_4</locationname>
+                <type>-1</type>
+            </led>
+            <led key="5">
+                <location>1004</location>
+                <locationname>Location_Mem_0</locationname>
+                <type>-1</type>
+            </led>
+            <led key="6">
+                <location>1004</location>
+                <locationname>Location_Mem_1</locationname>
+                <type>-1</type>
+            </led>
+            <led key="7">
+                <location>1004</location>
+                <locationname>Location_Mem_2</locationname>
+                <type>-1</type>
+            </led>
+            <led key="8">
+                <location>1004</location>
+                <locationname>Location_Mem_3</locationname>
+                <type>-1</type>
+            </led>
+            <led key="9">
+                <location>1004</location>
+                <locationname>Location_Mem_4</locationname>
+                <type>-1</type>
+            </led>
+            <led key="10">
+                <location>1004</location>
+                <locationname>Location_Mem_0</locationname>
+                <type>-1</type>
+            </led>
+            <led key="11">
+                <location>1004</location>
+                <locationname>Location_Mem_1</locationname>
+                <type>-1</type>
+            </led>
+            <led key="12">
+                <location>1004</location>
+                <locationname>Location_Mem_2</locationname>
+                <type>-1</type>
+            </led>
+            <led key="13">
+                <location>1004</location>
+                <locationname>Location_Mem_3</locationname>
+                <type>-1</type>
+            </led>
+            <led key="14">
+                <location>1004</location>
+                <locationname>Location_Mem_4</locationname>
+                <type>-1</type>
+            </led>
+            <led key="15">
+                <location>1004</location>
+                <locationname>Location_Mem_0</locationname>
+                <type>-1</type>
+            </led>
+            <led key="16">
+                <location>1004</location>
+                <locationname>Location_Mem_1</locationname>
+                <type>-1</type>
+            </led>
+            <led key="17">
+                <location>1004</location>
+                <locationname>Location_Mem_2</locationname>
+                <type>-1</type>
+            </led>
+            <led key="18">
+                <location>1004</location>
+                <locationname>Location_Mem_3</locationname>
+                <type>-1</type>
+            </led>
+            <led key="19">
+                <location>1004</location>
+                <locationname>Location_Mem_4</locationname>
+                <type>-1</type>
+            </led>
+        </ledlist>
+        <ecmodelist>
+            <mode key="1">
+                <name>Static</name>
+                <cansetcolor>1</cansetcolor>
+                <cansetspeed>0</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="2">
+                <name>Breathing</name>
+                <cansetcolor>1</cansetcolor>
+                <cansetspeed>0</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="4">
+                <name>Color cycle</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>0</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="5">
+                <name>Rainbow</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="8">
+                <name>Comet</name>
+                <cansetcolor>1</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>1</cansetdirection>
+            </mode>
+            <mode key="10">
+                <name>Flash and Dash</name>
+                <cansetcolor>1</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>1</cansetdirection>
+            </mode>
+            <mode key="11">
+                <name>Wave</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="12">
+                <name>Glowing Yoyo</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="13">
+                <name>Starry-Night</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>1</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="17">
+                <name>Strobing</name>
+                <cansetcolor>1</cansetcolor>
+                <cansetspeed>0</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+            <mode key="19">
+                <name>Music</name>
+                <cansetcolor>0</cansetcolor>
+                <cansetspeed>0</cansetspeed>
+                <cansetdirection>0</cansetdirection>
+            </mode>
+        </ecmodelist>
+    </device>
+</root>

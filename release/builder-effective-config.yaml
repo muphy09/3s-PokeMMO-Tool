@@ -19,12 +19,6 @@ files:
       - '!resources/LiveRouteOCR/**'
       - '!**/*.map'
 extraResources:
-  - from: resources/LiveRouteOCR/
-    to: LiveRouteOCR
-    filter:
-      - '**/*'
-  - from: LiveRouteOCR/LiveRouteOCR.zip
-    to: LiveRouteOCR.zip
   - from: resources/icon.ico
     to: icon.ico
 win:
@@ -36,6 +30,26 @@ win:
     - target: zip
       arch:
         - x64
+  extraResources:
+    - from: resources/LiveRouteOCR/
+      to: LiveRouteOCR
+      filter:
+        - '**/*'
+    - from: LiveRouteOCR/LiveRouteOCR.zip
+      to: LiveRouteOCR.zip
+linux:
+  icon: resources/icon.png
+  target:
+    - AppImage
+    - tar.gz
+mac:
+  icon: resources/icon.icns
+  target:
+    - dmg
+    - zip
+nsis:
+  createDesktopShortcut: always
+  shortcutName: 3s PokeMMO Tool
 artifactName: 3s-PokeMMO-Tool-${version}-${os}-${arch}.${ext}
 publish:
   - provider: github

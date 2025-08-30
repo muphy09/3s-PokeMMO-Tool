@@ -1,0 +1,33 @@
+directories:
+  output: release
+  buildResources: resources
+  app: .
+appId: com.pokemmo.tool
+productName: 3's PokeMMO Tool
+asar: true
+extraMetadata:
+  main: electron/main.js
+files:
+  - filter:
+      - dist/**
+      - electron/**
+      - assets/**
+      - package.json
+      - '!release/**'
+      - '!resources/live-helper/**'
+      - '!**/*.map'
+extraResources:
+  - from: resources/live-helper
+    to: live-helper
+    filter:
+      - '**/*'
+  - from: resources/icon.ico
+    to: icon.ico
+win:
+  icon: resources/icon.ico
+  target:
+    - target: portable
+      arch:
+        - x64
+artifactName: ${productName} v${version}.${ext}
+electronVersion: 30.5.1

@@ -1064,6 +1064,64 @@ class LiveRouteClient {
 }
 const liveRouteClient = new LiveRouteClient();
 
+class LiveBattleClient {
+  constructor(){
+    this.ws = null;
+    this.listeners = new Set();
+    this.reconnectTimer = null;
+    this.pathToggle = false;
+    this.lastMsgTs = 0;
+    this.lastPayload = null;
+  }
+  connect(){
+    if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
+    try{
+      const url = this.pathToggle ? 'ws://127.0.0.1:8765/battle/' : 'ws://127.0.0.1:8765/battle';
+      this.ws = new WebSocket(url);
+      this.ws.onmessage = (ev) => {
+        this.lastMsgTs = Date.now();
+        let payload = ev.data;
+        try { payload = JSON.parse(ev.data); } catch {}
+        this.lastPayload = payload;
+        this.listeners.forEach(fn => fn(payload));
+      };
+      const onClose = () => {
+        this.pathToggle = !this.pathToggle;
+        this.scheduleReconnect();
+      };
+      this.ws.onclose = onClose;
+      this.ws.onerror = onClose;
+    }catch{
+      this.scheduleReconnect();
+    }
+  }
+  on(fn){
+    this.listeners.add(fn);
+    if (this.lastPayload !== null) {
+      try { fn(this.lastPayload); } catch {}
+    }
+    return () => this.listeners.delete(fn);
+  }
+  scheduleReconnect(){
+    if (this.reconnectTimer) return;
+    this.reconnectTimer = window.setTimeout(()=> {
+      this.reconnectTimer = null;
+      this.connect();
+    }, 1500);
+  }
+  isOpen(){
+    return !!this.ws && this.ws.readyState === WebSocket.OPEN;
+  }
+  forceReconnect(){
+    try { if (this.ws) this.ws.close(); } catch {}
+    this.ws = null;
+    this.lastPayload = null;
+    this.pathToggle = !this.pathToggle;
+    setTimeout(()=> this.connect(), 100);
+  }
+}
+const liveBattleClient = new LiveBattleClient();
+
 function coerceIncoming(msg){
   if (!msg) return null;
   if (typeof msg === 'string') {
@@ -1090,6 +1148,23 @@ function coerceIncoming(msg){
   let c = src.confidence ?? src.conf ?? src.c
   if (typeof c === 'string') { const f = parseFloat(c); if (!Number.isNaN(f)) c = f; }
   return (t !== null) ? { routeText: t, confidence: c } : null;
+}
+
+function coerceBattleIncoming(msg){
+  if (!msg) return null;
+  if (typeof msg === 'string') {
+    if (msg.trim() === 'NO_MON') return { monText: '', confidence: 0 };
+    const mTagged = msg.match(/^(?:MON\|mon:)?\s*(.+)$/i);
+    if (mTagged) return { monText: mTagged[1], confidence: null };
+    return { monText: msg, confidence: null };
+  }
+  const src = msg.payload || msg.data || msg;
+  let t = src.text ?? src.mon ?? src.name ?? null;
+  if (!t && typeof src.line === 'string') t = src.line;
+  if (!t && typeof src.message === 'string') t = src.message;
+  let c = src.confidence ?? src.conf ?? src.c;
+  if (typeof c === 'string') { const f = parseFloat(c); if (!Number.isNaN(f)) c = f; }
+  return (t !== null) ? { monText: t, confidence: c } : null;
 }
 
 /* ---------- RegionPicker (segmented buttons, right-aligned) ---------- */
@@ -1326,6 +1401,111 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   );
 }
 
+/* ======================= LIVE BATTLE PANEL ======================= */
+function LiveBattlePanel({ onViewMon }){
+  const [rawText, setRawText] = useState('');
+  const [confidence, setConfidence] = useState(null);
+  const [mon, setMon] = useState(null);
+  const [connected, setConnected] = useState(false);
+  const [isStale, setIsStale] = useState(false);
+
+  useEffect(() => {
+    const off = liveBattleClient.on((msg) => {
+      const coerced = coerceBattleIncoming(msg);
+      if (!coerced) return;
+      const cleaned = normalizeHudText(coerced.monText);
+      setRawText(cleaned);
+      setConfidence(coerced.confidence ?? null);
+      setMon(getMon(cleaned));
+    });
+
+    liveBattleClient.connect();
+
+    const pulse = setInterval(() => {
+      setConnected(liveBattleClient.isOpen());
+      const last = liveBattleClient.lastMsgTs || 0;
+      setIsStale(!!rawText && Date.now() - last > STALE_AFTER_MS);
+    }, 1000);
+
+    const onForce = () => {
+      setRawText('');
+      setConfidence(null);
+      setMon(null);
+      liveBattleClient.forceReconnect();
+    };
+    window.addEventListener('force-live-reconnect', onForce);
+
+    const onVis = () => {
+      if (document.visibilityState === 'visible') {
+        const stale = Date.now() - (liveBattleClient.lastMsgTs || 0) > STALE_AFTER_MS;
+        if (!liveBattleClient.isOpen() || stale) {
+          liveBattleClient.forceReconnect();
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', onVis);
+    const onFocus = () => {
+      const stale = Date.now() - (liveBattleClient.lastMsgTs || 0) > STALE_AFTER_MS;
+      if (!liveBattleClient.isOpen() || stale) {
+        liveBattleClient.forceReconnect();
+      }
+    };
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      off();
+      clearInterval(pulse);
+      window.removeEventListener('force-live-reconnect', onForce);
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [rawText]);
+
+  const statusPill = (() => {
+    if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
+    if (isStale)   return <span className="px-2 py-1 rounded-xl bg-yellow-600/20 text-yellow-300 text-xs">Stale</span>;
+    return <span className="px-2 py-1 rounded-xl bg-green-600/20 text-green-300 text-xs"></span>;
+  })();
+
+  const confPct = formatConfidence(confidence);
+
+  return (
+    <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
+      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
+        <div className="label-muted">
+          Live Battle: <span style={{ fontWeight:800 }}>{rawText || '—'}</span>
+          {SHOW_CONFIDENCE && (confPct !== null) && (
+            <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
+          )}
+        </div>
+        <div className="label-muted">{statusPill}</div>
+      </div>
+
+      {!rawText && (
+        <div className="label-muted">
+          <b>LiveRouteOCR</b> is attempting to find Battle Data.. be patient. Click into your PokeMMO window.
+        </div>
+      )}
+
+      {rawText && !mon && (
+        <div className="label-muted">No matching Pokémon found.</div>
+      )}
+
+      {mon && (
+        <div style={styles.areaCard}>
+          <button onClick={() => onViewMon?.(mon)} style={{ display:'flex', gap:12, width:'100%', textAlign:'left' }}>
+            <Sprite mon={mon} size={80} alt={mon.name} />
+            <div>
+              <div style={{ fontWeight:800, fontSize:16 }}>{titleCase(mon.name)}</div>
+              <div className="label-muted">#{mon.id}</div>
+            </div>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ======================= REVERSE AREAS → MON INDEX ======================= */
 function buildReverseAreasIndex(areasClean) {
   const rev = new Map();
@@ -1378,7 +1558,7 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live' | 'battle'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [lureOnly, setLureOnly] = useState(false);
@@ -1776,7 +1956,10 @@ function App(){
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               {isWindows && (
-                <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live</button>
+                <>
+                  <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
+                  <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
+                </>
               )}
             </div>
           </div>
@@ -1843,7 +2026,7 @@ function App(){
           )}
 
           {/* Context label + search input (hidden for Live) */}
-          {mode!=='live' && (
+          {mode!=='live' && mode!=='battle' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">
@@ -1953,6 +2136,15 @@ function App(){
             </div>
           )}
 
+          {/* Live battle panel */}
+          {mode==='battle' && isWindows && (
+            <div style={{ marginTop:4 }}>
+              <LiveBattlePanel
+                onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}
+              />
+            </div>
+          )}
+          
           {/* Pokémon results */}
           {mode==='pokemon' && !!results.length && (
             <div className="result-grid" style={{ marginTop:12 }}>
