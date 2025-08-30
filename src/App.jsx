@@ -832,6 +832,20 @@ function stripTimeTag(name=''){
   return String(name).replace(/\s*\((Morning|Day|Night)\)\s*$/i, '').trim();
 }
 
+// Determine if two map names should be considered a match. If the query begins
+// with "Route <number>", only maps with the exact same route number match.
+// Otherwise fall back to a simple substring check (case-insensitive).
+function mapNameMatches(candidate, needle){
+  const cand = stripTimeTag(candidate).toLowerCase();
+  const search = stripTimeTag(needle).toLowerCase();
+  const routeNeedle = search.match(/^route\s*(\d+)\b/);
+  if (routeNeedle){
+    const routeCand = cand.match(/^route\s*(\d+)\b/);
+    return routeCand && routeCand[1] === routeNeedle[1];
+  }
+  return cand.includes(search);
+}
+
 function lookupRarity(monName, region, map, locIndex){
   const entry = locIndex[normalizeKey(monName)];
   if (!entry) return '';
@@ -942,24 +956,22 @@ function findBestMapInText(text, areasIndex){
 
 /* ---------- Region candidates + helpers ---------- */
 function listRegionCandidates(areasIndex, displayMap){
-  const base = stripTimeTag(displayMap).toLowerCase();
   const out = [];
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
-      const norm = normalizeMapForGrouping(region, mapName).toLowerCase();
-      if (norm.includes(base)) { out.push(region); break; }
+      const norm = normalizeMapForGrouping(region, mapName);
+      if (mapNameMatches(norm, displayMap)) { out.push(region); break; }
     }
   }
   return [...new Set(out)];
 }
 function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lureOnly = false){
   const merged = [];
-  const base = stripTimeTag(displayMap).toLowerCase();
   for (const [reg, maps] of Object.entries(areasIndex || {})) {
     if (regionFilter && reg !== regionFilter) continue;
     for (const [mapName, list] of Object.entries(maps || {})) {
       const norm = normalizeMapForGrouping(reg, mapName);
-      if (norm.toLowerCase().includes(base)) {
+      if (mapNameMatches(norm, displayMap)) {
         const time = extractTimeTag(norm);
         const adjusted = time
           ? (list || []).map(e => ({ ...e, method: e.method ? `${e.method} (${time})` : `(${time})` }))
@@ -1421,7 +1433,7 @@ function LiveBattlePanel({ onViewMon }){
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
       let names = [];
-      const nameRegex = /([A-Za-z0-9.'-]+(?:\s+[A-Za-z0-9.'-]+)*)\s+Lv\.?\s*\d+/gi;
+      const nameRegex = /([A-Za-z0-9.'-]+(?:\s+(?!Lv\.?\b)[A-Za-z0-9.'-]+)*)\s+Lv\.?\s*\d+/gi;
       let match;
       while ((match = nameRegex.exec(cleaned)) !== null) {
         const n = match[1].trim();
@@ -1771,7 +1783,7 @@ function App(){
       if (regionKey !== 'all' && regionNorm !== regionKey) continue;
       for (const [mapName, entries] of Object.entries(maps)) {
         const displayMap = normalizeMapForGrouping(region, mapName);
-        if (!displayMap.toLowerCase().includes(q)) continue;
+        if (!mapNameMatches(displayMap, q)) continue;
         const key = `${region}|||${displayMap}`;
         if (!buckets.has(key)) buckets.set(key, { region, map: displayMap, entries: [] });
         buckets.get(key).entries.push(...entries);
