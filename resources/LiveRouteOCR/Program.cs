@@ -604,16 +604,29 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         using var pix = PixFromBitmap(pre);
                         using var page = engine.Process(pix, pass.Psm);
                         var raw = (page.GetText() ?? "").Trim();
-                        var lines = raw.Split('\n');
+                        var cleanedAll = Regex.Replace(raw, "[^A-Za-z0-9'\\- \\r\\n]", " ").Trim();
                         var names = new List<string>();
-                        foreach (var line in lines)
+                        
+                        var nameMatches = Regex.Matches(
+                            cleanedAll,
+                            "([A-Za-z][A-Za-z0-9.'\\-]*(?:\\s+(?!Lv\\.?\\b)[A-Za-z][A-Za-z0-9.'\\-]*)*)\\s+Lv\\.?\\s*\\d+",
+                            RegexOptions.IgnoreCase
+                        );
+                        foreach (Match m in nameMatches)
                         {
-                            var cleaned = Regex.Replace(line, @"[^A-Za-z0-9'\- ]", " ").Trim();
-                            if (!string.IsNullOrWhiteSpace(cleaned))
+                            var n = m.Groups[1].Value.Trim();
+                            if (!string.IsNullOrWhiteSpace(n)) names.Add(n);
+                        }
+
+                        if (names.Count == 0)
+                        {
+                            foreach (var line in cleanedAll.Split('\n'))
                             {
-                                names.Add(cleaned.Split(' ')[0]);
+                                var n = Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim();
+                                if (Regex.IsMatch(n, "[A-Za-z]")) names.Add(n);
                             }
                         }
+                        
                         if (names.Count > 0)
                         {
                             name = string.Join("\n", names);
