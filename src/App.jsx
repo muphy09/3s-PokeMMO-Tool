@@ -919,11 +919,17 @@ function scoreNames(a, b) {
 /** Find best map match across regions; returns { region, displayMap } or null. */
 function findBestMapName(hudText, areasIndex){
   if (!hudText) return null;
-  const needleKey = aliasKey(hudText);
-  const routeNeedle = needleKey.match(/^route(\d+)/);
+  const raw = String(hudText).trim();
+  const isRoute = /^route\s*\d+/i.test(raw);
+  const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
+  const routeNeedle = isRoute ? needleKey.match(/^route\s*(\d+)/) : needleKey.match(/^route(\d+)/);
   let best = null, bestScore = -1;
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
+      if (isRoute) {
+        if (!mapNameMatches(mapName, raw)) continue;
+        return { region, displayMap: normalizeMapForGrouping(region, mapName), rawMap: mapName };
+      }
       const candidateKey = aliasKey(mapName);
       if (routeNeedle) {
         const routeCand = candidateKey.match(/^route(\d+)/);
@@ -1443,7 +1449,7 @@ function LiveBattlePanel({ onViewMon }){
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
       let names = [];
-      const nameRegex = /([A-Za-z0-9.'-]+(?:\s+(?!Lv\.?\b)[A-Za-z0-9.'-]+)*)\s+Lv\.?\s*\d+/gi;
+      const nameRegex = /([A-Za-z][A-Za-z0-9.'-]*(?:\s+(?!Lv\.?\b)[A-Za-z][A-Za-z0-9.'-]*)*)\s+Lv\.?\s*\d+/gi;
       let match;
       while ((match = nameRegex.exec(cleaned)) !== null) {
         const n = match[1].trim();
@@ -1453,7 +1459,7 @@ function LiveBattlePanel({ onViewMon }){
         names = cleaned
           .split(/\n+/)
           .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
-          .filter(Boolean);
+          .filter(s => /[A-Za-z]/.test(s));
       }
       setMons(names.map(n => getMon(n)).filter(Boolean));
     });
