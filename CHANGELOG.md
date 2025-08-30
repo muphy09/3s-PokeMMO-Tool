@@ -3,6 +3,20 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.4.1]- 2025-08
+### Added
+- Held Item Filter!
+    - Filter Held Items in the Pokemon Search Tab.
+
+- Encounter Method Filter!
+  - Sort the Live Route Tab with a Method Filter now - Grass, Fishing, Water, Lure, & Rocks
+
+### Fixed
+- Searching "Route 1" no longer returns Routes containing 'Route 1' in the string
+- Live Battle Tab improvements *still in beta*
+
+---
+
 ## [2.4.0]- 2025-08
 ### Added
 - Live Battle Tab! *Beta* *Might not work as intended / at all for you yet*

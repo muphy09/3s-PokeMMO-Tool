@@ -38,6 +38,8 @@ function formatConfidence(c){
 const TRANSPARENT_PNG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
 
+  const ENCOUNTER_TYPES = ['Grass','Water','Rocks','Old Rod','Good Rod','Super Rod','Lure'];
+
 /* ---------- small style helpers ---------- */
 const styles = {
   segWrap: { display:'inline-flex', border:'1px solid #2f2f2f', background:'#171717', borderRadius:999, padding:4, gap:4 },
@@ -888,7 +890,7 @@ function stripTimeTag(name=''){
 }
 
 // Determine if two map names should be considered a match.
-// - Queries starting with "Route <number>" only match the exact same route number
+// - Queries like "Route <number>" or "<number>" only match the exact same route number
 // - Partial queries like "r", "ro", "route" etc. never match anything
 // - Bare "Route" queries (with or without trailing spaces) never match anything
 // - Otherwise fall back to a simple substring check (case-insensitive)
@@ -899,11 +901,10 @@ function mapNameMatches(candidate, needle){
   // If the search is a prefix of "route", do not match yet
   if ('route'.startsWith(search)) return false;
 
-  // If the query is of the form "route <number>" require an exact
-  // route-number match.  Anchor the regex to the end of the string so
-  // that partial queries like "route 1a" are not treated as "route 1".
-  const routeMatch = search.match(/^route\s*(\d+)\s*$/);
-  if (routeMatch){
+ // If the query is of the form "<number>" or "route <number>" require an exact
+  // route-number match.
+  const routeMatch = search.match(/^(?:route\s*)?(\d+)\s*$/);
+  if (routeMatch) {
     const candRoute = cand.match(/^route\s*(\d+)\b/);
     return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
   }
@@ -1051,7 +1052,7 @@ function listRegionCandidates(areasIndex, displayMap){
   }
   return [...new Set(out)];
 }
-function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lureOnly = false){
+function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, methodFilters = new Set()){
   const merged = [];
   for (const [reg, maps] of Object.entries(areasIndex || {})) {
     if (regionFilter && reg !== regionFilter) continue;
@@ -1075,14 +1076,19 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, lur
     });
     return g;
   });
-  if (lureOnly) {
+  if (methodFilters && methodFilters.size) {
     grouped = grouped
       .map(g => ({
         ...g,
-        encounters: g.encounters.filter(enc =>
-          (enc.method || '').toLowerCase().includes('lure') ||
-          (enc.rarities || []).some(r => r.toLowerCase().includes('lure'))
-        )
+        encounters: g.encounters.filter(enc => {
+          const method = (enc.method || '').toLowerCase();
+          const rarities = (enc.rarities || []).map(r => r.toLowerCase());
+          for (const f of methodFilters) {
+            const fL = String(f).toLowerCase();
+            if (method.includes(fL) || rarities.some(r => r.includes(fL))) return true;
+          }
+          return false;
+        })
       }))
       .filter(g => g.encounters.length);
   }
@@ -1310,10 +1316,37 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
   const [regionChoices, setRegionChoices] = useState([]);
-  const [lureOnly, setLureOnly] = useState(false);
+  const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
+  const filterRef = useRef(null);
+  const methodFiltersRef = useRef(methodFilters);
 
   const { caught, toggleCaught } = React.useContext(CaughtContext);
+
+  useEffect(() => { methodFiltersRef.current = methodFilters; }, [methodFilters]);
+
+  useEffect(() => {
+    const onDoc = (e) => {
+      if (filterRef.current && !filterRef.current.contains(e.target)) setShowFilterMenu(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
+
+  const toggleFilter = (m) => {
+    setMethodFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(m)) next.delete(m); else next.add(m);
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (displayMap) {
+      setEntries(buildGroupedEntries(areasIndex, displayMap, region, locIndex, methodFilters));
+    }
+  }, [methodFilters, areasIndex, displayMap, region, locIndex]);
 
   // Handle messages
   useEffect(() => {
@@ -1344,7 +1377,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
       setRegion(chosen);
       setDisplayMap(targetName);
-      setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex, lureOnly));
+      setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex, methodFiltersRef.current));
       });
 
     liveRouteClient.connect();
@@ -1395,7 +1428,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       window.removeEventListener('focus', onFocus);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areasIndex, locIndex, rawText, lureOnly]);
+  }, [areasIndex, locIndex, rawText]);
 
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
@@ -1411,7 +1444,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     if (displayMap) {
       const prefKey = `regionPref:${displayMap}`;
       localStorage.setItem(prefKey, r || '');
-      setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex, lureOnly));
+      setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex, methodFilters));
     }
   };
 
@@ -1425,14 +1458,31 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
           )}
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
-            <input
-              type="checkbox"
-              checked={lureOnly}
-              onChange={e=>setLureOnly(e.target.checked)}
-            />
-            Lure Only
-          </label>
+          <div ref={filterRef} style={{ position:'relative' }}>
+            <button
+              className="label-muted"
+              style={{ display:'flex', alignItems:'center', gap:4 }}
+              onClick={() => setShowFilterMenu(v => !v)}
+            >
+              Encounter Type ▾
+            </button>
+            {showFilterMenu && (
+              <div
+                style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'#1f1f1f', border:'1px solid #333', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+              >
+                {ENCOUNTER_TYPES.map(t => (
+                  <label key={t} className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                    <input
+                      type="checkbox"
+                      checked={methodFilters.has(t)}
+                      onChange={() => toggleFilter(t)}
+                    />
+                    {t}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
           <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
             <input
               type="checkbox"
