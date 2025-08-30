@@ -772,7 +772,10 @@ static Bitmap MaskBattleHud(Bitmap src)
         // Tesseract to occasionally recognise stray characters (like "E") when more
         // than one Pokémon is on screen.  Keeping only the upper portion with the name
         // bars improves OCR reliability.
-        int iconStartY = (int)(src.Height * 0.6);
+        // The party icons sit roughly halfway down the capture and can introduce
+        // stray characters ("E", "L" etc.) when more than one Pokémon is present.
+        // Crop a bit higher to ensure these icons are fully masked out.
+        int iconStartY = (int)(src.Height * 0.5);
         using (var g = Graphics.FromImage(outBmp))
         {
             g.DrawImage(src, 0, 0);

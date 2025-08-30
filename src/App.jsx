@@ -900,6 +900,11 @@ function aliasKey(s='') {
 function scoreNames(a, b) {
   if (!a || !b) return 0;
   if (a === b) return 100;
+
+  const routeA = a.match(/^route(\d+)/);
+  const routeB = b.match(/^route(\d+)/);
+  if (routeA && routeB && routeA[1] !== routeB[1]) return 0;
+
   let score = 0;
   if (a.startsWith(b) || b.startsWith(a)) score += 25;
   if (a.includes(b) || b.includes(a))   score += 20;
@@ -915,10 +920,15 @@ function scoreNames(a, b) {
 function findBestMapName(hudText, areasIndex){
   if (!hudText) return null;
   const needleKey = aliasKey(hudText);
+  const routeNeedle = needleKey.match(/^route(\d+)/);
   let best = null, bestScore = -1;
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
       const candidateKey = aliasKey(mapName);
+      if (routeNeedle) {
+        const routeCand = candidateKey.match(/^route(\d+)/);
+        if (!routeCand || routeCand[1] !== routeNeedle[1]) continue;
+      }
       if (candidateKey === needleKey) {
         return { region, displayMap: normalizeMapForGrouping(region, mapName), rawMap: mapName };
       }
