@@ -16,6 +16,13 @@ const POKEDEX = Array.isArray(rawDex) ? rawDex : [];
 const byDex = new Map();
 const bySlug = new Map();
 const byName = new Map();
+const list = [];
+
+// Index raw entries by id for quick form lookups
+const byId = new Map();
+for (const mon of POKEDEX) {
+  if (typeof mon.id === "number") byId.set(mon.id, mon);
+}
 
 for (const mon of POKEDEX) {
   const dexNum =
@@ -26,6 +33,7 @@ for (const mon of POKEDEX) {
       : null;
 
   const shaped = {
+    id: mon.id ?? null,
     dex: dexNum, // canonical id
     name: mon.name ?? "",
     slug: mon.slug ?? "",
@@ -40,13 +48,44 @@ for (const mon of POKEDEX) {
     catchRate: mon.catchRate ?? null,
   };
 
+  list.push(shaped);
   if (shaped.dex !== null) byDex.set(shaped.dex, shaped);
   if (shaped.slug) bySlug.set(norm(shaped.slug), shaped);
   if (shaped.name) byName.set(norm(shaped.name), shaped);
+
+  // Expand alternate forms (no dex numbers)
+  if (Array.isArray(mon.forms)) {
+    const baseSlug = mon.slug || norm(mon.name).replace(/\s+/g, "-");
+    for (const form of mon.forms) {
+      const formBase = byId.get(form.id) || {};
+      const raw = form.name || "";
+      const bracket = raw.match(/\[(.+)\]/);
+      let label = bracket ? bracket[1] : raw;
+      label = label.replace(new RegExp(`\\b${mon.name}\\b`, "i"), "").trim();
+      const formName = `${mon.name} (${label})`;
+      const formSlug = `${baseSlug}-${norm(label).replace(/\s+/g, "-")}`;
+      const fshaped = {
+        id: formBase.id ?? form.id ?? null,
+        dex: null,
+        name: formName,
+        slug: formSlug,
+        types: Array.isArray(formBase.types) ? formBase.types : shaped.types,
+        sprite: formBase.sprite ?? null,
+        sprites: formBase.sprites ?? null,
+        image: formBase.image ?? null,
+        icon: formBase.icon ?? null,
+        locations: formBase.locations ?? null,
+        catchRate: formBase.catchRate ?? null,
+      };
+      list.push(fshaped);
+      if (fshaped.slug) bySlug.set(norm(fshaped.slug), fshaped);
+      if (fshaped.name) byName.set(norm(fshaped.name), fshaped);
+    }
+  }
 }
 
 export function getAll() {
-  return [...byDex.values()].sort((a, b) => a.dex - b.dex);
+  return list;
 }
 export function getByDex(num) {
   return byDex.get(Number(num)) ?? null;
@@ -97,5 +136,5 @@ export function search(query, opts = {}) {
 }
 
 export function isPokedexLoaded() {
-  return POKEDEX.length > 0 && byDex.size > 0;
+  return POKEDEX.length > 0 && list.length > 0;
 }
