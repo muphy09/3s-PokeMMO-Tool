@@ -21,11 +21,10 @@ const list = [];
 // Gather known form IDs so we can skip their standalone entries
 const formIds = new Set();
 for (const mon of POKEDEX) {
-  if (Array.isArray(mon.forms)) {
-    for (const form of mon.forms) {
-      if (typeof form.id === "number" && form.id !== mon.id) {
-        formIds.add(form.id);
-      }
+  if (!Array.isArray(mon.forms)) continue;
+  for (const f of mon.forms) {
+    if (typeof f.id === "number" && f.id !== mon.id) {
+      formIds.add(f.id);
     }
   }
 }
@@ -71,12 +70,20 @@ for (const mon of POKEDEX) {
   if (Array.isArray(mon.forms)) {
     const baseSlug = mon.slug || norm(mon.name).replace(/\s+/g, "-");
     for (const form of mon.forms) {
-      const formBase = byId.get(form.id) || {};
-      const raw = form.name || "";
+      // Skip the base form (form_id 0 or name identical to the species)
+      if (form.form_id === 0 || form.name === mon.name) continue;
+
+      const formBase = {
+        ...(form.id != null ? byId.get(form.id) : {}),
+        ...form,
+      };
+
+      const raw = formBase.name || "";
       const bracket = raw.match(/\[(.+)\]/);
       let label = bracket ? bracket[1] : raw;
       label = label.replace(new RegExp(`\\b${mon.name}\\b`, "i"), "").trim();
       if (!label) continue;
+      
       const formName = `${mon.name} (${label})`;
       const formSlug = `${baseSlug}-${norm(label).replace(/\s+/g, "-")}`;
       const fshaped = {

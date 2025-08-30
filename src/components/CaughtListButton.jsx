@@ -49,11 +49,10 @@ function Sprite({ mon, size=32, alt='' }){
 // Skip standalone entries for alternate forms
 const FORM_IDS = new Set();
 for (const mon of dexRaw) {
-  if (Array.isArray(mon.forms)) {
-    for (const f of mon.forms) {
-      if (typeof f.id === 'number' && f.id !== mon.id) {
-        FORM_IDS.add(f.id);
-      }
+  if (!Array.isArray(mon.forms)) continue;
+  for (const f of mon.forms) {
+    if (typeof f.id === 'number' && f.id !== mon.id) {
+      FORM_IDS.add(f.id);
     }
   }
 }

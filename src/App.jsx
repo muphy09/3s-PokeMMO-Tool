@@ -77,11 +77,10 @@ const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 const RAW_DEX_BY_ID = new Map(dexRaw.map(m => [m.id, m]));
 const FORM_IDS = new Set();
 for (const mon of dexRaw) {
-  if (Array.isArray(mon.forms)) {
-    for (const f of mon.forms) {
-      if (typeof f.id === 'number' && f.id !== mon.id) {
-        FORM_IDS.add(f.id);
-      }
+  if (!Array.isArray(mon.forms)) continue;
+  for (const f of mon.forms) {
+    if (typeof f.id === 'number' && f.id !== mon.id) {
+      FORM_IDS.add(f.id);
     }
   }
 }
@@ -118,10 +117,14 @@ const DEX_LIST = dexRaw
     const base = toLegacyShape(m);
     if (Array.isArray(m.forms)) {
       base.forms = m.forms
-        .filter(f => f.id !== m.id)
+        // Skip the base form (form_id 0 or identical name)
+        .filter(f => f.form_id !== 0 && f.name !== m.name)
         .map(f => {
-          const formBase = RAW_DEX_BY_ID.get(f.id) || {};
-          const raw = f.name || '';
+          const formBase = {
+            ...(f.id != null ? RAW_DEX_BY_ID.get(f.id) : {}),
+            ...f,
+          };
+          const raw = formBase.name || '';
           const bracket = raw.match(/\[(.+)\]/);
           let label = bracket ? bracket[1] : raw;
           label = label.replace(new RegExp(`\\b${m.name}\\b`, 'i'), '').trim();
@@ -899,7 +902,8 @@ function mapNameMatches(candidate, needle){
   const routeMatch = search.match(/^route\s*(\d+)\b/);
   if (routeMatch){
     const candRoute = cand.match(/^route\s*(\d+)\b/);
-    return !!candRoute && candRoute[1] === routeMatch[1];
+    // Compare route numbers numerically to avoid "1" matching "10", etc.
+    return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
   }
 
   if (search.startsWith('route')) return false;
