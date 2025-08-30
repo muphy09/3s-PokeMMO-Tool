@@ -98,6 +98,10 @@
         "zip"
       ]
     },
+    "nsis": {
+      "createDesktopShortcut": "always",
+      "shortcutName": "3s PokeMMO Tool"
+    },
     "artifactName": "3s-PokeMMO-Tool-${version}-${os}-${arch}.${ext}",
     "publish": [
       {
