@@ -18,15 +18,22 @@ const bySlug = new Map();
 const byName = new Map();
 const list = [];
 
-// Index raw entries by id for quick form lookups
+// Gather known form IDs so we can skip their standalone entries
 const formIds = new Set();
 for (const mon of POKEDEX) {
-  if (typeof mon.id === "number") byId.set(mon.id, mon);
   if (Array.isArray(mon.forms)) {
-    for (const f of mon.forms) {
-      if (typeof f.id === "number" && f.id !== mon.id) formIds.add(f.id);
+    for (const form of mon.forms) {
+      if (typeof form.id === "number" && form.id !== mon.id) {
+        formIds.add(form.id);
+      }
     }
   }
+}
+
+// Index raw entries by id for quick form lookups
+const byId = new Map();
+for (const mon of POKEDEX) {
+  if (typeof mon.id === "number") byId.set(mon.id, mon);
 }
 
 for (const mon of POKEDEX) {
@@ -59,7 +66,7 @@ for (const mon of POKEDEX) {
   if (shaped.slug) bySlug.set(norm(shaped.slug), shaped);
   if (shaped.name) byName.set(norm(shaped.name), shaped);
 
-  // Expand alternate forms (no dex numbers)
+  // Expand alternate forms (no dex numbers or IDs)
   if (Array.isArray(mon.forms)) {
     const baseSlug = mon.slug || norm(mon.name).replace(/\s+/g, "-");
     for (const form of mon.forms) {
@@ -68,10 +75,11 @@ for (const mon of POKEDEX) {
       const bracket = raw.match(/\[(.+)\]/);
       let label = bracket ? bracket[1] : raw;
       label = label.replace(new RegExp(`\\b${mon.name}\\b`, "i"), "").trim();
+      if (!label) continue;
       const formName = `${mon.name} (${label})`;
       const formSlug = `${baseSlug}-${norm(label).replace(/\s+/g, "-")}`;
       const fshaped = {
-        id: formBase.id ?? form.id ?? null,
+        id: null,
         dex: null,
         name: formName,
         slug: formSlug,

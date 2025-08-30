@@ -849,19 +849,23 @@ function stripTimeTag(name=''){
   return String(name).replace(/\s*\((Morning|Day|Night)\)\s*$/i, '').trim();
 }
 
-// Determine if two map names should be considered a match. If the query begins
-// with "Route <number>", only maps with the exact same route number match.
-// Otherwise fall back to a simple substring check (case-insensitive).
+// Determine if two map names should be considered a match.
+// - Queries starting with "Route <number>" only match the exact same route number
+// - Bare "Route" queries (with or without trailing spaces) never match anything
+// - Otherwise fall back to a simple substring check (case-insensitive)
 function mapNameMatches(candidate, needle){
-  const cand = stripTimeTag(candidate).toLowerCase();
+  const cand   = stripTimeTag(candidate).toLowerCase();
   const search = stripTimeTag(needle).toLowerCase();
-  // If the query is "route" with no number, don't match anything
-  if (/^route(?:\s+|$)(?!\d)/.test(search)) return false;
-  const routeNeedle = search.match(/^(?:route\s*)?(\d+)\b/);
-  if (routeNeedle){
-    const routeCand = cand.match(/(?:^|\b)route\s*(\d+)\b/);
-    return routeCand && routeCand[1] === routeNeedle[1];
+
+  const routeMatch = search.match(/^route\s*(\d*)/);
+  if (routeMatch){
+    const num = routeMatch[1];
+    if (!num) return false;
+    const candRoute = cand.match(/^route\s*(\d+)\b/);
+    return !!candRoute && candRoute[1] === num;
   }
+
+  if (search.startsWith('route')) return false;
   return cand.includes(search);
 }
 
@@ -940,7 +944,7 @@ function findBestMapName(hudText, areasIndex){
   if (!hudText) return null;
   const raw = String(hudText).trim();
   // Avoid treating "Route" with no number as a fuzzy search
-  if (/^route(?:\s+|$)(?!\d)/i.test(raw)) return null;
+  if (/^route\b(?!\s*\d)/i.test(raw)) return null;
   const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
   const routeNeedle = isRoute
@@ -1850,8 +1854,8 @@ function App(){
     if (mode!=='areas') return [];
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
-    // If user typed "route" without a number don't suggest anything yet
-    if (/^route(?:\s+|$)(?!\d)/.test(q)) return [];
+    // If query begins with "route" but lacks a number, avoid suggesting routes yet
+    if (q.startsWith('route') && !/^route\s*\d/.test(q)) return [];
     const buckets = new Map();
     const regionKey = normalizeRegion(areaRegion);
     for (const [region, maps] of Object.entries(areasClean)) {
