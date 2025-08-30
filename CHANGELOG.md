@@ -3,9 +3,31 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.4.0]- 2025-08
+### Added
+- Live Battle Tab! *Beta* *Might not work as intended / at all for you yet*
+  - Use the Live Battle Tab to look futher into the Pokemon you're facing!
+  - Includes Type, Weakness, Ev Yield, Base Stats, Held Items, & Catch Rate
+
+  - Currently only supports 1 Pokemon on screen at a time
+    - Support for Alpha, Double Battle, and potentially Hordes to come soon.
+  - *Beta* so expect hiccups here and there. I will continue to polish the tool over time.
+
+### Fixed
+- Position of Total Caught Pokemon. 
+- Adjusted UI labels to reflect Route and Battle Live tabs
+
+### Known Issues
+- Typing a route with a single digit string i.e "Route 1" reutrns results for multiple routes     containing "Route 1" in the string.
+- Alternate Form Pokemon are not indexed correctly in the Pokedex, even though the data for them exists.
+- The Live Battle Tab is extremely buggy, and may not work at all sometimes.
+
+
+---
+
 ## [2.3.5]- 2025-08
 ### Added
-- Move Filter!
+- Move Search!
   - Filter by a particular Move a Pokemon can learn, and refine it even further with a toggle for "Level up" only
 - Total Caught #
   - Added a Total Caught option to the Catch List

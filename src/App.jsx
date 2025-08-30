@@ -1535,20 +1535,32 @@ function LiveBattlePanel({ onViewMon }){
           .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
           .filter(s => /[A-Za-z]/.test(s));
       }
-      // Keyword search each fragment for any known Pokémon name. This allows us
-      // to match names even when extra characters precede or follow the actual
-      // Pokémon name in the OCR result.
+      // Keyword search each fragment for any known Pokémon name. Be lenient and
+      // allow extra characters to trail the detected name. First try a direct
+      // substring match against the entire fragment, then fall back to examining
+      // just the leading word which catches cases like "Shellos IRZY??".
       let names = [];
       for (const frag of fragments) {
         const lowerFrag = frag.toLowerCase();
         const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
+        let found = null;
         for (const [key, mon] of DEX_BY_NAME.entries()) {
           const compactKey = key.replace(/[^a-z0-9]+/g, '');
           if (lowerFrag.includes(key) || (compactKey && compactFrag.includes(compactKey))) {
-            names.push(mon.name);
+            found = mon.name;
             break;
           }
         }
+        if (!found) {
+          const first = lowerFrag.split(/\s+/)[0];
+          for (const [key, mon] of DEX_BY_NAME.entries()) {
+            if (key.startsWith(first) || first.startsWith(key)) {
+              found = mon.name;
+              break;
+            }
+          }
+        }
+        if (found) names.push(found);
       }
       // Attempt to detect known Pokémon names within the full text. OCR artifacts
       // can cause names to merge together or drop whitespace entirely. First, try
