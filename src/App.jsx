@@ -1465,6 +1465,18 @@ function LiveBattlePanel({ onViewMon }){
           .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
           .filter(s => /[A-Za-z]/.test(s));
       }
+      // Final fallback: attempt to detect known Pokémon names within the text
+      if (names.length === 0) {
+        const lower = cleaned.toLowerCase();
+        const found = [];
+        for (const [key, mon] of DEX_BY_NAME.entries()) {
+          const pattern = new RegExp(`\\b${key.replace(/[-]/g,'[\\s-]?')}\\b`, 'i');
+          if (pattern.test(lower)) {
+            found.push(mon.name);
+          }
+        }
+        names = [...new Set(found)];
+      }
       setMons(names.map(n => getMon(n)).filter(Boolean));
     });
 
