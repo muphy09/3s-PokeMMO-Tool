@@ -26,33 +26,51 @@ function spriteSources(mon){
   if (mon.image) arr.push(mon.image);
   if (mon.icon) arr.push(mon.icon);
   arr.push(...localSpriteCandidates(mon));
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+  if (mon.dex != null) {
+    arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
+    arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+  }
   return [...new Set(arr)].filter(Boolean);
 }
 function Sprite({ mon, size=32, alt='' }){
   const srcs = useMemo(()=> spriteSources(mon), [mon]);
   const [idx, setIdx] = useState(0);
-  const src = srcs[idx] || TRANSPARENT_PNG;
+  const [pokeSrc, setPokeSrc] = useState(null);
+  useEffect(()=>{ setIdx(0); setPokeSrc(null); }, [mon]);
+  const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+  const handleError = () => {
+    if (idx < srcs.length - 1) {
+      setIdx(idx + 1);
+    } else if (!pokeSrc && mon?.slug) {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${mon.slug}`)
+        .then(r => (r.ok ? r.json() : null))
+        .then(d => {
+          const s = d?.sprites?.front_default || d?.sprites?.other?.["official-artwork"]?.front_default;
+          if (s) setPokeSrc(s);
+        })
+        .catch(()=>{});
+    }
+  };
   return (
     <img
       src={src}
       alt={alt || mon?.name || ''}
       style={{ width:size, height:size, objectFit:'contain', imageRendering:'pixelated' }}
-      onError={() => { if (idx < srcs.length - 1) setIdx(idx + 1); }}
+      onError={handleError}
     />
   );
 }
-
-
-const DEX_LIST = dexRaw
+const DEX_LIST = getAll()
+  .filter(m => m.dex != null)
   .map(m => ({
     id: m.id,
     name: m.name,
     sprite: m.sprite,
     sprites: m.sprites,
     image: m.image,
-    icon: m.icon
+    icon: m.icon,
+    slug: m.slug,
+    dex: m.dex
   }))
   .sort((a, b) => a.id - b.id);
 

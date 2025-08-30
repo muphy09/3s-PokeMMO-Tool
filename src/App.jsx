@@ -198,9 +198,11 @@ function spriteSources(mon){
   if (!mon) return [];
   const arr = [];
 
-  // Prefer higher-resolution PokeAPI sprites first
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
-  arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+  // Prefer higher-resolution PokeAPI sprites first when we have a canonical dex number
+  if (mon.dex != null) {
+    arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
+    arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
+  }
 
   // Fallbacks to any provided or local sprites
   if (mon.sprite) arr.push(mon.sprite);
@@ -214,15 +216,30 @@ function spriteSources(mon){
 function Sprite({ mon, size=42, alt='' }){
   const srcs = React.useMemo(()=> spriteSources(mon), [mon]);
   const [idx, setIdx] = useState(0);
-  const src = srcs[idx] || TRANSPARENT_PNG;
+  const [pokeSrc, setPokeSrc] = useState(null);
+  useEffect(()=>{ setIdx(0); setPokeSrc(null); }, [mon]);
+  const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+
+  const handleError = () => {
+    if (idx < srcs.length - 1) {
+      setIdx(idx + 1);
+    } else if (!pokeSrc && mon?.slug) {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${mon.slug}`)
+        .then(r => (r.ok ? r.json() : null))
+        .then(d => {
+          const s = d?.sprites?.front_default || d?.sprites?.other?.["official-artwork"]?.front_default;
+          if (s) setPokeSrc(s);
+        })
+        .catch(()=>{});
+    }
+  };
+
   return (
     <img
       src={src}
       alt={alt || mon?.name || ''}
       style={{ width:size, height:size, objectFit:'contain', imageRendering:'pixelated' }}
-      onError={() => {
-        if (idx < srcs.length - 1) setIdx(idx + 1);
-      }}
+      onError={handleError}
     />
   );
 }
@@ -838,6 +855,8 @@ function stripTimeTag(name=''){
 function mapNameMatches(candidate, needle){
   const cand = stripTimeTag(candidate).toLowerCase();
   const search = stripTimeTag(needle).toLowerCase();
+  // If the query is "route" with no number, don't match anything
+  if (/^route(?:\s+|$)(?!\d)/.test(search)) return false;
   const routeNeedle = search.match(/^(?:route\s*)?(\d+)\b/);
   if (routeNeedle){
     const routeCand = cand.match(/(?:^|\b)route\s*(\d+)\b/);
@@ -920,6 +939,8 @@ function scoreNames(a, b) {
 function findBestMapName(hudText, areasIndex){
   if (!hudText) return null;
   const raw = String(hudText).trim();
+  // Avoid treating "Route" with no number as a fuzzy search
+  if (/^route(?:\s+|$)(?!\d)/i.test(raw)) return null;
   const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
   const routeNeedle = isRoute
@@ -1463,14 +1484,23 @@ function LiveBattlePanel({ onViewMon }){
           .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
           .filter(s => /[A-Za-z]/.test(s));
       }
-      // Attempt to detect known Pokémon names within the text in case artifacts
-      // or additional characters cause names to merge together. This helps when
-      // multiple Pokémon are on screen and OCR introduces stray characters.
+      // Attempt to detect known Pokémon names within the text. OCR artifacts can
+      // cause names to merge together or drop whitespace entirely. First, try to
+      // find "clean" names with word boundaries, then fall back to scanning a
+      // compacted string with all non-alphanumeric characters removed.
       const lower = cleaned.toLowerCase();
+      const compact = lower.replace(/[^a-z0-9]+/g, '');
       const found = [];
       for (const [key, mon] of DEX_BY_NAME.entries()) {
-        const pattern = new RegExp(`\\b${key.replace(/[-]/g,'[\\s-]?')}\\b`, 'i',);
+        // Normal match allowing optional spaces or hyphens
+        const pattern = new RegExp(`\\b${key.replace(/[-]/g,'[\\s-]?')}\\b`, 'i');
         if (pattern.test(lower)) {
+          found.push(mon.name);
+          continue;
+        }
+        // Fallback: check for concatenated names without delimiters
+        const compactKey = key.replace(/[^a-z0-9]+/g, '');
+        if (compactKey && compact.includes(compactKey)) {
           found.push(mon.name);
         }
       }
@@ -1807,6 +1837,8 @@ function App(){
     if (mode!=='areas') return [];
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
+    // If user typed "route" without a number don't suggest anything yet
+    if (/^route(?:\s+|$)(?!\d)/.test(q)) return [];
     const buckets = new Map();
     const regionKey = normalizeRegion(areaRegion);
     for (const [region, maps] of Object.entries(areasClean)) {

@@ -19,12 +19,18 @@ const byName = new Map();
 const list = [];
 
 // Index raw entries by id for quick form lookups
-const byId = new Map();
+const formIds = new Set();
 for (const mon of POKEDEX) {
   if (typeof mon.id === "number") byId.set(mon.id, mon);
+  if (Array.isArray(mon.forms)) {
+    for (const f of mon.forms) {
+      if (typeof f.id === "number" && f.id !== mon.id) formIds.add(f.id);
+    }
+  }
 }
 
 for (const mon of POKEDEX) {
+  if (formIds.has(mon.id)) continue; // Skip standalone form entries
   const dexNum =
     typeof mon.dex === "number"
       ? mon.dex
