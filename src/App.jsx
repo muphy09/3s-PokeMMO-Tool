@@ -1575,7 +1575,14 @@ function LiveBattlePanel({ onViewMon }){
       }
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
-      setMons(names.map(n => getMon(n)).filter(Boolean));
+      setMons(
+        names
+          .map(n => {
+            const m = getMon(n);
+            return m ? { ...m } : null;
+          })
+          .filter(Boolean)
+      );
     });
 
     liveBattleClient.connect();
@@ -1628,6 +1635,21 @@ function LiveBattlePanel({ onViewMon }){
 
   const confPct = formatConfidence(confidence);
 
+  useEffect(() => {
+    mons.forEach(mon => {
+      if (mon.catchRate != null) return;
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${mon.id}/`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (!data) return;
+          setMons(prev =>
+            prev.map(m => (m.id === mon.id ? { ...m, catchRate: data.capture_rate } : m))
+          );
+        })
+        .catch(() => {});
+    });
+  }, [mons]);
+
   return (
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
@@ -1650,17 +1672,79 @@ function LiveBattlePanel({ onViewMon }){
         <div className="label-muted">No matching Pokémon found.</div>
       )}
 
-      {mons.map(mon => (
-        <div key={mon.id} style={styles.areaCard}>
-          <button onClick={() => onViewMon?.(mon)} style={{ display:'flex', gap:12, width:'100%', textAlign:'left' }}>
-            <Sprite mon={mon} size={80} alt={mon.name} />
-            <div>
-              <div style={{ fontWeight:800, fontSize:16 }}>{titleCase(mon.name)}</div>
-              <div className="label-muted">#{mon.id}</div>
-            </div>
-          </button>
+      {mons.length > 0 && (
+        <div style={{ display:'grid', gap:12, gridTemplateColumns: mons.length === 1 ? '1fr' : '1fr 1fr' }}>
+          {mons.map(mon => {
+            const weakness = computeWeakness(mon.types);
+            const wList = [
+              ...weakness.x4.map(t => ({ t, mult: 400 })),
+              ...weakness.x2.map(t => ({ t, mult: 200 }))
+            ];
+            const evMap = {
+              ev_hp: 'HP',
+              ev_attack: 'Atk',
+              ev_defense: 'Def',
+              ev_sp_attack: 'SpA',
+              ev_sp_defense: 'SpD',
+              ev_speed: 'Spe'
+            };
+            const evs = Object.entries(evMap)
+              .filter(([k]) => (mon.yields || {})[k] > 0)
+              .map(([k, label]) => `${(mon.yields || {})[k]} ${label}`);
+            const held = (mon.heldItems || []).map(h => h.name).join(', ') || 'None';
+            const statMap = {
+              hp: 'HP',
+              attack: 'Atk',
+              defense: 'Def',
+              sp_attack: 'SpA',
+              sp_defense: 'SpD',
+              speed: 'Spe'
+            };
+            const statsText = Object.entries(statMap)
+              .map(([k, label]) => `${label} ${(mon.stats || {})[k] ?? '-'}`)
+              .join(' / ');
+            return (
+              <div key={mon.id} style={{ ...styles.areaCard, display:'flex' }}>
+                <button
+                  onClick={() => onViewMon?.(mon)}
+                  style={{
+                    display:'flex',
+                    flexDirection:'column',
+                    alignItems:'center',
+                    gap:8,
+                    width:'100%',
+                    textAlign:'center'
+                  }}
+                >
+                  <Sprite mon={mon} size={80} alt={mon.name} />
+                  <div style={{ fontWeight:800, fontSize:16 }}>{titleCase(mon.name)}</div>
+                  <div className="label-muted">#{mon.id}</div>
+                  <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:6 }}>
+                    {(mon.types || []).map(t => <TypePill key={t} t={t} compact />)}
+                  </div>
+                  <div style={{ marginTop:6, width:'100%' }}>
+                    <div style={{ fontWeight:700, fontSize:14 }}>Weaknesses</div>
+                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:4 }}>
+                      {wList.length ? wList.map(w => (
+                        <div key={`${w.t}-${w.mult}`} style={{ display:'flex', alignItems:'center', gap:4 }}>
+                          <TypePill t={w.t} compact />
+                          <span className="label-muted">{w.mult}%</span>
+                        </div>
+                      )) : <div className="label-muted">None</div>}
+                    </div>
+                  </div>
+                  <div style={{ marginTop:6, fontSize:12 }}>
+                    <div><b>EV Yield:</b> {evs.length ? evs.join(', ') : 'None'}</div>
+                    <div><b>Held Items:</b> {held}</div>
+                    <div><b>Catch Rate:</b> {mon.catchRate != null ? mon.catchRate : '—'}</div>
+                    <div style={{ marginTop:4 }}><b>Base Stats:</b> {statsText}</div>
+                  </div>
+                </button>
+              </div>
+            );
+          })}
         </div>
-      ))}
+      )}
     </div>
   );
 }
