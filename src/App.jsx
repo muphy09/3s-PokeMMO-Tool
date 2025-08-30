@@ -1903,6 +1903,9 @@ function App(){
   const itemOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const h of m.heldItems || []) if (h?.name) set.add(h.name);
+    // If no held items are found in the dex data, fall back to the full item list
+    // so the Held Item filter still offers suggestions.
+    if (set.size === 0) for (const item of ITEM_LIST) if (item?.name) set.add(item.name);
     return [...set].sort((a,b)=>a.localeCompare(b));
   }, []);
   const pokemonRegionOptions = useMemo(() => {

@@ -1,7 +1,11 @@
 \\ Known Issues
 
 - Alternate form Pokemon appear incorrectly in the Pokedex
+
 - Searching for Route 1 or other single string routes returns results for route 10, 11, 12, etc. Also happens in Live tab
+
+- The Live Battle Tab is extremely unreliable
+
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -13,3 +17,5 @@
 
 
 - Integrate swarm and alpha notifications
+
+- Feedback button to upload wanted changes or bugs

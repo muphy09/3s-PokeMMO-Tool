@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function SearchFilter({ value, onChange, options, placeholder = '' }) {
+// Allow an empty options array by default so the component can render even if
+// the caller forgets to supply one. This prevents runtime errors that would
+// otherwise hide the input entirely.
+export default function SearchFilter({ value, onChange, options = [], placeholder = '' }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value || '');
   const ref = useRef(null);
