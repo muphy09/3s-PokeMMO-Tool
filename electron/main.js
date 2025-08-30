@@ -379,12 +379,13 @@ function createMainWindow() {
   Menu.setApplicationMenu(null);
 
   // dev/prod loader — load dev server when env URL provided
- const devURL =
-  process.env.VITE_DEV_SERVER_URL ||
-  process.env.ELECTRON_START_URL ||
-  "http://localhost:5173";
+ // default to bundled index.html when no explicit dev URL is set
+  const devURL =
+    process.env.VITE_DEV_SERVER_URL ||
+    process.env.ELECTRON_START_URL ||
+    '';
 
-  const indexFile = path.join(__dirname, "..", "dist", "index.html");
+  const indexFile = path.join(__dirname, '..', 'dist', 'index.html');
 
   if (devURL) {
     mainWindow.webContents.once('did-fail-load', (_e, code, desc) => {
@@ -397,7 +398,12 @@ function createMainWindow() {
   }
 
   mainWindow.on('ready-to-show', () => { mainWindow?.show(); });
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
+  // Guard against scenarios where the window failed to initialize
+  // to prevent startup crashes like "Cannot read properties of undefined"
+  mainWindow.webContents?.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
   mainWindow.on('closed', () => { mainWindow = null; });
 }
 
