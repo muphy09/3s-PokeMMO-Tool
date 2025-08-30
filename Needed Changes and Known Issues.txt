@@ -1,6 +1,6 @@
 \\ Known Issues
 
-- Live updater updates on restart, but doesn't actually tell you a new version is out
+- Alternate form Pokemon appear incorrectly in the Pokedex
 
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\

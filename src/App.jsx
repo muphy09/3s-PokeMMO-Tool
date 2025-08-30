@@ -1420,7 +1420,10 @@ function LiveBattlePanel({ onViewMon }){
       const cleaned = normalizeHudText(coerced.monText);
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
-      const names = cleaned.split(/\n+/).map(s => s.trim()).filter(Boolean);
+      const names = cleaned
+        .split(/\n+/)
+        .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
+        .filter(Boolean);
       setMons(names.map(n => getMon(n)).filter(Boolean));
     });
 
