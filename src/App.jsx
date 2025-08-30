@@ -838,11 +838,9 @@ function stripTimeTag(name=''){
 function mapNameMatches(candidate, needle){
   const cand = stripTimeTag(candidate).toLowerCase();
   const search = stripTimeTag(needle).toLowerCase();
-  const routeNeedle =
-    search.match(/^route\s*(\d+)\b/) ||
-    search.match(/^\s*(\d+)\b/);
+  const routeNeedle = search.match(/^(?:route\s*)?(\d+)\b/);
   if (routeNeedle){
-    const routeCand = cand.match(/^route\s*(\d+)\b/);
+    const routeCand = cand.match(/(?:^|\b)route\s*(\d+)\b/);
     return routeCand && routeCand[1] === routeNeedle[1];
   }
   return cand.includes(search);
@@ -903,8 +901,8 @@ function scoreNames(a, b) {
   if (!a || !b) return 0;
   if (a === b) return 100;
 
-  const routeA = a.match(/^route(\d+)/);
-  const routeB = b.match(/^route(\d+)/);
+  const routeA = a.match(/(?:^|\b)route\s*(\d+)/);
+  const routeB = b.match(/(?:^|\b)route\s*(\d+)/);
   if (routeA && routeB && routeA[1] !== routeB[1]) return 0;
 
   let score = 0;
@@ -925,8 +923,8 @@ function findBestMapName(hudText, areasIndex){
   const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
   const routeNeedle = isRoute
-    ? (needleKey.match(/^route\s*(\d+)/) || needleKey.match(/^\s*(\d+)/))
-    : needleKey.match(/^route(\d+)/);
+    ? needleKey.match(/^(?:route\s*)?(\d+)\b/)
+    : needleKey.match(/(?:^|\b)route(\d+)\b/);
   let best = null, bestScore = -1;
   for (const [region, maps] of Object.entries(areasIndex || {})) {
     for (const [mapName] of Object.entries(maps || {})) {
@@ -936,7 +934,7 @@ function findBestMapName(hudText, areasIndex){
       }
       const candidateKey = aliasKey(mapName);
       if (routeNeedle) {
-        const routeCand = candidateKey.match(/^route(\d+)/);
+        const routeCand = candidateKey.match(/(?:^|\b)route(\d+)\b/);
         if (!routeCand || routeCand[1] !== routeNeedle[1]) continue;
       }
       if (candidateKey === needleKey) {
