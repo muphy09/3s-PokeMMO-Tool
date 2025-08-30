@@ -594,9 +594,10 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                 Bitmap? prePreview = null;
                 if (engine != null)
                 {
-                    foreach (var pass in BuildPassPlan(crop, mode, 1))
+                    using var filtered = MaskBattleHud(crop);
+                    foreach (var pass in BuildPassPlan(filtered, mode, 1))
                     {
-                        using var srcForPass = pass.Masked ? MaskLeftColumn(crop, pass.KeepPct) : (Bitmap)crop.Clone();
+                        using var srcForPass = pass.Masked ? MaskLeftColumn(filtered, pass.KeepPct) : (Bitmap)filtered.Clone();
                         using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
                         prePreview = (Bitmap)pre.Clone();
@@ -763,6 +764,25 @@ if (string.IsNullOrWhiteSpace(name) && prePreview != null)
         return bin;
     }
 
+static Bitmap MaskBattleHud(Bitmap src)
+    {
+        var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
+        int levelStart = (int)(src.Width * 0.7);
+        using (var g = Graphics.FromImage(outBmp))
+        {
+            g.DrawImage(src, 0, 0);
+            g.FillRectangle(Brushes.White, levelStart, 0, src.Width - levelStart, src.Height);
+        }
+        for (int y = 0; y < outBmp.Height; y++)
+        for (int x = 0; x < levelStart; x++)
+        {
+            var c = outBmp.GetPixel(x, y);
+            if (c.G > c.R + 40 && c.G > c.B + 40)
+                outBmp.SetPixel(x, y, Color.White);
+        }
+        return outBmp;
+    }
+    
     static Bitmap MaskLeftColumn(Bitmap src, double keepPct)
     {
         int keepW = Math.Max(1, (int)(src.Width * keepPct));
