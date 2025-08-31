@@ -54,16 +54,7 @@ const styles = {
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid #262626', borderRadius:10, padding:'10px', background:'#141414', textAlign:'center' },
   encWrap: { display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap', marginTop:8 },
-  encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 },
-  viewBtn: {
-    padding:'6px 10px',
-    border:'1px solid var(--accent)',
-    borderRadius:8,
-    background:'var(--accent)',
-    color:'#111',
-    fontWeight:700,
-    cursor:'pointer'
-  }
+  encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
 };
 
 /* ---------- utils ---------- */
@@ -510,13 +501,17 @@ function PokeballIcon({ filled=false, size=16 }){
 function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleCaught, showCaught=true }){
   const cardStyle = {
     ...styles.monCard,
-    opacity: showCaught ? (caught ? 0.4 : 1) : 1
+    opacity: showCaught ? (caught ? 0.4 : 1) : 1,
+    cursor: mon && onView ? 'pointer' : 'default'
+  };
+  const handleClick = () => {
+    if (mon && onView) onView(mon);
   };
   return (
-    <div style={cardStyle}>
+    <div style={cardStyle} onClick={handleClick}>
       {showCaught && (
         <button
-          onClick={onToggleCaught}
+          onClick={e => { e.stopPropagation(); onToggleCaught && onToggleCaught(); }}
           title={caught ? 'Mark as uncaught' : 'Mark as caught'}
           style={{ position:'absolute', top:6, right:6, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
         >
@@ -535,14 +530,6 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
           </div>
         ))}
       </div>
-      {mon && (
-        <button
-          className="btn"
-          style={{ ...styles.viewBtn, marginTop:8 }}
-          onClick={() => onView && onView(mon)}
-          title="Open Pokémon"
-        >View</button>
-      )}
     </div>
   );
 }
@@ -1993,6 +1980,7 @@ function App(){
   const [marketData, setMarketData] = useState([]);
   const [marketLoading, setMarketLoading] = useState(false);
   const [marketError, setMarketError] = useState(null);
+  const [marketSelected, setMarketSelected] = useState(null);
 
   const toggleMethodFilter = (m) => {
     setMethodFilters(prev => {
@@ -2368,15 +2356,7 @@ const marketResults = React.useMemo(() => {
   }, [mode, query, marketData]);
 
   const openMarketItem = (item) => {
-    const slug = normalizeKey(item?.name || '');
-    const url = `https://pokemmohub.com/items/${slug}`;
-    try {
-      if (!window.app?.openExternal?.(url)) {
-        window.open(url, '_blank');
-      }
-    } catch {
-      try { window.open(url, '_blank'); } catch {}
-    }
+    setMarketSelected(item);
   };
 
   // Selected Pokémon details (MERGED sources)
@@ -2539,7 +2519,7 @@ const marketResults = React.useMemo(() => {
               )}
             </div>
             <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
-              <button style={{ ...styles.segBtn(false), cursor:'not-allowed' }} disabled>Market</button>
+              <button style={styles.segBtn(mode==='market')} onClick={()=>setMode('market')}>Market</button>
             </div>
           </div>
           {isLinux && (
@@ -3190,6 +3170,59 @@ const marketResults = React.useMemo(() => {
           </>
         )}
       </div>
+
+      {marketSelected && (
+        <div
+          onClick={() => setMarketSelected(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: '80%',
+              height: '80%',
+              background: '#111',
+              border: '1px solid #444',
+              borderRadius: 8,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '8px 10px',
+                borderBottom: '1px solid #333'
+              }}
+            >
+              <div style={{ fontWeight: 800 }}>{marketSelected.name}</div>
+              <button
+                onClick={() => setMarketSelected(null)}
+                style={{ cursor: 'pointer' }}
+              >
+                ✕
+              </button>
+            </div>
+            <webview
+              src={`https://pokemmohub.com/items/${normalizeKey(marketSelected.name)}`}
+              style={{ flex: 1 }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Fixed version badge */}
       <VersionBadge />
