@@ -11,6 +11,9 @@ out/
 build/
 win-unpacked/
 
+# Generated release artifacts
+release/*
+!release/builder-effective-config.yaml
 
 *.exe
 *.msi
