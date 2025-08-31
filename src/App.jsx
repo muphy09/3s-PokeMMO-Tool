@@ -740,7 +740,7 @@ function useLocationsDb(){
         let method = l.type;
         let rarity = l.rarity;
         // Some "Lure" encounters are stored as a rarity rather than a method.
-        // Promote those to a proper method so filters like "Lure Only" work.
+        // Promote those to a proper method so encounter-type filters work.
         if (rarity && /lure/i.test(rarity)) {
           method = `Lure${method ? ` (${method})` : ''}`;
           rarity = '';
@@ -1275,36 +1275,6 @@ function coerceBattleIncoming(msg){
   return (t !== null) ? { monText: t, confidence: c } : null;
 }
 
-/* ---------- RegionPicker (segmented buttons, right-aligned) ---------- */
-function RegionPicker({ regions, value, onChange }) {
-  if (!regions || regions.length < 2) return null;
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-slate-400 text-sm">Region</span>
-      <div className="inline-flex rounded-xl bg-slate-700/60 p-0.5">
-        {regions.map((r) => {
-          const active = value === r;
-          return (
-            <button
-              key={r}
-              onClick={() => onChange(r)}
-              className={
-                "px-2.5 py-1 text-sm rounded-lg transition-colors " +
-                (active
-                  ? "bg-emerald-600 text-white"
-                  : "text-slate-200 hover:bg-slate-600/60")
-              }
-              title={`Show ${r}`}
-            >
-              {titleCase(r)}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 /* ======================= LIVE ROUTE PANEL ======================= */
 
 function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
@@ -1319,12 +1289,15 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
+  const [showRegionMenu, setShowRegionMenu] = useState(false);
   const filterRef = useRef(null);
   const methodFiltersRef = useRef(methodFilters);
 
   const { caught, toggleCaught } = React.useContext(CaughtContext);
 
   useEffect(() => { methodFiltersRef.current = methodFilters; }, [methodFilters]);
+
+  useEffect(() => { setShowRegionMenu(false); }, [regionChoices, displayMap]);
 
   useEffect(() => {
     const onDoc = (e) => {
@@ -1515,7 +1488,31 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               <div className="label-muted">{entries.length} Pokémon</div>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-              <RegionPicker regions={regionChoices} value={region} onChange={handleRegionChange} />
+              {regionChoices.length > 1 && (
+                <div style={{ position:'relative' }}>
+                  <button
+                    type="button"
+                    onClick={()=> setShowRegionMenu(v => !v)}
+                    className="region-btn"
+                  >
+                    {region ? titleCase(region) : 'Region'}
+                  </button>
+                  {showRegionMenu && (
+                    <div className="region-menu">
+                      {regionChoices.map(r => (
+                        <button
+                          type="button"
+                          key={r}
+                          onClick={()=> { handleRegionChange(r); setShowRegionMenu(false); }}
+                          className={r===region ? 'active' : undefined}
+                        >
+                          {titleCase(r)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -1861,7 +1858,7 @@ function LiveBattlePanel({ onViewMon }){
                         : <div className="label-muted">None</div>}
                     </div>
                   </div>
-                  <div style={{ marginTop: 6, fontSize: 12 }}>
+                  <div style={{ marginTop: 6, fontSize: 14 }}>
                     <div><b>EV Yield:</b> {evs.length ? evs.join(', ') : 'None'}</div>
                     <div><b>Held Items:</b> {held}</div>
                     <div><b>Catch Rate:</b> {mon.catchRate != null ? mon.catchRate : '—'}</div>
@@ -1932,8 +1929,28 @@ function App(){
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live' | 'battle'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
-  const [lureOnly, setLureOnly] = useState(false);
+  const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
+  const [showMethodMenu, setShowMethodMenu] = useState(false);
+  const methodFilterRef = useRef(null);
   const [showCaught, setShowCaught] = useState(true);
+
+  const toggleMethodFilter = (m) => {
+    setMethodFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(m)) next.delete(m); else next.add(m);
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    const onDoc = (e) => {
+      if (methodFilterRef.current && !methodFilterRef.current.contains(e.target)) {
+        setShowMethodMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
 
   const detailRef = useRef(null);
 
@@ -2162,14 +2179,19 @@ function App(){
         });
         return g;
       });
-      if (lureOnly) {
+      if (methodFilters && methodFilters.size) {
         grouped = grouped
           .map(g => ({
             ...g,
-            encounters: g.encounters.filter(enc =>
-              (enc.method || '').toLowerCase().includes('lure') ||
-              (enc.rarities || []).some(r => r.toLowerCase().includes('lure'))
-            )
+            encounters: g.encounters.filter(enc => {
+              const method = (enc.method || '').toLowerCase();
+              const rarities = (enc.rarities || []).map(r => r.toLowerCase());
+              for (const f of methodFilters) {
+                const fL = String(f).toLowerCase();
+                if (method.includes(fL) || rarities.some(r => r.includes(fL))) return true;
+              }
+              return false;
+            })
           }))
           .filter(g => g.encounters.length);
       }
@@ -2177,7 +2199,7 @@ function App(){
     }
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
- }, [query, areasClean, locIndex, mode, areaRegion, lureOnly]);
+ }, [query, areasClean, locIndex, mode, areaRegion, methodFilters]);
 
   const tmHits = React.useMemo(() => {
     if (mode !== 'tm') return [];
@@ -2438,6 +2460,32 @@ function App(){
                 </div>
                 {mode==='areas' && (
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <div ref={methodFilterRef} style={{ position:'relative' }}>
+                      <button
+                        type="button"
+                        className="label-muted"
+                        style={{ display:'flex', alignItems:'center', gap:4 }}
+                        onClick={() => setShowMethodMenu(v => !v)}
+                      >
+                        Encounter Type ▾
+                      </button>
+                      {showMethodMenu && (
+                        <div
+                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'#1f1f1f', border:'1px solid #333', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                        >
+                          {ENCOUNTER_TYPES.map(t => (
+                            <label key={t} className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                              <input
+                                type="checkbox"
+                                checked={methodFilters.has(t)}
+                                onChange={() => toggleMethodFilter(t)}
+                              />
+                              {t}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
                       <input
                         type="checkbox"
@@ -2510,16 +2558,6 @@ function App(){
                 className="input"
                 style={{ height:44, borderRadius:10, fontSize:16 }}
               />
-              {mode==='areas' && (
-                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4, marginTop:8 }}>
-                  <input
-                    type="checkbox"
-                    checked={lureOnly}
-                    onChange={e=>setLureOnly(e.target.checked)}
-                  />
-                  Lure Only
-                </label>
-              )}
             </>
           )}
 
