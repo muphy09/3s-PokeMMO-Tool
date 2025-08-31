@@ -1,6 +1,4 @@
 # Changelog
-
-All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
 ## [2.5.0]- 2025-08
@@ -11,7 +9,7 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 - Pokemon Catch % now available in the Pokemon's profile.
   - Click to toggle asleep & 1HP
 
-- Live Market feature - *beta*
+- Groundwork set for Live Market feature - *beta* *may not function as intended / at all currently*
   - Search current prices and find price history from the GTL - *Credit PokeMMO Hub for the api*
 
 ---

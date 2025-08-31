@@ -2875,9 +2875,21 @@ const marketResults = React.useMemo(() => {
                       style={{ ...styles.areaCard, cursor:'pointer' }}
                       onClick={() => openMarketItem(item)}
                     >
-                      <div style={{ display:'flex', justifyContent:'space-between' }}>
-                        <div style={{ fontWeight:800 }}>
-                          {item.name}
+                      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+                          <img
+                            src={`${ITEM_ICON_BASE}${item.id}.png`}
+                            alt={item.name}
+                            style={{ width:36, height:36, imageRendering:'pixelated' }}
+                            onError={e => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = ITEM_PLACEHOLDER;
+                              e.currentTarget.style.imageRendering = 'auto';
+                            }}
+                          />
+                          <div style={{ fontWeight:800 }}>
+                            {item.name}
+                          </div>
                         </div>
                         {item.price != null ? (
                           <div>₽ {Number(item.price).toLocaleString()}</div>
