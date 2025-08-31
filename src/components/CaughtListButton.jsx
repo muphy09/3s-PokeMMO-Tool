@@ -93,7 +93,7 @@ export default function CaughtListButton(){
   };
   const modalStyle = {
     background:'var(--surface)', color:'var(--text)', padding:20,
-    width:'90%', maxWidth:600, maxHeight:'80%', overflowY:'auto',
+    width:'80%', maxWidth:400, maxHeight:'80%', overflowY:'auto',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)'
   };
 
@@ -117,19 +117,19 @@ export default function CaughtListButton(){
               style={{ width:'100%', marginBottom:12, borderRadius:8, padding:8 }}
             />
             <div>
-              <div style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0', paddingRight:8, fontWeight:700 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 0', paddingRight:8, fontWeight:700, borderBottom:'1px solid var(--divider)' }}>
                 <span style={{ width:20, textAlign:'center' }}>Caught</span>
                 <span style={{ width:32 }}></span>
                 <span style={{ flex:1 }}>Name</span>
-                <span style={{ minWidth:40, textAlign:'right', marginRight:8 }}>ID</span>
+                <span style={{ minWidth:40, textAlign:'right', marginRight:4 }}>ID</span>
               </div>
               <div style={{ maxHeight:'60vh', overflowY:'auto' }}>
                 {list.map(mon => (
-                  <label key={mon.id} style={{ display:'flex', alignItems:'center', gap:8, padding:'4px 0', paddingRight:8 }}>
+                  <label key={mon.id} style={{ display:'flex', alignItems:'center', gap:4, padding:'4px 0', paddingRight:8, borderBottom:'1px solid var(--divider)' }}>
                     <input type="checkbox" checked={caught.has(mon.id)} onChange={()=>toggleCaught(mon.id)} />
                     <Sprite mon={mon} size={32} alt={mon.name} />
                     <span style={{ flex:1 }}>{titleCase(mon.name)}</span>
-                    <span className="label-muted" style={{ minWidth:40, textAlign:'right', marginRight:8 }}>#{mon.id}</span>
+                    <span className="label-muted" style={{ minWidth:40, textAlign:'right', marginRight:4 }}>#{mon.id}</span>
                   </label>
                 ))}
               </div>

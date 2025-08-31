@@ -1582,6 +1582,7 @@ function LiveBattlePanel({ onViewMon }){
   const [mons, setMons] = useState([]);
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
+  const { caught, toggleCaught } = React.useContext(CaughtContext);
 
   useEffect(() => {
     const off = liveBattleClient.on((msg) => {
@@ -1793,6 +1794,7 @@ function LiveBattlePanel({ onViewMon }){
         >
           {mons.map(mon => {
             const isSolo = mons.length === 1;
+            const isCaught = caught.has(mon.id);
             const weakness = computeWeakness(mon.types);
             const wList = [
               ...weakness.x4.map(t => ({ t, mult: 400 })),
@@ -1828,7 +1830,9 @@ function LiveBattlePanel({ onViewMon }){
                   ...styles.areaCard,
                   display: 'flex',
                   justifyContent: 'center',
-                  padding: isSolo ? 24 : 12
+                  padding: isSolo ? 24 : 12,
+                  position: 'relative',
+                  opacity: isCaught ? 0.4 : 1
                 }}
               >
                 <button
@@ -1910,6 +1914,13 @@ function LiveBattlePanel({ onViewMon }){
                     <div><b>Catch Rate:</b> {mon.catchRate != null ? mon.catchRate : '—'}</div>
                     <div style={{ marginTop: 4 }}><b>Base Stats:</b> {statsText}</div>
                   </div>
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); toggleCaught(mon.id); }}
+                  title={isCaught ? 'Mark as uncaught' : 'Mark as caught'}
+                  style={{ position: 'absolute', top: 6, right: 6, background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+                >
+                  <PokeballIcon filled={isCaught} />
                 </button>
               </div>
             );
