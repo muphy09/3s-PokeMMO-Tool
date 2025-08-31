@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import breedingTable from '../data/breedingTable.json';
+import breedingTable from '../data/BreedingTable.json';
 import ivData from '../data/ivs.json';
 
 const STAT_OPTIONS = ivData.IV_STATS.filter(s => s.id !== 'nat');

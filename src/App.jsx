@@ -1971,13 +1971,16 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle' | 'market'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
   const [showMethodMenu, setShowMethodMenu] = useState(false);
   const methodFilterRef = useRef(null);
   const [showCaught, setShowCaught] = useState(true);
+  const [marketData, setMarketData] = useState([]);
+  const [marketLoading, setMarketLoading] = useState(false);
+  const [marketError, setMarketError] = useState(null);
 
   const toggleMethodFilter = (m) => {
     setMethodFilters(prev => {
@@ -2020,6 +2023,23 @@ function App(){
     })();
     return () => { if (t) clearTimeout(t); try { offNA?.(); } catch {}; };
   }, []);
+
+  useEffect(() => {
+    if (mode !== 'market') return;
+    let cancelled = false;
+    setMarketLoading(true);
+    setMarketError(null);
+    fetch('https://pokemmo.tools/api/gtl/items?limit=20')
+      .then(r => r.json())
+      .then(d => {
+        if (cancelled) return;
+        const list = Array.isArray(d?.results) ? d.results : Array.isArray(d?.data) ? d.data : d;
+        setMarketData(Array.isArray(list) ? list : []);
+      })
+      .catch(err => { if (!cancelled) setMarketError(err.message); })
+      .finally(() => { if (!cancelled) setMarketLoading(false); });
+    return () => { cancelled = true; };
+  }, [mode]);
 
   const [methodColors, setMethodColors] = useState(() => {
     try {
@@ -2434,6 +2454,9 @@ function App(){
                 </>
               )}
             </div>
+            <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
+              <button style={styles.segBtn(mode==='market')} onClick={()=>setMode('market')}>Market</button>
+            </div>
           </div>
           {isLinux && (
             <div className="label-muted" style={{ marginBottom:8 }}>
@@ -2749,6 +2772,36 @@ function App(){
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+          {/* Market results */}
+          {mode==='market' && (
+            <div style={{ marginTop:12 }}>
+              {marketLoading && (
+                <div className="label-muted">Loading market data…</div>
+              )}
+              {marketError && (
+                <div className="label-error">{marketError}</div>
+              )}
+              {!marketLoading && !marketError && (
+                <div style={{ display:'grid', gap:12 }}>
+                  {marketData.map((item, idx) => (
+                    <div key={idx} style={styles.areaCard}>
+                      <div style={{ display:'flex', justifyContent:'space-between' }}>
+                        <div style={{ fontWeight:800 }}>
+                          {item?.name || item?.item_name || `Item ${item?.id ?? idx}`}
+                        </div>
+                        {item?.price != null || item?.min_price != null ? (
+                          <div>₽ {Number(item?.price ?? item?.min_price).toLocaleString()}</div>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                  {!marketData.length && (
+                    <div className="label-muted">No market data.</div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
