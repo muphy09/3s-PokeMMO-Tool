@@ -1741,8 +1741,15 @@ function LiveBattlePanel({ onViewMon }){
       )}
 
       {mons.length > 0 && (
-        <div style={{ display:'grid', gap:12, gridTemplateColumns: mons.length === 1 ? '1fr' : '1fr 1fr' }}>
+        <div
+          style={{
+            display: 'grid',
+            gap: 12,
+            gridTemplateColumns: mons.length === 1 ? '1fr' : '1fr 1fr'
+          }}
+        >
           {mons.map(mon => {
+            const isSolo = mons.length === 1;
             const weakness = computeWeakness(mon.types);
             const wList = [
               ...weakness.x4.map(t => ({ t, mult: 400 })),
@@ -1772,40 +1779,93 @@ function LiveBattlePanel({ onViewMon }){
               .map(([k, label]) => `${label} ${(mon.stats || {})[k] ?? '-'}`)
               .join(' / ');
             return (
-              <div key={mon.id} style={{ ...styles.areaCard, display:'flex' }}>
+              <div
+                key={mon.id}
+                style={{
+                  ...styles.areaCard,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  padding: isSolo ? 24 : 12
+                }}
+              >
                 <button
                   onClick={() => onViewMon?.(mon)}
                   style={{
-                    display:'flex',
-                    flexDirection:'column',
-                    alignItems:'center',
-                    gap:8,
-                    width:'100%',
-                    textAlign:'center'
+                    appearance: 'none',
+                    background: 'transparent',
+                    border: 0,
+                    padding: 0,
+                    margin: 0,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: isSolo ? 12 : 8,
+                    width: '100%',
+                    textAlign: 'center',
+                    color: 'inherit'
                   }}
                 >
-                  <Sprite mon={mon} size={80} alt={mon.name} />
-                  <div style={{ fontWeight:800, fontSize:16 }}>{titleCase(mon.name)}</div>
-                  <div className="label-muted">#{mon.id}</div>
-                  <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:6 }}>
-                    {(mon.types || []).map(t => <TypePill key={t} t={t} compact />)}
+                  <Sprite
+                    mon={mon}
+                    size={isSolo ? 140 : 80}
+                    alt={mon.name}
+                  />
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: isSolo ? 24 : 16
+                    }}
+                  >
+                    {titleCase(mon.name)}
                   </div>
-                  <div style={{ marginTop:6, width:'100%' }}>
-                    <div style={{ fontWeight:700, fontSize:14 }}>Weaknesses</div>
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:4 }}>
-                      {wList.length ? wList.map(w => (
-                        <div key={`${w.t}-${w.mult}`} style={{ display:'flex', alignItems:'center', gap:4 }}>
-                          <TypePill t={w.t} compact />
-                          <span className="label-muted">{w.mult}%</span>
-                        </div>
-                      )) : <div className="label-muted">None</div>}
+                  <div className="label-muted">#{mon.id}</div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: 6,
+                      flexWrap: 'wrap',
+                      justifyContent: 'center',
+                      marginTop: 6
+                    }}
+                  >
+                    {(mon.types || []).map(t => (
+                      <TypePill key={t} t={t} compact />
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 6, width: '100%' }}>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>Weaknesses</div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: 6,
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        marginTop: 4
+                      }}
+                    >
+                      {wList.length
+                        ? wList.map(w => (
+                            <div
+                              key={`${w.t}-${w.mult}`}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4
+                              }}
+                            >
+                              <TypePill t={w.t} compact />
+                              <span className="label-muted">{w.mult}%</span>
+                            </div>
+                          ))
+                        : <div className="label-muted">None</div>}
                     </div>
                   </div>
-                  <div style={{ marginTop:6, fontSize:12 }}>
+                  <div style={{ marginTop: 6, fontSize: 12 }}>
                     <div><b>EV Yield:</b> {evs.length ? evs.join(', ') : 'None'}</div>
                     <div><b>Held Items:</b> {held}</div>
                     <div><b>Catch Rate:</b> {mon.catchRate != null ? mon.catchRate : '—'}</div>
-                    <div style={{ marginTop:4 }}><b>Base Stats:</b> {statsText}</div>
+                    <div style={{ marginTop: 4 }}><b>Base Stats:</b> {statsText}</div>
                   </div>
                 </button>
               </div>
