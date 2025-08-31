@@ -1112,6 +1112,27 @@ function normalizeHudText(s=''){
   return t;
 }
 
+function similarity(a='', b=''){
+  const s1 = a.toLowerCase();
+  const s2 = b.toLowerCase();
+  const len1 = s1.length;
+  const len2 = s2.length;
+  const dp = Array.from({ length: len2 + 1 }, () => Array(len1 + 1).fill(0));
+  for (let i = 0; i <= len2; i++) dp[i][0] = i;
+  for (let j = 0; j <= len1; j++) dp[0][j] = j;
+  for (let i = 1; i <= len2; i++) {
+    for (let j = 1; j <= len1; j++) {
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + (s1[j - 1] === s2[i - 1] ? 0 : 1)
+      );
+    }
+  }
+  const dist = dp[len2][len1];
+  return (len1 === 0 && len2 === 0) ? 1 : 1 - dist / Math.max(len1, len2);
+}
+
 class LiveRouteClient {
   constructor(){
     this.ws = null;
@@ -1433,8 +1454,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <div ref={filterRef} style={{ position:'relative' }}>
             <button
-              className="label-muted"
-              style={{ display:'flex', alignItems:'center', gap:4 }}
+              className="region-btn"
               onClick={() => setShowFilterMenu(v => !v)}
             >
               Encounter Type ▾
@@ -1592,21 +1612,28 @@ function LiveBattlePanel({ onViewMon }){
       for (const frag of fragments) {
         const lowerFrag = frag.toLowerCase();
         const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
+        if (compactFrag.length < 3) continue;
         let found = null;
         for (const [key, mon] of DEX_BY_NAME.entries()) {
           const compactKey = key.replace(/[^a-z0-9]+/g, '');
-          if (lowerFrag.includes(key) || (compactKey && compactFrag.includes(compactKey))) {
+          if (lowerFrag.includes(key) || (compactKey.length >= 3 && compactFrag.includes(compactKey))) {
             found = mon.name;
             break;
           }
         }
         if (!found) {
           const first = lowerFrag.split(/\s+/)[0];
-          for (const [key, mon] of DEX_BY_NAME.entries()) {
-            if (key.startsWith(first) || first.startsWith(key)) {
-              found = mon.name;
-              break;
+          if (first.length >= 3) {
+            let best = null;
+            let bestScore = 0;
+            for (const [key, mon] of DEX_BY_NAME.entries()) {
+              const score = similarity(first, key);
+              if (score > 0.6 && score > bestScore) {
+                best = mon.name;
+                bestScore = score;
+              }
             }
+            if (best) found = best;
           }
         }
         if (found) names.push(found);
@@ -2462,8 +2489,7 @@ function App(){
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <div ref={methodFilterRef} style={{ position:'relative' }}>
                       <button
-                        type="button"
-                        className="label-muted"
+                        className="region-btn"
                         style={{ display:'flex', alignItems:'center', gap:4 }}
                         onClick={() => setShowMethodMenu(v => !v)}
                       >
