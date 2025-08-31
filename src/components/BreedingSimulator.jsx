@@ -76,7 +76,7 @@ export default function BreedingSimulator(){
               value={ivsCount}
               onChange={e=>{setIvsCount(Number(e.target.value)); setShowTree(false);}}
               className="input"
-              style={{height:32}}
+              style={{ height:44, borderRadius:10, width:'auto', minWidth:80 }}
             >
               {[2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
             </select>
@@ -101,7 +101,7 @@ export default function BreedingSimulator(){
                 value={ivs[i+1]}
                 onChange={e=>setIvs({...ivs,[i+1]:e.target.value})}
                 className="input"
-                style={{height:32}}
+                style={{ height:44, borderRadius:10, width:'auto', minWidth:150 }}
               >
                 {STAT_OPTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
               </select>
