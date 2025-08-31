@@ -2367,6 +2367,18 @@ const marketResults = React.useMemo(() => {
       .filter(i => !q || i.name.toLowerCase().includes(q));
   }, [mode, query, marketData]);
 
+  const openMarketItem = (item) => {
+    const slug = normalizeKey(item?.name || '');
+    const url = `https://pokemmohub.com/items/${slug}`;
+    try {
+      if (!window.app?.openExternal?.(url)) {
+        window.open(url, '_blank');
+      }
+    } catch {
+      try { window.open(url, '_blank'); } catch {}
+    }
+  };
+
   // Selected Pokémon details (MERGED sources)
   const resolved = React.useMemo(() => {
     if (!selected) return null;
@@ -2858,7 +2870,11 @@ const marketResults = React.useMemo(() => {
               {!marketLoading && !marketError && (
                 <div style={{ display:'grid', gap:12 }}>
                   {marketResults.map((item, idx) => (
-                    <div key={item.id ?? idx} style={styles.areaCard}>
+                    <div
+                      key={item.id ?? idx}
+                      style={{ ...styles.areaCard, cursor:'pointer' }}
+                      onClick={() => openMarketItem(item)}
+                    >
                       <div style={{ display:'flex', justifyContent:'space-between' }}>
                         <div style={{ fontWeight:800 }}>
                           {item.name}
@@ -2935,16 +2951,36 @@ const marketResults = React.useMemo(() => {
                           <button
                             type="button"
                             onClick={() => setIsAsleep(v => !v)}
-                            style={{ opacity: isAsleep ? 1 : 0.3, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
                             title="Toggle Sleep"
+                            style={{
+                              opacity: isAsleep ? 1 : 0.5,
+                              background: isAsleep ? 'var(--accent)' : 'var(--chip-bg)',
+                              border: `1px solid ${isAsleep ? 'var(--accent)' : 'var(--chip-br)'}`,
+                              color: isAsleep ? '#111' : 'var(--text)',
+                              borderRadius: 6,
+                              padding: '2px 6px',
+                              cursor: 'pointer',
+                              fontWeight: 700,
+                              fontSize: 12
+                            }}
                           >
-                            <span style={{ fontSize:12 }}>zZz</span>
+                            zZz
                           </button>
                           <button
                             type="button"
                             onClick={() => setIsOneHp(v => !v)}
-                            style={{ opacity: isOneHp ? 1 : 0.3, background:'transparent', border:'none', cursor:'pointer', padding:0, fontWeight:700, fontSize:12 }}
                             title="Toggle 1 HP"
+                            style={{
+                              opacity: isOneHp ? 1 : 0.5,
+                              background: isOneHp ? '#f87171' : 'var(--chip-bg)',
+                              border: `1px solid ${isOneHp ? '#f87171' : 'var(--chip-br)'}`,
+                              color: isOneHp ? '#111' : 'var(--text)',
+                              borderRadius: 6,
+                              padding: '2px 6px',
+                              cursor: 'pointer',
+                              fontWeight: 700,
+                              fontSize: 12
+                            }}
                           >
                             1HP
                           </button>

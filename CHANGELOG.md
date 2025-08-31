@@ -3,12 +3,29 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.5.0]- 2025-08
+### Added
+- Breeding Tab!
+  - See what parent combos are needed to get your outcome.
+
+- Pokemon Catch % now available in the Pokemon's profile.
+  - Click to toggle asleep & 1HP
+
+- Live Market feature - *beta*
+  - Search current prices and find price history from the GTL - *Credit PokeMMO Hub for the api*
+
+---
+
 ## [2.4.4]- 2025-08
 ### Fixed
 - Alternate Form Pokemon now appear correctly inside of the Pokedex!
+
 - Encounter Method Filter has been visually updated and copied to the Area tab in addition to the Live tab
+
 - Major graphical improvements to the Live Battle tab
+
 - Support for Double Battles in the Live Battle tab
+
 - Reduced jitter and startup initialization time in the Live Battle tab - *still beta but getting close*
 
 ---
@@ -23,6 +40,7 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
 
 ### Fixed
 - Searching "Route 1" no longer returns Routes containing 'Route 1' in the string (and similar instances)
+
 - Live Battle Tab improvements - *still in beta*
 
 ---
