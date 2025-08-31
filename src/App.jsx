@@ -2785,7 +2785,6 @@ const marketResults = React.useMemo(() => {
                           onView={(m) => {
                             setSelected(m);
                             setMode('pokemon');
-                            setQuery('');
                           }}
                           caught={isCaught}
                           showCaught={showCaught}

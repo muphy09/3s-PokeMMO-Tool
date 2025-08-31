@@ -7,6 +7,8 @@
 
 - Area Search now persists after switching tabs and clears by clicking the search bar
 
+- *Market Tab Disabled - will be implemented soon*
+
 ---
 
 ## [2.5.0]- 2025-08
