@@ -59,7 +59,6 @@ for (const mon of dexRaw) {
 
 const DEX_LIST = dexRaw
   .filter(m => !FORM_IDS.has(m.id))
-  .filter(m => m.dex != null)
   .map(m => ({
     id: m.id,
     name: m.name,
@@ -67,8 +66,7 @@ const DEX_LIST = dexRaw
     sprites: m.sprites,
     image: m.image,
     icon: m.icon,
-    slug: m.slug,
-    dex: m.dex
+    slug: m.slug
   }))
   .sort((a, b) => a.id - b.id);
 

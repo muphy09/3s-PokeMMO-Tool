@@ -1590,7 +1590,16 @@ function LiveBattlePanel({ onViewMon }){
     const off = liveBattleClient.on((msg) => {
       const coerced = coerceBattleIncoming(msg);
       if (!coerced) return;
-      const cleaned = normalizeHudText(coerced.monText);
+      let cleaned = normalizeHudText(coerced.monText);
+      cleaned = cleaned
+        .replace(/([A-Za-z])([Ll][Vv])/g, '$1 $2')
+        .replace(/([A-Za-z])([Hh][Pp])/g, '$1 $2')
+        .replace(/([A-Za-z])([Pp][Cc])/g, '$1 $2')
+        .replace(/\bLv\.?\s*\d+\b/gi, '\n')
+        .replace(/\b(?:HP|pc)\s*\d+\/\d+\b/gi, '\n')
+        .replace(/\s*\n\s*/g, '\n')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
       const compacted = cleaned.replace(/\s+/g, '');
       // When OCR returns nothing, clear state fully
       if (!compacted) {

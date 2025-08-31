@@ -3,7 +3,7 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
-## [2.4.2]- 2025-08
+## [2.4.4]- 2025-08
 ### Fixed
 - Alternate Form Pokemon now appear correctly inside of the Pokedex!
 - Encounter Method Filter has been visually updated and copied to the Area tab in addition to the Live tab
