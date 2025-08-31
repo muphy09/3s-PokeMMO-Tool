@@ -2029,14 +2029,21 @@ function App(){
     let cancelled = false;
     setMarketLoading(true);
     setMarketError(null);
-    fetch('https://pokemmo.tools/api/gtl/items?limit=20')
-      .then(r => r.json())
+    fetch('https://pokemmo.tools/api/v1/gtl/items?limit=20', {
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then(r => {
+        if (!r.ok) throw new Error(`Request failed: ${r.status}`);
+        return r.json();
+      })
       .then(d => {
         if (cancelled) return;
         const list = Array.isArray(d?.results) ? d.results : Array.isArray(d?.data) ? d.data : d;
         setMarketData(Array.isArray(list) ? list : []);
       })
-      .catch(err => { if (!cancelled) setMarketError(err.message); })
+      .catch(err => { if (!cancelled) setMarketError('Failed to fetch data'); })
       .finally(() => { if (!cancelled) setMarketLoading(false); });
     return () => { cancelled = true; };
   }, [mode]);
