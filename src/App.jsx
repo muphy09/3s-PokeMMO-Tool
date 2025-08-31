@@ -10,6 +10,7 @@ import CaughtListButton from './components/CaughtListButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
+import BreedingSimulator from './components/BreedingSimulator.jsx';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -1970,7 +1971,7 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'live' | 'battle'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
@@ -2425,6 +2426,7 @@ function App(){
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
+              <button style={styles.segBtn(mode==='breeding')} onClick={()=>setMode('breeding')}>Breeding</button>
               {isWindows && (
                 <>
                   <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
@@ -2503,7 +2505,7 @@ function App(){
           )}
 
           {/* Context label + search input (hidden for Live) */}
-          {mode!=='live' && mode!=='battle' && (
+          {mode!=='live' && mode!=='battle' && mode!=='breeding' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">
@@ -2634,6 +2636,13 @@ function App(){
               <LiveBattlePanel
                 onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}
               />
+            </div>
+          )}
+
+          {/* Breeding simulator */}
+          {mode==='breeding' && (
+            <div style={{ marginTop:4 }}>
+              <BreedingSimulator />
             </div>
           )}
 
