@@ -58,7 +58,7 @@ for (const mon of dexRaw) {
 }
 
 const DEX_LIST = dexRaw
-.filter(m => !FORM_IDS.has(m.id))
+  .filter(m => !FORM_IDS.has(m.id))
   .filter(m => m.dex != null)
   .map(m => ({
     id: m.id,
@@ -72,7 +72,11 @@ const DEX_LIST = dexRaw
   }))
   .sort((a, b) => a.id - b.id);
 
-function titleCase(s=''){ return String(s).split(' ').map(w => (w? w[0].toUpperCase()+w.slice(1).toLowerCase():w)).join(' '); }
+function titleCase(s = "") {
+  return String(s)
+    .toLowerCase()
+    .replace(/(^|[\s(-])([a-z])/g, (_, p1, p2) => p1 + p2.toUpperCase());
+}
 
 export default function CaughtListButton(){
   const { caught, toggleCaught } = useContext(CaughtContext);

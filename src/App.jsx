@@ -66,7 +66,11 @@ const styles = {
 };
 
 /* ---------- utils ---------- */
-function titleCase(s=''){ return String(s).split(' ').map(w => (w? w[0].toUpperCase()+w.slice(1).toLowerCase():w)).join(' '); }
+function titleCase(s = "") {
+  return String(s)
+    .toLowerCase()
+    .replace(/(^|[\s(-])([a-z])/g, (_, p1, p2) => p1 + p2.toUpperCase());
+}
 function normalizeKey(s=''){
   return String(s).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
 }

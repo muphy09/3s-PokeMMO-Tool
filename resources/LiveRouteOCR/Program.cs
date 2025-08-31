@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tesseract;
@@ -391,14 +392,14 @@ class LiveRouteOCR
                         else LogBattle($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
                         lastLoggedHandle = hWnd;
                     }
-                    if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                    if (hWnd == IntPtr.Zero) { await Task.Delay(500, ct); continue; }
                 }
 
                 if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
                 {
                     if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
                     hWnd = IntPtr.Zero;
-                    await Task.Delay(700, ct);
+                    await Task.Delay(400, ct);
                     continue;
                 }
                 var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
@@ -563,14 +564,14 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         else LogBattle($"Acquired PokeMMO window: 0x{hWnd.ToInt64():X}");
                         lastLoggedHandle = hWnd;
                     }
-                    if (hWnd == IntPtr.Zero) { await Task.Delay(900, ct); continue; }
+                    if (hWnd == IntPtr.Zero) { await Task.Delay(500, ct); continue; }
                 }
 
                 if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
                 {
                     if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
                     hWnd = IntPtr.Zero;
-                    await Task.Delay(700, ct);
+                    await Task.Delay(400, ct);
                     continue;
                 }
                 var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
@@ -588,15 +589,18 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                 catch (Exception ex) { LogBattle($"Capture save failed: {ex.Message}"); }
                 LogBattle($"Saved capture: {BattleCapPath}");
 
-                string name = "";
+                var nameList = new List<string>();
                 string rawUsed = "";
                 float conf = 0f;
                 Bitmap? prePreview = null;
+                Bitmap? bestPre = null;
                 if (engine != null)
                 {
                     using var filtered = MaskBattleHud(crop);
+                    int passIdx = 0;
                     foreach (var pass in BuildPassPlan(filtered, mode, 1))
                     {
+                        passIdx++;
                         using var srcForPass = pass.Masked ? MaskLeftColumn(filtered, pass.KeepPct) : (Bitmap)filtered.Clone();
                         using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
@@ -606,7 +610,7 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         var raw = (page.GetText() ?? "").Trim();
                         var cleanedAll = Regex.Replace(raw, "[^A-Za-z0-9'\\- \\r\\n]", " ").Trim();
                         var names = new List<string>();
-                        
+
                         var nameMatches = Regex.Matches(
                             cleanedAll,
                             "([A-Za-z][A-Za-z0-9.'\\-]*(?:\\s+(?!Lv\\.?\\b)[A-Za-z][A-Za-z0-9.'\\-]*)*)\\s+Lv\\.?\\s*\\d+",
@@ -615,31 +619,32 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         foreach (Match m in nameMatches)
                         {
                             var n = m.Groups[1].Value.Trim();
-                            if (!string.IsNullOrWhiteSpace(n)) names.Add(n);
+                            if (!string.IsNullOrWhiteSpace(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
+                                nameList.Add(n);
                         }
 
-                        if (names.Count == 0)
+                        if (nameList.Count == 0)
                         {
                             foreach (var line in cleanedAll.Split('\n'))
                             {
                                 var n = Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim();
-                                if (Regex.IsMatch(n, "[A-Za-z]")) names.Add(n);
+                                if (Regex.IsMatch(n, "[A-Za-z]") && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
+                                    nameList.Add(n);
                             }
                         }
-                        
-                        if (names.Count > 0)
+
+                        if (nameList.Count > 0)
                         {
                             name = string.Join("\n", names);
                             conf = page.GetMeanConfidence();
                             rawUsed = raw;
-                            using (var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
-                                pre.Save(fs, ImgFormat.Png);
-                            LogBattle($"Saved preprocessed: {BattlePrePath}");
-                            break;
+                            bestPre?.Dispose();
+                            bestPre = (Bitmap)pre.Clone();
+                            if (nameList.Count >= 2 || passIdx >= 2) break;
                         }
                     }
                 }
-if (string.IsNullOrWhiteSpace(name) && prePreview != null)
+                if (nameList.Count == 0 && prePreview != null)
                 {
                     try
                     {
@@ -650,8 +655,20 @@ if (string.IsNullOrWhiteSpace(name) && prePreview != null)
                     catch { }
                     prePreview.Dispose(); prePreview = null;
                 }
+                else if (bestPre != null)
+                {
+                    try
+                    {
+                        using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        bestPre.Save(fs, ImgFormat.Png);
+                        LogBattle($"Saved preprocessed: {BattlePrePath}");
+                    }
+                    catch { }
+                    bestPre.Dispose();
+                }
 
-                bool has = !string.IsNullOrWhiteSpace(name);
+                var name = string.Join("\n", nameList);
+                bool has = nameList.Count > 0;
                 if (has)
                 {
                     missStreak = 0;
@@ -670,7 +687,7 @@ if (string.IsNullOrWhiteSpace(name) && prePreview != null)
                         LogBattle("SENT NO_MON");
                     }
                 }
-                await Task.Delay(has ? 150 : 350, ct);
+                await Task.Delay(has ? 120 : 250, ct);
             }
             catch (TaskCanceledException) { }
             catch (Exception ex) { LogBattle("Battle loop error: " + ex.Message); await Task.Delay(500, ct); }
@@ -714,9 +731,9 @@ if (string.IsNullOrWhiteSpace(name) && prePreview != null)
 
         PageSegMode[][] psms = new[]
         {
-            new[] { PageSegMode.SingleLine, PageSegMode.SingleBlock },
-            new[] { PageSegMode.SingleLine, PageSegMode.SingleBlock },
-            new[] { PageSegMode.SingleLine, PageSegMode.SingleBlock, PageSegMode.SparseText }
+            new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine },
+            new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine },
+            new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine, PageSegMode.SparseText }
         };
 
         foreach (var masked in new[] { false, true })
