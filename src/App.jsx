@@ -2050,7 +2050,12 @@ function App(){
       if (Array.isArray(d?.items)) return d.items;
       return [];
     };
-    const gtlEndpoint = import.meta.env.VITE_GTL_ITEMS_URL || 'https://raw.githubusercontent.com/vega/vega/master/docs/data/barley.json';
+    const gtlEndpoint = import.meta.env.VITE_GTL_ITEMS_URL;
+    if (!gtlEndpoint) {
+      setMarketData(ITEM_LIST);
+      setMarketLoading(false);
+      return;
+    }
     const headers = {
       'Accept': 'application/json'
     };
@@ -2348,6 +2353,19 @@ function App(){
     if (!q) return [];
     return ITEM_LIST.filter(i => normalizeKey(i.name).includes(q)).slice(0, 30);
   }, [query, mode]);
+
+const marketResults = React.useMemo(() => {
+    if (mode !== 'market') return [];
+    const q = query.trim().toLowerCase();
+    return marketData
+      .map((item, idx) => {
+        const id = item?.id ?? item?.item_id;
+        const name = item?.name || item?.item_name || ITEM_INDEX.byId.get(id)?.name || `Item ${id ?? idx}`;
+        const price = item?.price ?? item?.min_price;
+        return { ...item, id, name, price };
+      })
+      .filter(i => !q || i.name.toLowerCase().includes(q));
+  }, [mode, query, marketData]);
 
   // Selected Pokémon details (MERGED sources)
   const resolved = React.useMemo(() => {
@@ -2839,19 +2857,19 @@ function App(){
               )}
               {!marketLoading && !marketError && (
                 <div style={{ display:'grid', gap:12 }}>
-                  {marketData.map((item, idx) => (
-                    <div key={idx} style={styles.areaCard}>
+                  {marketResults.map((item, idx) => (
+                    <div key={item.id ?? idx} style={styles.areaCard}>
                       <div style={{ display:'flex', justifyContent:'space-between' }}>
                         <div style={{ fontWeight:800 }}>
-                          {item?.name || item?.item_name || `Item ${item?.id ?? idx}`}
+                          {item.name}
                         </div>
-                        {item?.price != null || item?.min_price != null ? (
-                          <div>₽ {Number(item?.price ?? item?.min_price).toLocaleString()}</div>
+                        {item.price != null ? (
+                          <div>₽ {Number(item.price).toLocaleString()}</div>
                         ) : null}
                       </div>
                     </div>
                   ))}
-                  {!marketData.length && (
+                  {!marketResults.length && (
                     <div className="label-muted">No market data.</div>
                   )}
                 </div>
