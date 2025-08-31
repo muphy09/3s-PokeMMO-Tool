@@ -3,6 +3,16 @@
 All notable changes to **3's Pokemmo Tool** will be documented in this file.  
 ---
 
+## [2.4.2]- 2025-08
+### Fixed
+- Alternate Form Pokemon now appear correctly inside of the Pokedex!
+- Encounter Method Filter has been visually updated and copied to the Area tab in addition to the Live tab
+- Major graphical improvements to the Live Battle tab
+- Support for Double Battles in the Live Battle tab
+- Reduced jitter and startup initialization time in the Live Battle tab - *still beta but getting close*
+
+---
+
 ## [2.4.1]- 2025-08
 ### Added
 - Held Item Filter!
@@ -12,8 +22,8 @@ All notable changes to **3's Pokemmo Tool** will be documented in this file.
   - Sort the Live Route Tab with a Method Filter now - Grass, Fishing, Water, Lure, & Rocks
 
 ### Fixed
-- Searching "Route 1" no longer returns Routes containing 'Route 1' in the string
-- Live Battle Tab improvements *still in beta*
+- Searching "Route 1" no longer returns Routes containing 'Route 1' in the string (and similar instances)
+- Live Battle Tab improvements - *still in beta*
 
 ---
 

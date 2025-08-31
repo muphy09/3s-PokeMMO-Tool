@@ -609,8 +609,6 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                         using var page = engine.Process(pix, pass.Psm);
                         var raw = (page.GetText() ?? "").Trim();
                         var cleanedAll = Regex.Replace(raw, "[^A-Za-z0-9'\\- \\r\\n]", " ").Trim();
-                        var names = new List<string>();
-
                         var nameMatches = Regex.Matches(
                             cleanedAll,
                             "([A-Za-z][A-Za-z0-9.'\\-]*(?:\\s+(?!Lv\\.?\\b)[A-Za-z][A-Za-z0-9.'\\-]*)*)\\s+Lv\\.?\\s*\\d+",
@@ -635,7 +633,6 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
 
                         if (nameList.Count > 0)
                         {
-                            name = string.Join("\n", names);
                             conf = page.GetMeanConfidence();
                             rawUsed = raw;
                             bestPre?.Dispose();
