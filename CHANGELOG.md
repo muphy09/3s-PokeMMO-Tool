@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.5.2]- 2025-08
+## [2.5.3]- 2025-08
 ### Fixed
 - Clicking a Pokémon in the Live and Areas tabs now opens its profile directly, removing the separate "View" button.
 

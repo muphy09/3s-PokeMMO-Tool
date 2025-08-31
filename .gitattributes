@@ -1,0 +1,2 @@
+release/__appImage-x64/pokemmo-tool filter=lfs diff=lfs merge=lfs -text
+release/linux-unpacked/pokemmo-tool filter=lfs diff=lfs merge=lfs -text
