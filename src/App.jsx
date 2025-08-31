@@ -1437,7 +1437,6 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   })();
 
   const confPct = formatConfidence(confidence);
-
   // When user changes region via segmented buttons
   const handleRegionChange = (r) => {
     setRegion(r);
@@ -1680,16 +1679,20 @@ function LiveBattlePanel({ onViewMon }){
         if (DEBUG_LIVE) console.log('[LIVE] Ignoring short OCR:', cleaned);
         return;
       }
-      setRawText(cleaned);
+      if (cleaned !== rawText) setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);
-      setMons(
-        names
-          .map(n => {
-            const m = getMon(n);
-            return m ? { ...m } : null;
-          })
-          .filter(Boolean)
-      );
+      const prev = mons.map(m => m.name).sort().join('|');
+      const next = names.slice().sort().join('|');
+      if (prev !== next) {
+        setMons(
+          names
+            .map(n => {
+              const m = getMon(n);
+              return m ? { ...m } : null;
+            })
+            .filter(Boolean)
+        );
+      }
     });
 
     liveBattleClient.connect();
@@ -1741,6 +1744,7 @@ function LiveBattlePanel({ onViewMon }){
   })();
 
   const confPct = formatConfidence(confidence);
+  const nameText = mons.length > 0 ? mons.map(m => m.name).join(' | ') : 'No Pokémon';
 
   useEffect(() => {
     mons.forEach(mon => {
@@ -1761,7 +1765,7 @@ function LiveBattlePanel({ onViewMon }){
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
         <div className="label-muted">
-          Live Battle: <span style={{ fontWeight:800, whiteSpace:'pre-line' }}>{rawText || '—'}</span>
+          Live Battle: <span style={{ fontWeight:800, whiteSpace:'pre-line' }}>{nameText}</span>
           {SHOW_CONFIDENCE && (confPct !== null) && (
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
