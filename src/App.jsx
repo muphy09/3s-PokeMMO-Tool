@@ -79,6 +79,16 @@ function normalizeType(t){ return String(t||'').toLowerCase().trim(); }
 function normalizeRegion(r=''){ return String(r||'').toLowerCase().replace(/\s+/g,'').trim(); }
 const keyName = (s = "") => s.trim().toLowerCase().replace(/\s+/g, " ");
 
+function calcCatchChance(rate, hpRatio = 1, statusMult = 1) {
+  if (!rate || rate <= 0) return 0;
+  const a = Math.floor((3 - 2 * hpRatio) * rate / 3);
+  const aStatus = Math.floor(a * statusMult);
+  const capped = Math.max(1, Math.min(255, aStatus));
+  if (capped >= 255) return 1;
+  const b = 1048560 / Math.sqrt(Math.sqrt(16711680 / capped));
+  return Math.pow(b / 65535, 4);
+}
+
 /* ---------- pokedex adapter ---------- */
 // Build lookups to help resolve form data and skip standalone form entries
 const RAW_DEX_BY_ID = new Map(dexRaw.map(m => [m.id, m]));
@@ -1974,6 +1984,8 @@ function App(){
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle' | 'market'
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
+  const [isAsleep, setIsAsleep] = useState(false);
+  const [isOneHp, setIsOneHp] = useState(false);
   const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
   const [showMethodMenu, setShowMethodMenu] = useState(false);
   const methodFilterRef = useRef(null);
@@ -2157,7 +2169,12 @@ function App(){
     setMoveLevelOnly(false);
     setItemFilter('');
   }, [mode]);
-  useEffect(() => { setShowMoveset(false); setShowLocations(false); }, [selected]);
+  useEffect(() => {
+    setShowMoveset(false);
+    setShowLocations(false);
+    setIsAsleep(false);
+    setIsOneHp(false);
+  }, [selected]);
   useEffect(() => {
     if (selected && detailRef.current) {
       detailRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2423,6 +2440,16 @@ function App(){
     const order = ['Kanto','Johto','Hoenn','Sinnoh','Unova','Unknown'];
     return [...groups.entries()].sort((a,b) => order.indexOf(a[0]) - order.indexOf(b[0]));
   }, [resolved]);
+
+  const catchPercent = React.useMemo(() => {
+    if (!resolved?.catchRate) return null;
+    const chance = calcCatchChance(
+      resolved.catchRate,
+      isOneHp ? 0.01 : 1,
+      isAsleep ? 2 : 1
+    );
+    return chance * 100;
+  }, [resolved, isAsleep, isOneHp]);
 
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught }}>
@@ -2879,9 +2906,31 @@ function App(){
                       </div>
                     )}
                     {resolved.catchRate != null && (
-                      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                        <span className="label-muted" style={{ fontWeight: 700 }}>Catch Rate:</span>
-                        <span>{resolved.catchRate}</span>
+                      <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
+                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                          <span className="label-muted" style={{ fontWeight: 700 }}>Catch Rate:</span>
+                          <span>{resolved.catchRate}</span>
+                        </div>
+                        <div style={{ display:'flex', gap:4, alignItems:'center' }}>
+                          <span className="label-muted" style={{ fontWeight: 700 }}>Catch %:</span>
+                          <span>{catchPercent != null ? catchPercent.toFixed(1) : 'N/A'}%</span>
+                          <button
+                            type="button"
+                            onClick={() => setIsAsleep(v => !v)}
+                            style={{ opacity: isAsleep ? 1 : 0.3, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
+                            title="Toggle Sleep"
+                          >
+                            <span style={{ fontSize:12 }}>zZz</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setIsOneHp(v => !v)}
+                            style={{ opacity: isOneHp ? 1 : 0.3, background:'transparent', border:'none', cursor:'pointer', padding:0, fontWeight:700, fontSize:12 }}
+                            title="Toggle 1 HP"
+                          >
+                            1HP
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
