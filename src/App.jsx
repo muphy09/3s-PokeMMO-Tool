@@ -2539,7 +2539,7 @@ const marketResults = React.useMemo(() => {
               )}
             </div>
             <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
-              <button style={styles.segBtn(mode==='market')} onClick={()=>setMode('market')}>Market</button>
+              <button style={{ ...styles.segBtn(false), cursor:'not-allowed' }} disabled>Market</button>
             </div>
           </div>
           {isLinux && (
