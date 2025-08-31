@@ -2038,20 +2038,32 @@ function App(){
       if (Array.isArray(d?.items)) return d.items;
       return [];
     };
-    fetch('https://pokemmo.tools/api/v1/gtl/items?limit=20', {
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-      .then(r => {
-        if (!r.ok) throw new Error(`Request failed: ${r.status}`);
+    const gtlEndpoint = import.meta.env.VITE_GTL_ITEMS_URL || 'https://raw.githubusercontent.com/vega/vega/master/docs/data/barley.json';
+    const headers = {
+      'Accept': 'application/json'
+    };
+    if (import.meta.env.VITE_GTL_AUTH) headers['Authorization'] = import.meta.env.VITE_GTL_AUTH;
+    if (import.meta.env.VITE_GTL_ORIGIN) headers['Origin'] = import.meta.env.VITE_GTL_ORIGIN;
+    fetch(gtlEndpoint, { headers })
+      .then(async r => {
+        if (!r.ok) {
+          let msg = `Request failed: ${r.status}`;
+          const text = await r.text().catch(() => '');
+          if (text) msg += ` - ${text}`;
+          throw new Error(msg);
+        }
         return r.json();
       })
       .then(d => {
         if (cancelled) return;
         setMarketData(extractList(d));
       })
-      .catch(err => { if (!cancelled) setMarketError(err?.message || 'Failed to fetch data'); })
+      .catch(err => {
+        if (!cancelled) {
+          console.error('GTL fetch error', err);
+          setMarketError(err?.message || 'Failed to fetch data');
+        }
+      })
       .finally(() => { if (!cancelled) setMarketLoading(false); });
     return () => { cancelled = true; };
   }, [mode]);
