@@ -92,6 +92,7 @@ function toLegacyShape(m){
   return {
     id: m.id,
     name: m.name,
+    slug: m.slug || normalizeKey(m.name),
     types,
     expType: m.exp_type,
     obtainable: m.obtainable,
@@ -142,7 +143,10 @@ const DEX_LIST = dexRaw
   });
 const DEX_BY_NAME = (() => {
   const map = new Map();
-  for (const m of DEX_LIST) map.set(normalizeKey(m.name), m);
+  for (const m of DEX_LIST) {
+    map.set(normalizeKey(m.name), m);
+    for (const f of m.forms || []) map.set(normalizeKey(f.name), f);
+  }
   return map;
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
@@ -2135,7 +2139,8 @@ function App(){
     if (mode !== 'pokemon') return [];
     const q = query.trim().toLowerCase();
     if (!hasFilters && !q) return [];
-    let list = DEX_LIST.filter(mon => {
+
+    const matchesFilters = (mon) => {
       if (typeFilter) {
         const types = (mon.types || []).map(normalizeType);
         if (!types.includes(normalizeType(typeFilter))) return false;
@@ -2166,9 +2171,21 @@ function App(){
         const regions = (mon.locations || []).map(l => normalizeRegion(l.region_name));
         if (!regions.includes(normalizeRegion(regionFilter))) return false;
       }
-      if (q && !(mon.name.toLowerCase().includes(q) || String(mon.id) === q)) return false;
       return true;
-    });
+    };
+
+    const matchesQuery = (mon) => {
+      if (!q) return true;
+      return mon.name.toLowerCase().includes(q) || String(mon.id) === q;
+    };
+
+    let list = [];
+    for (const mon of DEX_LIST) {
+      if (matchesFilters(mon) && matchesQuery(mon)) list.push(mon);
+      for (const form of mon.forms || []) {
+        if (matchesFilters(form) && matchesQuery(form)) list.push(form);
+      }
+    }
     if (!hasFilters && q) list = list.slice(0, 24);
     return list;
   }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly, itemFilter]);

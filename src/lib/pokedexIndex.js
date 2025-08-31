@@ -48,7 +48,7 @@ for (const mon of POKEDEX) {
     id: mon.id ?? null,
     dex: dexNum, // canonical id
     name: mon.name ?? "",
-    slug: mon.slug ?? "",
+    slug: mon.slug || norm(mon.name).replace(/\s+/g, "-"),
     types: Array.isArray(mon.types) ? mon.types : [],
     // --- sprite-ish pass-throughs (some datasets differ) ---
     sprite: mon.sprite ?? null,
@@ -100,6 +100,7 @@ for (const mon of POKEDEX) {
         catchRate: formBase.catchRate ?? null,
       };
       shaped.forms.push(fshaped);
+      list.push(fshaped);
       if (fshaped.slug) bySlug.set(norm(fshaped.slug), fshaped);
       if (fshaped.name) byName.set(norm(fshaped.name), fshaped);
     }
