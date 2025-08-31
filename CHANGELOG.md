@@ -1,6 +1,14 @@
 # Changelog
 ---
 
+## [2.5.2]- 2025-08
+### Fixed
+- Clicking a Pokémon in the Live and Areas tabs now opens its profile directly, removing the separate "View" button.
+
+- Area Search now persists after switching tabs and clears by clicking the search bar
+
+---
+
 ## [2.5.0]- 2025-08
 ### Added
 - Breeding Tab!

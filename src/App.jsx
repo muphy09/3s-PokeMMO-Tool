@@ -2153,7 +2153,6 @@ function App(){
   useEffect(() => {
     setShowRegionMenu(false);
     if (mode !== 'pokemon') setSelected(null);
-    setQuery('');
     setTypeFilter('');
     setEggFilter('');
     setAbilityFilter('');
@@ -2693,6 +2692,7 @@ const marketResults = React.useMemo(() => {
               <input
                 value={query}
                 onChange={(e)=> setQuery(e.target.value)}
+                onFocus={() => setQuery('')}
                 placeholder={mode==='pokemon'
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
