@@ -373,6 +373,7 @@ function createMainWindow() {
       preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
+      webviewTag: true,
     },
   });
 
