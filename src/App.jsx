@@ -169,6 +169,7 @@ const ITEM_LIST = (() => {
   const list = [];
   for (const item of src) {
     if (item?.id === 0) continue; // skip placeholder entry
+    if (!item?.name || item.name.includes('?')) continue; // skip unknown items
     const key = normalizeKey(item.name);
     if (seen.has(key)) continue;
     seen.add(key);
@@ -2401,6 +2402,7 @@ const marketResults = React.useMemo(() => {
         const price = item?.price ?? item?.min_price;
         return { ...item, id, name, price };
       })
+      .filter(i => i.name && !i.name.includes('?'))
       .filter(i => !q || i.name.toLowerCase().includes(q))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [mode, query, marketData]);
