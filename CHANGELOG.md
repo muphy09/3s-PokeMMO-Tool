@@ -1,9 +1,18 @@
 # Changelog
 ---
 
+## [2.6.0]- 2025-08
+### Fixed
+- All encounter methods now appear in the Live & Area tab. Make sure you re-select them!
+  - Previously, some encounter methods were missing from the Live & Area tab, resulting in some Pokemon not appearing on the route - even though this data was in their profile
+    - Cave, Dark Grass, Dust Cloud, Headbutt, Honey Tree, Inside, & Shadow are now all included in the encounter method dataset
+
+---
+
 ## [2.5.9]- 2025-08
 ### Fixed
 - Evolutionary Data not appearing properly
+  - Evolutionary paths that are not linear (Ex- Poliwrath) are now properly displayed
 
 ---
 
