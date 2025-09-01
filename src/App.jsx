@@ -1582,6 +1582,7 @@ function LiveBattlePanel({ onViewMon }){
   const [mons, setMons] = useState([]);
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
+  const [showCaught, setShowCaught] = useState(true);
   const { caught, toggleCaught } = React.useContext(CaughtContext);
 
   useEffect(() => {
@@ -1771,7 +1772,17 @@ function LiveBattlePanel({ onViewMon }){
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
         </div>
-        <div className="label-muted">{statusPill}</div>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+            <input
+              type="checkbox"
+              checked={showCaught}
+              onChange={e=>setShowCaught(e.target.checked)}
+            />
+            Toggle Caught
+          </label>
+          <div className="label-muted">{statusPill}</div>
+        </div>
       </div>
 
       {!rawText && (
@@ -1832,7 +1843,7 @@ function LiveBattlePanel({ onViewMon }){
                   justifyContent: 'center',
                   padding: isSolo ? 24 : 12,
                   position: 'relative',
-                  opacity: isCaught ? 0.4 : 1
+                  opacity: showCaught ? (isCaught ? 0.4 : 1) : 1
                 }}
               >
                 <button
