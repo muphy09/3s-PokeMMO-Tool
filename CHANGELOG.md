@@ -1,8 +1,12 @@
 # Changelog
 ---
 
-## [2.6.0]- 2025-08
+## [2.6.1]- 2025-08
 ### Fixed
+- Live Route & Live Battle should grab the PokeMMO window faster and more consistently
+  - Added a window cache check in-front of the forground window check to grab the last recognized PokeMMO window before cycling a full search
+    - Results in much faster window grabbing
+
 - All encounter methods now appear in the Live & Area tab. Make sure you re-select them!
   - Previously, some encounter methods were missing from the Live & Area tab, resulting in some Pokemon not appearing on the route - even though this data was in their profile
     - Cave, Dark Grass, Dust Cloud, Headbutt, Honey Tree, Inside, & Shadow are now all included in the encounter method dataset

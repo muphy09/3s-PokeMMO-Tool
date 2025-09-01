@@ -35,6 +35,8 @@ class LiveRouteOCR
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
+    static IntPtr CachedHwnd = IntPtr.Zero;
+
     [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
 
@@ -874,6 +876,9 @@ static Bitmap MaskBattleHud(Bitmap src)
     // ---------- Window helpers ----------
     static IntPtr FindPokeMMO(int? targetPid)
     {
+        if (CachedHwnd != IntPtr.Zero && IsPokeMMOWindow(CachedHwnd))
+            return CachedHwnd;
+
         if (targetPid is int pid && pid > 0)
         {
             try
@@ -882,7 +887,7 @@ static Bitmap MaskBattleHud(Bitmap src)
                 if (p != null)
                 {
                     if (p.MainWindowHandle != IntPtr.Zero && IsPokeMMOWindow(p.MainWindowHandle))
-                        return p.MainWindowHandle;
+                        return CachedHwnd = p.MainWindowHandle;
                     IntPtr found = IntPtr.Zero;
                     EnumWindows((h, l) =>
                     {
@@ -890,14 +895,17 @@ static Bitmap MaskBattleHud(Bitmap src)
                         if (wpid == (uint)pid && IsWindowVisible(h) && IsPokeMMOWindow(h)) { found = h; return false; }
                         return true;
                     }, IntPtr.Zero);
-                    if (found != IntPtr.Zero) return found;
+                    if (found != IntPtr.Zero) return CachedHwnd = found;
                 }
             }
             catch { }
         }
 
-        var h = GetForegroundWindow();
-        if (IsPokeMMOWindow(h)) return h;
+        var h = FindWindow("pokemmo", null);
+        if (IsPokeMMOWindow(h)) return CachedHwnd = h;
+
+        h = GetForegroundWindow();
+        if (IsPokeMMOWindow(h)) return CachedHwnd = h;
 
         IntPtr foundEnum = IntPtr.Zero;
         EnumWindows((win, l) =>
@@ -906,6 +914,7 @@ static Bitmap MaskBattleHud(Bitmap src)
             if (IsPokeMMOWindow(win)) { foundEnum = win; return false; }
             return true;
         }, IntPtr.Zero);
+        if (foundEnum != IntPtr.Zero) CachedHwnd = foundEnum;
         return foundEnum;
     }
     static bool IsPokeMMOWindow(IntPtr h)
