@@ -2048,7 +2048,7 @@ function App(){
   useEffect(() => {
     try { localStorage.setItem('areaMethodFilters', JSON.stringify([...methodFilters])); } catch {}
   }, [methodFilters]);
-  
+
   const detailRef = useRef(null);
 
   const [showUpToDate, setShowUpToDate] = useState(false);
@@ -2400,7 +2400,8 @@ const marketResults = React.useMemo(() => {
         const price = item?.price ?? item?.min_price;
         return { ...item, id, name, price };
       })
-      .filter(i => !q || i.name.toLowerCase().includes(q));
+      .filter(i => !q || i.name.toLowerCase().includes(q))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [mode, query, marketData]);
 
   const openMarketItem = (item) => {

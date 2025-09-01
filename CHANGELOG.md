@@ -1,13 +1,17 @@
 # Changelog
 ---
 
-## [2.5.6]- 2025-08
+## [2.5.7]- 2025-08
 ### Fixed
 - Hardened Live Battle Tab
   - No longer flickers while active Pokemon is on screen
   - No longer temporarily disappears when the Pokemon name is hidden for a few seconds (like when a move is used)
   - Output text is cleaned up to depict when a Pokemon is not on screen
   - Output text no longer includes random characters
+
+- Market Tab Reactivated
+  - Search the Market tab for useful price information - *credit PokeMMO Hub*
+    - *Can only search Items*
 
 - Caught List Size
   - Condensed the width of the Caught List
