@@ -39,7 +39,16 @@ function formatConfidence(c){
 const TRANSPARENT_PNG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
 
-  const ENCOUNTER_TYPES = ['Grass','Water','Rocks','Old Rod','Good Rod','Super Rod','Lure'];
+  const ENCOUNTER_TYPES = (() => {
+    const set = new Set();
+    for (const mon of dexRaw) {
+      for (const loc of mon.locations || []) {
+        if (loc.type) set.add(cleanMethodLabel(loc.type));
+        if (loc.rarity && /lure/i.test(loc.rarity)) set.add('Lure');
+      }
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  })();
 
 /* ---------- small style helpers ---------- */
 const styles = {
