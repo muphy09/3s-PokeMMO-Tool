@@ -1,6 +1,12 @@
 # Changelog
 ---
 
+## [2.5.9]- 2025-08
+### Fixed
+- Evolutionary Data not appearing properly
+
+---
+
 ## [2.5.8]- 2025-08
 ### Fixed
 - Hardened Live Battle Tab
