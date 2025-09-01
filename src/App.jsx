@@ -678,11 +678,34 @@ function EvolutionChain({ mon, onSelect }) {
         </div>
         {m.evolutions?.map((evo) => {
           const child = getMonByDex(evo.id);
+
+          const rawType = String(evo.type || '').toLowerCase();
+          const typeLabel = rawType.replace(/_/g, ' ');
+          let label = titleCase(typeLabel);
+
+          const needsItem = rawType.includes('item');
+          let val = null;
+          if (evo.item_name) {
+            val = evo.item_name;
+          } else if (needsItem && typeof evo.val === 'number' && ITEM_INDEX.byId.has(evo.val)) {
+            val = ITEM_INDEX.byId.get(evo.val)?.name;
+          } else if (evo.val != null) {
+            val = evo.val;
+          }
+
+          if (val != null) {
+            if (/with item$/i.test(label) && (evo.item_name || (needsItem && ITEM_INDEX.byId.has(evo.val)))) {
+              label = `${label.replace(/ item$/i, '')} ${val}`;
+            } else {
+              label = `${label}: ${val}`;
+            }
+          }
+
           return (
             <div key={evo.id} style={{ display:'flex', alignItems:'center', gap:16 }}>
               <div style={{ textAlign:'center', fontSize:12 }}>
                 <div style={{ fontSize:24 }}>→</div>
-                <div className="label-muted">{`${titleCase(evo.type.toLowerCase())}${evo.val ? `: ${evo.val}` : ''}`}</div>
+                <div className="label-muted">{label}</div>
               </div>
               {renderMon(child)}
             </div>
