@@ -1595,9 +1595,19 @@ function LiveBattlePanel({ onViewMon }){
   const [mons, setMons] = useState([]);
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
-  const [showCaught, setShowCaught] = useState(true);
+  const [showCaught, setShowCaught] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('liveBattleShowCaught') ?? 'true');
+    } catch {
+      return true;
+    }
+  });
   const { caught, toggleCaught } = React.useContext(CaughtContext);
 
+  useEffect(() => {
+    try { localStorage.setItem('liveBattleShowCaught', JSON.stringify(showCaught)); } catch {}
+  }, [showCaught]);
+  
   useEffect(() => {
     const off = liveBattleClient.on((msg) => {
       const coerced = coerceBattleIncoming(msg);
