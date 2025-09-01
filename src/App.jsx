@@ -168,6 +168,7 @@ const ITEM_LIST = (() => {
   const seen = new Set();
   const list = [];
   for (const item of src) {
+    if (item?.id === 0) continue; // skip placeholder entry
     const key = normalizeKey(item.name);
     if (seen.has(key)) continue;
     seen.add(key);
