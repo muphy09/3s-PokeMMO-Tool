@@ -1313,7 +1313,15 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
   const [regionChoices, setRegionChoices] = useState([]);
-  const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
+  const [methodFilters, setMethodFilters] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('liveMethodFilters') || '[]');
+      const valid = Array.isArray(saved) ? saved.filter(t => ENCOUNTER_TYPES.includes(t)) : [];
+      return new Set(valid.length ? valid : ENCOUNTER_TYPES);
+    } catch {
+      return new Set(ENCOUNTER_TYPES);
+    }
+  });
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showCaught, setShowCaught] = useState(true);
   const [showRegionMenu, setShowRegionMenu] = useState(false);
@@ -1322,7 +1330,10 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
   const { caught, toggleCaught } = React.useContext(CaughtContext);
 
-  useEffect(() => { methodFiltersRef.current = methodFilters; }, [methodFilters]);
+  useEffect(() => {
+    methodFiltersRef.current = methodFilters;
+    try { localStorage.setItem('liveMethodFilters', JSON.stringify([...methodFilters])); } catch {}
+  }, [methodFilters]);
 
   useEffect(() => { setShowRegionMenu(false); }, [regionChoices, displayMap]);
 
@@ -1999,7 +2010,15 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
   const [isOneHp, setIsOneHp] = useState(false);
-  const [methodFilters, setMethodFilters] = useState(() => new Set(ENCOUNTER_TYPES));
+  const [methodFilters, setMethodFilters] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('areaMethodFilters') || '[]');
+      const valid = Array.isArray(saved) ? saved.filter(t => ENCOUNTER_TYPES.includes(t)) : [];
+      return new Set(valid.length ? valid : ENCOUNTER_TYPES);
+    } catch {
+      return new Set(ENCOUNTER_TYPES);
+    }
+  });
   const [showMethodMenu, setShowMethodMenu] = useState(false);
   const methodFilterRef = useRef(null);
   const [showCaught, setShowCaught] = useState(true);
@@ -2026,6 +2045,10 @@ function App(){
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
 
+  useEffect(() => {
+    try { localStorage.setItem('areaMethodFilters', JSON.stringify([...methodFilters])); } catch {}
+  }, [methodFilters]);
+  
   const detailRef = useRef(null);
 
   const [showUpToDate, setShowUpToDate] = useState(false);

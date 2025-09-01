@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.5.5]- 2025-08
+## [2.5.6]- 2025-08
 ### Fixed
 - Hardened Live Battle Tab
   - No longer flickers while active Pokemon is on screen
@@ -12,6 +12,8 @@
 - Caught List Size
   - Condensed the width of the Caught List
   - Added grids for better accessibility
+
+- Encounter Type Filter now persists between tab changes
 
 ---
 
