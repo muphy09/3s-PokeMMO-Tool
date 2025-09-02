@@ -1298,7 +1298,8 @@ const STALE_AFTER_MS = 6000;
 function normalizeHudText(s=''){
   let t = String(s).replace(/\r/g,'').trim();
   const lines = t.split(/\n+/).map((line) => {
-    let l = line.replace(/\s+Ch\.?\s*\d+\b/i, '');
+    // Strip channel numbers like "Ch3" that sometimes trail the route name
+    let l = line.replace(/\bCh\.?\s*\d+\b/gi, '');
     l = l.replace(/\s{2,}/g,' ').trim();
     return l;
   }).filter(Boolean);
@@ -1560,7 +1561,8 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
       const { cleaned: trimmed, best } = findBestMapInText(cleaned, areasIndex);
       if (!best) return; // ignore noisy frames
-      cleaned = trimmed;
+      // Re-normalize after map extraction in case channel text slipped through
+      cleaned = normalizeHudText(trimmed);
 
       setRawText(cleaned);
       setConfidence(coerced.confidence ?? null);

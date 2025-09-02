@@ -124,8 +124,8 @@ class LiveRouteOCR
         var roi = new Roi {
             Left   = GetArg(args, "--left",  0.010),
             Top    = GetArg(args, "--top",   0.012),
-            Width  = GetArg(args, "--width", 0.355),
-            Height = GetArg(args, "--height",0.150)
+            Width  = GetArg(args, "--width", 0.335),
+            Height = GetArg(args, "--height",0.140)
         };
         Log($"ROI base: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
         var battleRoi = new Roi { Left = 0.25, Top = 0.13, Width = 0.25, Height = 0.3 };

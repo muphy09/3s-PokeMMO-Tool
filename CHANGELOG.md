@@ -10,6 +10,11 @@
 - Live Battle Tab Performance Update
   - Live Battle code has been changed to be more in-line with the Live Route, leading to faster grab times and more consistency
 
+### Fixed
+- Addressed missing Routes & Areas not appearing in the Live Tab
+  - Live Route now does a better job of keywording particular areas that it was not indexing before (Jagged Pass)
+
+
 ---
 
 ## [2.6.3]- 2025-08
