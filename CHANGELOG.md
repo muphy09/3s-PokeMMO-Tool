@@ -1,10 +1,11 @@
 # Changelog
 ---
 
-## [2.6.2]- 2025-08
+## [2.6.3]- 2025-08
 ### Fixed
 - Live Battle Tab now persists last Pokemon detected until it discovers a new Pokemon to display. This prevents flashing in and out during battle.
 - Pokemon Catch Rate Data is now stored locally, instead of requesting from the Pokeapi - this speeds up display time greatly.
+- Fixed certain locations from appearing in the Live Tab, even thought their Area data existed
 
 
 ---

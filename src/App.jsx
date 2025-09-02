@@ -1052,7 +1052,20 @@ function findBestMapName(hudText, areasIndex){
         if (!routeCand || routeCand[1] !== routeNeedle[1]) continue;
       }
       if (candidateKey === needleKey) {
-        return { region, displayMap: normalizeMapForGrouping(region, mapName), rawMap: mapName };
+        const s = 100;
+        if (
+          s > bestScore ||
+          (s === bestScore && mapName.length < (best?.rawMap.length || Infinity))
+        ) {
+          bestScore = s;
+          best = {
+            region,
+            displayMap: normalizeMapForGrouping(region, mapName),
+            rawMap: mapName,
+            score: s,
+          };
+        }
+        continue;
       }
       const s = scoreNames(candidateKey, needleKey);
       if (s > bestScore) {
