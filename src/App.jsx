@@ -569,10 +569,15 @@ function moveSlug(name=''){
 }
 function useMoveData(name){
   const slug = moveSlug(name);
-  const [data,setData] = useState(MOVE_CACHE.get(slug));
+  const [data,setData] = useState(() => MOVE_CACHE.get(slug));
   useEffect(() => {
     let alive = true;
-    if(!slug || MOVE_CACHE.has(slug)) return;
+    if(!slug) return;
+    const cached = MOVE_CACHE.get(slug);
+    if(cached){
+      setData(cached);
+      return;
+    }
     (async () => {
       try{
         const res = await fetch(`https://pokeapi.co/api/v2/move/${slug}`);
@@ -591,7 +596,7 @@ function useMoveData(name){
     })();
     return () => { alive = false; };
   }, [slug]);
-  return data || MOVE_CACHE.get(slug) || null;
+  return data || null;
 }
 
 const moveCell = { padding:'2px 4px', border:'1px solid var(--divider)' };
@@ -772,9 +777,13 @@ function MovesTable({ title, moves = [], showLevel = false }) {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((mv, idx) => (
-              <MoveRow key={idx} mv={mv} showLevel={showLevel} />
-            ))}
+            {sorted.map((mv) => {
+              const baseKey = typeof mv === 'string'
+                ? moveSlug(mv)
+                : `${moveSlug(mv.move)}-${mv.level ?? ''}`;
+              const key = `${baseKey}-${moves.indexOf(mv)}`;
+              return <MoveRow key={key} mv={mv} showLevel={showLevel} />;
+            })}
           </tbody>
         </table>
       ) : (
