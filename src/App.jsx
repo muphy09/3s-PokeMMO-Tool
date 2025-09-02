@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
+import catchRates from '../data/catch-rates.json';
 import VersionBadge from "./components/VersionBadge.jsx";
 import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
@@ -1659,11 +1660,9 @@ function LiveBattlePanel({ onViewMon }){
         .replace(/\s{2,}/g, ' ')
         .trim();
       const compacted = cleaned.replace(/\s+/g, '');
-      // When OCR returns nothing, clear state fully
+      // If OCR returns nothing, keep previous state so the last detected
+      // Pokémon remains visible until a new one is found or the tab changes
       if (!compacted) {
-        setRawText('');
-        setConfidence(coerced.confidence ?? null);
-        setMons([]);
         return;
       }
       let fragments = [];
@@ -1735,9 +1734,10 @@ function LiveBattlePanel({ onViewMon }){
       }
       // Combine any discovered names with ones parsed via fragment scanning
       names = [...new Set([...names, ...found])];
-      // Ignore very short/noisy OCR results that would wipe previously detected names
-      if (names.length === 0 && compacted.length <= 2) {
-        if (DEBUG_LIVE) console.log('[LIVE] Ignoring short OCR:', cleaned);
+      // If no Pokémon names are detected, preserve previous state to avoid
+      // briefly clearing the current Pokémon when the HUD text changes
+      if (names.length === 0) {
+        if (DEBUG_LIVE) console.log('[LIVE] No Pokémon names detected:', cleaned);
         return;
       }
       if (cleaned !== rawText) setRawText(cleaned);
@@ -1810,6 +1810,13 @@ function LiveBattlePanel({ onViewMon }){
   useEffect(() => {
     mons.forEach(mon => {
       if (mon.catchRate != null) return;
+      const localRate = catchRates[mon.id];
+      if (localRate != null) {
+        setMons(prev =>
+          prev.map(m => (m.id === mon.id ? { ...m, catchRate: localRate } : m))
+        );
+        return;
+      }
       fetch(`https://pokeapi.co/api/v2/pokemon-species/${mon.id}/`)
         .then(res => (res.ok ? res.json() : null))
         .then(data => {
@@ -2271,6 +2278,11 @@ function App(){
   }, [selected]);
   useEffect(() => {
     if (!selected || selected.catchRate != null) return;
+    const localRate = catchRates[selected.id];
+    if (localRate != null) {
+      setSelected((s) => (s && s.id === selected.id ? { ...s, catchRate: localRate } : s));
+      return;
+    }
     (async () => {
       try {
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${selected.id}/`);
