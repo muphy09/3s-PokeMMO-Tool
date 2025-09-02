@@ -31,13 +31,13 @@ const COSTS_TABLE = {
 };
 
 const styles = {
-  card: { padding:16, borderRadius:12, border:'1px solid #262626', background:'#111' },
+  card: { padding:16, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
   viewBtn: {
     padding:'6px 10px',
     border:'1px solid var(--accent)',
     borderRadius:8,
     background:'var(--accent)',
-    color:'#111',
+    color:'var(--accent-contrast)',
     fontWeight:700,
     cursor:'pointer'
   }
@@ -82,7 +82,7 @@ export default function BreedingSimulator(){
             </select>
           </div>
           <div style={{display:'flex', flexDirection:'column', justifyContent:'flex-end'}}>
-            <label style={{color:'#cfcfcf'}}>
+            <label style={{color:'var(--text)'}}>
               <input
                 type="checkbox"
                 checked={nature}
@@ -137,7 +137,7 @@ export default function BreedingSimulator(){
                       cursor:'pointer',
                       borderRadius:'50%',
                       overflow:'hidden',
-                      border:isBred ? '3px solid #a2f79f' : '1px solid #333',
+                      border:isBred ? '3px solid #a2f79f' : '1px solid var(--divider)',
                       width:size,
                       height:size,
                       display:'flex'

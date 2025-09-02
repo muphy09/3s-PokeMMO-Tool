@@ -48,8 +48,8 @@ export default function SearchFilter({ value, onChange, options = [], placeholde
             maxHeight: 200,
             overflowY: 'auto',
             zIndex: 1000,
-            border: '1px solid #2b2b2b',
-            background: '#141414',
+            border: '1px solid var(--divider)',
+            background: 'var(--surface)',
             borderRadius: 8
           }}
         >

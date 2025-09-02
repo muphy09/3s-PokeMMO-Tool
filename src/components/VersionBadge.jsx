@@ -29,11 +29,12 @@ export default function VersionBadge() {
       opacity: 0.8,
       padding: "4px 8px",
       borderRadius: 8,
-      background: "rgba(0,0,0,0.55)",
-      color: "#fff",
+      background: "var(--surface)",
+      color: "var(--text)",
       userSelect: "none",
       pointerEvents: "none",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.25)"
+      border: "1px solid var(--divider)",
+      boxShadow: "var(--shadow-1)"
     }}>
       v{ver}
     </div>

@@ -161,22 +161,22 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   const btnStyle = {
     padding: "6px 10px",
     borderRadius: 10,
-    border: "1px solid #2a2a2a",
-    background: "linear-gradient(180deg,#2b2b2b,#1b1b1b)",
-    color: "#eaeaea",
+    border: "1px solid var(--divider)",
+    background: "linear-gradient(180deg,var(--surface),var(--card))",
+    color: "var(--text)",
     fontWeight: 700,
     cursor: "pointer",
-    boxShadow: "0 4px 16px rgba(0,0,0,.3)",
+    boxShadow: "var(--shadow-1)",
   };
   const menuStyle = {
     position: "absolute",
     right: 0,
     top: "calc(100% + 6px)",
     minWidth: 220,
-    background: "#0e0e0e",
-    border: "1px solid #282828",
+    background: "var(--surface)",
+    border: "1px solid var(--divider)",
     borderRadius: 12,
-    boxShadow: "0 16px 40px rgba(0,0,0,.45)",
+    boxShadow: "var(--shadow-2)",
     overflow: "hidden",
   };
 
@@ -196,8 +196,8 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
         <div style={menuStyle} role="menu" aria-label="Options menu">
           <div ref={scaleWrapRef} style={{ padding:"10px 12px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
-              <span style={{ color:"#ddd", fontWeight:600 }}>Element Scale</span>
-              <div style={{ display:"flex", alignItems:"center", color:"#aaa", fontSize:12 }}>
+              <span style={{ color:'var(--text)', fontWeight:600 }}>Element Scale</span>
+              <div style={{ display:"flex", alignItems:"center", color:'var(--muted)', fontSize:12 }}>
                 <input
                   type="number"
                   min={0}
@@ -211,9 +211,9 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
                     width: 40,
                     textAlign: "right",
                     background: "transparent",
-                    border: "1px solid #444",
+                    border: "1px solid var(--divider)",
                     borderRadius: 4,
-                    color: "#aaa",
+                    color: "var(--text)",
                     fontSize: 12,
                     marginRight: 2,
                   }}
@@ -270,13 +270,13 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
             padding: "8px 12px",
             background:
               toast.kind === "error"
-                ? "#5a1a1a"
+                ? "var(--toast-error)"
                 : toast.kind === "success"
-                ? "#1b4a1b"
-                : "#1a1a3a",
-            color: "#eee",
+                ? "var(--toast-success)"
+                : "var(--toast-info)",
+            color: "var(--text)",
             borderRadius: 10,
-            border: "1px solid #333",
+            border: "1px solid var(--divider)",
             boxShadow: "0 8px 28px rgba(0,0,0,.45)",
             maxWidth: 360,
             pointerEvents: "none",
@@ -296,13 +296,13 @@ function MenuItem({ label, onClick }) {
     width: "100%",
     textAlign: "left",
     padding: "10px 12px",
-    color: "#ddd",
+    color: "var(--text)",
     background: "transparent",
     border: 0,
     cursor: "pointer",
     fontWeight: 600,
   };
-  const itemHover = { background: "#1b1b1b" };
+  const itemHover = { background: "var(--menu-hover-bg)" };
   return (
     <button
       role="menuitem"
@@ -317,5 +317,5 @@ function MenuItem({ label, onClick }) {
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: "#262626" }} />;
+  return <div style={{ height: 1, background: "var(--divider)" }} />;
 }

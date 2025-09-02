@@ -18,12 +18,12 @@ export default function PatchNotesButton() {
   const btnStyle = {
     padding: '6px 10px',
     borderRadius: 10,
-    border: '1px solid #2a2a2a',
-    background: 'linear-gradient(180deg,#2b2b2b,#1b1b1b)',
-    color: '#eaeaea',
+    border: '1px solid var(--divider)',
+    background: 'linear-gradient(180deg,var(--surface),var(--card))',
+    color: 'var(--text)',
     fontWeight: 700,
     cursor: 'pointer',
-    boxShadow: '0 4px 16px rgba(0,0,0,.3)'
+    boxShadow: 'var(--shadow-1)'
   };
 
   const overlayStyle = {
@@ -55,12 +55,12 @@ export default function PatchNotesButton() {
     marginTop: 16,
     padding: '6px 10px',
     borderRadius: 10,
-    border: '1px solid #2a2a2a',
-    background: 'linear-gradient(180deg,#2b2b2b,#1b1b1b)',
-    color: '#eaeaea',
+    border: '1px solid var(--divider)',
+    background: 'linear-gradient(180deg,var(--surface),var(--card))',
+    color: 'var(--text)',
     fontWeight: 700,
     cursor: 'pointer',
-    boxShadow: '0 4px 16px rgba(0,0,0,.3)',
+    boxShadow: 'var(--shadow-1)',
     float: 'right'
   };
 

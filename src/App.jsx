@@ -54,16 +54,16 @@ const TRANSPARENT_PNG =
 
 /* ---------- small style helpers ---------- */
 const styles = {
-  segWrap: { display:'inline-flex', border:'1px solid #2f2f2f', background:'#171717', borderRadius:999, padding:4, gap:4 },
+  segWrap: { display:'inline-flex', border:'1px solid var(--divider)', background:'var(--surface)', borderRadius:999, padding:4, gap:4 },
   segBtn(active){ return {
     appearance:'none', border:0, padding:'8px 14px', borderRadius:999, fontWeight:700, cursor:'pointer',
-    transition:'all .15s ease', background: active?'linear-gradient(180deg,#2f2f2f,#1f1f1f)':'transparent',
-    color: active?'#fff':'#cfcfcf', boxShadow: active?'inset 0 0 0 1px #3a3a3a, 0 4px 18px rgba(0,0,0,.35)':'none'
+    transition:'all .15s ease', background: active?'var(--card)':'transparent',
+    color: active?'var(--text)':'var(--muted)', boxShadow: active?'inset 0 0 0 1px var(--divider), 0 4px 18px rgba(0,0,0,.35)':'none'
   };},
-  card: { padding:16, borderRadius:12, border:'1px solid #262626', background:'#111' },
-  areaCard: { padding:12, borderRadius:12, border:'1px solid #262626', background:'#0f0f0f' },
+  card: { padding:16, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
+  areaCard: { padding:12, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
-  monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid #262626', borderRadius:10, padding:'10px', background:'#141414', textAlign:'center' },
+  monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid var(--divider)', borderRadius:10, padding:'10px', background:'var(--surface)', textAlign:'center' },
   encWrap: { display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap', marginTop:8 },
   encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
 };
@@ -723,7 +723,7 @@ function MovesTable({ title, moves = [], showLevel = false }) {
   const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? '▲' : '▼') : '');
 
   return (
-    <div style={{ border: '1px solid #262626', borderRadius: 8, padding: '8px 10px', background: '#141414' }}>
+    <div style={{ border: '1px solid var(--divider)', borderRadius: 8, padding: '8px 10px', background: 'var(--surface)' }}>
       <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
       {sorted.length ? (
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, tableLayout: 'fixed' }}>
@@ -1673,7 +1673,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
             </button>
             {showFilterMenu && (
               <div
-                style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'#1f1f1f', border:'1px solid #333', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
               >
                 {ENCOUNTER_TYPES.map(t => (
                   <label key={t} className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
@@ -2756,10 +2756,10 @@ const marketResults = React.useMemo(() => {
             transform:'translateX(-50%)',
             zIndex:9999,
             padding:'8px 12px',
-            background:'#1b4a1b',
-            color:'#eee',
+            background:'var(--surface)',
+            color:'var(--text)',
             borderRadius:10,
-            border:'1px solid #333',
+            border:'1px solid var(--divider)',
             boxShadow:'0 8px 28px rgba(0,0,0,.45)',
             fontWeight:700,
             pointerEvents:'none'
@@ -2890,7 +2890,7 @@ const marketResults = React.useMemo(() => {
                       </button>
                       {showMethodMenu && (
                         <div
-                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'#1f1f1f', border:'1px solid #333', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
                         >
                           {ENCOUNTER_TYPES.map(t => (
                             <label key={t} className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
@@ -3019,7 +3019,7 @@ const marketResults = React.useMemo(() => {
                     key={`${p.id}-${p.name}`}
                     onClick={()=>{ setSelected(p); setQuery(''); }}
                     className="result-tile"
-                    style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid #262626', background:'#141414' }}
+                      style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' }}
                   >
                     <Sprite mon={mon} size={42} alt={p.name} />
                     <div style={{ textAlign:'left' }}>
@@ -3300,7 +3300,7 @@ const marketResults = React.useMemo(() => {
               <div style={{ marginTop:16 }}>
                 <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
                 <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:8 }}>
-                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>4× Weak</div>
                     {resolved.weakness.x4.length ? (
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -3308,7 +3308,7 @@ const marketResults = React.useMemo(() => {
                       </div>
                     ) : <div className="label-muted">None</div>}
                   </div>
-                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>2× Weak</div>
                     {resolved.weakness.x2.length ? (
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -3316,7 +3316,7 @@ const marketResults = React.useMemo(() => {
                       </div>
                     ) : <div className="label-muted">None</div>}
                   </div>
-                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>½× Resist</div>
                     {resolved.weakness.x0_5.length ? (
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -3324,7 +3324,7 @@ const marketResults = React.useMemo(() => {
                       </div>
                     ) : <div className="label-muted">None</div>}
                   </div>
-                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>¼× Resist</div>
                     {resolved.weakness.x0_25.length ? (
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -3332,7 +3332,7 @@ const marketResults = React.useMemo(() => {
                       </div>
                     ) : <div className="label-muted">None</div>}
                   </div>
-                  <div style={{ border:'1px solid #2b2b2b', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
+                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
                     <div style={{ fontWeight:800, marginBottom:6 }}>0× Immune</div>
                     {resolved.weakness.x0.length ? (
                       <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
@@ -3393,7 +3393,7 @@ const marketResults = React.useMemo(() => {
                       <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
                       <div style={{ display:'grid', gap:8 }}>
                         {list.map((loc, i) => (
-                          <div key={i} style={{ border:'1px solid #262626', borderRadius:10, padding:'8px 10px', background:'#141414' }}>
+                          <div key={i} style={{ border:'1px solid var(--divider)', borderRadius:10, padding:'8px 10px', background:'var(--surface)' }}>
                             <div style={{ fontWeight:700 }}>{loc.map}</div>
                             {(loc.min || loc.max) && (
                               <div className="label-muted" style={{ marginTop:4 }}>
@@ -3466,8 +3466,8 @@ const marketResults = React.useMemo(() => {
             style={{
               width: '80%',
               height: '80%',
-              background: '#111',
-              border: '1px solid #444',
+              background: 'var(--surface)',
+              border: '1px solid var(--divider)',
               borderRadius: 8,
               display: 'flex',
               flexDirection: 'column'
@@ -3479,7 +3479,7 @@ const marketResults = React.useMemo(() => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '8px 10px',
-                borderBottom: '1px solid #333'
+                borderBottom: '1px solid var(--divider)'
               }}
             >
               <div style={{ fontWeight: 800 }}>{marketSelected.name}</div>

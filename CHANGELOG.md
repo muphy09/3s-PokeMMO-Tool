@@ -1,8 +1,13 @@
 # Changelog
 ---
 
-## [2.6.4]- 2025-08
+## [2.6.5]- 2025-08
 ### Added
+- Themes
+  - Choose from new theme options seen in the 'Theme' button - Themes are based on Pokemon games inside of PokeMMO
+    - Black & White are available now
+    - Theme changes most elements of UI, if there are issues experienced, please let me know!
+
 - Sort Moveset Data
   - Click the label inside the Moveset data to sort by that category
     - Move Name, Type, Power, Category, and Accuracy. 

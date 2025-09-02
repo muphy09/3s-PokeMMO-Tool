@@ -11,9 +11,9 @@ export default function ColorPickerButton(){
   useEffect(()=>{ setRColors(rarityColors); }, [rarityColors]);
 
   const btnStyle = {
-    padding:'6px 10px', borderRadius:10, border:'1px solid #2a2a2a',
-    background:'linear-gradient(180deg,#2b2b2b,#1b1b1b)', color:'#eaeaea',
-    fontWeight:700, cursor:'pointer', boxShadow:'0 4px 16px rgba(0,0,0,.3)'
+    padding:'6px 10px', borderRadius:10, border:'1px solid var(--divider)',
+    background:'linear-gradient(180deg,var(--surface),var(--card))', color:'var(--text)',
+    fontWeight:700, cursor:'pointer', boxShadow:'var(--shadow-1)'
   };
   const overlayStyle = {
     position:'fixed', top:0, left:0, width:'100vw', height:'100vh',
