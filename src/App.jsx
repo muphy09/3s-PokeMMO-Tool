@@ -618,34 +618,163 @@ function MoveRow({ mv, showLevel=false }){
   );
 }
 
-function MovesTable({ title, moves=[], showLevel=false }){
+function MovesTable({ title, moves = [], showLevel = false }) {
+  const [sort, setSort] = useState({ key: null, dir: 1 });
+  const [refresh, setRefresh] = useState(0);
+
+  // Reset sort when the move list changes
+  useEffect(() => {
+    setSort({ key: null, dir: 1 });
+  }, [moves]);
+
+  // Preload move data so sorting by type/power/etc. works immediately
+  useEffect(() => {
+    let alive = true;
+    const names = Array.from(new Set(moves.map(m => (typeof m === 'string' ? m : m.move))));
+    (async () => {
+      for (const name of names) {
+        const slug = moveSlug(name);
+        if (!slug || MOVE_CACHE.has(slug)) continue;
+        try {
+          const res = await fetch(`https://pokeapi.co/api/v2/move/${slug}`);
+          const json = await res.json();
+          MOVE_CACHE.set(slug, {
+            type: json?.type?.name,
+            category: json?.damage_class?.name,
+            power: json?.power,
+            accuracy: json?.accuracy,
+          });
+        } catch (e) {}
+      }
+      if (alive) setRefresh(r => r + 1);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [moves]);
+
+  const sorted = useMemo(() => {
+    const arr = [...moves];
+    if (!sort.key) return arr;
+    const dir = sort.dir;
+    const getName = mv => (typeof mv === 'string' ? mv : mv.move);
+    const getLevel = mv => (typeof mv === 'string' ? null : mv.level);
+    const getData = mv => MOVE_CACHE.get(moveSlug(getName(mv))) || {};
+    return arr.sort((a, b) => {
+      const nameA = getName(a);
+      const nameB = getName(b);
+      const dataA = getData(a);
+      const dataB = getData(b);
+      switch (sort.key) {
+        case 'name':
+          return nameA.localeCompare(nameB) * dir;
+        case 'type': {
+          const t = (dataA.type || '').localeCompare(dataB.type || '');
+          return t ? t * dir : nameA.localeCompare(nameB);
+        }
+        case 'cat': {
+          const c = (dataA.category || '').localeCompare(dataB.category || '');
+          return c ? c * dir : nameA.localeCompare(nameB);
+        }
+        case 'power': {
+          const pa = dataA.power;
+          const pb = dataB.power;
+          const psa = pa ?? (dir === -1 ? -Infinity : Infinity);
+          const psb = pb ?? (dir === -1 ? -Infinity : Infinity);
+          const diff = psa - psb;
+          return diff ? diff * dir : nameA.localeCompare(nameB);
+        }
+        case 'acc': {
+          const aa = dataA.accuracy;
+          const ab = dataB.accuracy;
+          const asa = aa ?? (dir === -1 ? -Infinity : Infinity);
+          const asb = ab ?? (dir === -1 ? -Infinity : Infinity);
+          const diff = asa - asb;
+          return diff ? diff * dir : nameA.localeCompare(nameB);
+        }
+        case 'lv': {
+          const la = getLevel(a) ?? (dir === 1 ? Infinity : -Infinity);
+          const lb = getLevel(b) ?? (dir === 1 ? Infinity : -Infinity);
+          const diff = la - lb;
+          return diff ? diff * dir : nameA.localeCompare(nameB);
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [moves, sort, refresh]);
+
+  const handleSort = key => {
+    setSort(prev => {
+      if (prev.key === key) {
+        return { key, dir: -prev.dir };
+      }
+      const dir = key === 'power' || key === 'acc' ? -1 : 1;
+      return { key, dir };
+    });
+  };
+
+  const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? '▲' : '▼') : '');
+
   return (
-    <div style={{ border:'1px solid #262626', borderRadius:8, padding:'8px 10px', background:'#141414' }}>
-      <div style={{ fontWeight:700, marginBottom:4 }}>{title}</div>
-      {moves.length ? (
-        <table style={{ width:'100%', borderCollapse:'collapse', fontSize:13, tableLayout:'fixed' }}>
+    <div style={{ border: '1px solid #262626', borderRadius: 8, padding: '8px 10px', background: '#141414' }}>
+      <div style={{ fontWeight: 700, marginBottom: 4 }}>{title}</div>
+      {sorted.length ? (
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, tableLayout: 'fixed' }}>
           <colgroup>
-            {showLevel && <col style={{ width:'40px' }} />}
+            {showLevel && <col style={{ width: '40px' }} />}
             <col />
-            <col style={{ width:'80px' }} />
-            <col style={{ width:'80px' }} />
-            <col style={{ width:'50px' }} />
-            <col style={{ width:'50px' }} />
+            <col style={{ width: '80px' }} />
+            <col style={{ width: '80px' }} />
+            <col style={{ width: '50px' }} />
+            <col style={{ width: '50px' }} />
           </colgroup>
           <thead>
             <tr>
               {showLevel && (
-                <th style={{ ...moveCell, textAlign:'center' }}>Lv</th>
+                <th
+                  style={{ ...moveCell, textAlign: 'center', cursor: 'pointer' }}
+                  onClick={() => handleSort('lv')}
+                >
+                  Lv {sortArrow('lv')}
+                </th>
               )}
-              <th style={{ ...moveCell, textAlign:'left' }}>Move</th>
-              <th style={{ ...moveCell, textAlign:'center' }}>Type</th>
-              <th style={{ ...moveCell, textAlign:'center' }}>Cat</th>
-              <th style={{ ...moveCell, textAlign:'center' }}>Pwr</th>
-              <th style={{ ...moveCell, textAlign:'center' }}>Acc</th>
+              <th
+                style={{ ...moveCell, textAlign: 'left', cursor: 'pointer' }}
+                onClick={() => handleSort('name')}
+              >
+                Move {sortArrow('name')}
+              </th>
+              <th
+                style={{ ...moveCell, textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('type')}
+              >
+                Type {sortArrow('type')}
+              </th>
+              <th
+                style={{ ...moveCell, textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('cat')}
+              >
+                Cat {sortArrow('cat')}
+              </th>
+              <th
+                style={{ ...moveCell, textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('power')}
+              >
+                Pwr {sortArrow('power')}
+              </th>
+              <th
+                style={{ ...moveCell, textAlign: 'center', cursor: 'pointer' }}
+                onClick={() => handleSort('acc')}
+              >
+                Acc {sortArrow('acc')}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {moves.map((mv, idx) => <MoveRow key={idx} mv={mv} showLevel={showLevel} />)}
+            {sorted.map((mv, idx) => (
+              <MoveRow key={idx} mv={mv} showLevel={showLevel} />
+            ))}
           </tbody>
         </table>
       ) : (
