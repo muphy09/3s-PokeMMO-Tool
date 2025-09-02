@@ -12,7 +12,7 @@
 
 ### Fixed
 - Addressed missing Routes & Areas not appearing in the Live Tab
-  - Live Route now does a better job of keywording particular areas that it was not indexing before (Jagged Pass)
+  - Live Route now does a better job of keywording particular areas that it was not indexing before (Ex- Jagged Pass)
 
 
 ---

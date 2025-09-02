@@ -1298,8 +1298,8 @@ const STALE_AFTER_MS = 6000;
 function normalizeHudText(s=''){
   let t = String(s).replace(/\r/g,'').trim();
   const lines = t.split(/\n+/).map((line) => {
-    // Strip channel numbers like "Ch3" that sometimes trail the route name
-    let l = line.replace(/\bCh\.?\s*\d+\b/gi, '');
+    // Strip channel numbers like "Ch3" (or stray "Ch") that sometimes trail the route name
+    let l = line.replace(/\bCh(?:\.|:)?\s*\d*\b/gi, '');
     l = l.replace(/\s{2,}/g,' ').trim();
     return l;
   }).filter(Boolean);
@@ -1518,6 +1518,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const filterRef = useRef(null);
   const methodFiltersRef = useRef(methodFilters);
+  const displayMapRef = useRef(displayMap);
 
   const { caught, toggleCaught } = React.useContext(CaughtContext);
 
@@ -1525,6 +1526,8 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     methodFiltersRef.current = methodFilters;
     try { localStorage.setItem('liveMethodFilters', JSON.stringify([...methodFilters])); } catch {}
   }, [methodFilters]);
+
+  useEffect(() => { displayMapRef.current = displayMap; }, [displayMap]);
 
   useEffect(() => { setShowRegionMenu(false); }, [regionChoices, displayMap]);
 
@@ -1564,20 +1567,20 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       // Re-normalize after map extraction in case channel text slipped through
       cleaned = normalizeHudText(trimmed);
 
-      setRawText(cleaned);
-      setConfidence(coerced.confidence ?? null);
-
       const targetName = best.displayMap;
+      setConfidence(coerced.confidence ?? null);
+      if (targetName === displayMapRef.current) return;
 
-        const choices = listRegionCandidates(areasIndex, targetName);
-        setRegionChoices(choices);
+      setConfidence(coerced.confidence ?? null);
+      if (targetName === displayMapRef.current) return;
 
-        // choose region: saved pref → best → first choice
+      // choose region: saved pref → best → first choice
       const prefKey = `regionPref:${targetName}`;
       let picked = localStorage.getItem(prefKey);
       if (picked && !choices.includes(picked)) picked = null;
       const chosen = picked || best.region || choices[0] || null;
 
+      setRawText(targetName);
       setRegion(chosen);
       setDisplayMap(targetName);
       setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex, methodFiltersRef.current));
