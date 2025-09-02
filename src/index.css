@@ -1,12 +1,14 @@
 /* src/index.css */
-:root {
-  --bg: #0e1425;
+/* Theme variables */
+:root,
+body.theme-classic {
+  --bg: #0f172c;
   --card: #0f172a;
   --surface: #111a2d;
   --text: #f7fafc;
   --muted: #aeb8c7;
   --divider: rgba(255,255,255,0.08);
-  --accent: #60a5fa;
+  --accent: #eac42c;
 
   --chip-bg: rgba(255,255,255,0.06);
   --chip-br: rgba(255,255,255,0.14);

@@ -7,13 +7,12 @@
   - Click the label inside the Moveset data to sort by that category
     - Move Name, Type, Power, Category, and Accuracy. 
 
-- Live Battle Tab Performance Update
-  - Live Battle code has been changed to be more in-line with the Live Route, leading to faster grab times and more consistency
-
 ### Fixed
 - Addressed missing Routes & Areas not appearing in the Live Tab
   - Live Route now does a better job of keywording particular areas that it was not indexing before (Ex- Jagged Pass)
 
+- Live Battle Tab Performance
+  - Live Battle code has been changed to be more in-line with the Live Route, leading to faster grab times and more consistency
 
 ---
 
@@ -24,7 +23,6 @@
 - Pokemon Catch Rate Data is now stored locally, instead of requesting from the Pokeapi - this speeds up display time greatly.
 
 - Fixed certain locations from appearing in the Live Tab, even though their Area data existed
-
 
 ---
 

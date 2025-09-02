@@ -8,6 +8,7 @@ import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
+import ThemeButton from './components/ThemeButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
@@ -2217,6 +2218,13 @@ function App(){
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle' | 'market'
+
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
+  useEffect(() => {
+    document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond');
+    document.body.classList.add(`theme-${theme}`);
+    try { localStorage.setItem('theme', theme); } catch {}
+  }, [theme]);
   const [showMoveset, setShowMoveset] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
@@ -3490,7 +3498,8 @@ const marketResults = React.useMemo(() => {
         </div>
       )}
 
-      {/* Fixed version badge */}
+      {/* Fixed controls */}
+      <ThemeButton theme={theme} setTheme={setTheme} />
       <VersionBadge />
     </>
     </ColorContext.Provider>
