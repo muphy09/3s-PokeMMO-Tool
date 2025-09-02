@@ -599,10 +599,8 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                 if (engine != null)
                 {
                     using var filtered = MaskBattleHud(crop);
-                    int passIdx = 0;
                     foreach (var pass in BuildPassPlan(filtered, mode, 1))
                     {
-                        passIdx++;
                         using var srcForPass = pass.Masked ? MaskLeftColumn(filtered, pass.KeepPct) : (Bitmap)filtered.Clone();
                         using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
@@ -639,7 +637,7 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                             rawUsed = raw;
                             bestPre?.Dispose();
                             bestPre = (Bitmap)pre.Clone();
-                            if (nameList.Count >= 2 || passIdx >= 2) break;
+                            break;
                         }
                     }
                 }
