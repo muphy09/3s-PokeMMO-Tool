@@ -2,15 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 
 const THEMES = [
   { key: 'classic', label: 'Classic' },
-  { key: 'black', label: 'Black' },
-  { key: 'white', label: 'White' },
-  { key: 'diamond', label: 'Diamond' },
-  { key: 'pearl', label: 'Pearl' },
   { key: 'red', label: 'Red' },
   { key: 'blue', label: 'Blue' },
   { key: 'gold', label: 'Gold' },
   { key: 'silver', label: 'Silver' },
-  { key: 'emerald', label: 'Emerald' }
+  { key: 'emerald', label: 'Emerald' },
+  { key: 'diamond', label: 'Diamond' },
+  { key: 'pearl', label: 'Pearl' },
+  { key: 'black', label: 'Black' },
+  { key: 'white', label: 'White' }
 ];
 
 export default function ThemeButton({ theme, setTheme }) {
