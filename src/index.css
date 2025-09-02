@@ -109,6 +109,78 @@ body.theme-white {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.12);
 }
 
+body.theme-diamond {
+  --bg: #0a192f;
+  --card: #0d2244;
+  --card-dark: #091a36;
+  --surface: #102a54;
+  --text: #e2ecff;
+  --muted: #a6bce8;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #60a5fa;
+  --accent-contrast: #111;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255,255,255,0.1);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(96,165,250,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(96,165,250,0.45);
+  --focus-ring: 0 0 0 3px rgba(96,165,250,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-pearl {
+  --bg: #2e0b2e;
+  --card: #401042;
+  --card-dark: #2a082c;
+  --surface: #401042;
+  --text: #fff5fa;
+  --muted: #e2bcd9;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #ec4899;
+  --accent-contrast: #fff;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255,255,255,0.1);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(236,72,153,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(236,72,153,0.45);
+  --focus-ring: 0 0 0 3px rgba(236,72,153,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
 html, body, #root { height: 100%; }
 * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 

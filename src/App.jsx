@@ -2410,11 +2410,14 @@ function App(){
 
   const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
 
-
-  const [headerSprite] = useState(() => {
+const headerSprite = useMemo(() => {
+    if (theme === 'black') return spriteSources(getMon('Reshiram'))[0] || null;
+    if (theme === 'white') return spriteSources(getMon('Zekrom'))[0] || null;
+    if (theme === 'diamond') return spriteSources(getMon('Dialga'))[0] || null;
+    if (theme === 'pearl') return spriteSources(getMon('Palkia'))[0] || null;
     const withSprite = DEX_LIST.filter(d => spriteSources(d).length > 0);
     return withSprite.length ? spriteSources(withSprite[Math.floor(Math.random()*withSprite.length)])[0] : null;
-  });
+  }, [theme]);
   useEffect(() => { document.title = APP_TITLE; }, []);
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
