@@ -112,15 +112,8 @@ class LiveRouteOCR
 
     // ---------- Location extraction ----------
     static readonly Regex LocationCandidate = new(
-        @"\b(?:
-             Route\s*\d+ |
-             (?:
-                (?!B(?:i|l)?\b)
-                [A-Z][a-z]+(?:\s+[A-Z][a-z]+)*
-                \s(?:Road|City|Town|Forest|Cave|Woods|Island|Lake|River|Tower|Desert|Marsh|Park|Bridge|Harbor|Port|Path|Trail|Tunnel|Mountain|League|Hall|Dojo|Manor|Lab|Gate|Safari|Garden|Plaza|Valley|Meadow|Ranch|Ruins)
-             )
-           )\b",
-        RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
+        @"\b(?:Route\s*\d+|(?!B(?:i|l)?\b)[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     static async Task Main(string[] args)
     {

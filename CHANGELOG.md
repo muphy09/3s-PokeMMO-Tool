@@ -1,11 +1,24 @@
 # Changelog
 ---
 
+## [2.6.4]- 2025-08
+### Added
+- Sort Moveset Data
+  - Click the label inside the Moveset data to sort by that category
+    - Move Name, Type, Power, Category, and Accuracy. 
+
+- Live Battle Tab Performance Update
+  - Live Battle code has been changed to be more in-line with the Live Route, leading to faster grab times and more consistency
+
+---
+
 ## [2.6.3]- 2025-08
 ### Fixed
 - Live Battle Tab now persists last Pokemon detected until it discovers a new Pokemon to display. This prevents flashing in and out during battle.
+
 - Pokemon Catch Rate Data is now stored locally, instead of requesting from the Pokeapi - this speeds up display time greatly.
-- Fixed certain locations from appearing in the Live Tab, even thought their Area data existed
+
+- Fixed certain locations from appearing in the Live Tab, even though their Area data existed
 
 
 ---
