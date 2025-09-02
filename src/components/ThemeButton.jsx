@@ -5,7 +5,12 @@ const THEMES = [
   { key: 'black', label: 'Black' },
   { key: 'white', label: 'White' },
   { key: 'diamond', label: 'Diamond' },
-  { key: 'pearl', label: 'Pearl' }
+  { key: 'pearl', label: 'Pearl' },
+  { key: 'red', label: 'Red' },
+  { key: 'blue', label: 'Blue' },
+  { key: 'gold', label: 'Gold' },
+  { key: 'silver', label: 'Silver' },
+  { key: 'emerald', label: 'Emerald' }
 ];
 
 export default function ThemeButton({ theme, setTheme }) {

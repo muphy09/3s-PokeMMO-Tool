@@ -151,9 +151,9 @@ body.theme-pearl {
   --card-dark: #2a082c;
   --surface: #401042;
   --text: #fff5fa;
-  --muted: #e2bcd9;
+  --muted: #f1f1f1;
   --divider: rgba(255,255,255,0.12);
-  --accent: #ec4899;
+  --accent: #ec489a98;
   --accent-contrast: #fff;
 
   --chip-bg: rgba(255,255,255,0.08);
@@ -173,6 +173,186 @@ body.theme-pearl {
   --toast-info: #1a1a3a;
   --focus-border: rgba(236,72,153,0.45);
   --focus-ring: 0 0 0 3px rgba(236,72,153,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-red {
+  --bg: #7a0c0c;
+  --card: #8c1111;
+  --card-dark: #5c0404;
+  --surface: #a31818;
+  --text: #ffe5e5;
+  --muted: #f2b6b6;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #ef4444;
+  --accent-contrast: #fff;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255, 255, 255, 0.681);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(239,68,68,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(239,68,68,0.45);
+  --focus-ring: 0 0 0 3px rgba(239,68,68,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-blue {
+  --bg: #0a1b4b;
+  --card: #0d2b6b;
+  --card-dark: #091f4b;
+  --surface: #103b8b;
+  --text: #e2ecff;
+  --muted: #a6bce8;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #3b82f6;
+  --accent-contrast: #fff;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255,255,255,0.1);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(59,130,246,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(59,130,246,0.45);
+  --focus-ring: 0 0 0 3px rgba(59,130,246,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-gold {
+  --bg: #4a3900;
+  --card: #70520a;
+  --card-dark: #593f05;
+  --surface: #8a6612;
+  --text: #fbfbfb;
+  --muted: #e2d5b3;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #fbbf24;
+  --accent-contrast: #111;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255, 255, 255, 0.407);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(251,191,36,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(251,191,36,0.45);
+  --focus-ring: 0 0 0 3px rgba(251,191,36,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-silver {
+  --bg: #3a3f47;
+  --card: #525760;
+  --card-dark: #3e434a;
+  --surface: #60666f;
+  --text: #f5f7fa;
+  --muted: #cfd5df;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #9ca3af;
+  --accent-contrast: #111;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255, 255, 255, 0.681);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(156,163,175,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(156,163,175,0.45);
+  --focus-ring: 0 0 0 3px rgba(156,163,175,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,0,0,0.6);
+  --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+body.theme-emerald {
+  --bg: #064e3b;
+  --card: #0b5e46;
+  --card-dark: #064536;
+  --surface: #0d704d;
+  --text: #e2fff3;
+  --muted: #a6e8c5;
+  --divider: rgba(255,255,255,0.12);
+  --accent: #10b981;
+  --accent-contrast: #fff;
+
+  --chip-bg: rgba(255,255,255,0.08);
+  --chip-br: rgba(255,255,255,0.2);
+  --input-bg: rgba(255, 255, 255, 0.681);
+  --tile-bg: rgba(255,255,255,0.05);
+  --tile-hover-bg: rgba(255,255,255,0.1);
+  --tile-hover-border: rgba(255,255,255,0.2);
+  --region-gradient-start: rgba(255,255,255,0.04);
+  --region-gradient-end: rgba(255,255,255,0.02);
+  --map-card-bg: rgba(255,255,255,0.04);
+  --button-bg: rgba(255,255,255,0.1);
+  --menu-hover-bg: rgba(255,255,255,0.1);
+  --menu-active-bg: rgba(16,185,129,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(16,185,129,0.45);
+  --focus-ring: 0 0 0 3px rgba(16,185,129,0.18);
 
   --radius-lg: 16px;
   --radius-md: 12px;

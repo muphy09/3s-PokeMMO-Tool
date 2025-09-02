@@ -5,7 +5,7 @@
 ### Added
 - Themes
   - Choose from new theme options seen in the 'Theme' button - Themes are based on Pokemon games inside of PokeMMO
-    - Black & White are available now
+    - Red, Blue, Gold, Silver, Emerald, Diamond, Pearl, Black, & White are available now!
     - Theme changes most elements of UI, if there are issues experienced, please let me know!
 
 - Sort Moveset Data

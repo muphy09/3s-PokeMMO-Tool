@@ -2221,7 +2221,7 @@ function App(){
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
   useEffect(() => {
-    document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond');
+    document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond','theme-red','theme-blue','theme-gold','theme-silver','theme-emerald');
     document.body.classList.add(`theme-${theme}`);
     try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
@@ -2411,6 +2411,11 @@ function App(){
   const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
 
 const headerSprite = useMemo(() => {
+    if (theme === 'red') return spriteSources(getMon('Charizard'))[0] || null;
+    if (theme === 'blue') return spriteSources(getMon('Blastoise'))[0] || null;
+    if (theme === 'gold') return spriteSources(getMon('Ho-Oh'))[0] || null;
+    if (theme === 'silver') return spriteSources(getMon('Lugia'))[0] || null;
+    if (theme === 'emerald') return spriteSources(getMon('Rayquaza'))[0] || null;
     if (theme === 'black') return spriteSources(getMon('Reshiram'))[0] || null;
     if (theme === 'white') return spriteSources(getMon('Zekrom'))[0] || null;
     if (theme === 'diamond') return spriteSources(getMon('Dialga'))[0] || null;
