@@ -1087,9 +1087,9 @@ function mapNameMatches(candidate, needle){
   // If the search is a prefix of "route", do not match yet
   if ('route'.startsWith(search)) return false;
 
- // If the query is of the form "<number>" or "route <number>" require an exact
-  // route-number match.
-  const routeMatch = search.match(/^(?:route\s*)?(\d+)\s*$/);
+  // If the query starts with "<number>" or "route <number>", require that exact
+  // route number regardless of any trailing OCR noise.
+  const routeMatch = search.match(/^(?:route\s*)?(\d+)\b/);
   if (routeMatch) {
     const candRoute = cand.match(/^route\s*(\d+)\b/);
     return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
