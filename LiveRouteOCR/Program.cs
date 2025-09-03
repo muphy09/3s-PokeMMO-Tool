@@ -36,6 +36,7 @@ class LiveRouteOCR
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
     static IntPtr CachedHwnd = IntPtr.Zero;
+    static int CachedPid = 0;
 
     [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
@@ -867,10 +868,16 @@ static Bitmap MaskBattleHud(Bitmap src)
     // ---------- Window helpers ----------
     static IntPtr FindPokeMMO(int? targetPid)
     {
-        if (CachedHwnd != IntPtr.Zero && IsPokeMMOWindow(CachedHwnd))
-            return CachedHwnd;
+        int? pidHint = targetPid ?? (CachedPid > 0 ? CachedPid : (int?)null);
 
-        if (targetPid is int pid && pid > 0)
+        if (CachedHwnd != IntPtr.Zero)
+        {
+            uint wpid; GetWindowThreadProcessId(CachedHwnd, out wpid);
+            if ((pidHint == null || wpid == (uint)pidHint) && IsPokeMMOWindow(CachedHwnd))
+                return CachedHwnd;
+        }
+
+        if (pidHint is int pid && pid > 0)
         {
             try
             {
@@ -878,7 +885,7 @@ static Bitmap MaskBattleHud(Bitmap src)
                 if (p != null)
                 {
                     if (p.MainWindowHandle != IntPtr.Zero && IsPokeMMOWindow(p.MainWindowHandle))
-                        return CachedHwnd = p.MainWindowHandle;
+                        return CacheHandle(p.MainWindowHandle, pid);
                     IntPtr found = IntPtr.Zero;
                     EnumWindows((h, l) =>
                     {
@@ -886,17 +893,17 @@ static Bitmap MaskBattleHud(Bitmap src)
                         if (wpid == (uint)pid && IsWindowVisible(h) && IsPokeMMOWindow(h)) { found = h; return false; }
                         return true;
                     }, IntPtr.Zero);
-                    if (found != IntPtr.Zero) return CachedHwnd = found;
+                    if (found != IntPtr.Zero) return CacheHandle(found, pid);
                 }
             }
             catch { }
         }
 
         var h = FindWindow("pokemmo", null);
-        if (IsPokeMMOWindow(h)) return CachedHwnd = h;
+        if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
 
         h = GetForegroundWindow();
-        if (IsPokeMMOWindow(h)) return CachedHwnd = h;
+        if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
 
         IntPtr foundEnum = IntPtr.Zero;
         EnumWindows((win, l) =>
@@ -905,8 +912,18 @@ static Bitmap MaskBattleHud(Bitmap src)
             if (IsPokeMMOWindow(win)) { foundEnum = win; return false; }
             return true;
         }, IntPtr.Zero);
-        if (foundEnum != IntPtr.Zero) CachedHwnd = foundEnum;
-        return foundEnum;
+        if (foundEnum != IntPtr.Zero)
+        {
+            uint wpid; GetWindowThreadProcessId(foundEnum, out wpid);
+            return CacheHandle(foundEnum, (int)wpid);
+        }
+        return IntPtr.Zero;
+    }
+    static IntPtr CacheHandle(IntPtr h, int pid)
+    {
+        CachedHwnd = h;
+        CachedPid = pid;
+        return h;
     }
     static bool IsPokeMMOWindow(IntPtr h)
     {
@@ -927,13 +944,12 @@ static Bitmap MaskBattleHud(Bitmap src)
         }
         catch { }
 
-        var cls = GetClass(h);
-        if (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase)) return true;
-        if (string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
-
         var title = GetTitle(h);
         if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
 
+var cls = GetClass(h);
+        if (string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
+        
         return false;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
