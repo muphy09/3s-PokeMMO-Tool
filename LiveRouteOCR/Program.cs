@@ -27,9 +27,9 @@ class LiveRouteOCR
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll", SetLastError = true)] private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
     [DllImport("user32.dll", SetLastError = true)] private static extern bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
-    [DllImport("user32.dll")] private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-    [DllImport("user32.dll")] private static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
-    [DllImport("user32.dll")] private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern int GetClassName(IntPtr hWnd, StringBuilder text, int count);
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern IntPtr FindWindow(string? lpClassName, string? lpWindowName);
     [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
     [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
@@ -969,14 +969,15 @@ class LiveRouteOCR
     {
         if (h == IntPtr.Zero) return false;
 
-// Prefer lightweight title/class heuristics for speed
-        var title = GetTitle(h).Trim();
         var cls = GetClass(h);
-        var normTitle = title.Replace('é', 'e');
-        if ((normTitle.Equals("pokemmo", StringComparison.OrdinalIgnoreCase) ||
-             normTitle.Equals("pok?m?o", StringComparison.OrdinalIgnoreCase)) &&
-            cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase))
-            return true;
+        if (!cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // Prefer title heuristics when possible
+        var title = GetTitle(h).Trim();
+        var normTitle = RemoveDiacritics(title);
+        if (System.Text.RegularExpressions.Regex.IsMatch(normTitle, "^pok.*mmo$",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase))
 
         // Fallback: check associated process
         uint pid; GetWindowThreadProcessId(h, out pid);
@@ -984,13 +985,19 @@ class LiveRouteOCR
         {
             var p = Process.GetProcessById((int)pid);
             var procName = p.ProcessName;
-            if (string.Equals(procName, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
+            if (procName.Equals("pokemmo", StringComparison.OrdinalIgnoreCase) ||
+                procName.Equals("javaw", StringComparison.OrdinalIgnoreCase))
+                return true;
             try
             {
                 var modPath = p.MainModule?.FileName;
-                if (!string.IsNullOrEmpty(modPath) &&
-                    string.Equals(Path.GetFileName(modPath), "pokemmo.exe", StringComparison.OrdinalIgnoreCase))
-                    return true;
+                if (!string.IsNullOrEmpty(modPath))
+                {
+                    var exe = Path.GetFileName(modPath);
+                    if (exe.Equals("pokemmo.exe", StringComparison.OrdinalIgnoreCase) ||
+                        exe.Equals("javaw.exe", StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
             }
             catch { }
         }
@@ -1001,6 +1008,16 @@ class LiveRouteOCR
     static string GetTitle(IntPtr h) { var sb = new StringBuilder(256); GetWindowText(h, sb, sb.Capacity); return sb.ToString(); }
     static string GetClass(IntPtr h) { var sb = new StringBuilder(256); GetClassName(h, sb, sb.Capacity); return sb.ToString(); }
 
+static string RemoveDiacritics(string text)
+    {
+        var normalized = text.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+        foreach (var c in normalized)
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        return sb.ToString();
+    }
+    
     static Rectangle ZoomRectangle(Rectangle baseRect, int cw, int ch, double zoom)
     {
         zoom = Math.Clamp(zoom, 1.0, 2.0);
