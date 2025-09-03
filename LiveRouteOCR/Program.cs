@@ -566,6 +566,9 @@ class LiveRouteOCR
         IntPtr hWnd = IntPtr.Zero;
         IntPtr lastLoggedHandle = IntPtr.Zero;
 
+        // Battle OCR runs every frame; limit to a small pass plan for speed
+        var plan = BuildPassPlan(mode, 1).Take(4).ToList();
+
         while (!ct.IsCancellationRequested)
         {
             try
@@ -622,7 +625,7 @@ class LiveRouteOCR
                 if (engine != null)
                 {
                     using var filtered = FilterBattle(crop);
-                    foreach (var pass in BuildPassPlan(mode, 1))
+                    foreach (var pass in plan)
                     {
                         using var pre = Preprocess(filtered, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
