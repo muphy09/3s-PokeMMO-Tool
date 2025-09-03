@@ -457,5 +457,39 @@
 
 ## [1.2.0] - 2025-08
 ### Added
-- Initial release with **Pokédex lookup** and encounter data scraping.  
-- Base interface with tabs and early data integration.  
+- Pokémon Location Data Integration
+  - Added full support for per-region location data (Kanto, Johto, Hoenn, Sinnoh, Unova). some pokemon data not available yet
+  - Locations are grouped by region with dedicated blocks—regions without data are hidden.
+  - Each map entry now displays Method, Rarity, Environment, and Level (when available).
+  - JSON location database cleaned up to remove duplicates, filler text.
+
+- Weakness Grid Enhancements
+  - Added clear labels: “4× Weak To”, “2× Weak To”, “Normal Damage”, “Resists (½×)”, and “Immune (0×)”.
+  - Weakness chart now uses type-colored chips matching official Pokémon type palettes for instant readability.
+
+- UI/UX Improvements
+  - Header & Branding
+  - App title changed to “3’s PokeMMO Tool” (previously “3s Weakness Finder”).
+  - A random Pokémon sprite now displays next to the title on launch instead of the same static sprite.
+  - Updated window title bar and .exe name for consistency.
+
+- Pokémon Display
+  - Pokémon names, types, and details are now properly capitalized across the app.
+  - Dex number shown as “National Dex #” for clarity.
+  - Autocomplete results redesigned with brighter text for better contrast on the dark theme.
+
+- General Styling
+  - Classic theme polished with improved contrasts for text and badges.
+  - Location and weakness data now displayed in modern card-style layouts.
+  - Imporved generic labels with explicit field labels for Method, Rarity, Environment, etc.
+
+- Technical Changes
+  - App Packaging
+  - Project migrated to Electron for Windows builds, now bundling as a standalone .exe.
+  - Compressed a fuckton of data
+  - Cleaned up project structure for smoother builds and way faster patching  going forward.
+
+- Known Bugs
+  - In the location boxes "Method" and "Enviornment" display the same information.
+  - Colors for pokemon type appear too transparent,
+  - A few pokemon location data entires are missing

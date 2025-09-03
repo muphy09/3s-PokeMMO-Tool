@@ -1639,19 +1639,13 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     // Reconnect when tab becomes visible again (tab-away fix)
     const onVis = () => {
       if (document.visibilityState === 'visible') {
-        const stale = Date.now() - (liveRouteClient.lastMsgTs || 0) > STALE_AFTER_MS;
-        if (!liveRouteClient.isOpen() || stale) {
-          liveRouteClient.forceReconnect();
-        }
+        liveRouteClient.forceReconnect();
       }
     };
     document.addEventListener('visibilitychange', onVis);
     // Also reconnect on window focus (covers some browsers)
     const onFocus = () => {
-      const stale = Date.now() - (liveRouteClient.lastMsgTs || 0) > STALE_AFTER_MS;
-      if (!liveRouteClient.isOpen() || stale) {
-        liveRouteClient.forceReconnect();
-      }
+      liveRouteClient.forceReconnect();
     };
     window.addEventListener('focus', onFocus);
 
@@ -1963,18 +1957,12 @@ function LiveBattlePanel({ onViewMon }){
 
     const onVis = () => {
       if (document.visibilityState === 'visible') {
-        const stale = Date.now() - (liveBattleClient.lastMsgTs || 0) > STALE_AFTER_MS;
-        if (!liveBattleClient.isOpen() || stale) {
-          liveBattleClient.forceReconnect();
-        }
+        liveBattleClient.forceReconnect();
       }
     };
     document.addEventListener('visibilitychange', onVis);
     const onFocus = () => {
-      const stale = Date.now() - (liveBattleClient.lastMsgTs || 0) > STALE_AFTER_MS;
-      if (!liveBattleClient.isOpen() || stale) {
-        liveBattleClient.forceReconnect();
-      }
+      liveBattleClient.forceReconnect();
     };
     window.addEventListener('focus', onFocus);
 
