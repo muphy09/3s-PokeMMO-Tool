@@ -944,6 +944,13 @@ class LiveRouteOCR
         }
 
         var h = FindWindow("pokemmo", null);
+        if (h == IntPtr.Zero)
+        {
+            h = FindWindow(null, "Pok?M?O");
+            if (h == IntPtr.Zero) h = FindWindow(null, "PokMMO");
+            if (h == IntPtr.Zero) h = FindWindow(null, "PokeMMO");
+            if (h == IntPtr.Zero) h = FindWindow(null, "PokéMMO");
+        }
         if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
 
         h = GetForegroundWindow();
@@ -995,7 +1002,9 @@ class LiveRouteOCR
         // Fallback: title & class heuristics for java-based client
         var title = GetTitle(h).Trim();
         var cls = GetClass(h);
-        if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase) &&
+        var normTitle = title.Replace('é', 'e');
+        if ((string.Equals(normTitle, "pokemmo", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(normTitle, "pok?m?o", StringComparison.OrdinalIgnoreCase)) &&
             (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) ||
              string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)))
             return true;
