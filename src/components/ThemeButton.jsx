@@ -10,7 +10,8 @@ const THEMES = [
   { key: 'diamond', label: 'Diamond' },
   { key: 'pearl', label: 'Pearl' },
   { key: 'black', label: 'Black' },
-  { key: 'white', label: 'White' }
+  { key: 'white', label: 'White' },
+  { key: 'neo', label: 'Neo' }
 ];
 
 export default function ThemeButton({ theme, setTheme }) {

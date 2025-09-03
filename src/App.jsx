@@ -10,9 +10,11 @@ import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
+import HomeScreen from './components/HomeScreen.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
+import TeamBuilder from './components/TeamBuilder.jsx';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -2217,11 +2219,11 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'live' | 'battle' | 'market'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
   useEffect(() => {
-    document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond','theme-red','theme-blue','theme-gold','theme-silver','theme-emerald');
+    document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond','theme-red','theme-blue','theme-gold','theme-silver','theme-emerald','theme-neo');
     document.body.classList.add(`theme-${theme}`);
     try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
@@ -2777,9 +2779,12 @@ const marketResults = React.useMemo(() => {
         </div>
       )}
 
+{mode === 'home' ? (
+        <HomeScreen setMode={setMode} isWindows={isWindows} />
+      ) : (
       <div className="container">
         {/* Header */}
-        <div className="header" style={{ alignItems:'center' }}>
+        <div className="header" style={{ alignItems:'center', cursor:'pointer' }} onClick={()=>setMode('home')}>
           <img src={headerSrc} alt="" style={{ width:56, height:56, objectFit:'contain', imageRendering:'pixelated' }} />
           <h1 style={{ marginLeft:8 }}>3&apos;s PokeMMO Tool</h1>
         </div>
@@ -2793,6 +2798,7 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               <button style={styles.segBtn(mode==='breeding')} onClick={()=>setMode('breeding')}>Breeding</button>
+              <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
               {isWindows && (
                 <>
                   <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
@@ -2874,7 +2880,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Context label + search input (hidden for Live) */}
-          {mode!=='live' && mode!=='battle' && mode!=='breeding' && (
+          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">
@@ -3013,6 +3019,13 @@ const marketResults = React.useMemo(() => {
           {mode==='breeding' && (
             <div style={{ marginTop:4 }}>
               <BreedingSimulator />
+            </div>
+          )}
+
+          {/* Team builder */}
+          {mode==='team' && (
+            <div style={{ marginTop:4 }}>
+              <TeamBuilder />
             </div>
           )}
 
@@ -3452,7 +3465,8 @@ const marketResults = React.useMemo(() => {
           </>
         )}
       </div>
-
+      )}
+      
       {marketSelected && (
         <div
           onClick={() => setMarketSelected(null)}

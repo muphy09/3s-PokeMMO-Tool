@@ -361,6 +361,42 @@ body.theme-emerald {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
+body.theme-neo {
+  --bg: #05070a;
+  --card: #0b0f16;
+  --card-dark: #06080c;
+  --surface: #0e121b;
+  --text: #e0f7ff;
+  --muted: #6c7a86;
+  --divider: rgba(0,245,255,0.16);
+  --accent: #0ff7f3;
+  --accent-contrast: #000;
+
+  --chip-bg: rgba(0,245,255,0.08);
+  --chip-br: rgba(0,245,255,0.24);
+  --input-bg: rgba(0,245,255,0.08);
+  --tile-bg: rgba(255,255,255,0.02);
+  --tile-hover-bg: rgba(0,245,255,0.1);
+  --tile-hover-border: rgba(0,245,255,0.35);
+  --region-gradient-start: rgba(0,245,255,0.04);
+  --region-gradient-end: rgba(0,245,255,0.02);
+  --map-card-bg: rgba(0,245,255,0.04);
+  --button-bg: rgba(0,245,255,0.08);
+  --menu-hover-bg: rgba(0,245,255,0.12);
+  --menu-active-bg: rgba(0,245,255,0.25);
+  --toast-error: #5a1a1a;
+  --toast-success: #1b4a1b;
+  --toast-info: #1a1a3a;
+  --focus-border: rgba(0,245,255,0.45);
+  --focus-ring: 0 0 0 3px rgba(0,245,255,0.18);
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --shadow-1: 0 2px 10px rgba(0,245,255,0.15);
+  --shadow-2: 0 8px 24px rgba(0,245,255,0.25);
+}
+
 html, body, #root { height: 100%; }
 * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
@@ -563,4 +599,48 @@ select.input option {
 }
 .region-menu button.active {
   background: var(--menu-active-bg);
+}
+
+/* Home screen layout */
+.home-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.home-title {
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.home-grid {
+  width: 100%;
+  max-width: 800px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+.home-tile {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--divider);
+  background: var(--card);
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  box-shadow: var(--shadow-1);
+}
+
+.home-tile:hover {
+  background: var(--tile-hover-bg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
 }

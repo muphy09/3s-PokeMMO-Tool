@@ -45,7 +45,6 @@ class LiveRouteOCR
     // ---------- Paths ----------
     static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
     static string RouteLogPath => Path.Combine(AppDataDir, "ocr-route.log");
-    static string WindowLogPath => Path.Combine(AppDataDir, "ocr-window.log");
     static string BattleLogPath => Path.Combine(AppDataDir, "ocr-battle.log");
     static string RouteCapPath => Path.Combine(AppDataDir, "last-route-capture.png");
     static string RoutePrePath => Path.Combine(AppDataDir, "last-route-pre.png");
@@ -955,14 +954,12 @@ class LiveRouteOCR
             uint wpid; GetWindowThreadProcessId(foundEnum, out wpid);
             return CacheHandle(foundEnum, (int)wpid);
         }
-        DumpAllWindows();
         return IntPtr.Zero;
     }
     static IntPtr CacheHandle(IntPtr h, int pid)
     {
         CachedHwnd = h;
         CachedPid = pid;
-        LogWindow($"LOCK 0x{h.ToInt64():X} pid={pid} title='{OneLine(GetTitle(h))}' class='{GetClass(h)}'");
         return h;
     }
     static bool IsPokeMMOWindow(IntPtr h)
@@ -1094,7 +1091,6 @@ static string RemoveDiacritics(string text)
 
     static void Log(string s) => LogTo(RouteLogPath, s);
     static void LogBattle(string s) => LogTo(BattleLogPath, s);
-    static void LogWindow(string s) => LogTo(WindowLogPath, s);
 
     static void LogTo(string path, string s)
     {
@@ -1114,16 +1110,4 @@ static string RemoveDiacritics(string text)
         return s.Length > 120 ? s.Substring(0, 120) + "…" : s;
     }
     
-    static void DumpAllWindows()
-    {
-        LogWindow("=== Window enumeration ===");
-        EnumWindows((h, l) =>
-        {
-            uint pid; GetWindowThreadProcessId(h, out pid);
-            var title = GetTitle(h);
-            var cls = GetClass(h);
-            LogWindow($"0x{h.ToInt64():X} pid={pid} vis={(IsWindowVisible(h) ? "Y" : "N")} title='{OneLine(title)}' class='{cls}'");
-            return true;
-        }, IntPtr.Zero);
-    }
 }
