@@ -865,7 +865,8 @@ class LiveRouteOCR
         var s = Regex.Replace(raw, @"\s+", " ").Trim();
         s = Regex.Replace(s, @"^[^A-Za-z]*([A-Za-z].*)$", "$1");
 
-        var m = LocationCandidate.Match(s);
+        var m = Regex.Match(s, @"\bRoute\s*\d+\b", RegexOptions.IgnoreCase);
+        if (!m.Success) m = LocationCandidate.Match(s);
         if (!m.Success) return "";
 
         var val = m.Value;

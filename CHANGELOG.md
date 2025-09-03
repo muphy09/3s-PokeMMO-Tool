@@ -403,6 +403,41 @@
 
 ---
 
+## [1.3.9] - 2025-08
+### Added
+- Region Selector
+  - Added segmented buttons to switch between regions directly in the live tab.
+    -  (Kanto, Johto, Hoenn, Sinnoh, Unova)
+
+
+### Improvements
+- FINALLY Improved Screen Capture
+  - Optimized location capture logic for better accuracy when reading in-game data.
+
+- Filtering System Overhaul
+  - Enhanced filtering logic for encounter data, ensuring more consistent and accurate results.
+
+- Location Data Handling
+  - Improved logic so Pokémon missing from the Pokédex now correctly pull location data when it exists (e.g., Machop in Fiery Path).
+
+- Encounter Rarity Display
+  - Cleaned up formatting to fix parenthesis/spacing issues when showing encounter methods and rates.
+
+Hardened Location Capture
+  - Improved performance when switching routes quickly and tabbing away from the active screen.
+
+### Bug Fixes
+- Tab Focus Bug
+  - Fixed issue where the live tab stopped working after clicking away or opening menus; the tab now properly refreshes when focus is regained.
+
+- Parenthesis Issue
+  - Fixed formatting bug where extra or missing parentheses appeared in encounter text.
+
+- Missing Pokémon Locations
+  - Fixed bug where some Pokémon with valid data showed no location entries.
+
+---
+
 ## [1.3.5] - 2025-08
 ### Added
 - Improved **screen location capture** for better accuracy.  
@@ -417,11 +452,35 @@
 
 ## [1.3.0] - 2025-08
 ### Added
-- **Live Route Tab** – real-time tracking of Pokémon encounters based on player location.  
-- Display automatically updates as you move through the game.  
+- Live Route feed (beta)
+  - A new Live tab that auto-detects your current area from the top-left PokeMMO HUD and shows the matching encounter table.
+  - OCR helper (LiveRouteOCR)
+    - Lightweight native helper that screenshots the HUD, runs OCR, and streams results to the app over WebSocket.
+  - Channel-suffix handling
+    - Location strings like Route 212 Ch. 1 are normalized to Route 212 before matching, so channel info no longer interferes.
+  - Fuzzy location matching
+    - Noisy OCR (extra spaces/stray characters) is cleaned/normalized and mapped to the right route/town with tolerant matching.
+
+- Debug hooks
+  - Optional logging with last screenshot and OCR text to help diagnose mismatches.
+
+### Improvements
+- UI: New tab switcher (Pokémon / Areas / Live) with a status chip (Connected/Disconnected) and live location line.
+
+- Resilience: Helper start/stop is sandboxed—failure to launch no longer crashes the app; the app continues to run and you’ll just see “Start LiveRouteOCR…”.
+
+- Performance: Smarter capture region and pre-processing for sharper OCR, plus throttled updates to avoid flicker.
 
 ### Fixed
-- Improved packaging for more complete distribution.  
+- Route name not appearing: Normalization now strips Ch. x and other HUD glyphs so the Live tab actually resolves to your route.
+- Intermittent blank reads: Better focus detection for the PokeMMO window and retries when the HUD animates.
+- Portable build spawn error (ENOENT): The app now launches the helper from process.resourcesPath in packaged/portable builds.
+- Missing app icon (Windows): Electron build now embeds the icon and the window uses it correctly.
+- Packaging / Dev
+  - Portable EXE: Added Electron-Builder config to ship a single portable .exe.
+  - Extra resources include live-helper/ and icon.ico.
+  - Safer process management: Helper process is cleaned up on app exit; spawn errors are surfaced in a friendly dialog and log.
+  - Tessdata & logs: Helper looks for bundled tessdata; debug artifacts are written to %LOCALAPPDATA%\PokemmoLive\ (last capture, log).  
 
 ---
 
@@ -444,7 +503,54 @@
 
 ## [1.2.6] - 2025-08
 ### Added
-- Stability improvements to encounter display.  
+- New Area Search Mode
+  - Added a toggle to switch between Pokémon search and Route/Area search.
+  - Searching by route or location (e.g., Viridian Forest, Route 10) now shows all Pokémon that appear there.
+  - Each Pokémon entry includes encounter method (Grass, Water, Fishing, etc.) and rarity/odds.
+
+- Improved Encounter Display
+  - Distinct colors for encounter methods (Grass, Water, Cave, Fishing rods, Horde, etc.).
+  - Distinct colors for rarities (Very Common → Very Rare, plus % odds).
+  - Makes it easier to tell apart different spawn types and probabilities at a glance.
+
+- Search Results Polished
+  - Pokémon search tiles consistently show colored type pills.
+  - Clearer visual identity while browsing search results.
+
+---
+
+## [1.2.5] - 2025-08
+### Changed
+- Structural Updates
+  - Restored full Pokédex integration after initial data wipe issues
+  - Refactored App.jsx and main.jsx to ensure proper references to pokedex.json and pokemmo_locations.json
+  - Added a legacy shape adapter to preserve compatibility with old UI expectations
+
+- Pokédex Data
+  - Trimmed Pokédex to Generations 1–5 only
+  - Removed Pokémon from Generations 6–9
+  - Removed the Fairy type and all Gen 6+ move/type chart impacts.
+  - Ensured all search and type matchups now follow Gen 1–5 rules only.
+
+- Sprites
+  - Implemented a sprite resolver system with fallback chain:
+  - Local sprite fields from pokedex data (sprite, sprites.front_default, image, icon).
+  - Local /public/sprites/ and /public/sprites/national/ folders.
+  - External PokeAPI fallback (both standard and official artwork).
+  - Transparent PNG as final placeholder (avoids broken image icons).
+  - Random header sprite now works consistently on load.
+
+- Location Data
+  - Integrated forum-sourced region files (Kanto, Johto, Hoenn, Sinnoh, Unova) with a parsing key.
+  - Built a reverse-mapped pokemmo_locations.json for direct lookup in-app.
+  - Fixed parsing issues where:
+  - Lines with asterisks (*Horde can only occur…) were previously skipped — now normalized to simply “Horde”.
+  - Viridian Forest and similar entries were defaulted as Grass encounters to avoid missing data.
+  - Improved coverage: drastically reduced the number of Pokémon with missing location data.
+
+- Missing Data Handling
+  - Added a reporting mechanism to check which Pokémon are still missing location data.
+  - Normalization fixes for names with special characters (♀, ♂, hyphens, etc.).
 
 ---
 
