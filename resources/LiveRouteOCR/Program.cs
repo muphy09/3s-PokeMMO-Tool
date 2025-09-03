@@ -169,16 +169,21 @@ class LiveRouteOCR
         }
         Log($"Using tessdata at: {StableTessDir}");
 
-        TesseractEngine? engine = null;
+        TesseractEngine? routeEngine = null;
+        TesseractEngine? battleEngine = null;
         try
         {
-            engine = new TesseractEngine(StableTessDir, "eng", EngineMode.LstmOnly);
-            engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-            engine.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:-'/#");
-            engine.SetVariable("load_system_dawg", "F");
-            engine.SetVariable("load_freq_dawg", "F");
-            engine.SetVariable("preserve_interword_spaces", "1");
-            Log("Tesseract engine initialized.");
+            routeEngine = new TesseractEngine(StableTessDir, "eng", EngineMode.LstmOnly);
+            battleEngine = new TesseractEngine(StableTessDir, "eng", EngineMode.LstmOnly);
+            foreach (var eng in new[] { routeEngine, battleEngine })
+            {
+                eng.DefaultPageSegMode = PageSegMode.SingleBlock;
+                eng.SetVariable("tessedit_char_whitelist", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,:-'/#");
+                eng.SetVariable("load_system_dawg", "F");
+                eng.SetVariable("load_freq_dawg", "F");
+                eng.SetVariable("preserve_interword_spaces", "1");
+            }
+            Log("Tesseract engines initialized.");
         }
         catch (Exception ex) { Log("Tesseract init failed: " + ex.Message); }
 
@@ -187,9 +192,12 @@ class LiveRouteOCR
         _ = Task.Run(() => PeriodicRebroadcastLoop(LiveChan, cts.Token));
         _ = Task.Run(() => PeriodicRebroadcastLoop(BattleChan, cts.Token));
 
-        var tRoute = OcrLoop(engine, roi, mode, TargetPid, CaptureZoom, cts.Token);
-        var tBattle = BattleLoop(engine, battleRoi, mode, TargetPid, CaptureZoom, cts.Token);
+        var tRoute = OcrLoop(routeEngine, roi, mode, TargetPid, CaptureZoom, cts.Token);
+        var tBattle = BattleLoop(battleEngine, battleRoi, mode, TargetPid, CaptureZoom, cts.Token);
         await Task.WhenAll(tRoute, tBattle);
+
+        routeEngine?.Dispose();
+        battleEngine?.Dispose();
     }
 
     static string FindTessdataSource()
@@ -428,7 +436,7 @@ class LiveRouteOCR
                 Log($"Saved capture: {RouteCapPath}");
 
                 // Build pass plan
-                var plan = BuildPassPlan(crop, mode, autoDepth);
+                var plan = BuildPassPlan(mode, autoDepth);
 
                 string location = "";
                 string rawUsed = "";
@@ -441,8 +449,7 @@ class LiveRouteOCR
                 {
                     foreach (var pass in plan)
                     {
-                        using var srcForPass = pass.Masked ? MaskLeftColumn(crop, pass.KeepPct) : (Bitmap)crop.Clone();
-                        using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
+                        using var pre = Preprocess(crop, pass.Threshold, pass.Upsample);
 
                         // keep the *last* tried pre as a preview if nothing else hits
                         prePreview?.Dispose();
@@ -465,7 +472,7 @@ class LiveRouteOCR
                                 pre.Save(fs, ImgFormat.Png);
                             Log($"Saved preprocessed: {RoutePrePath}");
 
-                            Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} mask={(pass.Masked ? "Y" : "N")} keep={pass.KeepPct:F2} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
+                            Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
                             break;
                         }
                     }
@@ -614,11 +621,10 @@ class LiveRouteOCR
                 Bitmap? bestPre = null;
                 if (engine != null)
                 {
-                    using var filtered = MaskBattleHud(crop);
-                    foreach (var pass in BuildPassPlan(filtered, mode, 1))
+                    using var filtered = FilterBattle(crop);
+                    foreach (var pass in BuildPassPlan(mode, 1))
                     {
-                        using var srcForPass = pass.Masked ? MaskLeftColumn(filtered, pass.KeepPct) : (Bitmap)filtered.Clone();
-                        using var pre = Preprocess(srcForPass, pass.Threshold, pass.Upsample);
+                        using var pre = Preprocess(filtered, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
                         prePreview = (Bitmap)pre.Clone();
                         using var pix = PixFromBitmap(pre);
@@ -632,7 +638,7 @@ class LiveRouteOCR
                         );
                         foreach (Match m in nameMatches)
                         {
-                            var n = m.Groups[1].Value.Trim();
+                            var n = TrimTrailingShortWords(m.Groups[1].Value.Trim());
                             if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
                                 nameList.Add(n);
                         }
@@ -641,7 +647,7 @@ class LiveRouteOCR
                         {
                             foreach (var line in cleanedAll.Split('\n'))
                             {
-                                var n = Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim();
+                                var n = TrimTrailingShortWords(Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim());
                                 if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
                                     nameList.Add(n);
                             }
@@ -715,14 +721,12 @@ class LiveRouteOCR
 
     struct OcrPass
     {
-        public bool Masked;
-        public double KeepPct;
         public int Threshold;
         public int Upsample;
         public PageSegMode Psm;
     }
 
-    static List<OcrPass> BuildPassPlan(Bitmap crop, string mode, int autoDepth)
+    static List<OcrPass> BuildPassPlan(string mode, int autoDepth)
     {
         var plan = new List<OcrPass>();
 
@@ -755,26 +759,15 @@ class LiveRouteOCR
             new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine, PageSegMode.SparseText }
         };
 
-        foreach (var masked in new[] { false, true })
-        {
-            foreach (var up in upsets[depth])
-            {
-                foreach (var th in thresholds[depth])
-                {
-                    foreach (var p in psms[depth])
+        foreach (var up in upsets[depth])
+            foreach (var th in thresholds[depth])
+                foreach (var p in psms[depth])
+                    plan.Add(new OcrPass
                     {
-                        plan.Add(new OcrPass
-                        {
-                            Masked = masked,
-                            KeepPct = masked ? 0.90 : 1.0,
-                            Threshold = th,
-                            Upsample = up,
-                            Psm = p
-                        });
-                    }
-                }
-            }
-        }
+                        Threshold = th,
+                        Upsample = up,
+                        Psm = p
+                    });
 
         return plan;
     }
@@ -814,28 +807,12 @@ class LiveRouteOCR
         return bin;
     }
 
-    static Bitmap MaskBattleHud(Bitmap src)
+    static Bitmap FilterBattle(Bitmap src)
     {
         var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
-        int levelStart = (int)(src.Width * 0.7);
-        // Mask out the bottom portion where party icons are shown. These icons cause
-        // Tesseract to occasionally recognise stray characters (like "E") when more
-        // than one Pokémon is on screen.  Keeping only the upper portion with the name
-        // bars improves OCR reliability.
-        // The party icons sit roughly halfway down the capture and can introduce
-        // stray characters ("E", "L" etc.) when more than one Pokémon is present.
-        // Crop a bit higher to ensure these icons are fully masked out.
-        int iconStartY = (int)(src.Height * 0.5);
-        using (var g = Graphics.FromImage(outBmp))
-        {
-            g.DrawImage(src, 0, 0);
-            // Hide level/HP portions on the right
-            g.FillRectangle(Brushes.White, levelStart, 0, src.Width - levelStart, src.Height);
-            // Hide party icon area at the bottom
-            g.FillRectangle(Brushes.White, 0, iconStartY, src.Width, src.Height - iconStartY);
-        }
+        using (var g = Graphics.FromImage(outBmp)) g.DrawImage(src, 0, 0);
         for (int y = 0; y < outBmp.Height; y++)
-            for (int x = 0; x < levelStart; x++)
+            for (int x = 0; x < outBmp.Width; x++)
             {
                 var c = outBmp.GetPixel(x, y);
                 if (c.G > c.R + 40 && c.G > c.B + 40)
@@ -844,20 +821,14 @@ class LiveRouteOCR
         return outBmp;
     }
 
-    static Bitmap MaskLeftColumn(Bitmap src, double keepPct)
+    static string TrimTrailingShortWords(string s)
     {
-        int keepW = Math.Max(1, (int)(src.Width * keepPct));
-        var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
-        using var g = Graphics.FromImage(outBmp);
-        g.Clear(Color.White);
-        g.DrawImage(src,
-            new Rectangle(0, 0, keepW, src.Height),
-            new Rectangle(0, 0, keepW, src.Height),
-            GraphicsUnit.Pixel);
-        return outBmp;
+        var parts = s.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
+        while (parts.Count > 0 && parts[^1].Length <= 1) parts.RemoveAt(parts.Count - 1);
+        return string.Join(" ", parts);
     }
 
-static bool LooksLikeName(string n)
+    static bool LooksLikeName(string n)
     {
         if (string.IsNullOrWhiteSpace(n) || n.Length > 20) return false;
         var parts = n.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -868,7 +839,7 @@ static bool LooksLikeName(string n)
         }
         return true;
     }
-    
+
     static Pix PixFromBitmap(Bitmap bmp)
     {
         using var ms = new MemoryStream();
