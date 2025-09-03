@@ -800,18 +800,28 @@ class LiveRouteOCR
     static Bitmap RemoveBattleHud(Bitmap src)
     {
         int cutoff = src.Height;
+        int streak = 0;
         for (int y = 0; y < src.Height; y++)
         {
             int whiteCount = 0;
+            int bright = 0;
             for (int x = 0; x < src.Width; x++)
             {
                 var c = src.GetPixel(x, y);
-                if (c.R > 240 && c.G > 240 && c.B > 240) whiteCount++;
+                if (c.R >= 230 && c.G >= 230 && c.B >= 230) bright++;
             }
-        if (whiteCount > src.Width * 0.9)
+            if (bright > src.Width * 0.6)
             {
-                cutoff = y;
-                break;
+                streak++;
+                if (streak >= 2)
+                {
+                    cutoff = y - 1;
+                    break;
+                }
+            }
+            else
+            {
+                streak = 0;
             }
         }
         var rect = new Rectangle(0, 0, src.Width, Math.Max(1, cutoff));
