@@ -1939,8 +1939,6 @@ function LiveBattlePanel({ onViewMon }){
       }
     });
 
-    liveBattleClient.connect();
-
     const pulse = setInterval(() => {
       setConnected(liveBattleClient.isOpen());
       const last = liveBattleClient.lastMsgTs || 0;
@@ -1951,27 +1949,13 @@ function LiveBattlePanel({ onViewMon }){
       setRawText('');
       setConfidence(null);
       setMons([]);
-      liveBattleClient.forceReconnect();
     };
     window.addEventListener('force-live-reconnect', onForce);
-
-    const onVis = () => {
-      if (document.visibilityState === 'visible') {
-        liveBattleClient.forceReconnect();
-      }
-    };
-    document.addEventListener('visibilitychange', onVis);
-    const onFocus = () => {
-      liveBattleClient.forceReconnect();
-    };
-    window.addEventListener('focus', onFocus);
 
     return () => {
       off();
       clearInterval(pulse);
       window.removeEventListener('force-live-reconnect', onForce);
-      document.removeEventListener('visibilitychange', onVis);
-      window.removeEventListener('focus', onFocus);
     };
   }, [rawText]);
 
@@ -2296,6 +2280,25 @@ function App(){
     if (!isWindows && mode === 'live') setMode('pokemon');
   }, [isWindows, mode]);
 
+  useEffect(() => {
+    liveBattleClient.connect();
+    const onForce = () => { liveBattleClient.forceReconnect(); };
+    const onVis = () => {
+      if (document.visibilityState === 'visible') {
+        liveBattleClient.forceReconnect();
+      }
+    };
+    const onFocus = () => { liveBattleClient.forceReconnect(); };
+    window.addEventListener('force-live-reconnect', onForce);
+    document.addEventListener('visibilitychange', onVis);
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('force-live-reconnect', onForce);
+      document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
+  
   useEffect(() => {
     let t;
     const show = () => {
