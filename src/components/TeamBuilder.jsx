@@ -101,6 +101,15 @@ export default function TeamBuilder() {
     return res;
   }, [buckets]);
 
+  const teamTypes = React.useMemo(() => {
+    const used = {};
+    mons.forEach(mon => {
+      if (!mon) return;
+      mon.types.forEach(t => { used[t.toLowerCase()] = true; });
+    });
+    return used;
+  }, [mons]);
+
   const recommendedTypes = React.useMemo(() => {
     const needed = ALL_TYPES.filter(t => !teamResisted[t.toLowerCase()]);
     const rec = {};
@@ -113,8 +122,8 @@ export default function TeamBuilder() {
         }
       });
     });
-    return Object.keys(rec).sort();
-  }, [teamResisted]);
+    return Object.keys(rec).filter(t => !teamTypes[t.toLowerCase()]).sort();
+  }, [teamResisted, teamTypes]);
 
   const updateSlot = (idx, value) => {
     setTeam(prev => {
