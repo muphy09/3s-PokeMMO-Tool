@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const THEMES = [
   { key: 'classic', label: 'Classic' },
+  { key: 'neo', label: 'Neo' },
   { key: 'red', label: 'Red' },
   { key: 'blue', label: 'Blue' },
   { key: 'gold', label: 'Gold' },
@@ -10,8 +11,7 @@ const THEMES = [
   { key: 'diamond', label: 'Diamond' },
   { key: 'pearl', label: 'Pearl' },
   { key: 'black', label: 'Black' },
-  { key: 'white', label: 'White' },
-  { key: 'neo', label: 'Neo' }
+  { key: 'white', label: 'White' }
 ];
 
 export default function ThemeButton({ theme, setTheme }) {

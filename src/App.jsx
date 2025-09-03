@@ -2799,16 +2799,14 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               <button style={styles.segBtn(mode==='breeding')} onClick={()=>setMode('breeding')}>Breeding</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
-              {isWindows && (
-                <>
-                  <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
-                  <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
-                </>
-              )}
-            </div>
-            <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
               <button style={styles.segBtn(mode==='market')} onClick={()=>setMode('market')}>Market</button>
             </div>
+            {isWindows && (
+              <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
+                <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
+                <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
+              </div>
+            )}
           </div>
           {isLinux && (
             <div className="label-muted" style={{ marginBottom:8 }}>
