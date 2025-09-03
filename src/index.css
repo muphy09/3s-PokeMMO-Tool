@@ -571,6 +571,7 @@ select.input option {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .region-menu {
   position: absolute;

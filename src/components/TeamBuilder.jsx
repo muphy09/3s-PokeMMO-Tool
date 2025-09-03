@@ -94,14 +94,17 @@ export default function TeamBuilder() {
     }
   });
 
+  const [saveName, setSaveName] = React.useState('');
+
   const handleSave = () => {
-    const name = prompt('Enter team name');
+    const name = saveName.trim();
     if (!name) return;
     setSavedTeams(prev => {
       const next = { ...prev, [name]: team };
       try { localStorage.setItem('teamBuilderSavedTeams', JSON.stringify(next)); } catch {}
       return next;
     });
+    setSaveName('');
   };
 
   const handleLoad = (name) => {
@@ -165,21 +168,29 @@ export default function TeamBuilder() {
 
   return (
     <div>
-       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
         <select
           defaultValue=""
           onChange={e => { handleLoad(e.target.value); e.target.value = ''; }}
           className="input"
-          style={{ height:32, borderRadius:8 }}
+          style={{ height:32, borderRadius:8, flex:1, minWidth:120, width:'auto' }}
         >
           <option value="">Saved Teams</option>
           {Object.keys(savedTeams).map(name => (
             <option key={name} value={name}>{name}</option>
           ))}
         </select>
-        <button onClick={handleSave} className="region-btn">Save</button>
-        <button onClick={handleClear} className="region-btn">Clear</button>
-      </div> 
+        <input
+          type="text"
+          placeholder="Team name"
+          value={saveName}
+          onChange={e => setSaveName(e.target.value)}
+          className="input"
+          style={{ height:32, borderRadius:8, flex:1, minWidth:120, width:'auto' }}
+        />
+        <button onClick={handleSave} className="region-btn" style={{ flexShrink:0 }}>Save Team</button>
+        <button onClick={handleClear} className="region-btn" style={{ flexShrink:0 }}>Clear</button>
+      </div>
       <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
         {team.map((name, idx) => (
           <input
