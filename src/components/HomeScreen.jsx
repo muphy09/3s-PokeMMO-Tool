@@ -6,7 +6,8 @@ const CORE_FEATURES = [
   { key: 'tm', label: 'TM Locations' },
   { key: 'items', label: 'Items' },
   { key: 'breeding', label: 'Breeding' },
-  { key: 'market', label: 'Market' }
+  { key: 'market', label: 'Market' },
+  { key: 'team', label: 'Team Builder' }
 ];
 
 export default function HomeScreen({ setMode, isWindows }) {
@@ -20,7 +21,7 @@ export default function HomeScreen({ setMode, isWindows }) {
     <div className="home-screen">
       <h1 className="home-title">3's PokeMMO Tool</h1>
       <div className="home-grid">
-        {features.map(f => (
+        {CORE_FEATURES.map(f => (
           <button
             key={f.key}
             className="home-tile"
@@ -30,6 +31,19 @@ export default function HomeScreen({ setMode, isWindows }) {
           </button>
         ))}
       </div>
+      {extras.length > 0 && (
+        <div className="home-grid home-grid-extras">
+          {extras.map(f => (
+            <button
+              key={f.key}
+              className="home-tile"
+              onClick={() => setMode(f.key)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

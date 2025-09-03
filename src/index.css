@@ -628,6 +628,11 @@ select.input option {
   gap: 20px;
 }
 
+.home-grid-extras {
+  margin-top: 60px;
+  max-width: 400px;
+}
+
 .home-tile {
   padding: 24px;
   border-radius: var(--radius-lg);

@@ -94,6 +94,7 @@ export default function TeamBuilder() {
     }
   });
 
+  const [selectedSave, setSelectedSave] = React.useState('');
   const [saveName, setSaveName] = React.useState('');
 
   const handleSave = () => {
@@ -117,6 +118,17 @@ export default function TeamBuilder() {
   const handleClear = () => {
     setTeam([...EMPTY_TEAM]);
     try { sessionStorage.removeItem('teamBuilderCurrent'); } catch {}
+  };
+
+  const handleDelete = (name) => {
+    if (!name) return;
+    setSavedTeams(prev => {
+      const next = { ...prev };
+      delete next[name];
+      try { localStorage.setItem('teamBuilderSavedTeams', JSON.stringify(next)); } catch {}
+      return next;
+    });
+    if (selectedSave === name) setSelectedSave('');
   };
 
   const mons = team.map(name => getByName(name));
@@ -169,17 +181,40 @@ export default function TeamBuilder() {
   return (
     <div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
-        <select
-          defaultValue=""
-          onChange={e => { handleLoad(e.target.value); e.target.value = ''; }}
-          className="input"
-          style={{ height:32, borderRadius:8, flex:1, minWidth:120, width:'auto' }}
-        >
-          <option value="">Saved Teams</option>
-          {Object.keys(savedTeams).map(name => (
-            <option key={name} value={name}>{name}</option>
-          ))}
-        </select>
+        <div style={{ position:'relative', flex:1, minWidth:120 }}>
+          <select
+            value={selectedSave}
+            onChange={e => { const name = e.target.value; setSelectedSave(name); handleLoad(name); }}
+            className="input"
+            style={{ height:32, borderRadius:8, width:'100%', paddingRight:24 }}
+          >
+            <option value="">Saved Teams</option>
+            {Object.keys(savedTeams).map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+          {selectedSave && (
+            <button
+              onClick={() => handleDelete(selectedSave)}
+              title="Delete team"
+              style={{
+                position:'absolute',
+                right:4,
+                top:4,
+                width:24,
+                height:24,
+                lineHeight:'20px',
+                textAlign:'center',
+                border:'none',
+                background:'transparent',
+                color:'var(--text)',
+                cursor:'pointer'
+              }}
+            >
+              ×
+            </button>
+          )}
+        </div>
         <input
           type="text"
           placeholder="Team name"
