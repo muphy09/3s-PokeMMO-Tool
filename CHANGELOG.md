@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.6.5]- 2025-08
+## [2.6.5]- 2025-09
 ### Added
 - Themes
   - Choose from new theme options seen in the 'Theme' button - Themes are based on Pokemon games inside of PokeMMO
@@ -21,7 +21,7 @@
 
 ---
 
-## [2.6.3]- 2025-08
+## [2.6.3]- 2025-09
 ### Fixed
 - Live Battle Tab now persists last Pokemon detected until it discovers a new Pokemon to display. This prevents flashing in and out during battle.
 
