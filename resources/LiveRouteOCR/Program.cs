@@ -296,7 +296,7 @@ class LiveRouteOCR
         }
     }
 
-    static void Broadcast(ChannelData ch, string token, string raw, int confPct)
+    static void Broadcast(ChannelData ch, string token, string? raw, int confPct)
     {
         lock (ch.LockObj)
         {
@@ -309,7 +309,7 @@ class LiveRouteOCR
         foreach (var ws in ch.Clients.Keys)
         {
             if (ws.State != WebSocketState.Open) { ch.Clients.TryRemove(ws, out _); continue; }
-            try { SendAllFormats(ws, ch, token, raw, confPct); }
+            try { SendAllFormats(ws, ch, token, raw ?? "", confPct); }
             catch { ch.Clients.TryRemove(ws, out _); }
         }
     }
@@ -978,9 +978,10 @@ class LiveRouteOCR
         var normTitle = RemoveDiacritics(title);
         if (System.Text.RegularExpressions.Regex.IsMatch(normTitle, "^pok.*mmo$",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                return true;
 
         // Fallback: check associated process
-        uint pid; GetWindowThreadProcessId(h, out pid);
+            GetWindowThreadProcessId(h, out uint pid);
         try
         {
             var p = Process.GetProcessById((int)pid);
@@ -1017,7 +1018,7 @@ static string RemoveDiacritics(string text)
                 sb.Append(c);
         return sb.ToString();
     }
-    
+
     static Rectangle ZoomRectangle(Rectangle baseRect, int cw, int ch, double zoom)
     {
         zoom = Math.Clamp(zoom, 1.0, 2.0);
