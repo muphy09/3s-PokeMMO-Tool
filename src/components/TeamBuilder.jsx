@@ -101,6 +101,21 @@ export default function TeamBuilder() {
     return res;
   }, [buckets]);
 
+  const recommendedTypes = React.useMemo(() => {
+    const needed = ALL_TYPES.filter(t => !teamResisted[t.toLowerCase()]);
+    const rec = {};
+    needed.forEach(atk => {
+      Object.entries(TYPE_CHART).forEach(([def, info]) => {
+        const atkLower = atk.toLowerCase();
+        if (info.res.includes(atkLower) || info.imm.includes(atkLower)) {
+          const name = def.charAt(0).toUpperCase() + def.slice(1);
+          rec[name] = true;
+        }
+      });
+    });
+    return Object.keys(rec).sort();
+  }, [teamResisted]);
+
   const updateSlot = (idx, value) => {
     setTeam(prev => {
       const next = [...prev];
@@ -155,6 +170,14 @@ export default function TeamBuilder() {
           {ALL_TYPES.map(t => (
             <TypeChip key={t} t={t} dim={teamResisted[t.toLowerCase()]} />
           ))}
+        </div>
+      </div>
+      <div style={{ marginTop:16 }}>
+        <div style={{ fontWeight:600, marginBottom:4 }}>Recommended Pokemon Types</div>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+          {recommendedTypes.length ? recommendedTypes.map(t => (
+            <TypeChip key={t} t={t} />
+          )) : <span>None</span>}
         </div>
       </div>
     </div>
