@@ -624,36 +624,23 @@ class LiveRouteOCR
                 Bitmap? bestPre = null;
                 if (engine != null)
                 {
-                    using var filtered = FilterBattle(crop);
+                    using var trimmed = RemoveBattleHud(crop);
                     foreach (var pass in plan)
                     {
-                        using var pre = Preprocess(filtered, pass.Threshold, pass.Upsample);
+                        using var pre = Preprocess(trimmed, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
                         prePreview = (Bitmap)pre.Clone();
                         using var pix = PixFromBitmap(pre);
                         using var page = engine.Process(pix, pass.Psm);
                         var raw = (page.GetText() ?? "").Trim();
                         var cleanedAll = Regex.Replace(raw, "[^A-Za-z0-9'\\- \\r\\n]", " ").Trim();
-                        var nameMatches = Regex.Matches(
-                            cleanedAll,
-                            "([A-Za-z][A-Za-z0-9.'\\-]*(?:\\s+(?!Lv\\.?\\b)[A-Za-z][A-Za-z0-9.'\\-]*)*)\\s+Lv\\.?\\s*\\d+",
-                            RegexOptions.IgnoreCase
-                        );
-                        foreach (Match m in nameMatches)
+                        cleanedAll = Regex.Replace(cleanedAll, "\\bLv\\.?\\s*\\d+\\b", "", RegexOptions.IgnoreCase).Trim();
+
+                        foreach (var line in cleanedAll.Split('\n'))
                         {
-                            var n = TrimTrailingShortWords(m.Groups[1].Value.Trim());
+                            var n = TrimTrailingShortWords(line.Trim());
                             if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
                                 nameList.Add(n);
-                        }
-
-                        if (nameList.Count == 0)
-                        {
-                            foreach (var line in cleanedAll.Split('\n'))
-                            {
-                                var n = TrimTrailingShortWords(Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim());
-                                if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
-                                    nameList.Add(n);
-                            }
                         }
 
                         if (nameList.Count > 0)
@@ -810,18 +797,25 @@ class LiveRouteOCR
         return bin;
     }
 
-    static Bitmap FilterBattle(Bitmap src)
+    static Bitmap RemoveBattleHud(Bitmap src)
     {
-        var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
-        using (var g = Graphics.FromImage(outBmp)) g.DrawImage(src, 0, 0);
-        for (int y = 0; y < outBmp.Height; y++)
-            for (int x = 0; x < outBmp.Width; x++)
+        int cutoff = src.Height;
+        for (int y = 0; y < src.Height; y++)
+        {
+            int whiteCount = 0;
+            for (int x = 0; x < src.Width; x++)
             {
-                var c = outBmp.GetPixel(x, y);
-                if (c.G > c.R + 40 && c.G > c.B + 40)
-                    outBmp.SetPixel(x, y, Color.White);
+                var c = src.GetPixel(x, y);
+                if (c.R > 240 && c.G > 240 && c.B > 240) whiteCount++;
             }
-        return outBmp;
+        if (whiteCount > src.Width * 0.9)
+            {
+                cutoff = y;
+                break;
+            }
+        }
+        var rect = new Rectangle(0, 0, src.Width, Math.Max(1, cutoff));
+        return src.Clone(rect, PixelFormat.Format24bppRgb);
     }
 
     static string TrimTrailingShortWords(string s)
