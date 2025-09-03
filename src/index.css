@@ -452,7 +452,8 @@ select.input {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding-right: 32px;
+  /* Reduce vertical padding to keep text fully visible within fixed height */
+  padding: 4px 32px 4px 14px;
   background: var(--input-bg);
   background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='10'%20height='6'%20fill='none'%20stroke='%23aeb8c7'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M1%201l4%204%204-4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
