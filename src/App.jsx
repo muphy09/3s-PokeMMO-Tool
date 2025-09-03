@@ -66,7 +66,7 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid var(--divider)', borderRadius:10, padding:'10px', background:'var(--surface)', textAlign:'center' },
-  encWrap: { display:'flex', justifyContent:'center', gap:8, flexWrap:'wrap', marginTop:8 },
+  encWrap: { display:'grid', gap:8, marginTop:8, width:'100%' },
   encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
 };
 
@@ -431,7 +431,7 @@ function cleanMethodLabel(method=''){
   return m;
 }
 
-function MethodPill({ method }){
+function MethodPill({ method, compact=false }){
   const { methodColors } = React.useContext(ColorContext);
   if (!method) return null;
   const label = cleanMethodLabel(method);
@@ -445,7 +445,7 @@ function MethodPill({ method }){
   const bg = methodColors[base] || '#7f8c8d';
   return (
     <span style={{
-      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
       color:'#111', background:bg, fontWeight:800, border:'1px solid #00000022'
     }}>
       {label}
@@ -455,7 +455,7 @@ function MethodPill({ method }){
 
 /* ---- Rarity palette ---- */
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
-function RarityPill({ rarity }){
+function RarityPill({ rarity, compact=false }){
   const { rarityColors } = React.useContext(ColorContext);
   if (!rarity) return null;
   const k = rarityKey(rarity);
@@ -464,7 +464,7 @@ function RarityPill({ rarity }){
   const color = '#111';
   return (
     <span style={{
-      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
       color, background:bg, fontWeight:800, border:'1px solid #00000022'
     }}>
       {rarity}
@@ -472,7 +472,7 @@ function RarityPill({ rarity }){
   );
 }
 
-function LevelPill({ min, max }){
+function LevelPill({ min, max, compact=false }){
   const hasMin = min != null;
   const hasMax = max != null;
   if (!hasMin && !hasMax) return null;
@@ -481,7 +481,7 @@ function LevelPill({ min, max }){
     : `Lv. ${hasMin ? min : max}`;
   return (
     <span style={{
-      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
       color:'#111', background:'#9e50aaff', fontWeight:800, border:'1px solid #00000022'
     }}>
       {label}
@@ -489,11 +489,11 @@ function LevelPill({ min, max }){
   );
 }
 
-function ItemPill({ item }){
+function ItemPill({ item, compact=false }){
   if (!item) return null;
   return (
     <span style={{
-      display:'inline-block', padding:'2px 8px', fontSize:12, borderRadius:999,
+      display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
       color:'#111', background:'#F8E473', fontWeight:800, border:'1px solid #00000022'
     }}>
       {item}
@@ -519,6 +519,9 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
     opacity: showCaught ? (caught ? 0.4 : 1) : 1,
     cursor: mon && onView ? 'pointer' : 'default'
   };
+  const compact = encounters.length > 1;
+  const colCount = Math.max(encounters.length, 1);
+  const wrapStyle = { ...styles.encWrap, gridTemplateColumns: `repeat(${colCount}, 1fr)` };
   const handleClick = () => {
     if (mon && onView) onView(mon);
   };
@@ -535,13 +538,13 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
       )}
       <div style={{ fontWeight:700 }}>{monName}</div>
       <Sprite mon={mon} size={80} alt={monName} />
-      <div style={styles.encWrap}>
+      <div style={wrapStyle}>
         {encounters.map((enc, idx) => (
           <div key={idx} style={styles.encCol}>
-            {enc.method && <MethodPill method={enc.method} />}
-            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} />)}
-            <LevelPill min={enc.min} max={enc.max} />
-            {enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} />)}
+            {enc.method && <MethodPill method={enc.method} compact={compact} />}
+            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />)}
+            <LevelPill min={enc.min} max={enc.max} compact={compact} />
+            {enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
           </div>
         ))}
       </div>
