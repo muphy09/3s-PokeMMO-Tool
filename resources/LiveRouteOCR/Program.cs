@@ -633,7 +633,7 @@ class LiveRouteOCR
                         foreach (Match m in nameMatches)
                         {
                             var n = m.Groups[1].Value.Trim();
-                            if (!string.IsNullOrWhiteSpace(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
+                            if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
                                 nameList.Add(n);
                         }
 
@@ -642,7 +642,7 @@ class LiveRouteOCR
                             foreach (var line in cleanedAll.Split('\n'))
                             {
                                 var n = Regex.Replace(line, "\\bLv\\.?\\s*\\d+.*$", "", RegexOptions.IgnoreCase).Trim();
-                                if (Regex.IsMatch(n, "[A-Za-z]") && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
+                                if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
                                     nameList.Add(n);
                             }
                         }
@@ -650,6 +650,12 @@ class LiveRouteOCR
                         if (nameList.Count > 0)
                         {
                             conf = page.GetMeanConfidence();
+                            int confPctLocal = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
+                            if (confPctLocal < 40)
+                            {
+                                nameList.Clear();
+                                continue;
+                            }
                             rawUsed = raw;
                             bestPre?.Dispose();
                             bestPre = (Bitmap)pre.Clone();
@@ -851,6 +857,18 @@ class LiveRouteOCR
         return outBmp;
     }
 
+static bool LooksLikeName(string n)
+    {
+        if (string.IsNullOrWhiteSpace(n) || n.Length > 20) return false;
+        var parts = n.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var p in parts)
+        {
+            var alnum = Regex.Replace(p, "[^A-Za-z0-9]", "");
+            if (alnum.Length < 2) return false;
+        }
+        return true;
+    }
+    
     static Pix PixFromBitmap(Bitmap bmp)
     {
         using var ms = new MemoryStream();
