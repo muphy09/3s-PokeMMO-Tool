@@ -1,6 +1,23 @@
 # Changelog
 ---
 
+## [2.7.0]- 2025-09
+### *Big* Fix
+- Complete OCR Rework (Capature tool for Route and Battle Tabs)
+  - Finalized window detection by returning immediately on title matches and retrieving the window’s process ID inline for fallback checks
+  
+  - Improved window discovery by enumerating visible windows for a PokeMMO match, ensuring the correct handle is found even when the game isn’t focused
+  
+  - Streamlined PokeMMO window Check with fast title/class heuristics (GLFW + “javaw.exe”) and a fallback process check for reliability
+ 
+  - Added process-based fallback that treats both pokemmo and javaw executables as valid, ensuring the OCR attaches to Java-hosted clients
+  
+  - Introduced a RemoveDiacritics helper to normalize titles before comparison, avoiding false negatives from accented characters
+
+  - ### MUCH more reliable window detetion <3>
+
+---
+
 ## [2.6.5]- 2025-09
 ### Added
 - Themes
