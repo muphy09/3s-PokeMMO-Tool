@@ -74,7 +74,7 @@ function bucketsFromMultipliers(mult = {}) {
 export default function TeamBuilder() {
   const [team, setTeam] = React.useState(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('teamBuilderTeam') || '[]');
+      const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
       if (Array.isArray(saved)) {
         return EMPTY_TEAM.map((_, i) => saved[i] || '');
       }
@@ -83,8 +83,38 @@ export default function TeamBuilder() {
   });
 
   React.useEffect(() => {
-    try { localStorage.setItem('teamBuilderTeam', JSON.stringify(team)); } catch {}
+    try { sessionStorage.setItem('teamBuilderCurrent', JSON.stringify(team)); } catch {}
   }, [team]);
+
+  const [savedTeams, setSavedTeams] = React.useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('teamBuilderSavedTeams') || '{}');
+    } catch {
+      return {};
+    }
+  });
+
+  const handleSave = () => {
+    const name = prompt('Enter team name');
+    if (!name) return;
+    setSavedTeams(prev => {
+      const next = { ...prev, [name]: team };
+      try { localStorage.setItem('teamBuilderSavedTeams', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  const handleLoad = (name) => {
+    const t = savedTeams[name];
+    if (t) {
+      setTeam(EMPTY_TEAM.map((_, i) => t[i] || ''));
+    }
+  };
+
+  const handleClear = () => {
+    setTeam([...EMPTY_TEAM]);
+    try { sessionStorage.removeItem('teamBuilderCurrent'); } catch {}
+  };
 
   const mons = team.map(name => getByName(name));
 
@@ -135,6 +165,21 @@ export default function TeamBuilder() {
 
   return (
     <div>
+       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+        <select
+          defaultValue=""
+          onChange={e => { handleLoad(e.target.value); e.target.value = ''; }}
+          className="input"
+          style={{ height:32, borderRadius:8 }}
+        >
+          <option value="">Saved Teams</option>
+          {Object.keys(savedTeams).map(name => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+        <button onClick={handleSave} className="region-btn">Save</button>
+        <button onClick={handleClear} className="region-btn">Clear</button>
+      </div> 
       <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
         {team.map((name, idx) => (
           <input
