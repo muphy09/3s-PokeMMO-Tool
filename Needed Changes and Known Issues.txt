@@ -1,16 +1,8 @@
 \\ Known Issues
 
-
+Inconsistent window capture when first booting app (Live tabs)
 
 \\\\\\\\\\\\\\\\\\\\\\\\\\
 
 \\ Changes to come
 
-
-- Include Pokemon natures somehow
-
-
-- Integrate swarm and alpha notifications
-
-
-- Feedback button to upload wanted changes or bugs

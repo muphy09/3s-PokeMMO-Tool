@@ -33,6 +33,7 @@ class LiveRouteOCR
     [DllImport("user32.dll")] private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
     [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern bool IsWindow(IntPtr hWnd);
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
     static IntPtr CachedHwnd = IntPtr.Zero;
@@ -44,9 +45,10 @@ class LiveRouteOCR
     // ---------- Paths ----------
     static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
     static string RouteLogPath => Path.Combine(AppDataDir, "ocr-route.log");
+    static string WindowLogPath => Path.Combine(AppDataDir, "ocr-window.log");
     static string BattleLogPath => Path.Combine(AppDataDir, "ocr-battle.log");
-    static string RouteCapPath  => Path.Combine(AppDataDir, "last-route-capture.png");
-    static string RoutePrePath  => Path.Combine(AppDataDir, "last-route-pre.png");
+    static string RouteCapPath => Path.Combine(AppDataDir, "last-route-capture.png");
+    static string RoutePrePath => Path.Combine(AppDataDir, "last-route-pre.png");
     static string BattleCapPath => Path.Combine(AppDataDir, "last-battle-capture.png");
     static string BattlePrePath => Path.Combine(AppDataDir, "last-battle-pre.png");
     static string StableTessDir => Path.Combine(AppDataDir, "tessdata");
@@ -69,8 +71,8 @@ class LiveRouteOCR
         public ChannelData(string kind, string noToken) { Kind = kind; NoToken = noToken; }
     }
 
-    static readonly ChannelData LiveChan   = new("route", "NO_ROUTE");
-    static readonly ChannelData BattleChan = new("mon",   "NO_MON");
+    static readonly ChannelData LiveChan = new("route", "NO_ROUTE");
+    static readonly ChannelData BattleChan = new("mon", "NO_MON");
 
     // ---------- ROI (% of client area) ----------
     struct Roi
@@ -78,10 +80,10 @@ class LiveRouteOCR
         public double Left, Top, Width, Height;
         public Rectangle ToRectangle(int w, int h)
         {
-            int x  = Math.Max(0, (int)(w * Left));
-            int y  = Math.Max(0, (int)(h * Top));
+            int x = Math.Max(0, (int)(w * Left));
+            int y = Math.Max(0, (int)(h * Top));
             int rw = Math.Max(120, (int)(w * Width));
-            int rh = Math.Max(70,  (int)(h * Height));
+            int rh = Math.Max(70, (int)(h * Height));
             return new Rectangle(x, y, Math.Min(rw, w - x), Math.Min(rh, h - y));
         }
     }
@@ -122,11 +124,12 @@ class LiveRouteOCR
         Directory.CreateDirectory(StableTessDir);
         Log("=== LiveRouteOCR boot ===");
 
-        var roi = new Roi {
-            Left   = GetArg(args, "--left",  0.010),
-            Top    = GetArg(args, "--top",   0.012),
-            Width  = GetArg(args, "--width", 0.335),
-            Height = GetArg(args, "--height",0.140)
+        var roi = new Roi
+        {
+            Left = GetArg(args, "--left", 0.010),
+            Top = GetArg(args, "--top", 0.012),
+            Width = GetArg(args, "--width", 0.335),
+            Height = GetArg(args, "--height", 0.140)
         };
         Log($"ROI base: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
         var battleRoi = new Roi { Left = 0.25, Top = 0.13, Width = 0.25, Height = 0.3 };
@@ -379,6 +382,11 @@ class LiveRouteOCR
         {
             try
             {
+                if (hWnd != IntPtr.Zero && !IsWindow(hWnd))
+                {
+                    LogBattle("PokeMMO window handle invalid; reacquiring.");
+                    hWnd = IntPtr.Zero;
+                }
                 if (hWnd == IntPtr.Zero)
                 {
                     hWnd = FindPokeMMO(TargetPid);
@@ -391,10 +399,15 @@ class LiveRouteOCR
                     if (hWnd == IntPtr.Zero) { await Task.Delay(500, ct); continue; }
                 }
 
-                if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
+                if (!GetClientRect(hWnd, out var rc))
                 {
-                    if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
-                    hWnd = IntPtr.Zero;
+                    LogBattle("GetClientRect failed; will retry.");
+                    await Task.Delay(400, ct);
+                    continue;
+                }
+                if (!IsWindowVisible(hWnd))
+                {
+                    LogBattle("PokeMMO window not visible; waiting.");
                     await Task.Delay(400, ct);
                     continue;
                 }
@@ -540,7 +553,7 @@ class LiveRouteOCR
         }
     }
 
-static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int? TargetPid, double CaptureZoom, CancellationToken ct)
+    static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int? TargetPid, double CaptureZoom, CancellationToken ct)
     {
         int missStreak = 0;
         string lastEmitLocal = "";
@@ -551,6 +564,11 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
         {
             try
             {
+                if (hWnd != IntPtr.Zero && !IsWindow(hWnd))
+                {
+                    LogBattle("PokeMMO window handle invalid; reacquiring.");
+                    hWnd = IntPtr.Zero;
+                }
                 if (hWnd == IntPtr.Zero)
                 {
                     hWnd = FindPokeMMO(TargetPid);
@@ -563,10 +581,15 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                     if (hWnd == IntPtr.Zero) { await Task.Delay(500, ct); continue; }
                 }
 
-                if (!IsWindowVisible(hWnd) || !GetClientRect(hWnd, out var rc))
+                if (!GetClientRect(hWnd, out var rc))
                 {
-                    if (hWnd != IntPtr.Zero) LogBattle("PokeMMO window lost; re-enumerating.");
-                    hWnd = IntPtr.Zero;
+                    LogBattle("GetClientRect failed; will retry.");
+                    await Task.Delay(400, ct);
+                    continue;
+                }
+                if (!IsWindowVisible(hWnd))
+                {
+                    LogBattle("PokeMMO window not visible; waiting.");
                     await Task.Delay(400, ct);
                     continue;
                 }
@@ -701,9 +724,9 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
         int depth = mode switch
         {
             "fast" => 0,
-            "max"  => 2,
+            "max" => 2,
             "auto" => autoDepth,
-            _      => 1
+            _ => 1
         };
 
         int[][] thresholds = new[]
@@ -735,7 +758,8 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
                 {
                     foreach (var p in psms[depth])
                     {
-                        plan.Add(new OcrPass {
+                        plan.Add(new OcrPass
+                        {
                             Masked = masked,
                             KeepPct = masked ? 0.90 : 1.0,
                             Threshold = th,
@@ -755,12 +779,12 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
         var gray = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         using (var g = Graphics.FromImage(gray)) g.DrawImage(src, 0, 0);
         for (int y = 0; y < gray.Height; y++)
-        for (int x = 0; x < gray.Width; x++)
-        {
-            var c = gray.GetPixel(x, y);
-            byte v = (byte)(0.299 * c.R + 0.587 * c.G + 0.114 * c.B);
-            gray.SetPixel(x, y, Color.FromArgb(v, v, v));
-        }
+            for (int x = 0; x < gray.Width; x++)
+            {
+                var c = gray.GetPixel(x, y);
+                byte v = (byte)(0.299 * c.R + 0.587 * c.G + 0.114 * c.B);
+                gray.SetPixel(x, y, Color.FromArgb(v, v, v));
+            }
 
         int upX = Math.Max(1, upsample);
         var up = new Bitmap(gray.Width * upX, gray.Height * upX, PixelFormat.Format24bppRgb);
@@ -774,18 +798,18 @@ static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int?
 
         var bin = new Bitmap(up.Width, up.Height, PixelFormat.Format24bppRgb);
         for (int y = 0; y < up.Height; y++)
-        for (int x = 0; x < up.Width; x++)
-        {
-            var c = up.GetPixel(x, y);
-            int v = (c.R + c.G + c.B) / 3;
-            byte o = (byte)(v > threshold ? 255 : 0);
-            bin.SetPixel(x, y, Color.FromArgb(o, o, o));
-        }
+            for (int x = 0; x < up.Width; x++)
+            {
+                var c = up.GetPixel(x, y);
+                int v = (c.R + c.G + c.B) / 3;
+                byte o = (byte)(v > threshold ? 255 : 0);
+                bin.SetPixel(x, y, Color.FromArgb(o, o, o));
+            }
         up.Dispose();
         return bin;
     }
 
-static Bitmap MaskBattleHud(Bitmap src)
+    static Bitmap MaskBattleHud(Bitmap src)
     {
         var outBmp = new Bitmap(src.Width, src.Height, PixelFormat.Format24bppRgb);
         int levelStart = (int)(src.Width * 0.7);
@@ -806,12 +830,12 @@ static Bitmap MaskBattleHud(Bitmap src)
             g.FillRectangle(Brushes.White, 0, iconStartY, src.Width, src.Height - iconStartY);
         }
         for (int y = 0; y < outBmp.Height; y++)
-        for (int x = 0; x < levelStart; x++)
-        {
-            var c = outBmp.GetPixel(x, y);
-            if (c.G > c.R + 40 && c.G > c.B + 40)
-                outBmp.SetPixel(x, y, Color.White);
-        }
+            for (int x = 0; x < levelStart; x++)
+            {
+                var c = outBmp.GetPixel(x, y);
+                if (c.G > c.R + 40 && c.G > c.B + 40)
+                    outBmp.SetPixel(x, y, Color.White);
+            }
         return outBmp;
     }
 
@@ -860,7 +884,7 @@ static Bitmap MaskBattleHud(Bitmap src)
 
         var lower = val.ToLowerInvariant();
         if (Regex.IsMatch(lower, @"\b(mon|kemon|okemon)\s+league\b")) val = "Pokemon League";
-        if (Regex.IsMatch(lower, @"\b(ictory|ctory)\s+road\b"))       val = "Victory Road";
+        if (Regex.IsMatch(lower, @"\b(ictory|ctory)\s+road\b")) val = "Victory Road";
 
         return val.Trim();
     }
@@ -870,7 +894,7 @@ static Bitmap MaskBattleHud(Bitmap src)
     {
         int? pidHint = targetPid ?? (CachedPid > 0 ? CachedPid : (int?)null);
 
-        if (CachedHwnd != IntPtr.Zero)
+        if (CachedHwnd != IntPtr.Zero && IsWindow(CachedHwnd))
         {
             uint wpid; GetWindowThreadProcessId(CachedHwnd, out wpid);
             if ((pidHint == null || wpid == (uint)pidHint) && IsPokeMMOWindow(CachedHwnd))
@@ -898,6 +922,26 @@ static Bitmap MaskBattleHud(Bitmap src)
             }
             catch { }
         }
+        else
+        {
+            foreach (var p in Process.GetProcessesByName("pokemmo"))
+            {
+                try
+                {
+                    if (p.MainWindowHandle != IntPtr.Zero && IsPokeMMOWindow(p.MainWindowHandle))
+                        return CacheHandle(p.MainWindowHandle, p.Id);
+                    IntPtr found = IntPtr.Zero;
+                    EnumWindows((h, l) =>
+                    {
+                        uint wpid; GetWindowThreadProcessId(h, out wpid);
+                        if (wpid == (uint)p.Id && IsWindowVisible(h) && IsPokeMMOWindow(h)) { found = h; return false; }
+                        return true;
+                    }, IntPtr.Zero);
+                    if (found != IntPtr.Zero) return CacheHandle(found, p.Id);
+                }
+                catch { }
+            }
+        }
 
         var h = FindWindow("pokemmo", null);
         if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
@@ -917,12 +961,14 @@ static Bitmap MaskBattleHud(Bitmap src)
             uint wpid; GetWindowThreadProcessId(foundEnum, out wpid);
             return CacheHandle(foundEnum, (int)wpid);
         }
+        DumpAllWindows();
         return IntPtr.Zero;
     }
     static IntPtr CacheHandle(IntPtr h, int pid)
     {
         CachedHwnd = h;
         CachedPid = pid;
+        LogWindow($"LOCK 0x{h.ToInt64():X} pid={pid} title='{OneLine(GetTitle(h))}' class='{GetClass(h)}'");
         return h;
     }
     static bool IsPokeMMOWindow(IntPtr h)
@@ -946,7 +992,7 @@ static Bitmap MaskBattleHud(Bitmap src)
         }
         catch { }
 
-// Fallback: title & class heuristics for java-based client
+        // Fallback: title & class heuristics for java-based client
         var title = GetTitle(h).Trim();
         var cls = GetClass(h);
         if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase) &&
@@ -956,26 +1002,26 @@ static Bitmap MaskBattleHud(Bitmap src)
 
         return false;
     }
-    static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
-    static string GetClass (IntPtr h){ var sb=new StringBuilder(256); GetClassName (h,sb,sb.Capacity); return sb.ToString(); }
+    static string GetTitle(IntPtr h) { var sb = new StringBuilder(256); GetWindowText(h, sb, sb.Capacity); return sb.ToString(); }
+    static string GetClass(IntPtr h) { var sb = new StringBuilder(256); GetClassName(h, sb, sb.Capacity); return sb.ToString(); }
 
     static Rectangle ZoomRectangle(Rectangle baseRect, int cw, int ch, double zoom)
     {
         zoom = Math.Clamp(zoom, 1.0, 2.0);
         double cx = baseRect.Left + baseRect.Width / 2.0;
-        double cy = baseRect.Top  + baseRect.Height/ 2.0;
+        double cy = baseRect.Top + baseRect.Height / 2.0;
 
-        int newW = (int)Math.Round(baseRect.Width  * zoom);
+        int newW = (int)Math.Round(baseRect.Width * zoom);
         int newH = (int)Math.Round(baseRect.Height * zoom);
 
         newW = Math.Min(newW, cw);
         newH = Math.Min(newH, ch);
 
         int left = (int)Math.Round(cx - newW / 2.0);
-        int top  = (int)Math.Round(cy - newH / 2.0);
+        int top = (int)Math.Round(cy - newH / 2.0);
 
         left = Math.Max(0, Math.Min(left, cw - newW));
-        top  = Math.Max(0, Math.Min(top, ch - newH));
+        top = Math.Max(0, Math.Min(top, ch - newH));
 
         return new Rectangle(left, top, newW, newH);
     }
@@ -1034,6 +1080,7 @@ static Bitmap MaskBattleHud(Bitmap src)
 
     static void Log(string s) => LogTo(RouteLogPath, s);
     static void LogBattle(string s) => LogTo(BattleLogPath, s);
+    static void LogWindow(string s) => LogTo(WindowLogPath, s);
 
     static void LogTo(string path, string s)
     {
@@ -1051,5 +1098,18 @@ static Bitmap MaskBattleHud(Bitmap src)
         if (string.IsNullOrEmpty(s)) return "";
         s = s.Replace("\r", " ").Replace("\n", " ");
         return s.Length > 120 ? s.Substring(0, 120) + "…" : s;
+    }
+    
+    static void DumpAllWindows()
+    {
+        LogWindow("=== Window enumeration ===");
+        EnumWindows((h, l) =>
+        {
+            uint pid; GetWindowThreadProcessId(h, out pid);
+            var title = GetTitle(h);
+            var cls = GetClass(h);
+            LogWindow($"0x{h.ToInt64():X} pid={pid} vis={(IsWindowVisible(h) ? "Y" : "N")} title='{OneLine(title)}' class='{cls}'");
+            return true;
+        }, IntPtr.Zero);
     }
 }
