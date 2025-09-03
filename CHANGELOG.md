@@ -2,7 +2,7 @@
 ---
 
 ## [2.7.2]- 2025-09
-- ### Added
+### Added
 - Team Builder Tab
   - Quickly assemble your roster and find out where weakness gaps reside on your team
   - Name & Save multiple teams for quick access
