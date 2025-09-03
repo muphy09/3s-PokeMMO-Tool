@@ -1499,14 +1499,23 @@ function coerceBattleIncoming(msg){
 /* ======================= LIVE ROUTE PANEL ======================= */
 
 function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
-  const [rawText, setRawText] = useState('');
-  const [confidence, setConfidence] = useState(null);
-  const [displayMap, setDisplayMap] = useState(null);
-  const [region, setRegion] = useState(null);
+  // Restore last confirmed route so it persists between tab switches
+  const LAST_KEY = 'liveRouteLast';
+  const lastRoute = (() => {
+    try { return JSON.parse(localStorage.getItem(LAST_KEY) || '{}'); }
+    catch { return {}; }
+  })();
+
+  const [rawText, setRawText] = useState(lastRoute.rawText || '');
+  const [confidence, setConfidence] = useState(lastRoute.confidence ?? null);
+  const [displayMap, setDisplayMap] = useState(lastRoute.displayMap || null);
+  const [region, setRegion] = useState(lastRoute.region || null);
   const [entries, setEntries] = useState([]);
   const [connected, setConnected] = useState(false);
   const [isStale, setIsStale] = useState(false);
-  const [regionChoices, setRegionChoices] = useState([]);
+  const [regionChoices, setRegionChoices] = useState(() =>
+    displayMap ? listRegionCandidates(areasIndex, displayMap) : []
+  );
   const [methodFilters, setMethodFilters] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('liveMethodFilters') || '[]');
@@ -1556,6 +1565,15 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     }
   }, [methodFilters, areasIndex, displayMap, region, locIndex]);
 
+  // Update available region choices whenever map changes
+  useEffect(() => {
+    if (displayMap) {
+      setRegionChoices(listRegionCandidates(areasIndex, displayMap));
+    } else {
+      setRegionChoices([]);
+    }
+  }, [areasIndex, displayMap]);
+
   // Handle messages
   useEffect(() => {
     const off = liveRouteClient.on((msg) => {
@@ -1571,9 +1589,8 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       cleaned = normalizeHudText(trimmed);
 
       const targetName = best.displayMap;
-      setConfidence(coerced.confidence ?? null);
-      if (targetName === displayMapRef.current) return;
-
+      const choices = listRegionCandidates(areasIndex, targetName);
+      setRegionChoices(choices);
       setConfidence(coerced.confidence ?? null);
       if (targetName === displayMapRef.current) return;
 
@@ -1587,7 +1604,15 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       setRegion(chosen);
       setDisplayMap(targetName);
       setEntries(buildGroupedEntries(areasIndex, targetName, chosen, locIndex, methodFiltersRef.current));
-      });
+      try {
+        localStorage.setItem(LAST_KEY, JSON.stringify({
+          rawText: targetName,
+          confidence: coerced.confidence ?? null,
+          displayMap: targetName,
+          region: chosen,
+        }));
+      } catch {}
+    });
 
     liveRouteClient.connect();
 
@@ -1606,6 +1631,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       setRegion(null);
       setEntries([]);
       setRegionChoices([]);
+      try { localStorage.removeItem(LAST_KEY); } catch {}
       liveRouteClient.forceReconnect();
     };
     window.addEventListener('force-live-reconnect', onForce);
@@ -1653,6 +1679,10 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       const prefKey = `regionPref:${displayMap}`;
       localStorage.setItem(prefKey, r || '');
       setEntries(buildGroupedEntries(areasIndex, displayMap, r, locIndex, methodFilters));
+      try {
+        const prev = JSON.parse(localStorage.getItem(LAST_KEY) || '{}');
+        localStorage.setItem(LAST_KEY, JSON.stringify({ ...prev, region: r }));
+      } catch {}
     }
   };
 

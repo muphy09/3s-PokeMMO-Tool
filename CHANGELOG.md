@@ -2,20 +2,31 @@
 ---
 
 ## [2.7.0]- 2025-09
+- ### Added
+- Team Builder Tab
+  - Quickly assemble your roster and find out where weakness gaps reside on your team
+  - Name & Save multiple teams for quick access
+  - Recommended Pokemon types based on gaps in coverage
+
+- "Home" Screen Added
+  - Clicking "3's PokeMMO Tool" at the top now brings the user to a clean Home screen UI
+
+- "Neo" Theme Added
+  - Futuristic styled theme
+
 ### *Big* Fix
 - Complete OCR Rework (Capature tool for Route and Battle Tabs)
   - Finalized window detection by returning immediately on title matches and retrieving the window’s process ID inline for fallback checks
-  
   - Improved window discovery by enumerating visible windows for a PokeMMO match, ensuring the correct handle is found even when the game isn’t focused
-  
-  - Streamlined PokeMMO window Check with fast title/class heuristics (GLFW + “javaw.exe”) and a fallback process check for reliability
- 
+  - Streamlined PokeMMO window check with fast title/class heuristics (GLFW + “javaw.exe”) and a fallback process check for reliability
   - Added process-based fallback that treats both pokemmo and javaw executables as valid, ensuring the OCR attaches to Java-hosted clients
-  
   - Introduced a RemoveDiacritics helper to normalize titles before comparison, avoiding false negatives from accented characters
+  - OCR now caches last recieved data and persists this data even between tab switches, ensuring no refresh is needed when tabbing back
+  - ### MUCH more reliable & faster window detetion <3
 
-  - ### MUCH more reliable window detetion <3>
-
+- Reworked Navigation Bar Layout
+  - Grouped the 'Live' tabs to be offset together
+  - Included the new Team Builder tab
 ---
 
 ## [2.6.5]- 2025-09
