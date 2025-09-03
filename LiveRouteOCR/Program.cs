@@ -943,19 +943,6 @@ class LiveRouteOCR
             }
         }
 
-        var h = FindWindow("pokemmo", null);
-        if (h == IntPtr.Zero)
-        {
-            h = FindWindow(null, "Pok?M?O");
-            if (h == IntPtr.Zero) h = FindWindow(null, "PokMMO");
-            if (h == IntPtr.Zero) h = FindWindow(null, "PokeMMO");
-            if (h == IntPtr.Zero) h = FindWindow(null, "PokéMMO");
-        }
-        if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
-
-        h = GetForegroundWindow();
-        if (IsPokeMMOWindow(h)) { uint wpid; GetWindowThreadProcessId(h, out wpid); return CacheHandle(h, (int)wpid); }
-
         IntPtr foundEnum = IntPtr.Zero;
         EnumWindows((win, l) =>
         {
@@ -982,11 +969,21 @@ class LiveRouteOCR
     {
         if (h == IntPtr.Zero) return false;
 
+// Prefer lightweight title/class heuristics for speed
+        var title = GetTitle(h).Trim();
+        var cls = GetClass(h);
+        var normTitle = title.Replace('é', 'e');
+        if ((normTitle.Equals("pokemmo", StringComparison.OrdinalIgnoreCase) ||
+             normTitle.Equals("pok?m?o", StringComparison.OrdinalIgnoreCase)) &&
+            cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // Fallback: check associated process
         uint pid; GetWindowThreadProcessId(h, out pid);
         try
         {
             var p = Process.GetProcessById((int)pid);
-            string procName = p.ProcessName;
+            var procName = p.ProcessName;
             if (string.Equals(procName, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
             try
             {
@@ -998,16 +995,6 @@ class LiveRouteOCR
             catch { }
         }
         catch { }
-
-        // Fallback: title & class heuristics for java-based client
-        var title = GetTitle(h).Trim();
-        var cls = GetClass(h);
-        var normTitle = title.Replace('é', 'e');
-        if ((string.Equals(normTitle, "pokemmo", StringComparison.OrdinalIgnoreCase) ||
-             string.Equals(normTitle, "pok?m?o", StringComparison.OrdinalIgnoreCase)) &&
-            (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) ||
-             string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)))
-            return true;
 
         return false;
     }
