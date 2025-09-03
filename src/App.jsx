@@ -1843,9 +1843,11 @@ function LiveBattlePanel({ onViewMon }){
         .replace(/\s{2,}/g, ' ')
         .trim();
       const compacted = cleaned.replace(/\s+/g, '');
-      // If OCR returns nothing, keep previous state so the last detected
-      // Pokémon remains visible until a new one is found or the tab changes
+      // If OCR returns nothing, reset the OCR state so the next detection
+      // starts fresh, but keep showing the last detected Pokémon to avoid UI flicker
       if (!compacted) {
+        setRawText('');
+        setConfidence(null);
         return;
       }
       let fragments = [];
@@ -1917,10 +1919,12 @@ function LiveBattlePanel({ onViewMon }){
       }
       // Combine any discovered names with ones parsed via fragment scanning
       names = [...new Set([...names, ...found])];
-      // If no Pokémon names are detected, preserve previous state to avoid
-      // briefly clearing the current Pokémon when the HUD text changes
+      // If no Pokémon names are detected, reset OCR state but keep the last
+      // displayed Pokémon until a different one is identified
       if (names.length === 0) {
         if (DEBUG_LIVE) console.log('[LIVE] No Pokémon names detected:', cleaned);
+        setRawText('');
+        setConfidence(null);
         return;
       }
       if (cleaned !== rawText) setRawText(cleaned);
@@ -2012,7 +2016,7 @@ function LiveBattlePanel({ onViewMon }){
         </div>
       </div>
 
-      {!rawText && (
+      {!rawText && mons.length === 0 && (
         <div className="label-muted">
           <b>LiveBattleOCR</b> is attempting to find Battle Data... be patient. Ensure you are in a battle
         </div>
@@ -2298,7 +2302,7 @@ function App(){
       window.removeEventListener('focus', onFocus);
     };
   }, []);
-  
+
   useEffect(() => {
     let t;
     const show = () => {
