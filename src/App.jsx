@@ -1297,6 +1297,9 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, met
 /* ======================= LIVE ROUTE: WS client + Panel ======================= */
 
 const STALE_AFTER_MS = 6000;
+// Live battle requires more aggressive reconnects to stay in sync with the
+// in-game action. Reconnect if no updates arrive within this window.
+const BATTLE_STALE_AFTER_MS = 2000;
 
 function normalizeHudText(s=''){
   let t = String(s).replace(/\r/g,'').trim();
@@ -1946,7 +1949,12 @@ function LiveBattlePanel({ onViewMon }){
     const pulse = setInterval(() => {
       setConnected(liveBattleClient.isOpen());
       const last = liveBattleClient.lastMsgTs || 0;
-      setIsStale(!!rawText && Date.now() - last > STALE_AFTER_MS);
+      const stale = Date.now() - last > BATTLE_STALE_AFTER_MS;
+      setIsStale(!!rawText && stale);
+      if (stale && liveBattleClient.isOpen()) {
+        // Force a reconnect to prompt fresh OCR data when the feed goes stale.
+        liveBattleClient.forceReconnect();
+      }
     }, 1000);
 
     const onForce = () => {
