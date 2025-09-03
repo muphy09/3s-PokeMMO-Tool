@@ -186,7 +186,7 @@ export default function TeamBuilder() {
             value={selectedSave}
             onChange={e => { const name = e.target.value; setSelectedSave(name); handleLoad(name); }}
             className="input"
-            style={{ height:32, borderRadius:8, width:'100%', paddingRight:24 }}
+            style={{ height:32, borderRadius:8, width:'100%', paddingRight:64 }}
           >
             <option value="">Saved Teams</option>
             {Object.keys(savedTeams).map(name => (
@@ -199,7 +199,7 @@ export default function TeamBuilder() {
               title="Delete team"
               style={{
                 position:'absolute',
-                right:4,
+                right:32,
                 top:4,
                 width:24,
                 height:24,

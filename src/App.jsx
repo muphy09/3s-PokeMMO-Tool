@@ -1704,7 +1704,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data.. be patient. Click Into your PokeMMO window. Try clicking the Live tab without PokeMMO minimized. Move around a bit if it still can't find the route.
+          <b>LiveRouteOCR</b> is attempting to find Route Data... be patient. Ensure you are in a place with Pokemon available. Move around a bit if it still can't find the route.
         </div>
       )}
 
@@ -2012,7 +2012,7 @@ function LiveBattlePanel({ onViewMon }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Battle Data.. be patient. Click into your PokeMMO window.
+          <b>LiveBattleOCR</b> is attempting to find Battle Data... be patient. Ensure you are in a battle
         </div>
       )}
 
