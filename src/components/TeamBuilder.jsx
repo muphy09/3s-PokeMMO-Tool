@@ -1,5 +1,4 @@
 import React from 'react';
-import WeaknessChart from './WeaknessChart.jsx';
 import { getAll, getByName } from '../lib/pokedexIndex.js';
 
 const MON_LIST = getAll();
@@ -24,6 +23,26 @@ const TYPE_CHART = {
   dark:{ weak:['fighting','bug'], res:['ghost','dark'], imm:['psychic'] },
   steel:{ weak:['fire','fighting','ground'], res:['normal','grass','ice','flying','psychic','bug','rock','dragon','steel'], imm:['poison'] }
 };
+
+const ALL_TYPES = Object.keys(TYPE_CHART).map(t => t.charAt(0).toUpperCase() + t.slice(1));
+
+const TYPE_COLORS = {
+  Normal:'#A8A77A', Fire:'#EE8130', Water:'#6390F0', Electric:'#F7D02C', Grass:'#7AC74C',
+  Ice:'#96D9D6', Fighting:'#C22E28', Poison:'#A33EA1', Ground:'#E2BF65', Flying:'#A98FF3',
+  Psychic:'#F95587', Bug:'#A6B91A', Rock:'#B6A136', Ghost:'#735797', Dragon:'#6F35FC',
+  Dark:'#705746', Steel:'#B7B7CE'
+};
+
+function TypeChip({ t, dim=false }){
+  const name = t.charAt(0).toUpperCase() + t.slice(1);
+  const bg = TYPE_COLORS[name] || '#777';
+  return (
+    <span style={{
+      display:'inline-block', padding:'4px 10px', borderRadius:999, fontWeight:700,
+      fontSize:13, lineHeight:1, background:bg, color:'#fff', opacity:dim?0.3:1
+    }}>{name}</span>
+  );
+}
 
 function computeMultipliers(types = []) {
   const tlist = (Array.isArray(types) ? types : []).map(t => t.toLowerCase());
@@ -69,17 +88,18 @@ export default function TeamBuilder() {
 
   const mons = team.map(name => getByName(name));
 
-  const mergedBuckets = React.useMemo(() => {
-    const mult = {};
-    mons.forEach(mon => {
-      if (!mon) return;
-      const m = computeMultipliers(mon.types);
-      for (const [t, val] of Object.entries(m)) {
-        mult[t] = Math.max(mult[t] || 1, val);
-      }
+  const buckets = React.useMemo(() => (
+    mons.map(mon => mon ? bucketsFromMultipliers(computeMultipliers(mon.types)) : null)
+  ), [mons]);
+
+  const teamResisted = React.useMemo(() => {
+    const res = {};
+    buckets.forEach(b => {
+      if (!b) return;
+      [...(b.x05||[]), ...(b.x0||[])].forEach(t => { res[t.toLowerCase()] = true; });
     });
-    return bucketsFromMultipliers(mult);
-  }, [mons]);
+    return res;
+  }, [buckets]);
 
   const updateSlot = (idx, value) => {
     setTeam(prev => {
@@ -109,8 +129,33 @@ export default function TeamBuilder() {
           <option key={m.name} value={m.name} />
         ))}
       </datalist>
+
+      <div style={{ marginTop:16, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+        <div style={{ fontWeight:600 }}>Pokemon</div>
+        <div style={{ fontWeight:600 }}>Weakness</div>
+        <div style={{ fontWeight:600 }}>Resistance</div>
+        {team.map((name, idx) => {
+          const mon = mons[idx];
+          const b = buckets[idx] || {};
+          const weak = [...(b.x4||[]), ...(b.x2||[])];
+          const res = [...(b.x05||[]), ...(b.x0||[])];
+          return (
+            <React.Fragment key={idx}>
+              <div>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
+            </React.Fragment>
+          );
+        })}
+      </div>
+
       <div style={{ marginTop:16 }}>
-        <WeaknessChart buckets={mergedBuckets} />
+        <div style={{ fontWeight:600, marginBottom:4 }}>Team Un-Resisted</div>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+          {ALL_TYPES.map(t => (
+            <TypeChip key={t} t={t} dim={teamResisted[t.toLowerCase()]} />
+          ))}
+        </div>
       </div>
     </div>
   );
