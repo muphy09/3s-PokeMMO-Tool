@@ -937,19 +937,23 @@ static Bitmap MaskBattleHud(Bitmap src)
             if (string.Equals(procName, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
             try
             {
-                var mod = p.MainModule?.ModuleName;
-                if (!string.IsNullOrEmpty(mod) && string.Equals(mod, "pokemmo.exe", StringComparison.OrdinalIgnoreCase)) return true;
+                var modPath = p.MainModule?.FileName;
+                if (!string.IsNullOrEmpty(modPath) &&
+                    string.Equals(Path.GetFileName(modPath), "pokemmo.exe", StringComparison.OrdinalIgnoreCase))
+                    return true;
             }
             catch { }
         }
         catch { }
 
-        var title = GetTitle(h);
-        if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
+// Fallback: title & class heuristics for java-based client
+        var title = GetTitle(h).Trim();
+        var cls = GetClass(h);
+        if (string.Equals(title, "pokemmo", StringComparison.OrdinalIgnoreCase) &&
+            (cls.StartsWith("GLFW", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)))
+            return true;
 
-var cls = GetClass(h);
-        if (string.Equals(cls, "pokemmo", StringComparison.OrdinalIgnoreCase)) return true;
-        
         return false;
     }
     static string GetTitle(IntPtr h){ var sb=new StringBuilder(256); GetWindowText(h,sb,sb.Capacity); return sb.ToString(); }
