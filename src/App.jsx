@@ -1878,30 +1878,29 @@ function LiveBattlePanel({ onViewMon }){
         const lowerFrag = frag.toLowerCase();
         const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
         if (compactFrag.length < 3) continue;
-        let found = null;
+        let fragNames = [];
         for (const [key, mon] of DEX_BY_NAME.entries()) {
           const compactKey = key.replace(/[^a-z0-9]+/g, '');
           if (lowerFrag.includes(key) || (compactKey.length >= 3 && compactFrag.includes(compactKey))) {
-            found = mon.name;
-            break;
+            fragNames.push(mon.name);
           }
         }
-        if (!found) {
-          const first = lowerFrag.split(/\s+/)[0];
-          if (first.length >= 3) {
+        if (fragNames.length === 0) {
+          const parts = lowerFrag.split(/\s+/).filter(p => p.length >= 3);
+          for (const part of parts) {
             let best = null;
             let bestScore = 0;
             for (const [key, mon] of DEX_BY_NAME.entries()) {
-              const score = similarity(first, key);
+              const score = similarity(part, key);
               if (score > 0.6 && score > bestScore) {
                 best = mon.name;
                 bestScore = score;
               }
             }
-            if (best) found = best;
+            if (best) fragNames.push(best);
           }
         }
-        if (found) names.push(found);
+        names.push(...fragNames);
       }
       // Attempt to detect known Pokémon names within the full text. OCR artifacts
       // can cause names to merge together or drop whitespace entirely. First, try

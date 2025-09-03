@@ -1,6 +1,16 @@
 # Changelog
 ---
 
+## [2.7.3]- 2025-09
+### Fixed
+- Live Route Tab now organizes data into cells on the UI - This looks more visually appealing, especially for Pokemon with a lot of data
+
+- Live Battle Tab now correctly identifies double battle Pokemon again
+  - *This feature was broken during the OCR Rework*
+
+
+---
+
 ## [2.7.2]- 2025-09
 ### Added
 - Team Builder Tab
