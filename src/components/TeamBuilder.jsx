@@ -38,8 +38,18 @@ function TypeChip({ t, dim=false }){
   const bg = TYPE_COLORS[name] || '#777';
   return (
     <span style={{
-      display:'inline-block', padding:'4px 10px', borderRadius:999, fontWeight:700,
-      fontSize:13, lineHeight:1, background:bg, color:'#fff', opacity:dim?0.3:1
+      display:'inline-flex',
+      justifyContent:'center',
+      alignItems:'center',
+      width:60,
+      padding:'4px 10px',
+      borderRadius:999,
+      fontWeight:700,
+      fontSize:13,
+      lineHeight:1,
+      background:bg,
+      color:'#fff',
+      opacity:dim?0.3:1
     }}>{name}</span>
   );
 }

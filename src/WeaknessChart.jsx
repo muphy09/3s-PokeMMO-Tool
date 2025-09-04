@@ -29,7 +29,10 @@ function TypeChip({ t }) {
   return (
     <span
       style={{
-        display: "inline-block",
+        display: "inline-flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 70,
         padding: "0.35rem 0.75rem",
         borderRadius: 999,
         fontWeight: 700,
