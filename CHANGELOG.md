@@ -5,7 +5,7 @@
 ### Fixed
 - Live Route Tab now organizes data into cells on the UI - This looks more visually appealing, especially for Pokemon with a lot of data
 
-- Live Battle Tab now correctly identifies double battle Pokemon again
+- Live Battle Tab now correctly identifies Double Battle, Swarm, & Horde Pokemon again
   - *This feature was broken during the OCR Rework*
 
 
