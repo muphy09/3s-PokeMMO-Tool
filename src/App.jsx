@@ -455,6 +455,20 @@ function MethodPill({ method, compact=false }){
 
 /* ---- Rarity palette ---- */
 function rarityKey(r=''){ return String(r).toLowerCase().trim(); }
+const RARITY_ORDER = ['very common','common','uncommon','rare','very rare'];
+
+function selectRarest(rarities = []) {
+  const unique = [...new Set(rarities)];
+  const known = unique.filter(r => RARITY_ORDER.includes(rarityKey(r)));
+  if (known.length > 1) {
+    const rarest = known.reduce((a, b) =>
+      RARITY_ORDER.indexOf(rarityKey(b)) > RARITY_ORDER.indexOf(rarityKey(a)) ? b : a
+    );
+    const others = unique.filter(r => !known.includes(r));
+    return [rarest, ...others];
+    }
+  return unique;
+}
 function RarityPill({ rarity, compact=false }){
   const { rarityColors } = React.useContext(ColorContext);
   if (!rarity) return null;
@@ -1043,7 +1057,7 @@ function groupEntriesByMon(entries){
     monName: g.monName,
     encounters: [...g.encounters.values()].map(enc => ({
       method: enc.method,
-      rarities: [...enc.rarities].sort(),
+      rarities: selectRarest([...enc.rarities]),
       min: enc.min,
       max: enc.max,
       items: [...enc.items]
@@ -2753,12 +2767,19 @@ const marketResults = React.useMemo(() => {
       byKey.set(key, prev);
     }
 
-    const mergedLocs = [...byKey.values()].map(l => ({
-      ...l,
-      method: [...new Set(l.method)],
-      rarity: [...new Set(l.rarity)],
-      items: [...new Set(l.items)],
-    }));
+    const mergedLocs = [...byKey.values()].map(l => {
+      const methods = [...new Set(l.method)];
+      let rarities = [...new Set(l.rarity)];
+      if (methods.length === 1) {
+        rarities = selectRarest(rarities);
+      }
+      return {
+        ...l,
+        method: methods,
+        rarity: rarities,
+        items: [...new Set(l.items)],
+      };
+    });
 
     const types = [...new Set((selected.types || []).map(normalizeType))];
     const moves = groupMoves(selected.moves || []);
