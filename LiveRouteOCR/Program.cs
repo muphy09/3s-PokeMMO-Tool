@@ -567,7 +567,11 @@ class LiveRouteOCR
         IntPtr lastLoggedHandle = IntPtr.Zero;
 
         // Battle OCR runs every frame; limit to a small pass plan for speed
-        var plan = BuildPassPlan(mode, 1).Take(6).ToList();
+        // and push thresholds higher to avoid picking up bright background noise.
+        var plan = BuildPassPlan(mode, 1)
+            .Take(4)
+            .Select(p => { p.Threshold = Math.Min(p.Threshold + 30, 250); return p; })
+            .ToList();
 
         while (!ct.IsCancellationRequested)
         {
@@ -625,10 +629,10 @@ class LiveRouteOCR
                 if (engine != null)
                 {
                     using var trimmed = RemoveBattleHud(crop);
-                    var nameSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var pass in plan)
                     {
-                        using var pre = Preprocess(trimmed, pass.Threshold, pass.Upsample);
+                        using var pre = PreprocessBattle(trimmed, pass.Threshold, pass.Upsample);
                         prePreview?.Dispose();
                         prePreview = (Bitmap)pre.Clone();
                         using var pix = PixFromBitmap(pre);
@@ -640,25 +644,26 @@ class LiveRouteOCR
                         foreach (var line in cleanedAll.Split('\n'))
                         {
                             var n = TrimTrailingShortWords(line.Trim());
-                            if (LooksLikeName(n)) nameSet.Add(n);
+                            if (LooksLikeName(n) && seen.Add(n)) nameList.Add(n);
                         }
 
-                        if (nameSet.Count < 2 && cleanedAll.Length > 0)
+                        if (nameList.Count < 2 && cleanedAll.Length > 0)
                         {
                             foreach (Match m in Regex.Matches(cleanedAll, @"\b[A-Z][A-Za-z'\-]{1,}(?:\s+[A-Z][A-Za-z'\-]{1,})*\b"))
                             {
                                 var token = TrimTrailingShortWords(m.Value.Trim());
-                                if (LooksLikeName(token)) nameSet.Add(token);
-                                if (nameSet.Count >= 2) break;
+                                if (LooksLikeName(token) && seen.Add(token)) nameList.Add(token);
+                                if (nameList.Count >= 2) break;
                             }
                         }
-                        if (nameSet.Count > 0)
+                        if (nameList.Count > 0)
                         {
                             float passConf = page.GetMeanConfidence();
                             int confPctLocal = Math.Clamp((int)Math.Round(passConf * 100), 0, 100);
                             if (confPctLocal < 40)
                             {
-                                nameSet.Clear();
+                                nameList.Clear();
+                                seen.Clear();
                                 continue;
                             }
                             if (passConf > conf)
@@ -668,10 +673,9 @@ class LiveRouteOCR
                                 bestPre?.Dispose();
                                 bestPre = (Bitmap)pre.Clone();
                             }
-                            if (nameSet.Count >= 2) break;
+                            if (nameList.Count >= 2) break;
                         }
                     }
-                    nameList = nameSet.ToList();
                 }
                 if (nameList.Count == 0 && prePreview != null)
                 {
@@ -805,6 +809,30 @@ class LiveRouteOCR
                 var c = up.GetPixel(x, y);
                 int v = (c.R + c.G + c.B) / 3;
                 byte o = (byte)(v > threshold ? 255 : 0);
+                bin.SetPixel(x, y, Color.FromArgb(o, o, o));
+            }
+        up.Dispose();
+        return bin;
+    }
+
+static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
+    {
+        int upX = Math.Max(1, upsample);
+        var up = new Bitmap(src.Width * upX, src.Height * upX, PixelFormat.Format24bppRgb);
+        using (var g = Graphics.FromImage(up))
+        {
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            g.DrawImage(src, new Rectangle(0, 0, up.Width, up.Height),
+                        new Rectangle(0, 0, src.Width, src.Height), GraphicsUnit.Pixel);
+        }
+
+        var bin = new Bitmap(up.Width, up.Height, PixelFormat.Format24bppRgb);
+        for (int y = 0; y < up.Height; y++)
+            for (int x = 0; x < up.Width; x++)
+            {
+                var c = up.GetPixel(x, y);
+                bool white = c.R >= threshold && c.G >= threshold && c.B >= threshold;
+                byte o = (byte)(white ? 255 : 0);
                 bin.SetPixel(x, y, Color.FromArgb(o, o, o));
             }
         up.Dispose();
