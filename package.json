@@ -18,7 +18,12 @@
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir",
     "pack:linux": "npm run clean && npm run build && electron-builder --linux AppImage",
-    "pack:mac": "npm run clean && npm run build && electron-builder --mac dmg zip"
+    "pack:mac": "npm run clean && npm run build && electron-builder --mac dmg zip",
+    "release:patch": "npm version patch && npm run publish",
+    "release:minor": "npm version minor && npm run publish",
+    "release:major": "npm version major && npm run publish",
+    "publish": "npm run clean && npm run build:helper && npm run build && electron-builder --publish always"
+
   },
   "build": {
     "appId": "com.pokemmo.tool",

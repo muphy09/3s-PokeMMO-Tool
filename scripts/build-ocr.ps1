@@ -13,3 +13,4 @@ Copy-Item -Recurse -Force ./LiveRouteOCR/* ./resources/LiveRouteOCR/ -Exclude *.
 New-Item -ItemType Directory -Force -Path ./resources/tessdata | Out-Null
 if (Test-Path ./LiveRouteOCR/tessdata/eng.traineddata) {
     Copy-Item ./LiveRouteOCR/tessdata/eng.traineddata ./resources/tessdata/eng.traineddata -Force
+}

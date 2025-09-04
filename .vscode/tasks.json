@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Dev: Start app",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev:app"],
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Build: dist (no publish)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dist"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build: pack (installer + zip)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "pack"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Release: patch -> build + publish",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "release:patch"],
+      "problemMatcher": []
+    }
+  ]
+}
