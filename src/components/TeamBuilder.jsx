@@ -37,11 +37,13 @@ const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BA
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 
 function TypeChip({ t, dim=false }){
-  const name = t.charAt(0).toUpperCase() + t.slice(1);
+  const lc = String(t).toLowerCase();
+  const name = lc.charAt(0).toUpperCase() + lc.slice(1);
   const bg = TYPE_COLORS[name] || '#777';
   return (
     <span style={{
       display:'inline-flex',
+      flex:'0 0 auto',
       justifyContent:'center',
       alignItems:'center',
       padding:'4px 10px',
@@ -192,6 +194,8 @@ export default function TeamBuilder() {
     });
   };
 
+  const teamLabel = selectedSave.trim() || 'Team';
+
   return (
     <div>
       <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
@@ -255,7 +259,7 @@ export default function TeamBuilder() {
           ))}
         </div>
         <div style={{ width:140, flexShrink:0 }}>
-          <div style={{ fontWeight:600, textAlign:'center', marginBottom:4 }}>Team</div>
+          <div style={{ fontWeight:600, textAlign:'center', marginBottom:4 }}>{teamLabel}</div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:8 }}>
             {team.map((_, idx) => {
               const mon = mons[idx];
