@@ -46,7 +46,8 @@ function TypeChip({ t, dim=false }){
       flex:'0 0 auto',
       justifyContent:'center',
       alignItems:'center',
-      padding:'4px 10px',
+      width:80,
+      padding:'4px 0',
       borderRadius:999,
       fontWeight:700,
       fontSize:13,
@@ -197,8 +198,8 @@ export default function TeamBuilder() {
   const teamLabel = selectedSave.trim() || 'Team';
 
   return (
-    <div>
-      <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+    <div style={{ paddingBottom:24 }}>
+      <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:12 }}>
         <div style={{ position:'relative', flex:1, minWidth:120 }}>
           <select
             value={selectedSave}
@@ -244,7 +245,7 @@ export default function TeamBuilder() {
         <button onClick={handleSave} className="region-btn" style={{ flexShrink:0 }}>Save Team</button>
         <button onClick={handleClear} className="region-btn" style={{ flexShrink:0 }}>Clear</button>
       </div>
-      <div style={{ display:'flex', alignItems:'flex-start', gap:16 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', gap:24 }}>
         <div style={{ flex:1, display:'flex', flexDirection:'column', gap:8 }}>
           {team.map((name, idx) => (
             <input
@@ -289,7 +290,7 @@ export default function TeamBuilder() {
         ))}
       </datalist>
 
-      <div style={{ marginTop:16, display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
+      <div style={{ marginTop:24, display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12 }}>
         <div style={{ fontWeight:600 }}>Pokemon</div>
         <div style={{ fontWeight:600 }}>Type</div>
         <div style={{ fontWeight:600 }}>Weakness</div>
@@ -302,25 +303,25 @@ export default function TeamBuilder() {
           return (
             <React.Fragment key={idx}>
               <div>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
             </React.Fragment>
           );
         })}
       </div>
 
-      <div style={{ marginTop:16 }}>
+      <div style={{ marginTop:24 }}>
         <div style={{ fontWeight:600, marginBottom:4 }}>Team Un-Resisted</div>
-        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
           {ALL_TYPES.map(t => (
             <TypeChip key={t} t={t} dim={teamResisted[t.toLowerCase()]} />
           ))}
         </div>
       </div>
-      <div style={{ marginTop:16 }}>
+      <div style={{ marginTop:24 }}>
         <div style={{ fontWeight:600, marginBottom:4 }}>Recommended Pokemon Types</div>
-        <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
           {recommendedTypes.length ? recommendedTypes.map(t => (
             <TypeChip key={t} t={t} />
           )) : <span>None</span>}
