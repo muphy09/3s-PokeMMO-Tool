@@ -1873,7 +1873,7 @@ function LiveBattlePanel({ onViewMon }){
       // allow extra characters to trail the detected name. First try a direct
       // substring match against the entire fragment, then fall back to examining
       // just the leading word which catches cases like "Shellos IRZY??".
-      let names = [];
+      const fragCounts = new Map();
       for (const frag of fragments) {
         const lowerFrag = frag.toLowerCase();
         const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
@@ -1900,7 +1900,11 @@ function LiveBattlePanel({ onViewMon }){
             if (best) fragNames.push(best);
           }
         }
-        names.push(...fragNames);
+        // Dedupe within a fragment but preserve count across fragments so that
+        // double battles with the same species show both Pokémon.
+        for (const n of new Set(fragNames)) {
+          fragCounts.set(n, (fragCounts.get(n) || 0) + 1);
+        }
       }
       // Attempt to detect known Pokémon names within the full text. OCR artifacts
       // can cause names to merge together or drop whitespace entirely. First, try
@@ -1908,22 +1912,30 @@ function LiveBattlePanel({ onViewMon }){
       // compacted string with all non-alphanumeric characters removed.
       const lower = cleaned.toLowerCase();
       const compact = lower.replace(/[^a-z0-9]+/g, '');
-      const found = [];
+      const foundCounts = new Map();
       for (const [key, mon] of DEX_BY_NAME.entries()) {
         // Normal match allowing optional spaces or hyphens
         const pattern = new RegExp(`\\b${key.replace(/[-]/g,'[\\s-]?')}\\b`, 'i');
         if (pattern.test(lower)) {
-          found.push(mon.name);
+          foundCounts.set(mon.name, Math.max(foundCounts.get(mon.name) || 0, 1));
           continue;
         }
         // Fallback: check for concatenated names without delimiters
         const compactKey = key.replace(/[^a-z0-9]+/g, '');
         if (compactKey && compact.includes(compactKey)) {
-          found.push(mon.name);
+          foundCounts.set(mon.name, Math.max(foundCounts.get(mon.name) || 0, 1));
         }
       }
-      // Combine any discovered names with ones parsed via fragment scanning
-      names = [...new Set([...names, ...found])];
+      // Combine fragment-derived counts with those from full-text scanning while
+      // preserving duplicates when multiple of the same Pokémon are present.
+      const counts = new Map(foundCounts);
+      for (const [name, cnt] of fragCounts) {
+        counts.set(name, Math.max(counts.get(name) || 0, cnt));
+      }
+      let names = [];
+      for (const [name, cnt] of counts) {
+        for (let i = 0; i < cnt; i++) names.push(name);
+      }
       // If no Pokémon names are detected, reset OCR state but keep the last
       // displayed Pokémon until a different one is identified
       if (names.length === 0) {
