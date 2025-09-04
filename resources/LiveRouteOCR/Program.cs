@@ -567,7 +567,7 @@ class LiveRouteOCR
         IntPtr lastLoggedHandle = IntPtr.Zero;
 
         // Battle OCR runs every frame; limit to a small pass plan for speed
-        var plan = BuildPassPlan(mode, 1).Take(4).ToList();
+        var plan = BuildPassPlan(mode, 1).Take(6).ToList();
 
         while (!ct.IsCancellationRequested)
         {
@@ -759,7 +759,7 @@ class LiveRouteOCR
         PageSegMode[][] psms = new[]
         {
             new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine },
-            new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine },
+            new[] { PageSegMode.SparseText, PageSegMode.SingleBlock, PageSegMode.SingleLine },
             new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine, PageSegMode.SparseText }
         };
 
@@ -884,7 +884,8 @@ class LiveRouteOCR
     static string TrimTrailingShortWords(string s)
     {
         var parts = s.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-        while (parts.Count > 0 && parts[^1].Length <= 1) parts.RemoveAt(parts.Count - 1);
+        while (parts.Count > 0 && (parts[^1].Length <= 1 || Regex.IsMatch(parts[^1], @"^\d+$")))
+            parts.RemoveAt(parts.Count - 1);
         return string.Join(" ", parts);
     }
 
