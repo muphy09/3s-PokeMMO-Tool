@@ -625,6 +625,7 @@ class LiveRouteOCR
                 if (engine != null)
                 {
                     using var trimmed = RemoveBattleHud(crop);
+                    var nameSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var pass in plan)
                     {
                         using var pre = Preprocess(trimmed, pass.Threshold, pass.Upsample);
@@ -639,25 +640,29 @@ class LiveRouteOCR
                         foreach (var line in cleanedAll.Split('\n'))
                         {
                             var n = TrimTrailingShortWords(line.Trim());
-                            if (LooksLikeName(n) && !nameList.Contains(n, StringComparer.OrdinalIgnoreCase))
-                                nameList.Add(n);
+                            if (LooksLikeName(n)) nameSet.Add(n);
                         }
 
-                        if (nameList.Count > 0)
+                        if (nameSet.Count > 0)
                         {
-                            conf = page.GetMeanConfidence();
-                            int confPctLocal = Math.Clamp((int)Math.Round(conf * 100), 0, 100);
+                            float passConf = page.GetMeanConfidence();
+                            int confPctLocal = Math.Clamp((int)Math.Round(passConf * 100), 0, 100);
                             if (confPctLocal < 40)
                             {
-                                nameList.Clear();
+                                nameSet.Clear();
                                 continue;
                             }
-                            rawUsed = raw;
-                            bestPre?.Dispose();
-                            bestPre = (Bitmap)pre.Clone();
-                            break;
+                            if (passConf > conf)
+                            {
+                                conf = passConf;
+                                rawUsed = raw;
+                                bestPre?.Dispose();
+                                bestPre = (Bitmap)pre.Clone();
+                            }
+                            if (nameSet.Count >= 2) break;
                         }
                     }
+                    nameList = nameSet.ToList();
                 }
                 if (nameList.Count == 0 && prePreview != null)
                 {
