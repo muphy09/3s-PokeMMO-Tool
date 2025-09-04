@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.7.5]- 2025-09
+## [2.7.6]- 2025-09
 ### Fixed
 - Live Route Tab now organizes data into cells on the UI - This looks more visually appealing, especially for Pokemon with a lot of data
 
