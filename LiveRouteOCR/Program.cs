@@ -797,24 +797,31 @@ class LiveRouteOCR
         return bin;
     }
 
-    static Bitmap RemoveBattleHud(Bitmap src)
+    static unsafe Bitmap RemoveBattleHud(Bitmap src)
     {
         // Detect bright horizontal bars (HP bars) and crop the image just above
-        // the lowest detected bar. This allows double battles to keep both
-        // Pokémon names while stripping away the HUD below the bars. Any bars
-        // above the cutoff are painted over so they don't confuse OCR.
+        // the lowest detected bar. Uses LockBits for speed and scans only once.
         var bars = new List<(int Start, int End)>();
-        int streak = 0;
-        int start = 0;
+
+        var rect = new Rectangle(0, 0, src.Width, src.Height);
+        var data = src.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+        int stride = data.Stride;
+        int brightNeed = (int)(src.Width * 0.5); // at least half the row must be bright
+
+        byte* basePtr = (byte*)data.Scan0;
+        int streak = 0, start = 0;
         for (int y = 0; y < src.Height; y++)
         {
+            byte* row = basePtr + y * stride;
             int bright = 0;
             for (int x = 0; x < src.Width; x++)
             {
-                var c = src.GetPixel(x, y);
-                if (c.R >= 230 && c.G >= 230 && c.B >= 230) bright++;
+                byte b = row[x * 3];
+                byte g = row[x * 3 + 1];
+                byte r = row[x * 3 + 2];
+                if (r >= 230 && g >= 230 && b >= 230) bright++;
             }
-            if (bright > src.Width * 0.6)
+            if (bright >= brightNeed)
             {
                 if (streak == 0) start = y;
                 streak++;
@@ -826,21 +833,35 @@ class LiveRouteOCR
             }
         }
         if (streak >= 2) bars.Add((start, src.Height - 1));
+        src.UnlockBits(data);
 
         int cutoff = src.Height;
-        if (bars.Count > 0) cutoff = bars[bars.Count - 1].Start;
-        
-        var rect = new Rectangle(0, 0, src.Width, Math.Max(1, cutoff));
-        var trimmed = src.Clone(rect, PixelFormat.Format24bppRgb);
+        if (bars.Count > 0) cutoff = bars[^1].Start;
 
-        foreach (var bar in bars)
+        var trimRect = new Rectangle(0, 0, src.Width, Math.Max(1, cutoff));
+        var trimmed = src.Clone(trimRect, PixelFormat.Format24bppRgb);
+
+        if (bars.Count > 0)
         {
-            if (bar.End >= cutoff) continue; // bar removed by cropping
-            int s = Math.Max(0, bar.Start - 1);
-            int e = Math.Min(trimmed.Height - 1, bar.End + 1);
-            for (int y = s; y <= e; y++)
-                for (int x = 0; x < trimmed.Width; x++)
-                    trimmed.SetPixel(x, y, Color.Black);
+            var tData = trimmed.LockBits(new Rectangle(0, 0, trimmed.Width, trimmed.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+            byte* tBase = (byte*)tData.Scan0;
+            foreach (var bar in bars)
+            {
+                if (bar.End >= cutoff) continue; // removed by cropping
+                int s = Math.Max(0, bar.Start - 1);
+                int e = Math.Min(trimmed.Height - 1, bar.End + 1);
+                for (int y = s; y <= e; y++)
+                {
+                    byte* tRow = tBase + y * tData.Stride;
+                    for (int x = 0; x < trimmed.Width; x++)
+                    {
+                        tRow[x * 3] = 0;
+                        tRow[x * 3 + 1] = 0;
+                        tRow[x * 3 + 2] = 0;
+                    }
+                }
+            }
+            trimmed.UnlockBits(tData);
         }
 
         return trimmed;
