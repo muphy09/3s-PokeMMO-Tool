@@ -169,6 +169,24 @@ const DEX_BY_NAME = (() => {
   return map;
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
+
+// Precompile regular expressions that can locate Pokémon names inside a block
+// of text.  One regex matches names with spaces/hyphens preserved, while the
+// other works against a "compacted" string with all non-alphanumeric
+// characters removed.  Sorting by length ensures longer names are tested first
+// which prevents partial matches (e.g. "Mr Mime" before "Mr").
+const buildNameRegex = (transform) => {
+  const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const names = Array.from(DEX_BY_NAME.keys())
+    .map(transform)
+    .sort((a, b) => b.length - a.length)
+    .map(escape)
+    // Allow hyphens in Pokémon names to optionally appear as spaces in OCR text
+    .map(n => n.replace(/\\-/g, "[\\s-]?"));
+  return new RegExp(`(${names.join("|")})`, "gi");
+};
+const POKE_NAME_REGEX = buildNameRegex((k) => k);
+const POKE_NAME_COMPACT_REGEX = buildNameRegex((k) => k.replace(/[^a-z0-9]+/g, ""));
 const DEX_BY_ID = (() => {
   const map = new Map();
   for (const m of DEX_LIST) map.set(m.id, m);
@@ -1875,84 +1893,13 @@ function LiveBattlePanel({ onViewMon }){
         setConfidence(null);
         return;
       }
-      let fragments = [];
-      const nameRegex = /([A-Za-z][A-Za-z0-9.'-]*(?:\s+(?!Lv\.?\b)[A-Za-z][A-Za-z0-9.'-]*)*)\s+Lv\.?\s*\d+/gi;
-      let match;
-      while ((match = nameRegex.exec(cleaned)) !== null) {
-        const n = match[1].trim();
-        if (n) fragments.push(n);
-      }
-      if (fragments.length === 0) {
-        fragments = cleaned
-          .split(/\n+/)
-          .map(s => s.replace(/\bLv\.?\s*\d+.*$/i, '').trim())
-          .filter(s => /[A-Za-z]/.test(s));
-      }
-      // Keyword search each fragment for any known Pokémon name. Be lenient and
-      // allow extra characters to trail the detected name. First try a direct
-      // substring match against the entire fragment, then fall back to examining
-      // just the leading word which catches cases like "Shellos IRZY??".
-      const fragCounts = new Map();
-      for (const frag of fragments) {
-        const lowerFrag = frag.toLowerCase();
-        const compactFrag = lowerFrag.replace(/[^a-z0-9]+/g, '');
-        if (compactFrag.length < 3) continue;
-        let fragNames = [];
-        for (const [key, mon] of DEX_BY_NAME.entries()) {
-          const compactKey = key.replace(/[^a-z0-9]+/g, '');
-          if (lowerFrag.includes(key) || (compactKey.length >= 3 && compactFrag.includes(compactKey))) {
-            fragNames.push(mon.name);
-          }
-        }
-        if (fragNames.length === 0) {
-          const parts = lowerFrag.split(/\s+/).filter(p => p.length >= 3);
-          for (const part of parts) {
-            let best = null;
-            let bestScore = 0;
-            for (const [key, mon] of DEX_BY_NAME.entries()) {
-              const score = similarity(part, key);
-              if (score > 0.6 && score > bestScore) {
-                best = mon.name;
-                bestScore = score;
-              }
-            }
-            if (best) fragNames.push(best);
-          }
-        }
-        // Dedupe within a fragment but preserve count across fragments so that
-        // double battles with the same species show both Pokémon.
-        for (const n of new Set(fragNames)) {
-          fragCounts.set(n, (fragCounts.get(n) || 0) + 1);
-        }
-      }
-      // Attempt to detect known Pokémon names within the full text. OCR artifacts
-      // can cause names to merge together or drop whitespace entirely. First, try
-      // to find "clean" names with word boundaries, then fall back to scanning a
-      // compacted string with all non-alphanumeric characters removed.
       const lower = cleaned.toLowerCase();
       const compact = lower.replace(/[^a-z0-9]+/g, '');
-      const foundCounts = new Map();
-      for (const [key, mon] of DEX_BY_NAME.entries()) {
-        // Normal match allowing optional spaces or hyphens
-        const pattern = new RegExp(`\\b${key.replace(/[-]/g,'[\\s-]?')}\\b`, 'i');
-        if (pattern.test(lower)) {
-          foundCounts.set(mon.name, Math.max(foundCounts.get(mon.name) || 0, 1));
-          continue;
-        }
-        // Fallback: check for concatenated names without delimiters
-        const compactKey = key.replace(/[^a-z0-9]+/g, '');
-        if (compactKey && compact.includes(compactKey)) {
-          foundCounts.set(mon.name, Math.max(foundCounts.get(mon.name) || 0, 1));
-        }
-      }
-      // Merge fragment-derived and full-text matches but only keep unique
-      // Pokémon names; horde battles can report the same species multiple times
-      // and we only want one UI box per species.
-      const counts = new Map(foundCounts);
-      for (const [name, cnt] of fragCounts) {
-        counts.set(name, Math.max(counts.get(name) || 0, cnt));
-      }
-      const names = Array.from(new Set(counts.keys()));
+      const matches = lower.match(POKE_NAME_REGEX) || [];
+      const compactMatches = compact.match(POKE_NAME_COMPACT_REGEX) || [];
+      const names = Array.from(new Set([...matches, ...compactMatches].map(normalizeKey)))
+        .map(n => getMon(n)?.name)
+        .filter(Boolean);
       // If no Pokémon names are detected, reset OCR state but keep the last
       // displayed Pokémon until a different one is identified
       if (names.length === 0) {
