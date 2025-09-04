@@ -2115,7 +2115,14 @@ function LiveBattlePanel({ onViewMon }){
                   >
                     {titleCase(mon.name)}
                   </div>
-                  <div className="label-muted">#{mon.id}</div>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      fontSize: isSolo ? 16 : 14
+                    }}
+                  >
+                    #{mon.id}
+                  </div>
                   <div
                     style={{
                       display: 'flex',
@@ -2130,7 +2137,7 @@ function LiveBattlePanel({ onViewMon }){
                     ))}
                   </div>
                   <div style={{ marginTop: 6, width: '100%' }}>
-                    <div style={{ fontWeight: 700, fontSize: 14 }}>Weaknesses</div>
+                    <div style={{ fontWeight: 700, fontSize: 16 }}>Weaknesses</div>
                     <div
                       style={{
                         display: 'flex',
@@ -2151,17 +2158,32 @@ function LiveBattlePanel({ onViewMon }){
                               }}
                             >
                               <TypePill t={w.t} compact />
-                              <span className="label-muted">{w.mult}%</span>
+                              <span style={{ fontWeight: 600 }}>{w.mult}%</span>
                             </div>
                           ))
                         : <div className="label-muted">None</div>}
                     </div>
                   </div>
-                  <div style={{ marginTop: 6, fontSize: 14 }}>
-                    <div><b>EV Yield:</b> {evs.length ? evs.join(', ') : 'None'}</div>
-                    <div><b>Held Items:</b> {held}</div>
-                    <div><b>Catch Rate:</b> {mon.catchRate != null ? mon.catchRate : '—'}</div>
-                    <div style={{ marginTop: 4 }}><b>Base Stats:</b> {statsText}</div>
+                 <div style={{ marginTop: 8, width: '100%' }}>
+                    <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Details</div>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'max-content 1fr',
+                        gap: 4,
+                        fontSize: 14,
+                        textAlign: 'left'
+                      }}
+                    >
+                      <div style={{ fontWeight: 600 }}>EV Yield:</div>
+                      <div>{evs.length ? evs.join(', ') : 'None'}</div>
+                      <div style={{ fontWeight: 600 }}>Held Items:</div>
+                      <div>{held}</div>
+                      <div style={{ fontWeight: 600 }}>Catch Rate:</div>
+                      <div>{mon.catchRate != null ? mon.catchRate : '—'}</div>
+                      <div style={{ fontWeight: 600 }}>Base Stats:</div>
+                      <div>{statsText}</div>
+                    </div>
                   </div>
                 </button>
                 <button
