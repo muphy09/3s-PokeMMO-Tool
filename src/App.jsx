@@ -335,13 +335,15 @@ const TYPE_COLORS = {
   rock:'#B6A136', ghost:'#735797', dragon:'#6F35FC', dark:'#705746',
   steel:'#B7B7CE'
 };
-function TypePill({ t, compact=false }){
+function TypePill({ t, compact=false, large=false }){
   const key = normalizeType(t);
   if (!key) return null;
   const bg = TYPE_COLORS[key] || '#555';
+  const pad = compact ? '2px 8px' : large ? '6px 12px' : '4px 10px';
+  const fontSize = compact ? 12 : large ? 15 : 13;
   return (
     <span title={titleCase(key)} style={{
-      display:'inline-block', padding:compact?'2px 8px':'4px 10px', fontSize:compact?12:13, lineHeight:1,
+      display:'inline-block', padding:pad, fontSize, lineHeight:1,
       borderRadius:999, fontWeight:800, color:'#111', background:bg, border:'1px solid #00000022', textShadow:'0 1px 0 #ffffff55'
     }}>{titleCase(key)}</span>
   );
@@ -408,17 +410,18 @@ function AbilityPill({ label, name }){
   );
 }
 
-function InfoPill({ label, value }){
+function InfoPill({ label, value, large=false }){
   if (value == null || value === '') return null;
   return (
     <div style={{
       display:'flex', alignItems:'center', gap:4,
-      padding:'2px 8px',
+      padding: large ? '4px 10px' : '2px 8px',
       borderRadius:8,
       background:'var(--surface)',
-      border:'1px solid var(--divider)'
+      border:'1px solid var(--divider)',
+      fontSize: large ? 14 : undefined
     }}>
-      <span className="label-muted" style={{ fontSize:12 }}>{label}:</span>
+      <span className="label-muted" style={{ fontSize:large ? 13 : 12 }}>{label}:</span>
       <span style={{ fontWeight:600 }}>{value}</span>
     </div>
   );
@@ -2047,7 +2050,8 @@ function LiveBattlePanel({ onViewMon }){
             const weakness = computeWeakness(mon.types);
             const wList = [
               ...weakness.x4.map(t => ({ t, mult: 400 })),
-              ...weakness.x2.map(t => ({ t, mult: 200 }))
+              ...weakness.x2.map(t => ({ t, mult: 200 })),
+              ...weakness.x0.map(t => ({ t, mult: 0 }))
             ];
             const evMap = {
               ev_hp: 'HP',
@@ -2069,9 +2073,9 @@ function LiveBattlePanel({ onViewMon }){
               sp_defense: 'SpD',
               speed: 'Spe'
             };
-            const statsText = Object.entries(statMap)
-              .map(([k, label]) => `${label} ${(mon.stats || {})[k] ?? '-'}`)
-              .join(' / ');
+            const catchPercent = mon.catchRate != null
+              ? (calcCatchChance(mon.catchRate) * 100).toFixed(1)
+              : null;
             return (
               <div
                 key={mon.id}
@@ -2137,52 +2141,60 @@ function LiveBattlePanel({ onViewMon }){
                     ))}
                   </div>
                   <div style={{ marginTop: 6, width: '100%' }}>
-                    <div style={{ fontWeight: 700, fontSize: 16 }}>Weaknesses</div>
                     <div
                       style={{
                         display: 'flex',
-                        gap: 6,
                         flexWrap: 'wrap',
                         justifyContent: 'center',
-                        marginTop: 4
+                        alignItems: 'center',
+                        gap: 8
                       }}
                     >
+                      <span style={{ fontWeight: 700, fontSize: isSolo ? 18 : 16 }}>Weakness:</span>
                       {wList.length
                         ? wList.map(w => (
                             <div
                               key={`${w.t}-${w.mult}`}
-                              style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 4
-                              }}
+                              style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                             >
-                              <TypePill t={w.t} compact />
-                              <span style={{ fontWeight: 600 }}>{w.mult}%</span>
+                              <TypePill t={w.t} large />
+                              <span style={{ fontWeight: 600, fontSize: isSolo ? 16 : 14 }}>{w.mult}%</span>
                             </div>
                           ))
                         : <div className="label-muted">None</div>}
                     </div>
                   </div>
-                 <div style={{ marginTop: 8, width: '100%' }}>
-                    <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Details</div>
+                  <div style={{ marginTop: 8, width: '100%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 700, fontSize: isSolo ? 18 : 16, marginBottom: 4 }}>Details</div>
                     <div
                       style={{
                         display: 'grid',
-                        gridTemplateColumns: 'max-content 1fr',
-                        gap: 4,
-                        fontSize: 14,
-                        textAlign: 'left'
+                        gap: 6,
+                        fontSize: isSolo ? 16 : 15
                       }}
                     >
-                      <div style={{ fontWeight: 600 }}>EV Yield:</div>
-                      <div>{evs.length ? evs.join(', ') : 'None'}</div>
-                      <div style={{ fontWeight: 600 }}>Held Items:</div>
-                      <div>{held}</div>
-                      <div style={{ fontWeight: 600 }}>Catch Rate:</div>
-                      <div>{mon.catchRate != null ? mon.catchRate : '—'}</div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                        <div style={{ fontWeight: 600 }}>EV Yield:</div>
+                        <div>{evs.length ? evs.join(', ') : 'None'}</div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                        <div style={{ fontWeight: 600 }}>Held Items:</div>
+                        <div>{held}</div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
+                        <div style={{ fontWeight: 600 }}>Catch Rate:</div>
+                        <div>
+                          {mon.catchRate != null
+                            ? `${mon.catchRate} ${catchPercent}%`
+                            : '—'}
+                        </div>
+                      </div>
                       <div style={{ fontWeight: 600 }}>Base Stats:</div>
-                      <div>{statsText}</div>
+                      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 6 }}>
+                        {Object.entries(statMap).map(([k, label]) => (
+                          <InfoPill key={k} label={label} value={(mon.stats || {})[k] ?? '-'} large />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </button>
