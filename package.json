@@ -23,7 +23,6 @@
     "release:minor": "npm version minor && npm run publish",
     "release:major": "npm version major && npm run publish",
     "publish": "npm run clean && npm run build:helper && npm run build && electron-builder --publish always"
-
   },
   "build": {
     "appId": "com.pokemmo.tool",
@@ -117,6 +116,7 @@
   },
   "dependencies": {
     "electron-updater": "^6.1.1",
+    "eslint": "^9.34.0",
     "marked": "^16.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
