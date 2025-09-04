@@ -2130,14 +2130,16 @@ function LiveBattlePanel({ onViewMon }){
                   <div
                     style={{
                       display: 'flex',
-                      gap: 6,
+                      gap: 8,
                       flexWrap: 'wrap',
                       justifyContent: 'center',
+                      alignItems: 'center',
                       marginTop: 6
                     }}
                   >
+                    <span style={{ fontWeight: 700, fontSize: isSolo ? 18 : 16 }}>Type:</span>
                     {(mon.types || []).map(t => (
-                      <TypePill key={t} t={t} compact />
+                      <TypePill key={t} t={t} large />
                     ))}
                   </div>
                   <div style={{ marginTop: 6, width: '100%' }}>

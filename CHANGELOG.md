@@ -1,6 +1,12 @@
 # Changelog
 ---
 
+## [2.7.7]- 2025-09
+### Added
+- Spiced up the Live Battle tab UI to look more modern
+
+---
+
 ## [2.7.6]- 2025-09
 ### Fixed
 - Live Route Tab now organizes data into cells on the UI - This looks more visually appealing, especially for Pokemon with a lot of data
