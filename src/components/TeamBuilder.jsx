@@ -33,6 +33,9 @@ const TYPE_COLORS = {
   Dark:'#705746', Steel:'#B7B7CE'
 };
 
+const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
+const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
+
 function TypeChip({ t, dim=false }){
   const name = t.charAt(0).toUpperCase() + t.slice(1);
   const bg = TYPE_COLORS[name] || '#777';
@@ -41,7 +44,6 @@ function TypeChip({ t, dim=false }){
       display:'inline-flex',
       justifyContent:'center',
       alignItems:'center',
-      width:60,
       padding:'4px 10px',
       borderRadius:999,
       fontWeight:700,
@@ -49,6 +51,7 @@ function TypeChip({ t, dim=false }){
       lineHeight:1,
       background:bg,
       color:'#fff',
+      whiteSpace:'nowrap',
       opacity:dim?0.3:1
     }}>{name}</span>
   );
@@ -108,7 +111,7 @@ export default function TeamBuilder() {
   const [saveName, setSaveName] = React.useState('');
 
   const handleSave = () => {
-    const name = saveName.trim();
+    const name = saveName.trim() || selectedSave;
     if (!name) return;
     setSavedTeams(prev => {
       const next = { ...prev, [name]: team };
@@ -116,6 +119,7 @@ export default function TeamBuilder() {
       return next;
     });
     setSaveName('');
+    setSelectedSave(name);
   };
 
   const handleLoad = (name) => {
@@ -236,18 +240,44 @@ export default function TeamBuilder() {
         <button onClick={handleSave} className="region-btn" style={{ flexShrink:0 }}>Save Team</button>
         <button onClick={handleClear} className="region-btn" style={{ flexShrink:0 }}>Clear</button>
       </div>
-      <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-        {team.map((name, idx) => (
-          <input
-            key={idx}
-            list="team-mons"
-            value={name}
-            onChange={e => updateSlot(idx, e.target.value)}
-            placeholder={`Slot ${idx + 1}`}
-            className="input"
-            style={{ height:32, borderRadius:8 }}
-          />
-        ))}
+      <div style={{ display:'flex', alignItems:'flex-start', gap:16 }}>
+        <div style={{ flex:1, display:'flex', flexDirection:'column', gap:8 }}>
+          {team.map((name, idx) => (
+            <input
+              key={idx}
+              list="team-mons"
+              value={name}
+              onChange={e => updateSlot(idx, e.target.value)}
+              placeholder={`Slot ${idx + 1}`}
+              className="input"
+              style={{ height:32, borderRadius:8 }}
+            />
+          ))}
+        </div>
+        <div style={{ width:140, flexShrink:0 }}>
+          <div style={{ fontWeight:600, textAlign:'center', marginBottom:4 }}>Team</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:8 }}>
+            {team.map((_, idx) => {
+              const mon = mons[idx];
+              const dex = mon?.dex ?? mon?.id;
+              const img = dex != null ? `${SPRITES_BASE}${dex}${SPRITES_EXT}` : null;
+              return (
+                <div key={idx} style={{
+                  width:56,
+                  height:56,
+                  borderRadius:'50%',
+                  background:'var(--surface)',
+                  border:'1px solid var(--divider)',
+                  display:'flex',
+                  justifyContent:'center',
+                  alignItems:'center'
+                }}>
+                  {img && <img src={img} alt={mon.name} style={{ width:48, height:48 }} />}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
       <datalist id="team-mons">
         {MON_LIST.map(m => (
@@ -255,8 +285,9 @@ export default function TeamBuilder() {
         ))}
       </datalist>
 
-      <div style={{ marginTop:16, display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+      <div style={{ marginTop:16, display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', gap:8 }}>
         <div style={{ fontWeight:600 }}>Pokemon</div>
+        <div style={{ fontWeight:600 }}>Type</div>
         <div style={{ fontWeight:600 }}>Weakness</div>
         <div style={{ fontWeight:600 }}>Resistance</div>
         {team.map((name, idx) => {
@@ -267,6 +298,7 @@ export default function TeamBuilder() {
           return (
             <React.Fragment key={idx}>
               <div>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
+              <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
               <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
               <div style={{ display:'flex', flexWrap:'wrap', gap:4 }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
             </React.Fragment>

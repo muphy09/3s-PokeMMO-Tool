@@ -32,7 +32,6 @@ function TypeChip({ t }) {
         display: "inline-flex",
         justifyContent: "center",
         alignItems: "center",
-        width: 70,
         padding: "0.35rem 0.75rem",
         borderRadius: 999,
         fontWeight: 700,
@@ -41,6 +40,7 @@ function TypeChip({ t }) {
         background: bg,        // full, solid background
         color: "#fff",         // bright white text for maximum contrast
         boxShadow: "0 2px 6px rgba(0,0,0,.3)", // subtle depth
+        whiteSpace: "nowrap",
       }}
     >
       {cap(t)}
