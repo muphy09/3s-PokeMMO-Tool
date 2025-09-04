@@ -1897,9 +1897,30 @@ function LiveBattlePanel({ onViewMon }){
       const compact = lower.replace(/[^a-z0-9]+/g, '');
       const matches = lower.match(POKE_NAME_REGEX) || [];
       const compactMatches = compact.match(POKE_NAME_COMPACT_REGEX) || [];
-      const names = Array.from(new Set([...matches, ...compactMatches].map(normalizeKey)))
+      let names = Array.from(new Set([...matches, ...compactMatches].map(normalizeKey)))
         .map(n => getMon(n)?.name)
         .filter(Boolean);
+
+        if (names.length === 0) {
+        const candLines = cleaned.split(/\n+/).map(s => s.trim()).filter(Boolean);
+        const fuzzySet = new Set();
+        for (const line of candLines) {
+          const key = normalizeKey(line);
+          let mon = getMon(key);
+          if (!mon) {
+            let best = null;
+            let bestScore = 0;
+            for (const m of DEX_LIST) {
+              const score = similarity(key, normalizeKey(m.name));
+              if (score > bestScore) { best = m; bestScore = score; }
+            }
+            if (best && bestScore >= 0.8) mon = best;
+          }
+          if (mon) fuzzySet.add(mon.name);
+        }
+        names = [...fuzzySet];
+      }
+      
       // If no Pokémon names are detected, reset OCR state but keep the last
       // displayed Pokémon until a different one is identified
       if (names.length === 0) {
