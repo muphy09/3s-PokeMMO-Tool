@@ -196,6 +196,7 @@ export default function TeamBuilder() {
   };
 
   const teamLabel = selectedSave.trim() || 'Team';
+  const cellStyle = { border:'1px solid var(--divider)', padding:4, verticalAlign:'top' };
 
   return (
     <div style={{ paddingBottom:24 }}>
@@ -291,35 +292,56 @@ export default function TeamBuilder() {
       </datalist>
 
       <div style={{ marginTop:24 }}>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12, marginBottom:8 }}>
-          <div style={{ fontWeight:600 }}>Pokemon</div>
-          <div style={{ fontWeight:600 }}>Type</div>
-          <div style={{ fontWeight:600 }}>Weakness</div>
-          <div style={{ fontWeight:600 }}>Resistance</div>
-        </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12, gridAutoRows:'80px' }}>
-          {team.map((name, idx) => {
-            const mon = mons[idx];
-            const b = buckets[idx] || {};
-            const weak = [...(b.x4||[]), ...(b.x2||[])];
-            const res = [...(b.x05||[]), ...(b.x0||[])];
-            return (
-              <React.Fragment key={idx}>
-                <div style={{ display:'flex', alignItems:'center' }}>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
-                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
-              </React.Fragment>
-            );
-          })}
-        </div>
+        <table style={{ width:'100%', borderCollapse:'collapse' }}>
+          <colgroup>
+            <col style={{ width:'16%' }} />
+            <col style={{ width:'16%' }} />
+            <col style={{ width:'34%' }} />
+            <col style={{ width:'34%' }} />
+          </colgroup>
+          <thead>
+            <tr>
+              <th style={{ ...cellStyle, background:'var(--surface)', fontWeight:600 }}>Pokemon</th>
+              <th style={{ ...cellStyle, background:'var(--surface)', fontWeight:600 }}>Type</th>
+              <th style={{ ...cellStyle, background:'var(--surface)', fontWeight:600 }}>Weakness</th>
+              <th style={{ ...cellStyle, background:'var(--surface)', fontWeight:600 }}>Resistance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {team.map((name, idx) => {
+              const mon = mons[idx];
+              const b = buckets[idx] || {};
+              const weak = [...(b.x4||[]), ...(b.x2||[])];
+              const res = [...(b.x05||[]), ...(b.x0||[])];
+              return (
+                <tr key={idx}>
+                  <td style={cellStyle}>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</td>
+                  <td style={cellStyle}>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                      {mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}
+                    </div>
+                  </td>
+                  <td style={cellStyle}>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                      {weak.map(t => <TypeChip key={t} t={t} />)}
+                    </div>
+                  </td>
+                  <td style={cellStyle}>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                      {res.map(t => <TypeChip key={t} t={t} />)}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-
       <div style={{ marginTop:24 }}>
         <div style={{ fontWeight:600, marginBottom:4 }}>Team Un-Resisted</div>
         <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
-          {ALL_TYPES.map(t => (
-            <TypeChip key={t} t={t} dim={teamResisted[t.toLowerCase()]} />
+          {ALL_TYPES.filter(t => !teamResisted[t.toLowerCase()]).map(t => (
+            <TypeChip key={t} t={t} />
           ))}
         </div>
       </div>
