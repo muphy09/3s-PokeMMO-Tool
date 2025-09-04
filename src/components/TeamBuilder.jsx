@@ -290,25 +290,29 @@ export default function TeamBuilder() {
         ))}
       </datalist>
 
-      <div style={{ marginTop:24, display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12 }}>
-        <div style={{ fontWeight:600 }}>Pokemon</div>
-        <div style={{ fontWeight:600 }}>Type</div>
-        <div style={{ fontWeight:600 }}>Weakness</div>
-        <div style={{ fontWeight:600 }}>Resistance</div>
-        {team.map((name, idx) => {
-          const mon = mons[idx];
-          const b = buckets[idx] || {};
-          const weak = [...(b.x4||[]), ...(b.x2||[])];
-          const res = [...(b.x05||[]), ...(b.x0||[])];
-          return (
-            <React.Fragment key={idx}>
-              <div>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
-            </React.Fragment>
-          );
-        })}
+      <div style={{ marginTop:24 }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12, marginBottom:8 }}>
+          <div style={{ fontWeight:600 }}>Pokemon</div>
+          <div style={{ fontWeight:600 }}>Type</div>
+          <div style={{ fontWeight:600 }}>Weakness</div>
+          <div style={{ fontWeight:600 }}>Resistance</div>
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 2fr 2fr', gap:12, gridAutoRows:'80px' }}>
+          {team.map((name, idx) => {
+            const mon = mons[idx];
+            const b = buckets[idx] || {};
+            const weak = [...(b.x4||[]), ...(b.x2||[])];
+            const res = [...(b.x05||[]), ...(b.x0||[])];
+            return (
+              <React.Fragment key={idx}>
+                <div style={{ display:'flex', alignItems:'center' }}>{mon ? mon.name.charAt(0).toUpperCase() + mon.name.slice(1) : ''}</div>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{mon ? mon.types.map(t => <TypeChip key={t} t={t} />) : null}</div>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{weak.map(t => <TypeChip key={t} t={t} />)}</div>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:6, overflowY:'auto', alignContent:'flex-start' }}>{res.map(t => <TypeChip key={t} t={t} />)}</div>
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
 
       <div style={{ marginTop:24 }}>
