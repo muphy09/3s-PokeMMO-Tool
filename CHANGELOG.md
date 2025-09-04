@@ -1,9 +1,31 @@
 # Changelog
 ---
 
+## [2.7.8]- 2025-09
+### Added
+- Teambuilder Tab UI Overhaul
+  - A Grid for your Team now generates as Pokemon are selected into the Team
+  - Now includes Pokemon sprites beneath your Team Name
+  - Pokemon Type information now included in the new Team Grid
+
+### Fixed
+- Team Builder Tab
+  - Inconsistent Type Chip sizes in the Team Builder Tab now all appear uniform
+  - Clicking 'Save' while making changes to a loaded team now overwrites the saved team
+    - Previously you would have to name the team the same name to overwrite it
+  - Resized, re-space, and centered most information in the UI
+  - Recommended Pokemon Types now do a better job of deciding what will help your team
+    - Analyzes Team Un-Resisted and checks against the current teams' Pokemon Types to determine recommended result
+
+---
+
 ## [2.7.7]- 2025-09
 ### Added
-- Spiced up the Live Battle tab UI to look more modern
+- Spiced up the Live Battle Tab UI to look more modern
+  - Rezised a lot of the information on the UI, including the Sprite
+  - Now displays 'Immune' instead of 0% weakness
+  - Bordered the Base Stats to be easier to read at a glance
+  - Included the Catch Rate % alongside the Catch Rate
 
 ---
 
@@ -31,7 +53,7 @@
 - "Neo" Theme Added
   - Futuristic styled theme
 
-### *Big* Fix
+### Fixed
 - Complete OCR Rework (Capature tool for Route and Battle Tabs)
   - Finalized window detection by returning immediately on title matches and retrieving the window’s process ID inline for fallback checks
   - Improved window discovery by enumerating visible windows for a PokeMMO match, ensuring the correct handle is found even when the game isn’t focused
