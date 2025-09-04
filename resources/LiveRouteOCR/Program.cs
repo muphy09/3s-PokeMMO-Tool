@@ -131,7 +131,7 @@ class LiveRouteOCR
             Height = GetArg(args, "--height", 0.140)
         };
         Log($"ROI base: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
-        var battleRoi = new Roi { Left = 0.25, Top = 0.13, Width = 0.25, Height = 0.3 };
+        var battleRoi = new Roi { Left = 0.25, Top = 0.13, Width = 0.21, Height = 0.3 };
         Log($"Battle ROI: L={battleRoi.Left:P0} T={battleRoi.Top:P0} W={battleRoi.Width:P0} H={battleRoi.Height:P0}");
 
         // Settings & env

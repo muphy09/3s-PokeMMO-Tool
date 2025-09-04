@@ -1843,6 +1843,11 @@ function LiveBattlePanel({ onViewMon }){
         .replace(/([A-Za-z])([Ll][Vv])/g, '$1 $2')
         .replace(/([A-Za-z])([Hh][Pp])/g, '$1 $2')
         .replace(/([A-Za-z])([Pp][Cc])/g, '$1 $2')
+        // Break up fused names like "GloomGloom" that sometimes occur when
+        // multiple health bars overlap in horde battles. Also ensure digits and
+        // letters don't run together.
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/(\d)([A-Za-z])/g, '$1 $2')
         .replace(/\bLv\.?\s*\d+\b/gi, '\n')
         .replace(/\b(?:HP|pc)\s*\d+\/\d+\b/gi, '\n')
         .replace(/\s*\n\s*/g, '\n')
@@ -1926,16 +1931,14 @@ function LiveBattlePanel({ onViewMon }){
           foundCounts.set(mon.name, Math.max(foundCounts.get(mon.name) || 0, 1));
         }
       }
-      // Combine fragment-derived counts with those from full-text scanning while
-      // preserving duplicates when multiple of the same Pokémon are present.
+      // Merge fragment-derived and full-text matches but only keep unique
+      // Pokémon names; horde battles can report the same species multiple times
+      // and we only want one UI box per species.
       const counts = new Map(foundCounts);
       for (const [name, cnt] of fragCounts) {
         counts.set(name, Math.max(counts.get(name) || 0, cnt));
       }
-      let names = [];
-      for (const [name, cnt] of counts) {
-        for (let i = 0; i < cnt; i++) names.push(name);
-      }
+      const names = Array.from(new Set(counts.keys()));
       // If no Pokémon names are detected, reset OCR state but keep the last
       // displayed Pokémon until a different one is identified
       if (names.length === 0) {
