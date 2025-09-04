@@ -262,15 +262,16 @@ export default function TeamBuilder() {
         </div>
         <div style={{ flex:'1 0 34%', flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center' }}>
           <div style={{ fontWeight:600, textAlign:'center', marginBottom:4 }}>{teamLabel}</div>
-          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, justifyContent:'center' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, width:'90%', placeItems:'center' }}>
             {team.map((_, idx) => {
               const mon = mons[idx];
               const dex = mon?.dex ?? mon?.id;
               const img = dex != null ? `${SPRITES_BASE}${dex}${SPRITES_EXT}` : null;
               return (
                 <div key={idx} style={{
-                  width:64,
-                  height:64,
+                  width:'100%',
+                  maxWidth:96,
+                  aspectRatio:'1',
                   borderRadius:'50%',
                   background:'var(--surface)',
                   border:'1px solid var(--divider)',
@@ -278,7 +279,7 @@ export default function TeamBuilder() {
                   justifyContent:'center',
                   alignItems:'center'
                 }}>
-                  {img && <img src={img} alt={mon?.name} style={{ width:56, height:56 }} />}
+                  {img && <img src={img} alt={mon?.name} style={{ width:'80%', height:'80%' }} />}
                 </div>
               );
             })}
@@ -316,7 +317,6 @@ export default function TeamBuilder() {
                 const weak = [...(b.x4||[]), ...(b.x2||[])];
                 const res = [...(b.x05||[]), ...(b.x0||[])];
                 const types = [...new Set(mon.types)];
-                const needsTwoRows = weak.length > 3;
                 return (
                   <tr key={idx} style={{ height:72 }}>
                     <td style={{ ...cellStyle, textAlign:'center', verticalAlign:'middle', fontWeight:600 }}>
@@ -334,7 +334,7 @@ export default function TeamBuilder() {
                         gap:6,
                         minHeight:52,
                         height:'100%',
-                        alignContent: needsTwoRows ? 'flex-start' : 'center',
+                        alignContent:'center',
                         alignItems:'center',
                         justifyContent:'center'
                       }}>
