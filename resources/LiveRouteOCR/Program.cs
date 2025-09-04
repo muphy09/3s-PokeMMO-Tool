@@ -643,6 +643,15 @@ class LiveRouteOCR
                             if (LooksLikeName(n)) nameSet.Add(n);
                         }
 
+                        if (nameSet.Count < 2 && cleanedAll.Length > 0)
+                        {
+                            foreach (Match m in Regex.Matches(cleanedAll, @"\b[A-Z][A-Za-z'\-]{1,}(?:\s+[A-Z][A-Za-z'\-]{1,})*\b"))
+                            {
+                                var token = TrimTrailingShortWords(m.Value.Trim());
+                                if (LooksLikeName(token)) nameSet.Add(token);
+                                if (nameSet.Count >= 2) break;
+                            }
+                        }
                         if (nameSet.Count > 0)
                         {
                             float passConf = page.GetMeanConfidence();
