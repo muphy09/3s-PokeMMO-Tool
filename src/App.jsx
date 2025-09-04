@@ -2158,7 +2158,9 @@ function LiveBattlePanel({ onViewMon }){
                               style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                             >
                               <TypePill t={w.t} large />
-                              <span style={{ fontWeight: 600, fontSize: isSolo ? 16 : 14 }}>{w.mult}%</span>
+                              <span style={{ fontWeight: 600, fontSize: isSolo ? 16 : 14 }}>
+                                {w.mult === 0 ? 'Immune' : `${w.mult}%`}
+                              </span>
                             </div>
                           ))
                         : <div className="label-muted">None</div>}
@@ -2185,7 +2187,7 @@ function LiveBattlePanel({ onViewMon }){
                         <div style={{ fontWeight: 600 }}>Catch Rate:</div>
                         <div>
                           {mon.catchRate != null
-                            ? `${mon.catchRate} ${catchPercent}%`
+                            ? `${mon.catchRate} | ${catchPercent}%`
                             : '—'}
                         </div>
                       </div>
