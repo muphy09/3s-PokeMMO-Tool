@@ -799,11 +799,15 @@ class LiveRouteOCR
 
     static Bitmap RemoveBattleHud(Bitmap src)
     {
-        int cutoff = src.Height;
+        // Detect bright horizontal bars (HP bars) and crop the image just above
+        // the lowest detected bar. This allows double battles to keep both
+        // Pokémon names while stripping away the HUD below the bars. Any bars
+        // above the cutoff are painted over so they don't confuse OCR.
+        var bars = new List<(int Start, int End)>();
         int streak = 0;
+        int start = 0;
         for (int y = 0; y < src.Height; y++)
         {
-            int whiteCount = 0;
             int bright = 0;
             for (int x = 0; x < src.Width; x++)
             {
@@ -812,20 +816,34 @@ class LiveRouteOCR
             }
             if (bright > src.Width * 0.6)
             {
+                if (streak == 0) start = y;
                 streak++;
-                if (streak >= 2)
-                {
-                    cutoff = y - 1;
-                    break;
-                }
             }
             else
             {
+                if (streak >= 2) bars.Add((start, y - 1));
                 streak = 0;
             }
         }
+        if (streak >= 2) bars.Add((start, src.Height - 1));
+
+        int cutoff = src.Height;
+        if (bars.Count > 0) cutoff = bars[bars.Count - 1].Start;
+        
         var rect = new Rectangle(0, 0, src.Width, Math.Max(1, cutoff));
-        return src.Clone(rect, PixelFormat.Format24bppRgb);
+        var trimmed = src.Clone(rect, PixelFormat.Format24bppRgb);
+
+        foreach (var bar in bars)
+        {
+            if (bar.End >= cutoff) continue; // bar removed by cropping
+            int s = Math.Max(0, bar.Start - 1);
+            int e = Math.Min(trimmed.Height - 1, bar.End + 1);
+            for (int y = s; y <= e; y++)
+                for (int x = 0; x < trimmed.Width; x++)
+                    trimmed.SetPixel(x, y, Color.Black);
+        }
+
+        return trimmed;
     }
 
     static string TrimTrailingShortWords(string s)
