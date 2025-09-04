@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.7.8]- 2025-09
+## [2.7.9]- 2025-09
 ### Added
 - Teambuilder Tab UI Overhaul
   - A Grid for your Team now generates as Pokemon are selected into the Team
