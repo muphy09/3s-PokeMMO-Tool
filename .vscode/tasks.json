@@ -2,21 +2,21 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Final: Release Patch",
+      "label": "Release Patch- x.x.0",
       "type": "shell",
       "command": "npm",
       "args": ["run", "release:patch"],
       "problemMatcher": []
     },
     {
-      "label": "Final: Release Minor",
+      "label": "Release Minor - x.0.x",
       "type": "shell",
       "command": "npm",
       "args": ["run", "release:minor"],
       "problemMatcher": []
     },
     {
-      "label": "Final: Release Major",
+      "label": "Release Major - 0.x.x",
       "type": "shell",
       "command": "npm",
       "args": ["run", "release:major"],
