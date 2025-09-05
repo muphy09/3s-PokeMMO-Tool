@@ -21,9 +21,10 @@
     "pack:dir": "npm run clean && npm run build:helper && npm run build && electron-builder --dir",
     "pack:linux": "npm run clean && npm run build && electron-builder --linux AppImage",
     "pack:mac": "npm run clean && npm run build && electron-builder --mac dmg zip",
-    "release:patch": "npm version patch && npm run publish",
-    "release:minor": "npm version minor && npm run publish",
-    "release:major": "npm version major && npm run publish",
+    "push-release": "node -e \"const v=require('./package.json').version; const {execSync}=require('child_process'); execSync('git push origin HEAD',{stdio:'inherit'}); execSync('git push origin v'+v,{stdio:'inherit'});\"",
+    "release:patch": "npm version patch -m \"v%s\" && npm run push-release",
+    "release:minor": "npm version minor -m \"v%s\" && npm run push-release",
+    "release:major": "npm version major -m \"v%s\" && npm run push-release",
     "publish": "npm run clean && npm run build:helper && npm run build && electron-builder --publish always"
   },
   "build": {
