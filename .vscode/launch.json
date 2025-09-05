@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Electron: Main",
+      "name": "Dev: Test App",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
@@ -12,20 +12,6 @@
       "console": "integratedTerminal",
       "protocol": "inspector",
       "restart": true
-    },
-    {
-      "name": "Renderer: Chrome (Vite)",
-      "type": "pwa-chrome",
-      "request": "launch",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}"
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Dev: Vite + Electron",
-      "configurations": ["Electron: Main", "Renderer: Chrome (Vite)"],
-      "preLaunchTask": "Dev: Start app"
     }
   ]
 }

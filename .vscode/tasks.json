@@ -2,28 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Dev: Start app",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dev:app"],
-      "isBackground": true,
-      "problemMatcher": []
-    },
-    {
-      "label": "Build: dist (no publish)",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "dist"],
-      "problemMatcher": []
-    },
-    {
-      "label": "Build: pack (installer + zip)",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "pack"],
-      "problemMatcher": []
-    },
-    {
       "label": "Final: Release Patch",
       "type": "shell",
       "command": "npm",
@@ -42,6 +20,21 @@
       "type": "shell",
       "command": "npm",
       "args": ["run", "release:major"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Check Total Downloads",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-NoProfile",
+        "-File",
+        "./Get-GHReleaseDownloads.ps1"
+    ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+     },
       "problemMatcher": []
     }
   ]
