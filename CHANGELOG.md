@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.7.9] - 2025-09
+## [2.8.1] - 2025-09
 ### Added
 - # Secondary "Type" Filter in Pokemon Search
   - Search Pokemon by 2 Types now, appearing only if the 1st Type is selected
