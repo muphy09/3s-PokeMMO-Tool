@@ -5,12 +5,10 @@
       "name": "Run App",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-      "windows": { "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd" },
-      "args": ["."],
-      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "electron:dev"],
       "console": "integratedTerminal",
-      "restart": true
+      "autoAttachChildProcesses": true
     }
   ]
 }

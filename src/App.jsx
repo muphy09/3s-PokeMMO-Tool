@@ -2438,6 +2438,7 @@ function App(){
 
 
   const [typeFilter, setTypeFilter] = useState('');
+  const [typeFilter2, setTypeFilter2] = useState('');
   const [eggFilter, setEggFilter] = useState('');
   const [abilityFilter, setAbilityFilter] = useState('');
   const [regionFilter, setRegionFilter] = useState('');
@@ -2480,7 +2481,7 @@ function App(){
 
   useEffect(() => { if (!moveFilter) setMoveLevelOnly(false); }, [moveFilter]);
 
-  const hasFilters = Boolean(typeFilter || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
+  const hasFilters = Boolean(typeFilter || typeFilter2 || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
 
 const headerSprite = useMemo(() => {
     if (theme === 'red') return spriteSources(getMon('Charizard'))[0] || null;
@@ -2502,6 +2503,7 @@ const headerSprite = useMemo(() => {
     setShowRegionMenu(false);
     if (mode !== 'pokemon') setSelected(null);
     setTypeFilter('');
+    setTypeFilter2('');
     setEggFilter('');
     setAbilityFilter('');
     setRegionFilter('');
@@ -2509,6 +2511,10 @@ const headerSprite = useMemo(() => {
     setMoveLevelOnly(false);
     setItemFilter('');
   }, [mode]);
+  // Ensure the second Type filter only applies when the first is set
+  useEffect(() => {
+    if (!typeFilter) setTypeFilter2('');
+  }, [typeFilter]);
   useEffect(() => {
     setShowMoveset(false);
     setShowLocations(false);
@@ -2567,6 +2573,9 @@ const headerSprite = useMemo(() => {
       if (typeFilter) {
         const types = (mon.types || []).map(normalizeType);
         if (!types.includes(normalizeType(typeFilter))) return false;
+        if (typeFilter2) {
+          if (!types.includes(normalizeType(typeFilter2))) return false;
+        }
       }
       if (eggFilter) {
         const eggs = (mon.eggGroups || []).map(normalizeEggGroup);
@@ -2611,7 +2620,7 @@ const headerSprite = useMemo(() => {
     }
     if (!hasFilters && q) list = list.slice(0, 24);
     return list;
-  }, [mode, query, hasFilters, typeFilter, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly, itemFilter]);
+  }, [mode, query, hasFilters, typeFilter, typeFilter2, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly, itemFilter]);
 
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
@@ -2902,6 +2911,17 @@ const marketResults = React.useMemo(() => {
                 <option value="">Type</option>
                 {typeOptions.map(t => <option key={t} value={t}>{titleCase(t)}</option>)}
               </select>
+              {Boolean(typeFilter) && (
+                <select
+                  value={typeFilter2}
+                  onChange={e=>setTypeFilter2(e.target.value)}
+                  className="input"
+                  style={{ height:44, borderRadius:10, width:'auto' }}
+                >
+                  <option value="">Type</option>
+                  {typeOptions.map(t => <option key={`t2-${t}`} value={t}>{titleCase(t)}</option>)}
+                </select>
+              )}
               <select
                 value={eggFilter}
                 onChange={e=>setEggFilter(e.target.value)}

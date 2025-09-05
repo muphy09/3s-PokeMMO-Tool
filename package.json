@@ -7,9 +7,9 @@
   "main": "electron/main.js",
   "scripts": {
     "dev": "vite",
-    "preelectron:dev": "npm run build:helper",
-    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
-    "dev:app": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "preelectron:dev": "npm run build:helper -- -Dev",
+    "electron:dev": "concurrently -k -s first \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "dev:app": "concurrently -k -s first \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "build": "vite build",
     "start": "electron .",
     "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",

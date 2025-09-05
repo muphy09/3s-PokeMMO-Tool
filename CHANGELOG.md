@@ -1,6 +1,13 @@
 # Changelog
 ---
 
+## [2.7.9] - 2025-09
+### Added
+- Secondary "Type" Filter in Pokemon Search
+  - Search Pokemon by 2 Types now, appearing only if the 1st Type is selected
+
+---
+
 ## [2.7.8]- 2025-09
 ### Added
 - Teambuilder Tab UI Overhaul
