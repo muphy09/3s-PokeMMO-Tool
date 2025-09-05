@@ -24,10 +24,24 @@
       "problemMatcher": []
     },
     {
-      "label": "Release: patch -> build + publish",
+      "label": "Final: Release Patch",
       "type": "shell",
       "command": "npm",
       "args": ["run", "release:patch"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Final: Release Minor",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "release:minor"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Final: Release Major",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "release:major"],
       "problemMatcher": []
     }
   ]
