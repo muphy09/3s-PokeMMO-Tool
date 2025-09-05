@@ -1,6 +1,24 @@
 # Changelog
 ---
 
+## [2.8.3] - 2025-09
+### Added
+- Compare Pokemon!
+  - You can now compare 2 different Pokemon inside of Pokemon Search
+  - Displays Sprite, Abilities, Type, Weakness, Resistance, and compares Stats
+
+- Base Stat Total
+  - A Base Stat Total # now appears anywhere a Pokemons Base Stats were seen before
+
+
+
+
+### Fixed
+- 
+
+
+---
+
 ## [2.8.2] - 2025-09
 ### Added
 - Secondary "Type" Filter in Pokemon Search

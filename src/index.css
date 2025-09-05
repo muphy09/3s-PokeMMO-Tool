@@ -493,6 +493,20 @@ select.input option {
   transform: translateY(-1px);
 }
 
+/* Highlight for Compare-selected tile */
+.compare-selected {
+  position: relative;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px rgba(234, 196, 44, 0.25);
+  border-color: var(--accent);
+}
+
+/* Small utility for faint grid lines */
+.faint-grid {
+  border: 1px solid var(--divider);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+}
+
 /* Generic chip */
 .badge {
   color: var(--text);
@@ -650,4 +664,14 @@ select.input option {
   background: var(--tile-hover-bg);
   transform: translateY(-3px);
   box-shadow: var(--shadow-2);
+}
+
+/* Team Builder: clickable mon name in grid */
+.tb-mon-link {
+  color: var(--text);
+  transition: color .15s ease, opacity .15s ease;
+}
+.tb-mon-link:hover {
+  /* Slightly darker visual cue */
+  opacity: 0.9;
 }

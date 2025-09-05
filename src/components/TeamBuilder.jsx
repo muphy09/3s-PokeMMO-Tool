@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAll, getByName } from '../lib/pokedexIndex.js';
+import { getAll, getByName } from '../lib/dex.js';
 import itemsRaw from '../../itemdata.json';
 
 const MON_LIST = getAll();
@@ -130,7 +130,7 @@ function bucketsFromMultipliers(mult = {}) {
   return buckets;
 }
 
-export default function TeamBuilder() {
+export default function TeamBuilder({ onViewMon }) {
   const [team, setTeam] = React.useState(() => {
     try {
       const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
@@ -465,9 +465,22 @@ export default function TeamBuilder() {
                 return (
                   <tr key={idx} style={{ height:72 }}>
                     <td style={{ ...cellStyle, textAlign:'center', verticalAlign:'middle' }}>
-                      <div style={{ fontWeight:600 }}>
+                      <button
+                        type="button"
+                        className="tb-mon-link"
+                        onClick={() => onViewMon && onViewMon(mon?.name || name)}
+                        title="Open in Pokémon Search"
+                        style={{
+                          background:'transparent',
+                          border:'none',
+                          padding:0,
+                          fontWeight:600,
+                          cursor: onViewMon ? 'pointer' : 'default',
+                          color: 'var(--text)'
+                        }}
+                      >
                         {mon.name.charAt(0).toUpperCase() + mon.name.slice(1)}
-                      </div>
+                      </button>
                       <div
                         className="label-muted"
                         style={{ fontSize:12, marginTop:2 }}
