@@ -1,8 +1,10 @@
 import React from 'react';
 import { getAll, getByName } from '../lib/pokedexIndex.js';
+import itemsRaw from '../../itemdata.json';
 
 const MON_LIST = getAll();
 const EMPTY_TEAM = Array(6).fill('');
+const EMPTY_ITEMS = Array(6).fill('');
 
 const TYPE_CHART = {
   normal:{ weak:['fighting'], res:[], imm:['ghost'] },
@@ -35,6 +37,47 @@ const TYPE_COLORS = {
 
 const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
+
+// Item assets (reuse same source as Items tab)
+const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-data/main/assets/itemicons/';
+const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
+
+function normalizeKey(s=''){
+  return String(s).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
+}
+
+function cleanItemDescription(desc) {
+  if (!desc) return '';
+  let s = String(desc).replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+  // Remove the prefix "An item to be held by a Pokémon" (handle Pokemon/Pokémon + optional punctuation)
+  s = s.replace(/^\s*An item to be held by a Pok[eé]mon\.?\s*/i, '');
+  return s.trim();
+}
+
+const ITEM_LIST = (() => {
+  const src = Array.isArray(itemsRaw) ? itemsRaw : [];
+  const seen = new Set();
+  const list = [];
+  for (const item of src) {
+    if (item?.id === 0) continue; // skip placeholder entry
+    if (!item?.name || item.name.includes('?')) continue; // skip unknown items
+    const key = normalizeKey(item.name);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    list.push(item);
+  }
+  return list;
+})();
+
+const ITEM_INDEX = (() => {
+  const byId = new Map();
+  const byName = new Map();
+  for (const item of ITEM_LIST) {
+    if (item.id != null) byId.set(item.id, item);
+    byName.set(normalizeKey(item.name), item);
+  }
+  return { byId, byName };
+})();
 
 function TypeChip({ t, dim=false }){
   const lc = String(t).toLowerCase();
@@ -94,13 +137,56 @@ export default function TeamBuilder() {
       if (Array.isArray(saved)) {
         return EMPTY_TEAM.map((_, i) => saved[i] || '');
       }
+      if (saved && typeof saved === 'object' && Array.isArray(saved.mons)) {
+        return EMPTY_TEAM.map((_, i) => saved.mons[i] || '');
+      }
     } catch {}
     return [...EMPTY_TEAM];
   });
 
   React.useEffect(() => {
-    try { sessionStorage.setItem('teamBuilderCurrent', JSON.stringify(team)); } catch {}
+    try {
+      const items = JSON.parse(sessionStorage.getItem('teamBuilderHeldItems') || '[]');
+      const obj = { mons: team, items: Array.isArray(items) ? items : [...EMPTY_ITEMS] };
+      sessionStorage.setItem('teamBuilderCurrent', JSON.stringify(obj));
+    } catch {}
   }, [team]);
+
+  // Simple tooltip state
+  const [tip, setTip] = React.useState({ visible:false, text:'', x:0, y:0 });
+  const tipTimerRef = React.useRef(null);
+  const showTooltip = (el, text, delayMs = 0) => {
+    if (!el || !text) return;
+    const fire = () => {
+      const rect = el.getBoundingClientRect();
+      setTip({ visible:true, text, x: Math.round(rect.left), y: Math.round(rect.bottom + 8) });
+    };
+    if (tipTimerRef.current) clearTimeout(tipTimerRef.current);
+    if (delayMs > 0) tipTimerRef.current = setTimeout(fire, delayMs);
+    else fire();
+  };
+  const hideTooltip = () => {
+    if (tipTimerRef.current) { clearTimeout(tipTimerRef.current); tipTimerRef.current = null; }
+    setTip(prev => ({ ...prev, visible:false }));
+  };
+
+  const [heldItems, setHeldItems] = React.useState(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('teamBuilderHeldItems') || '[]');
+      if (Array.isArray(saved)) return EMPTY_ITEMS.map((_, i) => saved[i] || '');
+      if (saved && typeof saved === 'object' && Array.isArray(saved.items)) return EMPTY_ITEMS.map((_, i) => saved.items[i] || '');
+    } catch {}
+    return [...EMPTY_ITEMS];
+  });
+
+  React.useEffect(() => {
+    try {
+      sessionStorage.setItem('teamBuilderHeldItems', JSON.stringify(heldItems));
+      const mons = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
+      const obj = Array.isArray(mons) ? { mons, items: heldItems } : { mons: mons?.mons || EMPTY_TEAM, items: heldItems };
+      sessionStorage.setItem('teamBuilderCurrent', JSON.stringify(obj));
+    } catch {}
+  }, [heldItems]);
 
   const [savedTeams, setSavedTeams] = React.useState(() => {
     try {
@@ -117,7 +203,7 @@ export default function TeamBuilder() {
     const name = saveName.trim() || selectedSave;
     if (!name) return;
     setSavedTeams(prev => {
-      const next = { ...prev, [name]: team };
+      const next = { ...prev, [name]: { mons: team, items: heldItems } };
       try { localStorage.setItem('teamBuilderSavedTeams', JSON.stringify(next)); } catch {}
       return next;
     });
@@ -128,13 +214,23 @@ export default function TeamBuilder() {
   const handleLoad = (name) => {
     const t = savedTeams[name];
     if (t) {
-      setTeam(EMPTY_TEAM.map((_, i) => t[i] || ''));
+      if (Array.isArray(t)) {
+        setTeam(EMPTY_TEAM.map((_, i) => t[i] || ''));
+        setHeldItems([...EMPTY_ITEMS]);
+      } else if (t && typeof t === 'object') {
+        setTeam(EMPTY_TEAM.map((_, i) => t.mons?.[i] || ''));
+        setHeldItems(EMPTY_ITEMS.map((_, i) => t.items?.[i] || ''));
+      }
     }
   };
 
   const handleClear = () => {
     setTeam([...EMPTY_TEAM]);
-    try { sessionStorage.removeItem('teamBuilderCurrent'); } catch {}
+    setHeldItems([...EMPTY_ITEMS]);
+    try {
+      sessionStorage.removeItem('teamBuilderCurrent');
+      sessionStorage.removeItem('teamBuilderHeldItems');
+    } catch {}
   };
 
   const handleDelete = (name) => {
@@ -195,6 +291,14 @@ export default function TeamBuilder() {
     });
   };
 
+  const updateItemSlot = (idx, value) => {
+    setHeldItems(prev => {
+      const next = [...prev];
+      next[idx] = value;
+      return next;
+    });
+  };
+
   const teamLabel = selectedSave.trim() || 'Team';
   const cellStyle = { border:'1px solid var(--divider)', padding:4, verticalAlign:'top' };
 
@@ -247,18 +351,41 @@ export default function TeamBuilder() {
         <button onClick={handleClear} className="region-btn" style={{ flexShrink:0 }}>Clear</button>
       </div>
       <div style={{ display:'flex', alignItems:'flex-start', gap:24 }}>
-        <div style={{ flex:'0 0 66%', display:'flex', flexDirection:'column', gap:8 }}>
-          {team.map((name, idx) => (
-            <input
-              key={idx}
-              list="team-mons"
-              value={name}
-              onChange={e => updateSlot(idx, e.target.value)}
-              placeholder={`Slot ${idx + 1}`}
-              className="input"
-              style={{ height:32, borderRadius:8 }}
-            />
-          ))}
+        <div style={{ flex:'0 0 66%', display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            <div className="label-muted" style={{ textAlign:'center', fontWeight:700 }}>Pokemon</div>
+            {team.map((name, idx) => (
+              <input
+                key={`mon-${idx}`}
+                list="team-mons"
+                value={name}
+                onChange={e => updateSlot(idx, e.target.value)}
+                placeholder={`Slot ${idx + 1}`}
+                className="input"
+                style={{ height:30, borderRadius:8 }}
+              />
+            ))}
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            <div className="label-muted" style={{ textAlign:'center', fontWeight:700 }}>Held Item</div>
+            {heldItems.map((val, idx) => (
+              <input
+                key={`item-${idx}`}
+                list="team-items"
+                value={val}
+                onChange={e => updateItemSlot(idx, e.target.value)}
+                placeholder={`Item ${idx + 1}`}
+                className="input"
+                style={{ height:30, borderRadius:8 }}
+                onMouseEnter={(e) => {
+                  const obj = ITEM_INDEX.byName.get(normalizeKey(val));
+                  const text = cleanItemDescription(obj?.description || '');
+                  if (text) showTooltip(e.currentTarget, text, 2000);
+                }}
+                onMouseLeave={hideTooltip}
+              />
+            ))}
+          </div>
         </div>
         <div style={{ flex:'1 0 34%', flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center' }}>
           <div style={{ fontWeight:600, textAlign:'center', marginBottom:4 }}>{teamLabel}</div>
@@ -267,6 +394,9 @@ export default function TeamBuilder() {
               const mon = mons[idx];
               const dex = mon?.dex ?? mon?.id;
               const img = dex != null ? `${SPRITES_BASE}${dex}${SPRITES_EXT}` : null;
+              const itemName = heldItems[idx] || '';
+              const itemObj = ITEM_INDEX.byName.get(normalizeKey(itemName));
+              const itemIcon = itemObj?.id != null ? `${ITEM_ICON_BASE}${itemObj.id}.png` : (itemName ? ITEM_PLACEHOLDER : null);
               return (
                 <div key={idx} style={{
                   width:'100%',
@@ -275,11 +405,20 @@ export default function TeamBuilder() {
                   borderRadius:'50%',
                   background:'var(--surface)',
                   border:'1px solid var(--divider)',
+                  position:'relative',
                   display:'flex',
                   justifyContent:'center',
                   alignItems:'center'
                 }}>
                   {img && <img src={img} alt={mon?.name} style={{ width:'80%', height:'80%' }} />}
+                  {itemIcon && (
+                    <img
+                      src={itemIcon}
+                      alt={itemName}
+                      title={itemName}
+                      style={{ position:'absolute', left:2, bottom:2, width:22, height:22, borderRadius:4, background:'var(--surface)', boxShadow:'0 0 0 1px var(--divider)' }}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -289,6 +428,11 @@ export default function TeamBuilder() {
       <datalist id="team-mons">
         {MON_LIST.map(m => (
           <option key={m.name} value={m.name} />
+        ))}
+      </datalist>
+      <datalist id="team-items">
+        {ITEM_LIST.map(i => (
+          <option key={i.id ?? i.name} value={i.name} />
         ))}
       </datalist>
 
@@ -317,10 +461,27 @@ export default function TeamBuilder() {
                 const weak = [...(b.x4||[]), ...(b.x2||[])];
                 const res = [...(b.x05||[]), ...(b.x0||[])];
                 const types = [...new Set(mon.types)];
+                const itemName = heldItems[idx] || '';
                 return (
                   <tr key={idx} style={{ height:72 }}>
-                    <td style={{ ...cellStyle, textAlign:'center', verticalAlign:'middle', fontWeight:600 }}>
-                      {mon.name.charAt(0).toUpperCase() + mon.name.slice(1)}
+                    <td style={{ ...cellStyle, textAlign:'center', verticalAlign:'middle' }}>
+                      <div style={{ fontWeight:600 }}>
+                        {mon.name.charAt(0).toUpperCase() + mon.name.slice(1)}
+                      </div>
+                      <div
+                        className="label-muted"
+                        style={{ fontSize:12, marginTop:2 }}
+                        onMouseEnter={(e) => {
+                          if (!itemName) return;
+                          const obj = ITEM_INDEX.byName.get(normalizeKey(itemName));
+                          const text = cleanItemDescription(obj?.description || '');
+                          if (text) showTooltip(e.currentTarget, text, 0);
+                        }}
+                        onMouseLeave={hideTooltip}
+                        title=""
+                      >
+                        Held Item: {itemName}
+                      </div>
                     </td>
                     <td style={cellStyle}>
                       <div style={{ display:'flex', flexWrap:'wrap', gap:6, minHeight:52, height:'100%', alignContent:'center', alignItems:'center', justifyContent:'center' }}>
@@ -369,6 +530,24 @@ export default function TeamBuilder() {
           )) : <span>None</span>}
         </div>
       </div>
+      {tip.visible && (
+        <div style={{
+          position:'fixed',
+          left: tip.x,
+          top: tip.y,
+          zIndex: 1000,
+          maxWidth: 320,
+          padding: '8px 10px',
+          borderRadius: 6,
+          border: '1px solid var(--divider)',
+          background: 'var(--surface)',
+          color: 'var(--text)',
+          boxShadow: '0 8px 24px rgba(0,0,0,.25)',
+          pointerEvents: 'none'
+        }}>
+          {tip.text}
+        </div>
+      )}
     </div>
   );
 }

@@ -20,6 +20,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     localStorage.removeItem("uiScale");
     return initial;
   });
+  const [ocrEnabled, setOcrEnabled] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('ocrEnabled') ?? 'true'); }
+    catch { return true; }
+  });
 
   const scaleWrapRef = useRef(null);
   const startScaleRef = useRef(0);
@@ -111,10 +115,20 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       setOpen(false);
     }
   }
-
-  async function onRefresh() {
+  function broadcastOcrEnabledChange(next) {
+    try { window.dispatchEvent(new CustomEvent('ocr-enabled-changed', { detail: { enabled: next } })); } catch {}
+  }
+  async function onToggleOCR(next) {
     try {
-      await window.app?.refreshApp?.();
+      setOcrEnabled(next);
+      try { localStorage.setItem('ocrEnabled', JSON.stringify(next)); } catch {}
+      // Persist in main settings and relaunch app to apply
+      show(next ? 'Enabling OCR… restarting' : 'Disabling OCR… restarting', 'info');
+      await window.app?.setOcrEnabled?.(next);
+      // App will relaunch; close menu immediately
+    } catch (err) {
+      console.error('[OptionsMenu] toggle OCR error:', err);
+      show('Failed to apply OCR setting', 'error');
     } finally {
       setOpen(false);
     }
@@ -215,10 +229,17 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
           {isWindows && (
             <>
               <Divider />
-              <MenuItem label="Reload OCR" onClick={onReloadOCR} />
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px' }}>
+                <span style={{ color:'var(--text)', fontWeight:600 }}>OCR On/Off</span>
+                <label style={{ display:'inline-flex', alignItems:'center', gap:8 }}>
+                  <input type="checkbox" checked={!!ocrEnabled} onChange={(e)=> onToggleOCR(e.target.checked)} />
+                  <span className="label-muted" style={{ fontSize:12 }}>{ocrEnabled ? 'On' : 'Off'}</span>
+                </label>
+              </div>
+              <Divider />
+              {ocrEnabled && (<MenuItem label="Reload OCR" onClick={onReloadOCR} />)}
             </>
           )}
-          <MenuItem label="Refresh app" onClick={onRefresh} />
         </div>
       )}
 

@@ -52,7 +52,7 @@ function isNewerVersion(a, b) {
   return false; // equal
 }
 function liveAppDataDir() {
-  return path.join(process.env.LOCALAPPDATA || app.getPath('userData'), 'PokemmoLive');
+  return path.join(LOCAL_APPDATA, 'PokemmoLive');
 }
 
 function settingsPath() {
@@ -184,7 +184,10 @@ function notifyWin(title, body) {
 }
 
 // ===== Settings storage (for OCR Setup) =====
-const LOCAL_APPDATA = process.env.LOCALAPPDATA || app.getPath('userData'); // prefer real LocalAppData
+const LOCAL_APPDATA = (() => {
+  try { return app.getPath('localAppData'); } catch {}
+  return process.env.LOCALAPPDATA || app.getPath('userData');
+})(); // prefer real LocalAppData
 const POKELIVE_DIR = path.join(LOCAL_APPDATA, 'PokemmoLive');
 try { fs.mkdirSync(POKELIVE_DIR, { recursive: true }); } catch {}
 const SETTINGS_PATH = path.join(POKELIVE_DIR, 'settings.json');
@@ -198,6 +201,21 @@ function writeOcrSettings(obj) {
     fs.writeFileSync(SETTINGS_PATH, JSON.stringify(obj || {}, null, 2), 'utf8');
     return true;
   } catch (e) { log('writeOcrSettings error', e?.message || e); return false; }
+}
+
+async function relaunchApp({ ocrDisabledFlag = false } = {}) {
+  try { await stopLiveRouteOCR(); } catch {}
+  try {
+    const args = process.argv.slice(1).filter(a => a !== '--ocr-disabled');
+    if (ocrDisabledFlag) args.push('--ocr-disabled');
+    notifyWin('Restarting', ocrDisabledFlag ? 'Reopening without Live OCR' : 'Reopening with Live OCR');
+    app.relaunch({ args });
+  } catch (e) {
+    log('relaunch error', e?.message || e);
+  }
+  try { app.quit(); } catch {}
+  // hard fallback in dev
+  setTimeout(() => { try { process.exit(0); } catch {} }, 1500);
 }
 
 // ===== Updater wiring =====
@@ -341,10 +359,45 @@ async function startLiveRouteOCR() {
     log('startLiveRouteOCR exception:', e?.message || e);
   }
 }
-function stopLiveRouteOCR() {
-  try { if (ocrProc && !ocrProc.killed) { ocrProc.kill(); log('LiveRouteOCR killed'); } }
-  catch (e) { log('stopLiveRouteOCR failed', e?.message || e); }
-  finally { ocrProc = null; }
+async function stopLiveRouteOCR() {
+  try {
+    const pid = ocrProc?.pid || null;
+    if (process.platform === 'win32') {
+      // Attempt to kill by PID and entire tree; then also kill by image name to catch strays
+      if (pid) {
+        await new Promise((resolve) => {
+          const k = spawn('taskkill', ['/PID', String(pid), '/T', '/F'], { windowsHide: true });
+          k.on('exit', () => resolve());
+          k.on('error', () => resolve());
+          setTimeout(resolve, 1500);
+        });
+      }
+      await new Promise((resolve) => {
+        const k2 = spawn('taskkill', ['/IM', 'LiveRouteOCR.exe', '/T', '/F'], { windowsHide: true });
+        k2.on('exit', () => resolve());
+        k2.on('error', () => resolve());
+        setTimeout(resolve, 1500);
+      });
+      // Also attempt to stop any sibling processes and name variants via PowerShell as a fallback
+      await new Promise((resolve) => {
+        const psCode = `
+          $ErrorActionPreference = 'SilentlyContinue';
+          Get-Process -Name 'LiveRouteOCR','LiveBattleOCR' | Stop-Process -Force;
+        `.Trim();
+        const ps = spawn('powershell.exe', ['-NoProfile','-NonInteractive','-Command', psCode], { windowsHide: true });
+        ps.on('exit', () => resolve());
+        ps.on('error', () => resolve());
+        setTimeout(resolve, 1500);
+      });
+      log('LiveRouteOCR stop issued (taskkill + Stop-Process)');
+    } else {
+      try { if (ocrProc && !ocrProc.killed) { ocrProc.kill('SIGTERM'); } } catch {}
+    }
+  } catch (e) {
+    log('stopLiveRouteOCR failed', e?.message || e);
+  } finally {
+    ocrProc = null;
+  }
 }
 
 const preloadCandidates = [
@@ -367,6 +420,7 @@ function createMainWindow() {
     width: 1220,
     height: 780,
     backgroundColor: '#0b0f1a',
+    // Defer showing until content is ready to avoid a long blank window
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
@@ -394,11 +448,43 @@ function createMainWindow() {
       mainWindow.loadFile(indexFile);
     });
     mainWindow.loadURL(devURL);
+    // Open devtools only when explicitly requested by env var
+    if (String(process.env.OPEN_DEVTOOLS || '').trim() === '1') {
+      try { mainWindow.webContents.openDevTools({ mode: 'detach' }); } catch {}
+    }
   } else {
     mainWindow.loadFile(indexFile);
   }
 
-  mainWindow.on('ready-to-show', () => { mainWindow?.show(); });
+  // Show when content is ready; keep a failsafe so it never stays hidden
+  mainWindow.on('ready-to-show', () => { try { if (!mainWindow.isVisible()) mainWindow.show(); } catch {} });
+  mainWindow.webContents.once('did-finish-load', () => { try { if (!mainWindow.isVisible()) mainWindow.show(); } catch {} });
+  setTimeout(() => { try { if (mainWindow && !mainWindow.isDestroyed() && !mainWindow.isVisible()) mainWindow.show(); } catch {} }, 15000);
+
+  // In dist-watch dev mode, auto-reload renderer on file changes and relaunch on main changes
+  if (String(process.env.ELECTRON_DIST_WATCH || '') === '1') {
+    try {
+      const debounce = (fn, ms=200) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+      const reload = debounce(() => {
+        try { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.reloadIgnoringCache(); } catch {}
+      }, 250);
+      const distDir = path.join(__dirname, '..', 'dist');
+      try {
+        fs.watch(distDir, { recursive: true }, (evt, fname) => {
+          // Ignore sourcemaps if any
+          if (fname && /\.map$/.test(fname)) return;
+          reload();
+        });
+      } catch {}
+      // Watch main process sources; relaunch app when they change
+      const electronDir = __dirname;
+      try {
+        fs.watch(electronDir, { recursive: false }, debounce(() => {
+          try { app.relaunch(); app.exit(0); } catch {}
+        }, 400));
+      } catch {}
+    } catch {}
+  }
   // Guard against scenarios where the window failed to initialize
   // to prevent startup crashes like "Cannot read properties of undefined"
   mainWindow.webContents?.setWindowOpenHandler(({ url }) => {
@@ -435,7 +521,16 @@ ipcMain.handle('check-for-updates', async () => {
   }
 });
 
-ipcMain.handle('reload-ocr', async () => { stopLiveRouteOCR(); await startLiveRouteOCR(); return true; });
+ipcMain.handle('reload-ocr', async () => { await stopLiveRouteOCR(); await startLiveRouteOCR(); return true; });
+ipcMain.handle('ocr:set-enabled', async (_evt, payload = {}) => {
+  const enabled = !!payload?.enabled;
+  const s = readOcrSettings();
+  const next = { ...s, ocrEnabled: enabled };
+  writeOcrSettings(next);
+  await relaunchApp({ ocrDisabledFlag: !enabled });
+  return true;
+});
+ipcMain.handle('stop-ocr', async () => { await stopLiveRouteOCR(); return true; });
 ipcMain.handle('refresh-app', async () => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.reloadIgnoringCache(); return true; });
 
 // --- OCR Setup IPC ---
@@ -457,7 +552,7 @@ ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
     ocrAggressiveness: payload?.ocrAggressiveness || s?.ocrAggressiveness || 'balanced',
   };
   writeOcrSettings(next);
-  stopLiveRouteOCR(); await startLiveRouteOCR();
+  if (next?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); }
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return true;
 });
@@ -495,7 +590,15 @@ ipcMain.handle('start-ocr', async () => { await startLiveRouteOCR(); return true
 app.whenReady().then(async () => {
   createMainWindow();
   setupAutoUpdates();
-  setTimeout(() => { startLiveRouteOCR().catch(() => {}); }, 800);
+  // Start OCR only if enabled in settings
+  setTimeout(() => {
+    try {
+      const s = readOcrSettings();
+      const enabled = (s?.ocrEnabled !== false);
+      if (enabled) startLiveRouteOCR().catch(() => {});
+      else log('LiveRouteOCR disabled by settings; not starting');
+    } catch {}
+  }, 800);
 });
 app.on('before-quit', () => { stopLiveRouteOCR(); });
 app.on('window-all-closed', () => { stopLiveRouteOCR(); if (process.platform !== 'darwin') app.quit(); });
@@ -584,8 +687,8 @@ ipcMain.handle('live:save-settings', async (_evt, payload) => {
     ...(payload && typeof payload === 'object' ? payload : {})
   };
   fs.writeFileSync(file, JSON.stringify(merged, null, 2), 'utf8');
-   // restart OCR helper so new settings take effect
-  try { stopLiveRouteOCR(); await startLiveRouteOCR(); } catch {}
+   // restart OCR helper so new settings take effect (only if enabled)
+  try { const s = readOcrSettings(); if (s?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); } } catch {}
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return { ok: true, path: file, saved: merged };
 });

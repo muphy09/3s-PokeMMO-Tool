@@ -32,6 +32,10 @@ const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-
 const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
 
 const SHOW_CONFIDENCE = (import.meta?.env?.VITE_SHOW_CONFIDENCE ?? '1') === '1';
+function isOcrEnabled() {
+  try { return JSON.parse(localStorage.getItem('ocrEnabled') ?? 'true'); }
+  catch { return true; }
+}
 function formatConfidence(c){
   if (c == null || isNaN(c)) return null;
   const num = Number(c);
@@ -1461,8 +1465,10 @@ class LiveRouteClient {
     this.pathToggle = false;
     this.lastMsgTs = 0;
     this.lastPayload = null; // cache last message
+    this.disabled = !isOcrEnabled();
   }
   connect(){
+    if (this.disabled || !isOcrEnabled()) return;
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
     try{
       const url = this.pathToggle ? 'ws://127.0.0.1:8765/live/' : 'ws://127.0.0.1:8765/live';
@@ -1477,12 +1483,12 @@ class LiveRouteClient {
       };
       const onClose = () => {
         this.pathToggle = !this.pathToggle;
-        this.scheduleReconnect();
+        if (!this.disabled && isOcrEnabled()) this.scheduleReconnect();
       };
       this.ws.onclose = onClose;
       this.ws.onerror = onClose;
     }catch{
-      this.scheduleReconnect();
+      if (!this.disabled && isOcrEnabled()) this.scheduleReconnect();
     }
   }
   on(fn){
@@ -1494,6 +1500,7 @@ class LiveRouteClient {
     return () => this.listeners.delete(fn);
   }
   scheduleReconnect(){
+    if (this.disabled || !isOcrEnabled()) return;
     if (this.reconnectTimer) return;
     this.reconnectTimer = window.setTimeout(()=> {
       this.reconnectTimer = null;
@@ -1508,7 +1515,17 @@ class LiveRouteClient {
     this.ws = null;
     this.lastPayload = null;          // <-- clear cached message so UI resets
     this.pathToggle = !this.pathToggle;
-    setTimeout(()=> this.connect(), 100);
+    if (!this.disabled && isOcrEnabled()) setTimeout(()=> this.connect(), 100);
+  }
+  setEnabled(enabled){
+    this.disabled = !enabled;
+    if (this.disabled) {
+      try { if (this.ws) this.ws.close(); } catch {}
+      this.ws = null;
+      this.lastPayload = null;
+    } else {
+      this.connect();
+    }
   }
 }
 const liveRouteClient = new LiveRouteClient();
@@ -1521,8 +1538,10 @@ class LiveBattleClient {
     this.pathToggle = false;
     this.lastMsgTs = 0;
     this.lastPayload = null;
+    this.disabled = !isOcrEnabled();
   }
   connect(){
+    if (this.disabled || !isOcrEnabled()) return;
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) return;
     try{
       const url = this.pathToggle ? 'ws://127.0.0.1:8765/battle/' : 'ws://127.0.0.1:8765/battle';
@@ -1536,12 +1555,12 @@ class LiveBattleClient {
       };
       const onClose = () => {
         this.pathToggle = !this.pathToggle;
-        this.scheduleReconnect();
+        if (!this.disabled && isOcrEnabled()) this.scheduleReconnect();
       };
       this.ws.onclose = onClose;
       this.ws.onerror = onClose;
     }catch{
-      this.scheduleReconnect();
+      if (!this.disabled && isOcrEnabled()) this.scheduleReconnect();
     }
   }
   on(fn){
@@ -1552,6 +1571,7 @@ class LiveBattleClient {
     return () => this.listeners.delete(fn);
   }
   scheduleReconnect(){
+    if (this.disabled || !isOcrEnabled()) return;
     if (this.reconnectTimer) return;
     this.reconnectTimer = window.setTimeout(()=> {
       this.reconnectTimer = null;
@@ -1566,7 +1586,17 @@ class LiveBattleClient {
     this.ws = null;
     this.lastPayload = null;
     this.pathToggle = !this.pathToggle;
-    setTimeout(()=> this.connect(), 100);
+    if (!this.disabled && isOcrEnabled()) setTimeout(()=> this.connect(), 100);
+  }
+  setEnabled(enabled){
+    this.disabled = !enabled;
+    if (this.disabled) {
+      try { if (this.ws) this.ws.close(); } catch {}
+      this.ws = null;
+      this.lastPayload = null;
+    } else {
+      this.connect();
+    }
   }
 }
 const liveBattleClient = new LiveBattleClient();
@@ -1619,6 +1649,7 @@ function coerceBattleIncoming(msg){
 /* ======================= LIVE ROUTE PANEL ======================= */
 
 function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
+  const [ocrEnabled, setOcrEnabled] = useState(isOcrEnabled());
   // Restore last confirmed route so it persists between tab switches
   const LAST_KEY = 'liveRouteLast';
   const lastRoute = (() => {
@@ -1695,7 +1726,26 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   }, [areasIndex, displayMap]);
 
   // Handle messages
+  // React to OCR enabled/disabled changes
   useEffect(() => {
+    const onChange = (e) => {
+      const en = !!(e?.detail?.enabled ?? isOcrEnabled());
+      setOcrEnabled(en);
+      try { liveRouteClient.setEnabled(en); } catch {}
+      if (!en) {
+        setConnected(false);
+        setIsStale(false);
+      }
+    };
+    window.addEventListener('ocr-enabled-changed', onChange);
+    return () => window.removeEventListener('ocr-enabled-changed', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!ocrEnabled) {
+      try { liveRouteClient.setEnabled(false); } catch {}
+      return; // Don't connect or listen when disabled
+    }
     const off = liveRouteClient.on((msg) => {
       const coerced = coerceIncoming(msg);
       if (!coerced) return;
@@ -1777,7 +1827,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       window.removeEventListener('focus', onFocus);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [areasIndex, locIndex, rawText]);
+  }, [areasIndex, locIndex, rawText, ocrEnabled]);
 
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
@@ -1799,6 +1849,14 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       } catch {}
     }
   };
+
+  if (!ocrEnabled) {
+    return (
+      <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        <div className="label-muted">OCR disabled in settings</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
@@ -1930,6 +1988,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
 /* ======================= LIVE BATTLE PANEL ======================= */
 function LiveBattlePanel({ onViewMon }){
+  const [ocrEnabled, setOcrEnabled] = useState(isOcrEnabled());
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(null);
   const [mons, setMons] = useState([]);
@@ -1948,7 +2007,26 @@ function LiveBattlePanel({ onViewMon }){
     try { localStorage.setItem('liveBattleShowCaught', JSON.stringify(showCaught)); } catch {}
   }, [showCaught]);
   
+  // React to OCR enabled/disabled changes
   useEffect(() => {
+    const onChange = (e) => {
+      const en = !!(e?.detail?.enabled ?? isOcrEnabled());
+      setOcrEnabled(en);
+      try { liveBattleClient.setEnabled(en); } catch {}
+      if (!en) {
+        setConnected(false);
+        setIsStale(false);
+      }
+    };
+    window.addEventListener('ocr-enabled-changed', onChange);
+    return () => window.removeEventListener('ocr-enabled-changed', onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!ocrEnabled) {
+      try { liveBattleClient.setEnabled(false); } catch {}
+      return; // Skip binding when disabled
+    }
     const off = liveBattleClient.on((msg) => {
       const coerced = coerceBattleIncoming(msg);
       if (!coerced) return;
@@ -2050,7 +2128,7 @@ function LiveBattlePanel({ onViewMon }){
       clearInterval(pulse);
       window.removeEventListener('force-live-reconnect', onForce);
     };
-  }, [rawText]);
+  }, [rawText, ocrEnabled]);
 
   const statusPill = (() => {
     if (!connected) return <span className="px-2 py-1 rounded-xl bg-red-600/20 text-red-300 text-xs">Disconnected</span>;
@@ -2082,6 +2160,14 @@ function LiveBattlePanel({ onViewMon }){
         .catch(() => {});
     });
   }, [mons]);
+
+  if (!ocrEnabled) {
+    return (
+      <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
+        <div className="label-muted">OCR disabled in settings</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>

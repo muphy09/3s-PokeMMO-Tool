@@ -3,24 +3,37 @@
 
 ## [2.7.9] - 2025-09
 ### Added
-- Secondary "Type" Filter in Pokemon Search
+- # Secondary "Type" Filter in Pokemon Search
   - Search Pokemon by 2 Types now, appearing only if the 1st Type is selected
+- # Items in Team Builder
+  - Included Held Items to be saved alongside your Team
+    - Hover for description
 
 ### Fixed
-- Sprites
-  - Implemented robust PokeAPI form slug resolution and fallback to `pokemon-form` endpoint for alternate forms (e.g., Castform Sunny/Rainy/Snowy, Rotom forms, Giratina-Origin). Missing images for forms now resolve their sprites correctly.
+- # Sprites
+  - Missing images for some forms now resolve their sprites correctly (Castform Sunny/Rainy/Snowy, Giratina-Origin).
+
+- # Options Menu  
+  - Check for Updates
+    - No longer gives you conflicting data with the in-app toast - Leaves it to Windows
+  - OCR On/Off
+    - Manually disable the OCR if it's not used (saves performance)
+  - Reload OCR
+    - Now *actually* reloads the OCR
+  - Removed "Refresh App"
+    - Not needed
 
 ---
 
 ## [2.7.8]- 2025-09
 ### Added
-- Teambuilder Tab UI Overhaul
+- # Teambuilder Tab UI Overhaul
   - A Grid for your Team now generates as Pokemon are selected into the Team
   - Now includes Pokemon sprites beneath your Team Name
   - Pokemon Type information now included in the new Team Grid
 
 ### Fixed
-- Team Builder Tab
+- # Team Builder Tab
   - Inconsistent Type Chip sizes in the Team Builder Tab now all appear uniform
   - Clicking 'Save' while making changes to a loaded team now overwrites the saved team
     - Previously you would have to name the team the same name to overwrite it

@@ -166,6 +166,7 @@ contextBridge.exposeInMainWorld('app', {
   // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),
   stopOCR:       () => invokeSafe('stop-ocr', undefined, true),
+  setOcrEnabled: (enabled) => invokeSafe('ocr:set-enabled', { enabled: !!enabled }, false),
 
   // Persisted setup + debug
   getOcrSetup:    () => invokeSafe('live:get-setup', undefined, null),
