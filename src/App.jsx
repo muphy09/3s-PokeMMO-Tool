@@ -277,7 +277,7 @@ function localSpriteCandidates(mon){
   for (const b of bases){ for (const e of exts){ if (id) out.push(`${b}${id}${e}`); if (key) out.push(`${b}${key}${e}`); } }
   return [...new Set(out)];
 }
-function spriteSources(mon){
+  function spriteSources(mon){
   if (!mon) return [];
   const arr = [];
 
@@ -285,7 +285,7 @@ function spriteSources(mon){
   if (mon.dex != null) {
     arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
     arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
-  }
+    }
 
   // Fallbacks to any provided or local sprites
   if (mon.sprite) arr.push(mon.sprite);
@@ -296,26 +296,105 @@ function spriteSources(mon){
 
   return [...new Set(arr)].filter(Boolean);
 }
-function Sprite({ mon, size=42, alt='' }){
-  const srcs = React.useMemo(()=> spriteSources(mon), [mon]);
-  const [idx, setIdx] = useState(0);
-  const [pokeSrc, setPokeSrc] = useState(null);
-  useEffect(()=>{ setIdx(0); setPokeSrc(null); }, [mon]);
-  const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+  // Build best-guess PokeAPI slugs for alternate forms
+  function buildPokeApiSlugCandidates(mon){
+    const out = [];
+    const norm = (s='') => String(s).toLowerCase().normalize('NFKD')
+      .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
+    const add = (s) => { if (s && !out.includes(s)) out.push(s); };
 
-  const handleError = () => {
-    if (idx < srcs.length - 1) {
-      setIdx(idx + 1);
-    } else if (!pokeSrc && mon?.slug) {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${mon.slug}`)
-        .then(r => (r.ok ? r.json() : null))
-        .then(d => {
-          const s = d?.sprites?.front_default || d?.sprites?.other?.["official-artwork"]?.front_default;
-          if (s) setPokeSrc(s);
-        })
-        .catch(()=>{});
+    if (!mon) return out;
+    add(mon.slug);
+    add(norm(mon.name));
+
+    const m = String(mon.name||'').match(/^(.*?)\s*\((.+)\)\s*$/);
+    if (m) {
+      const base = norm(m[1]);
+      const rawLabel = norm(m[2]);
+      // direct join
+      add(`${base}-${rawLabel}`);
+      // strip common suffix words like "form/forme/style/mode/trim"
+      let label = rawLabel
+        .replace(/\bforms?\b/g,'')
+        .replace(/\bformes?\b/g,'')
+        .replace(/\bmode\b/g,'')
+        .replace(/\bstyle\b/g,'')
+        .replace(/\bpattern\b/g,'')
+        .replace(/\bcoat\b/g,'')
+        .replace(/\bcloak\b/g,'')
+        .replace(/\btrim\b/g,'')
+        .replace(/\bsize\b/g,'')
+        .replace(/\bstandard-?mode\b/g,'standard')
+        .replace(/--+/g,'-').replace(/^-|-$/g,'');
+      if (label) add(`${base}-${label}`);
+      // regional adjective normalization
+      let label2 = label
+        .replace(/\balolan\b/,'alola')
+        .replace(/\bgalarian\b/,'galar')
+        .replace(/\bhisuian\b/,'hisui')
+        .replace(/\bpaldean\b/,'paldea')
+        .replace(/\beast-sea\b/,'east')
+        .replace(/\bwest-sea\b/,'west')
+        .replace(/--+/g,'-').replace(/^-|-$/g,'');
+      if (label2 && label2 !== label) add(`${base}-${label2}`);
+      // try also slug-without -form/forme suffix
+      if (mon.slug) {
+        const s1 = mon.slug.replace(/-forms?\b/,'').replace(/-formes?\b/,'');
+        add(s1);
+      }
     }
-  };
+    return out.filter(Boolean);
+  }
+
+  async function resolvePokeapiSprite(mon){
+    const candidates = buildPokeApiSlugCandidates(mon);
+    // Try pokemon endpoint first
+    for (const slug of candidates){
+      try {
+        const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
+        if (!r.ok) continue;
+        const d = await r.json();
+        const s = d?.sprites?.front_default || d?.sprites?.other?.["official-artwork"]?.front_default;
+        if (s) return s;
+      } catch {}
+    }
+    // Try pokemon-form endpoint as a fallback for forms that only exist there
+    for (const slug of candidates){
+      try {
+        const r = await fetch(`https://pokeapi.co/api/v2/pokemon-form/${slug}`);
+        if (!r.ok) continue;
+        const d = await r.json();
+        const s = d?.sprites?.front_default;
+        if (s) return s;
+      } catch {}
+    }
+    return null;
+  }
+
+  function Sprite({ mon, size=42, alt='' }){
+    const srcs = React.useMemo(()=> spriteSources(mon), [mon]);
+    const [idx, setIdx] = useState(0);
+    const [pokeSrc, setPokeSrc] = useState(null);
+    const [triedPokeApi, setTriedPokeApi] = useState(false);
+    useEffect(()=>{
+      setIdx(0); setPokeSrc(null); setTriedPokeApi(false);
+      // Proactively resolve sprites for entries without a canonical dex/id (alt forms)
+      const noDex = mon && (mon.dex == null && mon.id == null);
+      if (noDex) {
+        setTriedPokeApi(true);
+        resolvePokeapiSprite(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
+      }
+    }, [mon]);
+    const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+
+    const handleError = () => {
+      if (idx < srcs.length - 1) {
+        setIdx(idx + 1);
+      } else if (!triedPokeApi && mon) {
+        setTriedPokeApi(true);
+        resolvePokeapiSprite(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
+      }
+    };
 
   return (
     <img
@@ -325,7 +404,7 @@ function Sprite({ mon, size=42, alt='' }){
       onError={handleError}
     />
   );
-}
+  }
 
 /* ---------- Type colors (Gen 1–5) ---------- */
 const TYPE_COLORS = {
@@ -2348,21 +2427,8 @@ function App(){
     };
   }, []);
 
-  useEffect(() => {
-    let t;
-    const show = () => {
-      setShowUpToDate(true);
-      t = setTimeout(() => setShowUpToDate(false), 3000);
-    };
-    const offNA = window.app?.onUpdateNotAvailable?.(() => show());
-    (async () => {
-      try {
-        const res = await window.app?.checkUpdates?.();
-        if (res?.status === 'uptodate') show();
-      } catch {}
-    })();
-    return () => { if (t) clearTimeout(t); try { offNA?.(); } catch {}; };
-  }, []);
+  // Suppress the in-app "Up to date" banner; Windows handles update UX.
+  useEffect(() => { /* no-op */ }, []);
 
   useEffect(() => {
     if (mode !== 'market') return;

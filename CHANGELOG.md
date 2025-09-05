@@ -6,6 +6,10 @@
 - Secondary "Type" Filter in Pokemon Search
   - Search Pokemon by 2 Types now, appearing only if the 1st Type is selected
 
+### Fixed
+- Sprites
+  - Implemented robust PokeAPI form slug resolution and fallback to `pokemon-form` endpoint for alternate forms (e.g., Castform Sunny/Rainy/Snowy, Rotom forms, Giratina-Origin). Missing images for forms now resolve their sprites correctly.
+
 ---
 
 ## [2.7.8]- 2025-09

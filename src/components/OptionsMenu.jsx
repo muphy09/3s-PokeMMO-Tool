@@ -70,16 +70,11 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
 
   const fmtVer = (v) => (v ? `v${v}` : "");
   
+  // Disable in-app update toasts; rely on Windows notifications/prompts instead.
   useEffect(() => {
-    const offDl = window.app?.onUpdateDownloaded?.((ver) => {
-      show(`Update ${fmtVer(ver)} downloaded — restart to apply.`, "info");
-    });
-    const offAvail = window.app?.onUpdateAvailable?.((ver) => {
-      show(`Downloading update ${fmtVer(ver)}…`, "info");
-    });
-    const offNA = window.app?.onUpdateNotAvailable?.(() => {
-      show("Up to date!", "success");
-    });
+    const offDl = window.app?.onUpdateDownloaded?.(() => {});
+    const offAvail = window.app?.onUpdateAvailable?.(() => {});
+    const offNA = window.app?.onUpdateNotAvailable?.(() => {});
     return () => {
       try { offDl?.(); } catch {}
       try { offAvail?.(); } catch {}
@@ -87,47 +82,15 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     };
   }, []);
 
-  // On mount, ask the main process for any pending update status so we
-  // don't miss a quick "update downloaded" event fired before listeners
-  // attach. Only surface messages when an update is in progress or ready.
-  useEffect(() => {
-    async function checkInitial() {
-      try {
-        const res = await window.app?.checkUpdates?.();
-        if (res?.status === "downloaded" && res?.version) {
-          show(`Update ${fmtVer(res.version)} downloaded — restart to apply.`, "info");
-        } else if ((res?.status === "downloading" || res?.status === "available") && res?.version) {
-          show(`Downloading update ${fmtVer(res.version)}…`, "info");
-        }
-      } catch {}
-    }
-    checkInitial();
-  }, []);
+  // Suppress initial update status toast; Windows handles any prompts.
+  useEffect(() => { /* no-op */ }, []);
   
   async function onCheckUpdates() {
     try {
-      show("Checking for updates…", "info");
-
-      // Ask main for current version and an update check result
-      const current = await window.app?.getVersion?.().catch(() => null);
-      const res = await window.app?.checkUpdates?.();
-
-      const status = res?.status || "uptodate";
-
-      if (status === "downloaded" && res?.version) {
-        show(`Update ${fmtVer(res.version)} downloaded — restart to apply.`, "success");
-      } else if ((status === "downloading" || status === "available") && res?.version) {
-        show(`Downloading update ${fmtVer(res.version)}…`, "info");
-      } else if (status === "uptodate") {
-        show(`Up to date${current ? ` (v${current})` : ""}!`, "success");
-      } else if (status === "error") {
-        show("Update check failed.", "error");
-        console.error("[OptionsMenu] checkUpdates error:", res?.message);
-      } else {
-        show("Up to date!", "success");
-      }
+      // Trigger update check silently; Windows will handle notifications/prompts.
+      await window.app?.checkUpdates?.();
     } catch (err) {
-      show("Update check failed.", "error");
+      // Keep errors in console for troubleshooting, but no UI toast.
       console.error("[OptionsMenu] checkUpdates error:", err);
     } finally {
       setOpen(false);
