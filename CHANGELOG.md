@@ -5,7 +5,7 @@
 ### Added
 - Secondary "Type" Filter in Pokemon Search
   - Search Pokemon by 2 Types now, appearing only if the 1st Type is selected
-- # Items in Team Builder
+- Items in Team Builder
   - Included Held Items to be saved alongside your Team
     - Hover for description
 
