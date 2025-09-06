@@ -486,22 +486,209 @@ function useAbilityDesc(name){
   return desc;
 }
 
-function AbilityPill({ label, name }){
+function AbilityPill({ label, name, compact = false }){
   if (!name) return null;
   const desc = useAbilityDesc(name);
+  // Unified ability text size; overflow handled with ellipsis
+  const fontPx = 13;
   return (
     <div style={{
       display:'flex', alignItems:'center', gap:6,
-      padding:'4px 8px',
+      padding: compact ? '2px 6px' : '4px 8px',
       borderRadius:8,
       background:'var(--surface)',
-      border:'1px solid var(--divider)'
+      border:'1px solid var(--divider)',
+      minWidth: 0
     }}>
-      <span className="label-muted" style={{ fontSize:12 }}>{label}</span>
-      <span style={{ fontWeight:600, color:'var(--accent)' }} title={desc}>{titleCase(name)}</span>
+      <span className="label-muted" style={{ fontSize: compact ? 11 : 12 }}>{label}</span>
+      <span
+        style={{
+          fontWeight:600,
+          color:'var(--accent)',
+          whiteSpace:'nowrap',
+          overflow:'hidden',
+          textOverflow:'ellipsis',
+          display:'inline-block',
+          minWidth: 0,
+          maxWidth: '100%',
+          fontSize: fontPx
+        }}
+        title={desc || titleCase(name)}
+      >{titleCase(name)}</span>
     </div>
   );
 }
+
+// ---------- Nature data (PokeAPI) ----------
+const NATURE_CACHE_KEY = 'nature-list-v1';
+const STATIC_NATURES = [
+  { name: 'Hardy' },
+  { name: 'Lonely', inc: 'attack', dec: 'defense' },
+  { name: 'Brave', inc: 'attack', dec: 'speed' },
+  { name: 'Adamant', inc: 'attack', dec: 'special-attack' },
+  { name: 'Naughty', inc: 'attack', dec: 'special-defense' },
+  { name: 'Bold', inc: 'defense', dec: 'attack' },
+  { name: 'Docile' },
+  { name: 'Relaxed', inc: 'defense', dec: 'speed' },
+  { name: 'Impish', inc: 'defense', dec: 'special-attack' },
+  { name: 'Lax', inc: 'defense', dec: 'special-defense' },
+  { name: 'Timid', inc: 'speed', dec: 'attack' },
+  { name: 'Hasty', inc: 'speed', dec: 'defense' },
+  { name: 'Serious' },
+  { name: 'Jolly', inc: 'speed', dec: 'special-attack' },
+  { name: 'Naive', inc: 'speed', dec: 'special-defense' },
+  { name: 'Modest', inc: 'special-attack', dec: 'attack' },
+  { name: 'Mild', inc: 'special-attack', dec: 'defense' },
+  { name: 'Quiet', inc: 'special-attack', dec: 'speed' },
+  { name: 'Bashful' },
+  { name: 'Rash', inc: 'special-attack', dec: 'special-defense' },
+  { name: 'Calm', inc: 'special-defense', dec: 'attack' },
+  { name: 'Gentle', inc: 'special-defense', dec: 'defense' },
+  { name: 'Sassy', inc: 'special-defense', dec: 'speed' },
+  { name: 'Careful', inc: 'special-defense', dec: 'special-attack' },
+  { name: 'Quirky' }
+];
+const STAT_KEY_MAP = {
+  'attack': 'attack',
+  'defense': 'defense',
+  'special-attack': 'special_attack',
+  'special-defense': 'special_defense',
+  'speed': 'speed'
+};
+const STAT_ABBR = {
+  attack: 'Atk',
+  defense: 'Def',
+  special_attack: 'SpA',
+  special_defense: 'SpD',
+  speed: 'Spe'
+};
+
+function normalizeNatureRecord(n) {
+  const inc = n.inc ? STAT_KEY_MAP[n.inc] : null;
+  const dec = n.dec ? STAT_KEY_MAP[n.dec] : null;
+  const mods = { attack:1.0, defense:1.0, special_attack:1.0, special_defense:1.0, speed:1.0 };
+  if (inc && inc !== dec) mods[inc] = 1.1;
+  if (dec && inc !== dec) mods[dec] = 0.9;
+  return { name: n.name, inc: inc || null, dec: dec || null, mods };
+}
+
+function labelNature(n) {
+  if (!n) return '';
+  const name = titleCase(n.name || '');
+  if (!n.inc && !n.dec) return `${name} (+/-)`;
+  const plus = n.inc ? `+${STAT_ABBR[n.inc]}` : '';
+  const minus = n.dec ? `-${STAT_ABBR[n.dec]}` : '';
+  let body = plus && minus ? `${plus}, ${minus}` : (plus || minus);
+  return `${name} (${body})`;
+}
+
+function useNatures() {
+  const [list, setList] = useState(() => {
+    try {
+      const cached = sessionStorage.getItem(NATURE_CACHE_KEY);
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    const statics = STATIC_NATURES
+      .map(n => normalizeNatureRecord({ name: n.name, inc: n.inc || null, dec: n.dec || null }))
+      .sort((a,b)=> a.name.localeCompare(b.name));
+    return statics;
+  });
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const r = await fetch('https://pokeapi.co/api/v2/nature?limit=1000');
+        if (!r.ok) return;
+        const d = await r.json();
+        const entries = Array.isArray(d.results) ? d.results : [];
+        const all = await Promise.all(entries.map(async e => {
+          try {
+            const rr = await fetch(e.url);
+            if (!rr.ok) return null;
+            const jj = await rr.json();
+            const inc = jj.increased_stat?.name || null;
+            const dec = jj.decreased_stat?.name || null;
+            return normalizeNatureRecord({ name: e.name, inc, dec });
+          } catch { return null; }
+        }));
+        const clean = all.filter(Boolean).sort((a,b)=> a.name.localeCompare(b.name));
+        if (clean.length && alive) {
+          setList(clean);
+          try { sessionStorage.setItem(NATURE_CACHE_KEY, JSON.stringify(clean)); } catch{}
+        }
+      } catch {}
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const byName = useMemo(() => {
+    const m = new Map();
+    for (const n of list) m.set(normalizeKey(n.name), n);
+    return m;
+  }, [list]);
+
+  return { list, byName };
+}
+
+// ---------- Stat computation ----------
+const STAT_KEYS = ['hp','attack','defense','special_attack','special_defense','speed'];
+function clamp(n, lo, hi){
+  const x = Number(n);
+  if (isNaN(x)) return lo;
+  return Math.max(lo, Math.min(hi, x));
+}
+function getBaseStatsFrom(mon = {}){
+  const s = mon?.stats || {};
+  return {
+    hp: Number(s.base_hp ?? s.hp ?? s.HP ?? 0) || 0,
+    attack: Number(s.base_attack ?? s.attack ?? s.att ?? 0) || 0,
+    defense: Number(s.base_defense ?? s.defense ?? s.def ?? 0) || 0,
+    special_attack: Number(s.base_special_attack ?? s.special_attack ?? s.s_att ?? s.sp_attack ?? 0) || 0,
+    special_defense: Number(s.base_special_defense ?? s.special_defense ?? s.s_def ?? s.sp_defense ?? 0) || 0,
+    speed: Number(s.base_speed ?? s.speed ?? s.spd ?? 0) || 0,
+  };
+}
+function getDisplayStatsFrom(mon = {}){
+  const s = mon?.stats || {};
+  return {
+    hp: Number(s.hp ?? s.HP ?? s.base_hp ?? 0) || 0,
+    attack: Number(s.attack ?? s.att ?? s.base_attack ?? 0) || 0,
+    defense: Number(s.defense ?? s.def ?? s.base_defense ?? 0) || 0,
+    special_attack: Number(s.special_attack ?? s.s_att ?? s.sp_attack ?? s.base_special_attack ?? 0) || 0,
+    special_defense: Number(s.special_defense ?? s.s_def ?? s.sp_defense ?? s.base_special_defense ?? 0) || 0,
+    speed: Number(s.speed ?? s.spd ?? s.base_speed ?? 0) || 0,
+  };
+}
+function computeFinalStats(base, ivs, evs, level, natureMods){
+  const L = clamp(level, 1, 100);
+  const IV = Object.fromEntries(STAT_KEYS.map(k => [k, clamp(ivs?.[k] ?? 0, 0, 31)]));
+  const EVraw = Object.fromEntries(STAT_KEYS.map(k => [k, clamp(evs?.[k] ?? 0, 0, 252)]));
+  let total = STAT_KEYS.reduce((sum,k)=> sum + (EVraw[k]||0), 0);
+  const EV = { ...EVraw };
+  if (total > 510) {
+    let excess = total - 510;
+    const order = [...STAT_KEYS].sort((a,b) => (EV[b]||0) - (EV[a]||0));
+    for (const k of order){
+      if (excess <= 0) break;
+      const take = Math.min(excess, EV[k]);
+      EV[k] -= take;
+      excess -= take;
+    }
+  }
+  const EVq = Object.fromEntries(STAT_KEYS.map(k => [k, Math.floor((EV[k]||0) / 4)]));
+  const Nat = natureMods || { attack:1, defense:1, special_attack:1, special_defense:1, speed:1 };
+
+  const out = {};
+  out.hp = Math.floor(((2*base.hp + IV.hp + EVq.hp) * L) / 100) + L + 10;
+  for (const k of ['attack','defense','special_attack','special_defense','speed']){
+    const raw = Math.floor(((2*base[k] + IV[k] + EVq[k]) * L) / 100) + 5;
+    const mod = Nat[k] ?? 1.0;
+    out[k] = Math.floor(raw * mod);
+  }
+  return out;
+}
+function sumStats(map){ return ['hp','attack','defense','special_attack','special_defense','speed'].reduce((s,k)=> s + ((map?.[k]||0) | 0), 0); }
 
 function LabeledPillBox({ label, value, title }){
   if (value == null || value === '') return null;
@@ -574,7 +761,7 @@ function InfoPill({ label, value, large=false }){
 }
 
 /* ---------- Compare View ---------- */
-function StatBox({ label, value, diff }){
+function StatBox({ label, value, diff, underline=false }){
   return (
     <div style={{
       display:'flex', flexDirection:'column', alignItems:'center',
@@ -582,7 +769,7 @@ function StatBox({ label, value, diff }){
       background:'var(--surface)', minWidth:0
     }}>
       <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
-      <div style={{ fontWeight:900, fontSize:16 }}>{value ?? '-'}</div>
+      <div style={{ fontWeight:900, fontSize:16, textDecoration: underline ? 'underline' : 'none' }}>{value ?? '-'}</div>
       {typeof diff === 'number' && diff !== 0 && (
         <div style={{ fontSize:15, fontWeight:800, marginTop:2, color: diff > 0 ? '#22c55e' : '#ef4444' }}>
           {diff > 0 ? `+${diff}` : `${diff}`}
@@ -592,37 +779,89 @@ function StatBox({ label, value, diff }){
   );
 }
 
-function StatsRow({ mon, other=null }){
-  const s = mon?.stats || {};
-  const map = {
-    HP: s.hp ?? s.HP ?? s.base_hp,
-    Att: s.attack ?? s.att ?? s.base_attack,
-    Def: s.defense ?? s.def ?? s.base_defense,
-    'S.Att': s.special_attack ?? s.s_att ?? s.sp_attack ?? s.base_special_attack,
-    'S.Def': s.special_defense ?? s.s_def ?? s.sp_defense ?? s.base_special_defense,
-    Spd: s.speed ?? s.spd ?? s.base_speed,
-  };
-  const total = [map['HP'], map['Att'], map['Def'], map['S.Att'], map['S.Def'], map['Spd']]
-    .map(v => Number(v) || 0)
-    .reduce((a,b)=>a+b, 0);
-  const otherStats = other?.stats || {};
-  const otherMap = other ? {
-    HP: otherStats.hp ?? otherStats.HP ?? otherStats.base_hp,
-    Att: otherStats.attack ?? otherStats.att ?? otherStats.base_attack,
-    Def: otherStats.defense ?? otherStats.def ?? otherStats.base_defense,
-    'S.Att': otherStats.special_attack ?? otherStats.s_att ?? otherStats.sp_attack ?? otherStats.base_special_attack,
-    'S.Def': otherStats.special_defense ?? otherStats.s_def ?? otherStats.sp_defense ?? otherStats.base_special_defense,
-    Spd: otherStats.speed ?? otherStats.spd ?? otherStats.base_speed,
-  } : null;
-  const totalOther = other ? [otherMap['HP'], otherMap['Att'], otherMap['Def'], otherMap['S.Att'], otherMap['S.Def'], otherMap['Spd']]
-    .map(v => Number(v) || 0)
-    .reduce((a,b)=>a+b, 0) : null;
+function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel }){
+  // Use resilient getters for display stats so Sp. Atk/Sp. Def populate on first load
+  const baseStats = getDisplayStatsFrom(mon || {});
+  const otherBaseStats = other ? getDisplayStatsFrom(other) : null;
+  const keys = [
+    ['HP','hp'], ['Att','attack'], ['Def','defense'], ['Sp. Atk','special_attack'], ['Sp. Def','special_defense'], ['Spd','speed']
+  ];
+  const map = Object.fromEntries(keys.map(([L,k]) => [L, (override && override[k] != null) ? override[k] : (Number(baseStats[k]) || 0)]));
+  const otherMap = other ? Object.fromEntries(keys.map(([L,k]) => [L, (otherOverride && otherOverride[k] != null) ? otherOverride[k] : (Number(otherBaseStats?.[k]) || 0)])) : null;
+  const total = keys.reduce((sum, [L]) => sum + (Number(map[L]) || 0), 0);
+  const totalOther = other ? keys.reduce((sum, [L]) => sum + (Number(otherMap[L]) || 0), 0) : null;
+
+  const inputCellStyle = { height:28, padding:'2px 8px', textAlign:'center' };
+
+  // Compute EV total for display in the 7th slot
+  const evTotal = ['hp','attack','defense','special_attack','special_defense','speed']
+    .reduce((s,k)=> s + (Number(build?.ev?.[k] || 0) || 0), 0);
+
   return (
     <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
-      {Object.entries(map).map(([k,v]) => (
-        <StatBox key={k} label={k} value={v} diff={other ? ((Number(v)||0) - (Number(otherMap?.[k])||0)) : undefined} />
+      {keys.map(([kLabel, kKey]) => (
+        <StatBox key={kLabel} label={kLabel} value={map[kLabel]} diff={other ? ((Number(map[kLabel])||0) - (Number(otherMap?.[kLabel])||0)) : undefined} underline={underlineKeys?.has(kKey)} />
       ))}
-      <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} />
+      <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} underline={underlineKeys?.has('total')} />
+
+      {/* EV row (now above IV row) */}
+      {keys.map(([kLabel, kKey]) => (
+        <input
+          key={`ev-${kKey}`}
+          className="input"
+          type="number"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          min={0}
+          max={252}
+          placeholder="EV"
+          value={build?.ev?.[kKey] ?? ''}
+          onChange={(e) => {
+            const raw = e.target.value;
+            let val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
+            onSetEV && onSetEV(kKey, val);
+          }}
+          style={inputCellStyle}
+        />
+      ))}
+      <StatBox label="EV Total" value={evTotal || 0} />
+
+      {/* IV row (moved to bottom) + Level input in 7th slot */}
+      {keys.map(([kLabel, kKey]) => (
+        <input
+          key={`iv-${kKey}`}
+          className="input"
+          type="number"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          min={0}
+          max={31}
+          placeholder="IV"
+          value={build?.iv?.[kKey] ?? ''}
+          onChange={(e) => {
+            const raw = e.target.value;
+            const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
+            onSetIV && onSetIV(kKey, v);
+          }}
+          style={inputCellStyle}
+        />
+      ))}
+      <input
+        className="input"
+        type="number"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        min={1}
+        max={100}
+        placeholder="Level"
+        value={build?.level ?? ''}
+        onChange={(e) => {
+          const raw = e.target.value;
+          const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 1, 1, 100);
+          onSetLevel && onSetLevel(v);
+        }}
+        style={{ ...inputCellStyle, textAlign:'center' }}
+      />
     </div>
   );
 }
@@ -661,10 +900,12 @@ function WeakResLine({ types, kind='weak' }){
   );
 }
 
-function CompareBlock({ mon, other, onClear, onReplace }){
+function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build, onSetIV, onSetEV, onSetLevel, natureEl, override=null, otherOverride=null, underlineKeys=new Set() }){
   if (!mon) return null;
   const types = (mon.types || []).map(normalizeType);
   const abilities = (mon.abilities || []).map(a => a?.name).filter(Boolean);
+  // If any ability names are long, use a more compact presentation.
+  const useCompactAbilities = abilities.some(a => (a || '').length > 12) || abilities.join('').length > 28;
 
   // Helpers for two-row chip layout
   const twoRowSplit = (arr = []) => {
@@ -688,18 +929,19 @@ function CompareBlock({ mon, other, onClear, onReplace }){
   // Stat diffs vs other (when present)
   const statKeys = [
     ['HP','hp'], ['Att','attack'], ['Def','defense'],
-    ['S.Att','special_attack'], ['S.Def','special_defense'], ['Spd','speed']
+    ['Sp. Atk','special_attack'], ['Sp. Def','special_defense'], ['Spd','speed']
   ];
-  const sA = mon?.stats || {};
-  const sB = other?.stats || {};
+  // Use display stats to correctly resolve special stats
+  const sA = getDisplayStatsFrom(mon || {});
+  const sB = other ? getDisplayStatsFrom(other) : {};
   const statDiffs = statKeys.map(([lab, key]) => {
-    const a = Number(sA[key] ?? sA[key?.toUpperCase?.()] ?? sA[`base_${key}`]) || 0;
-    const b = Number(sB[key] ?? sB[key?.toUpperCase?.()] ?? sB[`base_${key}`]) || 0;
+    const a = Number(sA[key]) || 0;
+    const b = Number(sB[key]) || 0;
     const diff = a - b;
     return { lab, diff };
   });
-  const totalA = statKeys.reduce((sum, [,k]) => sum + (Number(sA[k] ?? sA[`base_${k}`]) || 0), 0);
-  const totalB = statKeys.reduce((sum, [,k]) => sum + (Number(sB[k] ?? sB[`base_${k}`]) || 0), 0);
+  const totalA = statKeys.reduce((sum, [,k]) => sum + (Number(sA[k]) || 0), 0);
+  const totalB = statKeys.reduce((sum, [,k]) => sum + (Number(sB[k]) || 0), 0);
   const totalDiff = totalA - totalB;
 
   const rowWrapStyle = { borderTop:'1px solid var(--divider)', paddingTop:8, marginTop:8 };
@@ -715,6 +957,40 @@ function CompareBlock({ mon, other, onClear, onReplace }){
       >
         Replace From Live Battle
       </button>
+      {(() => {
+        let teamNames = [];
+        try {
+          const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
+          if (Array.isArray(saved)) teamNames = saved;
+          else if (saved && typeof saved === 'object' && Array.isArray(saved.mons)) teamNames = saved.mons;
+        } catch {}
+        const options = (teamNames || []).map(s => String(s || '').trim()).filter(Boolean);
+        const hasAny = options.length > 0;
+        const handleSelect = (e) => {
+          const name = e.target.value;
+          if (!name) return;
+          try {
+            const picked = getMon(name);
+            if (picked && onReplaceFromTeam) onReplaceFromTeam(picked);
+          } catch {}
+          e.target.selectedIndex = 0;
+        };
+        return (
+          <select
+            title="Replace From Active Team"
+            onChange={handleSelect}
+            className="input"
+            style={{ position:'absolute', top:44, left:8, height:28, borderRadius:8, width:'auto', maxWidth:220 }}
+          >
+            <option value="">Replace From Active Team</option>
+            {hasAny ? (
+              options.map((n, i) => <option key={`${n}-${i}`} value={n}>{titleCase(n)}</option>)
+            ) : (
+              <option value="" disabled>No Active Pokemon</option>
+            )}
+          </select>
+        );
+      })()}
       <button
         type="button"
         title="Clear"
@@ -735,9 +1011,23 @@ function CompareBlock({ mon, other, onClear, onReplace }){
           <div style={rowWrapStyle}>
             <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8, alignItems:'center' }}>
               <div className="label-muted" style={{ fontWeight:700 }}>Abilities</div>
-              <div style={{ display:'flex', justifyContent:'space-evenly', gap:8, flexWrap:'wrap' }}>
+              <div
+                style={{
+                  display:'grid',
+                  gridTemplateColumns: `repeat(${abilities.length}, minmax(0, 1fr))`,
+                  gap:8,
+                  alignItems:'center',
+                  // Consistent one-line row across both compare blocks
+                  minHeight: 36
+                }}
+              >
                 {abilities.map((a,i) => (
-                  <AbilityPill key={`${a}-${i}`} label={i===2? 'Hidden' : `${i+1}`} name={a} />
+                  <AbilityPill
+                    key={`${a}-${i}`}
+                    label={i===2? 'Hidden' : `${i+1}`}
+                    name={a}
+                    compact={useCompactAbilities}
+                  />
                 ))}
               </div>
             </div>
@@ -803,8 +1093,23 @@ function CompareBlock({ mon, other, onClear, onReplace }){
 
         {(mon.stats && Object.keys(mon.stats).length > 0) && (
           <div style={rowWrapStyle}>
-            <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Base Stats</div>
-            <StatsRow mon={mon} other={other} />
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', alignItems:'end', marginBottom:6 }}>
+              <div className="label-muted" style={{ fontWeight:700, gridColumn:'1 / 7' }}>Base Stats</div>
+              <div style={{ gridColumn:'7 / 8', justifySelf:'end' }}>
+                {natureEl}
+              </div>
+            </div>
+            <StatsRow
+              mon={mon}
+              other={other}
+              override={override}
+              otherOverride={otherOverride}
+              underlineKeys={underlineKeys}
+              build={build}
+              onSetIV={onSetIV}
+              onSetEV={onSetEV}
+              onSetLevel={onSetLevel}
+            />
           </div>
         )}
       </div>
@@ -814,14 +1119,146 @@ function CompareBlock({ mon, other, onClear, onReplace }){
 
 
 
-function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, onReplaceRight }){
+function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, onReplaceRight, onReplaceLeftFromTeam, onReplaceRightFromTeam }){
+  const { list: natureList, byName: naturesByName } = useNatures();
+
+  const initialBuild = useMemo(() => ({
+    level: '',
+    nature: '',
+    iv: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
+    ev: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
+  }), []);
+  const [leftBuild, setLeftBuild] = useState(initialBuild);
+  const [rightBuild, setRightBuild] = useState(initialBuild);
+
+  const isDirty = (b) => {
+    if (!b) return false;
+    const lvl = (b.level === '' || b.level == null) ? 50 : b.level;
+    if (lvl !== 50) return true;
+    if (b.nature && normalizeKey(b.nature) !== '') return true;
+    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.iv?.[k] !== '' && (b.iv?.[k] ?? 0) !== 0) return true; }
+    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.ev?.[k] !== '' && (b.ev?.[k] ?? 0) !== 0) return true; }
+    return false;
+  };
+
+  const coerceBuild = (b) => {
+    const rawL = b?.level;
+    const level = (rawL === '' || rawL == null)
+      ? 50
+      : clamp(parseInt(rawL, 10) || 1, 1, 100);
+    return {
+      level,
+      nature: b?.nature || '',
+      iv: { hp: b?.iv?.hp === '' ? 0 : (b?.iv?.hp ?? 0), attack: b?.iv?.attack === '' ? 0 : (b?.iv?.attack ?? 0), defense: b?.iv?.defense === '' ? 0 : (b?.iv?.defense ?? 0), special_attack: b?.iv?.special_attack === '' ? 0 : (b?.iv?.special_attack ?? 0), special_defense: b?.iv?.special_defense === '' ? 0 : (b?.iv?.special_defense ?? 0), speed: b?.iv?.speed === '' ? 0 : (b?.iv?.speed ?? 0) },
+      ev: { hp: b?.ev?.hp === '' ? 0 : (b?.ev?.hp ?? 0), attack: b?.ev?.attack === '' ? 0 : (b?.ev?.attack ?? 0), defense: b?.ev?.defense === '' ? 0 : (b?.ev?.defense ?? 0), special_attack: b?.ev?.special_attack === '' ? 0 : (b?.ev?.special_attack ?? 0), special_defense: b?.ev?.special_defense === '' ? 0 : (b?.ev?.special_defense ?? 0), speed: b?.ev?.speed === '' ? 0 : (b?.ev?.speed ?? 0) },
+    };
+  };
+
+  const leftDirty = isDirty(leftBuild);
+  const rightDirty = isDirty(rightBuild);
+
+  const leftBase = useMemo(() => left ? getBaseStatsFrom(left) : null, [left]);
+  const rightBase = useMemo(() => right ? getBaseStatsFrom(right) : null, [right]);
+  const leftDisplayBaseline = useMemo(() => left ? getDisplayStatsFrom(left) : null, [left]);
+  const rightDisplayBaseline = useMemo(() => right ? getDisplayStatsFrom(right) : null, [right]);
+
+  const natureModsOf = (name) => {
+    const n = naturesByName.get(normalizeKey(name || ''));
+    return n?.mods || { attack:1, defense:1, special_attack:1, special_defense:1, speed:1 };
+  };
+
+  const leftOverride = useMemo(() => {
+    if (!left || !leftBase) return null;
+    if (!leftDirty) return null;
+    const b = coerceBuild(leftBuild);
+    return computeFinalStats(leftBase, b.iv, b.ev, b.level, natureModsOf(b.nature));
+  }, [left, leftBase, leftBuild, leftDirty]);
+  const rightOverride = useMemo(() => {
+    if (!right || !rightBase) return null;
+    if (!rightDirty) return null;
+    const b = coerceBuild(rightBuild);
+    return computeFinalStats(rightBase, b.iv, b.ev, b.level, natureModsOf(b.nature));
+  }, [right, rightBase, rightBuild, rightDirty]);
+
+  const underlineFrom = (override, baseline) => {
+    const set = new Set();
+    if (!override || !baseline) return set;
+    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if ((override[k]||0) !== (baseline[k]||0)) set.add(k); }
+    if (sumStats(override) !== sumStats(baseline)) set.add('total');
+    return set;
+  };
+  const leftUnderline = useMemo(() => underlineFrom(leftOverride, leftDisplayBaseline), [leftOverride, leftDisplayBaseline]);
+  const rightUnderline = useMemo(() => underlineFrom(rightOverride, rightDisplayBaseline), [rightOverride, rightDisplayBaseline]);
+
+  function makeSetters(side) {
+    const setBuild = side === 'left' ? setLeftBuild : setRightBuild;
+    return {
+      onSetIV: (key, val) => setBuild((prev) => ({ ...prev, iv: { ...prev.iv, [key]: val } })),
+      onSetEV: (key, val) => setBuild((prev) => {
+        const next = { ...prev, ev: { ...prev.ev, [key]: val } };
+        const sum = ['hp','attack','defense','special_attack','special_defense','speed'].reduce((s,k)=> s + (Number(next.ev[k] || 0) || 0), 0);
+        if (sum <= 510) return next;
+        const others = sum - (Number(next.ev[key] || 0) || 0);
+        const allowed = Math.max(0, 510 - others);
+        return { ...prev, ev: { ...prev.ev, [key]: Math.min(allowed, Number(val)||0) } };
+      }),
+      onSetLevel: (val) => setBuild((prev) => ({ ...prev, level: val }))
+    };
+  }
+  const leftSetters = makeSetters('left');
+  const rightSetters = makeSetters('right');
+
+  function NatureSelect({ value, onChange }){
+    return (
+      <select
+        className="input"
+        value={value || ''}
+        onChange={(e)=> onChange?.(e.target.value)}
+        style={{ height: 28, padding: '2px 32px 2px 14px', minWidth: 140 }}
+        title="Nature"
+      >
+        <option value="">Nature</option>
+        {natureList.map((n) => (
+          <option key={n.name} value={n.name}>{labelNature(n)}</option>
+        ))}
+      </select>
+    );
+  }
+
   return (
     <div style={{ marginTop:12 }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-        <CompareBlock mon={left} other={right} onClear={onClearLeft} onReplace={onReplaceLeft} />
-        <CompareBlock mon={right} other={left} onClear={onClearRight} onReplace={onReplaceRight} />
+        <CompareBlock
+          mon={left}
+          other={right}
+          onClear={onClearLeft}
+          onReplace={onReplaceLeft}
+          onReplaceFromTeam={onReplaceLeftFromTeam}
+          build={leftBuild}
+          onSetIV={leftSetters.onSetIV}
+          onSetEV={leftSetters.onSetEV}
+          onSetLevel={leftSetters.onSetLevel}
+          natureEl={<NatureSelect value={leftBuild.nature} onChange={(v)=> setLeftBuild(prev=> ({...prev, nature:v}))} />}
+          override={leftOverride}
+          otherOverride={rightOverride}
+          underlineKeys={leftUnderline}
+        />
+        <CompareBlock
+          mon={right}
+          other={left}
+          onClear={onClearRight}
+          onReplace={onReplaceRight}
+          onReplaceFromTeam={onReplaceRightFromTeam}
+          build={rightBuild}
+          onSetIV={rightSetters.onSetIV}
+          onSetEV={rightSetters.onSetEV}
+          onSetLevel={rightSetters.onSetLevel}
+          natureEl={<NatureSelect value={rightBuild.nature} onChange={(v)=> setRightBuild(prev=> ({...prev, nature:v}))} />}
+          override={rightOverride}
+          otherOverride={leftOverride}
+          underlineKeys={rightUnderline}
+        />
       </div>
-      {/*  removed; diffs shown inline above Base Stats */}
     </div>
   );
 }
@@ -3898,6 +4335,18 @@ const marketResults = React.useMemo(() => {
                 if (!mon) return; // No notifications
                 if (!compareB || normalizeKey(compareB.name) !== normalizeKey(mon.name)) {
                   setCompareB(mon);
+                }
+              }}
+              onReplaceLeftFromTeam={(picked) => {
+                if (!picked) return;
+                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(picked.name)) {
+                  setCompareA(picked);
+                }
+              }}
+              onReplaceRightFromTeam={(picked) => {
+                if (!picked) return;
+                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(picked.name)) {
+                  setCompareB(picked);
                 }
               }}
             />

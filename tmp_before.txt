@@ -1,0 +1,73 @@
+  // Helpers for two-row chip layout
+  const twoRowSplit = (arr = []) => {
+    const a = [...arr];
+    const mid = Math.ceil(a.length / 2);
+    return [a.slice(0, mid), a.slice(mid)];
+  };
+  const w = computeWeakness(types);
+  const weaknessEntries = [
+    ...w.x4.map(t => ({ t, pct: '400%' })),
+    ...w.x2.map(t => ({ t, pct: '200%' })),
+  ];
+  const resistEntries = [
+    ...w.x0_5.map(t => ({ t, pct: '50%' })),
+    ...w.x0_25.map(t => ({ t, pct: '25%' })),
+    ...w.x0.map(t => ({ t, pct: '0%' })),
+  ];
+  const [weakRow1, weakRow2] = twoRowSplit(weaknessEntries);
+  const [resRow1, resRow2] = twoRowSplit(resistEntries);
+
+  // Stat diffs vs other (when present)
+  const statKeys = [
+    ['HP','hp'], ['Att','attack'], ['Def','defense'],
+    ['S.Att','special_attack'], ['S.Def','special_defense'], ['Spd','speed']
+  ];
+  const sA = mon?.stats || {};
+  const sB = other?.stats || {};
+  const statDiffs = statKeys.map(([lab, key]) => {
+    const a = Number(sA[key] ?? sA[key?.toUpperCase?.()] ?? sA[`base_${key}`]) || 0;
+    const b = Number(sB[key] ?? sB[key?.toUpperCase?.()] ?? sB[`base_${key}`]) || 0;
+    const diff = a - b;
+    return { lab, diff };
+  });
+  const totalA = statKeys.reduce((sum, [,k]) => sum + (Number(sA[k] ?? sA[`base_${k}`]) || 0), 0);
+  const totalB = statKeys.reduce((sum, [,k]) => sum + (Number(sB[k] ?? sB[`base_${k}`]) || 0), 0);
+  const totalDiff = totalA - totalB;
+
+  const rowWrapStyle = { borderTop:'1px solid var(--divider)', paddingTop:8, marginTop:8 };
+
+  return (
+    <div className="faint-grid" style={{ padding:12, position:'relative' }}>
+      <button
+        type="button"
+        className="region-btn"
+        title="Replace From Live Battle"
+        onClick={() => onReplace && onReplace()}
+        style={{ position:'absolute', top:8, left:8 }}
+      >
+        Replace From Live Battle
+      </button>
+      <button
+        type="button"
+        title="Clear"
+        onClick={onClear}
+        style={{ position:'absolute', top:8, right:8, background:'transparent', border:'none', cursor:'pointer', color:'var(--muted)' }}>
+        ×
+
+      </button>
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+        <Sprite mon={mon} size={120} alt={mon.name} />
+        <div style={{ fontSize:20, fontWeight:900 }}>{titleCase(mon.name)}</div>
+        {mon.id != null && (
+          <div className="label-muted">Dex #{mon.id}</div>
+        )}
+      </div>
+      <div style={{ marginTop:10, display:'grid', gap:8 }}>
+        {abilities.length > 0 && (
+          <div style={rowWrapStyle}>
+            <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8, alignItems:'center' }}>
+              <div className="label-muted" style={{ fontWeight:700 }}>Abilities</div>
+              <div style={{ display:'flex', justifyContent:'space-evenly', gap:8, flexWrap:'wrap' }}>
+                {abilities.map((a,i) => (
+                  <AbilityPill key={`${a}-${i}`} label={i===2? 'Hidden' : `${i+1}`} name={a} />
+                ))}

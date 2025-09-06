@@ -1,15 +1,21 @@
 --------------------------------------
 Changes to come:
 
-- Include nature toggle in compare tab
 - Feedback Button
 - Catch rate in Live Route
 - Favorable vs Unfavorable matchup in compare tab
 - Update Live Battle to match new Pokemon profile UI
+- Pull level of Pokemon from data to adjust Base stats on fly in Live Battle
+- Multi-view search (compare style block)
+- Compare from Live Battle should bring to compare window with it preselected, in case "replace from team builder" is wanted quick
+- Pokemon profile tab change top information change to 4 rows, include held item data in last column row 4
+    - display no held items if there are none
+    - add Abilities label to abilities
 --------------------------------------
 Known Issues:
 
 - Evolution data for uncommon methods has weird labels (Eevee)
 - Deoxys Egg ??
+- Some Pokemon Natures are not spaced so the tooltips dont index correctly (compoundeyes & more)
 --------------------------------------
 

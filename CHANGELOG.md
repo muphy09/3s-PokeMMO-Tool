@@ -1,6 +1,20 @@
 # Changelog
 ---
 
+## [2.8.5] - 2025-09
+### Added
+- Natures, IVs, & EVs Now Included in the Dataset!
+    - View how these values affect Base Stats on Pokemon
+    - *Optional to use,* Pokemon will always default to Lv. 50, 0 IVs, 0 EVs, +/- Nature
+    - Included inside of the Profile & Compare section
+      - *This data will continue to be utilized & implemented across more areas in future updates*
+
+### Fixed
+- Compare Tab
+  - Long ability names now switch to a compact form to fit in a single line as intended
+
+---
+
 ## [2.8.4] - 2025-09
 ### Added
 - Compare Pokemon!
@@ -8,7 +22,7 @@
   - Displays Sprite, Abilities, Type, Weakness, Resistance, and compares Basic Stats
   - Uses green & red indicators to quickly see what Basic Stat differences are present
   - 'Compare' buttons located in Pokemon Search, Pokemon Profile, and Live Battle Tab
-  - Clicking compare in Live Battle Tab auto-selects that Pokemon to compare and switches to Pokemon Search
+  - Clicking 'Compare' in Live Battle Tab auto-selects that Pokemon to compare and switches to Pokemon Search
   - 'Replace from Live Battle Tab' button overwrites compared Pokemon with the one detected in battle
 
 - Recent Search History 
