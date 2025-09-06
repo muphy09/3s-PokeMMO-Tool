@@ -690,6 +690,62 @@ function computeFinalStats(base, ivs, evs, level, natureMods){
 }
 function sumStats(map){ return ['hp','attack','defense','special_attack','special_defense','speed'].reduce((s,k)=> s + ((map?.[k]||0) | 0), 0); }
 
+function mkInitialBuild(){
+  return {
+    level: '',
+    nature: '',
+    iv: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
+    ev: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
+  };
+}
+
+function isDirty(b){
+  if (!b) return false;
+  if (b.level !== '' && b.level != null) return true;
+  if (b.nature && normalizeKey(b.nature) !== '') return true;
+  for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.iv?.[k] !== '' && (b.iv?.[k] ?? 0) !== 0) return true; }
+  for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.ev?.[k] !== '' && (b.ev?.[k] ?? 0) !== 0) return true; }
+  return false;
+}
+
+function coerceBuild(b){
+  const rawL = b?.level;
+  const level = (rawL === '' || rawL == null)
+    ? 50
+    : clamp(parseInt(rawL, 10) || 1, 1, 100);
+  return {
+    level,
+    nature: b?.nature || '',
+    iv: { hp: b?.iv?.hp === '' ? 0 : (b?.iv?.hp ?? 0), attack: b?.iv?.attack === '' ? 0 : (b?.iv?.attack ?? 0), defense: b?.iv?.defense === '' ? 0 : (b?.iv?.defense ?? 0), special_attack: b?.iv?.special_attack === '' ? 0 : (b?.iv?.special_attack ?? 0), special_defense: b?.iv?.special_defense === '' ? 0 : (b?.iv?.special_defense ?? 0), speed: b?.iv?.speed === '' ? 0 : (b?.iv?.speed ?? 0) },
+    ev: { hp: b?.ev?.hp === '' ? 0 : (b?.ev?.hp ?? 0), attack: b?.ev?.attack === '' ? 0 : (b?.ev?.attack ?? 0), defense: b?.ev?.defense === '' ? 0 : (b?.ev?.defense ?? 0), special_attack: b?.ev?.special_attack === '' ? 0 : (b?.ev?.special_attack ?? 0), special_defense: b?.ev?.special_defense === '' ? 0 : (b?.ev?.special_defense ?? 0), speed: b?.ev?.speed === '' ? 0 : (b?.ev?.speed ?? 0) },
+  };
+}
+
+function underlineFrom(override, baseline){
+  const set = new Set();
+  if (!override || !baseline) return set;
+  for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if ((override[k]||0) !== (baseline[k]||0)) set.add(k); }
+  if (sumStats(override) !== sumStats(baseline)) set.add('total');
+  return set;
+}
+
+function NatureSelect({ value, onChange, natureList }){
+  return (
+    <select
+      className="input"
+      value={value || ''}
+      onChange={(e)=> onChange?.(e.target.value)}
+      style={{ height: 20, padding: '0 32px 0 14px', minWidth: 140 }}
+      title="Nature"
+    >
+      <option value="">Nature</option>
+      {natureList.map((n) => (
+        <option key={n.name} value={n.name}>{labelNature(n)}</option>
+      ))}
+    </select>
+  );
+}
+
 function LabeledPillBox({ label, value, title }){
   if (value == null || value === '') return null;
   return (
@@ -779,10 +835,33 @@ function StatBox({ label, value, diff, underline=false }){
   );
 }
 
+function StatInputBox({ label, value, min, max, onChange }){
+  return (
+    <div style={{
+      display:'flex', flexDirection:'column', alignItems:'center',
+      padding:'6px 8px', border:'1px solid var(--divider)', borderRadius:8,
+      background:'var(--surface)', minWidth:0
+    }}>
+      <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
+      <input
+        className="input"
+        type="number"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        min={min}
+        max={max}
+        value={value}
+        onChange={onChange}
+        style={{ width:'100%', textAlign:'center', marginTop:2 }}
+      />
+    </div>
+  );
+}
+
 function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel }){
-  // Use resilient getters for display stats so Sp. Atk/Sp. Def populate on first load
-  const baseStats = getDisplayStatsFrom(mon || {});
-  const otherBaseStats = other ? getDisplayStatsFrom(other) : null;
+  // Use base stats for display
+  const baseStats = getBaseStatsFrom(mon || {});
+  const otherBaseStats = other ? getBaseStatsFrom(other) : null;
   const keys = [
     ['HP','hp'], ['Att','attack'], ['Def','defense'], ['Sp. Atk','special_attack'], ['Sp. Def','special_defense'], ['Spd','speed']
   ];
@@ -790,8 +869,6 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
   const otherMap = other ? Object.fromEntries(keys.map(([L,k]) => [L, (otherOverride && otherOverride[k] != null) ? otherOverride[k] : (Number(otherBaseStats?.[k]) || 0)])) : null;
   const total = keys.reduce((sum, [L]) => sum + (Number(map[L]) || 0), 0);
   const totalOther = other ? keys.reduce((sum, [L]) => sum + (Number(otherMap[L]) || 0), 0) : null;
-
-  const inputCellStyle = { height:28, padding:'2px 8px', textAlign:'center' };
 
   // Compute EV total for display in the 7th slot
   const evTotal = ['hp','attack','defense','special_attack','special_defense','speed']
@@ -806,61 +883,46 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
 
       {/* EV row (now above IV row) */}
       {keys.map(([kLabel, kKey]) => (
-        <input
+        <StatInputBox
           key={`ev-${kKey}`}
-          className="input"
-          type="number"
-          inputMode="numeric"
-          pattern="[0-9]*"
+          label={`${kLabel} EV`}
+          value={build?.ev?.[kKey] ?? ''}
           min={0}
           max={252}
-          placeholder="EV"
-          value={build?.ev?.[kKey] ?? ''}
           onChange={(e) => {
             const raw = e.target.value;
             let val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
             onSetEV && onSetEV(kKey, val);
           }}
-          style={inputCellStyle}
         />
       ))}
       <StatBox label="EV Total" value={evTotal || 0} />
 
       {/* IV row (moved to bottom) + Level input in 7th slot */}
       {keys.map(([kLabel, kKey]) => (
-        <input
+        <StatInputBox
           key={`iv-${kKey}`}
-          className="input"
-          type="number"
-          inputMode="numeric"
-          pattern="[0-9]*"
+          label={`${kLabel} IV`}
+          value={build?.iv?.[kKey] ?? ''}
           min={0}
           max={31}
-          placeholder="IV"
-          value={build?.iv?.[kKey] ?? ''}
           onChange={(e) => {
             const raw = e.target.value;
             const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
             onSetIV && onSetIV(kKey, v);
           }}
-          style={inputCellStyle}
         />
       ))}
-      <input
-        className="input"
-        type="number"
-        inputMode="numeric"
-        pattern="[0-9]*"
+      <StatInputBox
+        label="Level"
+        value={build?.level ?? ''}
         min={1}
         max={100}
-        placeholder="Level"
-        value={build?.level ?? ''}
         onChange={(e) => {
           const raw = e.target.value;
           const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 1, 1, 100);
           onSetLevel && onSetLevel(v);
         }}
-        style={{ ...inputCellStyle, textAlign:'center' }}
       />
     </div>
   );
@@ -1122,45 +1184,14 @@ function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build
 function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, onReplaceRight, onReplaceLeftFromTeam, onReplaceRightFromTeam }){
   const { list: natureList, byName: naturesByName } = useNatures();
 
-  const initialBuild = useMemo(() => ({
-    level: '',
-    nature: '',
-    iv: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
-    ev: { hp:'', attack:'', defense:'', special_attack:'', special_defense:'', speed:'' },
-  }), []);
-  const [leftBuild, setLeftBuild] = useState(initialBuild);
-  const [rightBuild, setRightBuild] = useState(initialBuild);
-
-  const isDirty = (b) => {
-    if (!b) return false;
-    const lvl = (b.level === '' || b.level == null) ? 50 : b.level;
-    if (lvl !== 50) return true;
-    if (b.nature && normalizeKey(b.nature) !== '') return true;
-    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.iv?.[k] !== '' && (b.iv?.[k] ?? 0) !== 0) return true; }
-    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if (b.ev?.[k] !== '' && (b.ev?.[k] ?? 0) !== 0) return true; }
-    return false;
-  };
-
-  const coerceBuild = (b) => {
-    const rawL = b?.level;
-    const level = (rawL === '' || rawL == null)
-      ? 50
-      : clamp(parseInt(rawL, 10) || 1, 1, 100);
-    return {
-      level,
-      nature: b?.nature || '',
-      iv: { hp: b?.iv?.hp === '' ? 0 : (b?.iv?.hp ?? 0), attack: b?.iv?.attack === '' ? 0 : (b?.iv?.attack ?? 0), defense: b?.iv?.defense === '' ? 0 : (b?.iv?.defense ?? 0), special_attack: b?.iv?.special_attack === '' ? 0 : (b?.iv?.special_attack ?? 0), special_defense: b?.iv?.special_defense === '' ? 0 : (b?.iv?.special_defense ?? 0), speed: b?.iv?.speed === '' ? 0 : (b?.iv?.speed ?? 0) },
-      ev: { hp: b?.ev?.hp === '' ? 0 : (b?.ev?.hp ?? 0), attack: b?.ev?.attack === '' ? 0 : (b?.ev?.attack ?? 0), defense: b?.ev?.defense === '' ? 0 : (b?.ev?.defense ?? 0), special_attack: b?.ev?.special_attack === '' ? 0 : (b?.ev?.special_attack ?? 0), special_defense: b?.ev?.special_defense === '' ? 0 : (b?.ev?.special_defense ?? 0), speed: b?.ev?.speed === '' ? 0 : (b?.ev?.speed ?? 0) },
-    };
-  };
+  const [leftBuild, setLeftBuild] = useState(() => mkInitialBuild());
+  const [rightBuild, setRightBuild] = useState(() => mkInitialBuild());
 
   const leftDirty = isDirty(leftBuild);
   const rightDirty = isDirty(rightBuild);
 
   const leftBase = useMemo(() => left ? getBaseStatsFrom(left) : null, [left]);
   const rightBase = useMemo(() => right ? getBaseStatsFrom(right) : null, [right]);
-  const leftDisplayBaseline = useMemo(() => left ? getDisplayStatsFrom(left) : null, [left]);
-  const rightDisplayBaseline = useMemo(() => right ? getDisplayStatsFrom(right) : null, [right]);
 
   const natureModsOf = (name) => {
     const n = naturesByName.get(normalizeKey(name || ''));
@@ -1180,15 +1211,8 @@ function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, on
     return computeFinalStats(rightBase, b.iv, b.ev, b.level, natureModsOf(b.nature));
   }, [right, rightBase, rightBuild, rightDirty]);
 
-  const underlineFrom = (override, baseline) => {
-    const set = new Set();
-    if (!override || !baseline) return set;
-    for (const k of ['hp','attack','defense','special_attack','special_defense','speed']){ if ((override[k]||0) !== (baseline[k]||0)) set.add(k); }
-    if (sumStats(override) !== sumStats(baseline)) set.add('total');
-    return set;
-  };
-  const leftUnderline = useMemo(() => underlineFrom(leftOverride, leftDisplayBaseline), [leftOverride, leftDisplayBaseline]);
-  const rightUnderline = useMemo(() => underlineFrom(rightOverride, rightDisplayBaseline), [rightOverride, rightDisplayBaseline]);
+  const leftUnderline = useMemo(() => underlineFrom(leftOverride, leftBase), [leftOverride, leftBase]);
+  const rightUnderline = useMemo(() => underlineFrom(rightOverride, rightBase), [rightOverride, rightBase]);
 
   function makeSetters(side) {
     const setBuild = side === 'left' ? setLeftBuild : setRightBuild;
@@ -1208,23 +1232,6 @@ function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, on
   const leftSetters = makeSetters('left');
   const rightSetters = makeSetters('right');
 
-  function NatureSelect({ value, onChange }){
-    return (
-      <select
-        className="input"
-        value={value || ''}
-        onChange={(e)=> onChange?.(e.target.value)}
-        style={{ height: 28, padding: '2px 32px 2px 14px', minWidth: 140 }}
-        title="Nature"
-      >
-        <option value="">Nature</option>
-        {natureList.map((n) => (
-          <option key={n.name} value={n.name}>{labelNature(n)}</option>
-        ))}
-      </select>
-    );
-  }
-
   return (
     <div style={{ marginTop:12 }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
@@ -1238,7 +1245,7 @@ function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, on
           onSetIV={leftSetters.onSetIV}
           onSetEV={leftSetters.onSetEV}
           onSetLevel={leftSetters.onSetLevel}
-          natureEl={<NatureSelect value={leftBuild.nature} onChange={(v)=> setLeftBuild(prev=> ({...prev, nature:v}))} />}
+          natureEl={<NatureSelect natureList={natureList} value={leftBuild.nature} onChange={(v)=> setLeftBuild(prev=> ({...prev, nature:v}))} />}
           override={leftOverride}
           otherOverride={rightOverride}
           underlineKeys={leftUnderline}
@@ -1253,7 +1260,7 @@ function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, on
           onSetIV={rightSetters.onSetIV}
           onSetEV={rightSetters.onSetEV}
           onSetLevel={rightSetters.onSetLevel}
-          natureEl={<NatureSelect value={rightBuild.nature} onChange={(v)=> setRightBuild(prev=> ({...prev, nature:v}))} />}
+          natureEl={<NatureSelect natureList={natureList} value={rightBuild.nature} onChange={(v)=> setRightBuild(prev=> ({...prev, nature:v}))} />}
           override={rightOverride}
           otherOverride={leftOverride}
           underlineKeys={rightUnderline}
@@ -3278,6 +3285,7 @@ function App(){
   const [compareMode, setCompareMode] = useState(false);
   const [compareA, setCompareA] = useState(null);
   const [compareB, setCompareB] = useState(null);
+  const { list: natureList, byName: naturesByName } = useNatures();
   // Always disable compare when leaving the Pokemon Search tab
   useEffect(() => {
     if (mode !== 'pokemon') {
@@ -3892,6 +3900,33 @@ const marketResults = React.useMemo(() => {
     );
     return chance * 100;
   }, [resolved, isAsleep, isOneHp]);
+
+  const [singleBuild, setSingleBuild] = useState(() => mkInitialBuild());
+  const singleDirty = isDirty(singleBuild);
+  const singleBaseStats = useMemo(() => resolved ? getBaseStatsFrom(resolved) : null, [resolved]);
+  const natureModsOf = (name) => {
+    const n = naturesByName.get(normalizeKey(name || ''));
+    return n?.mods || { attack:1, defense:1, special_attack:1, special_defense:1, speed:1 };
+  };
+  const singleOverride = useMemo(() => {
+    if (!singleBaseStats || !singleDirty) return null;
+    const b = coerceBuild(singleBuild);
+    return computeFinalStats(singleBaseStats, b.iv, b.ev, b.level, natureModsOf(b.nature));
+  }, [singleBaseStats, singleBuild, singleDirty]);
+  const singleUnderline = useMemo(() => underlineFrom(singleOverride, singleBaseStats), [singleOverride, singleBaseStats]);
+  const singleSetters = {
+    onSetIV: (key, val) => setSingleBuild((prev) => ({ ...prev, iv: { ...prev.iv, [key]: val } })),
+    onSetEV: (key, val) => setSingleBuild((prev) => {
+      const next = { ...prev, ev: { ...prev.ev, [key]: val } };
+      const sum = ['hp','attack','defense','special_attack','special_defense','speed'].reduce((s,k)=> s + (Number(next.ev[k] || 0) || 0), 0);
+      if (sum <= 510) return next;
+      const others = sum - (Number(next.ev[key] || 0) || 0);
+      const allowed = Math.max(0, 510 - others);
+      return { ...prev, ev: { ...prev.ev, [key]: Math.min(allowed, Number(val)||0) } };
+    }),
+    onSetLevel: (val) => setSingleBuild((prev) => ({ ...prev, level: val }))
+  };
+  useEffect(() => { setSingleBuild(mkInitialBuild()); }, [resolved]);
 
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught }}>
@@ -4776,10 +4811,23 @@ const marketResults = React.useMemo(() => {
               </div>
               {Object.keys(resolved.stats || {}).length > 0 && (
                 <>
-                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Base Stats</div>
+                  <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', alignItems:'end', margin:'16px 0 6px' }}>
+                    <div className="label-muted" style={{ fontWeight:700, gridColumn:'1 / 7' }}>Base Stats</div>
+                    <div style={{ gridColumn:'7 / 8', justifySelf:'end' }}>
+                      <NatureSelect natureList={natureList} value={singleBuild.nature} onChange={(v)=> setSingleBuild(prev=> ({...prev, nature:v}))} />
+                    </div>
+                  </div>
                   <div style={{ display:'flex', justifyContent:'center' }}>
                     <div style={{ width:'100%' }}>
-                      <StatsRow mon={resolved} />
+                      <StatsRow
+                        mon={resolved}
+                        override={singleOverride}
+                        underlineKeys={singleUnderline}
+                        build={singleBuild}
+                        onSetIV={singleSetters.onSetIV}
+                        onSetEV={singleSetters.onSetEV}
+                        onSetLevel={singleSetters.onSetLevel}
+                      />
                     </div>
                   </div>
                 </>
