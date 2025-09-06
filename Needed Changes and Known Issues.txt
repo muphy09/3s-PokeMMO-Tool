@@ -1,8 +1,13 @@
-\\ Known Issues
+--------------------------------------
+Changes to come:
 
-Inconsistent window capture when first booting app (Live tabs)
+- Include nature toggle in compare tab
+- Feedback Button
+- Catch rate in Live Route
+- Favorable vs Unfavorable matchup in compare tab
+--------------------------------------
+Known Issues:
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-\\ Changes to come
+- Evolution data for uncommon methods has weird labels (Eevee)
+--------------------------------------
 

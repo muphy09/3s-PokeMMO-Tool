@@ -588,6 +588,12 @@ select.input option {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* Active state for Compare toggle */
+.region-btn.compare-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px rgba(234, 196, 44, 0.25);
+}
 .region-menu {
   position: absolute;
   top: 100%;

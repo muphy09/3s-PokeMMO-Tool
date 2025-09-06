@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+﻿import React, { useEffect, useMemo, useState, useRef } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
@@ -174,7 +174,7 @@ const DEX_BY_NAME = (() => {
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
 
-// Precompile regular expressions that can locate Pokémon names inside a block
+// Precompile regular expressions that can locate Pokemon names inside a block
 // of text.  One regex matches names with spaces/hyphens preserved, while the
 // other works against a "compacted" string with all non-alphanumeric
 // characters removed.  Sorting by length ensures longer names are tested first
@@ -185,7 +185,7 @@ const buildNameRegex = (transform) => {
     .map(transform)
     .sort((a, b) => b.length - a.length)
     .map(escape)
-    // Allow hyphens in Pokémon names to optionally appear as spaces in OCR text
+    // Allow hyphens in Pokemon names to optionally appear as spaces in OCR text
     .map(n => n.replace(/\\-/g, "[\\s-]?"));
   return new RegExp(`(${names.join("|")})`, "gi");
 };
@@ -410,7 +410,7 @@ function localSpriteCandidates(mon){
   );
   }
 
-/* ---------- Type colors (Gen 1–5) ---------- */
+/* ---------- Type colors (Gen 1â€“5) ---------- */
 const TYPE_COLORS = {
   normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
   grass:'#7AC74C', ice:'#96D9D6', fighting:'#C22E28', poison:'#A33EA1',
@@ -418,17 +418,22 @@ const TYPE_COLORS = {
   rock:'#B6A136', ghost:'#735797', dragon:'#6F35FC', dark:'#705746',
   steel:'#B7B7CE'
 };
-function TypePill({ t, compact=false, large=false }){
+function TypePill({ t, compact=false, large=false, onClick }){
   const key = normalizeType(t);
   if (!key) return null;
   const bg = TYPE_COLORS[key] || '#555';
   const pad = compact ? '2px 8px' : large ? '6px 12px' : '4px 10px';
   const fontSize = compact ? 12 : large ? 15 : 13;
   return (
-    <span title={titleCase(key)} style={{
-      display:'inline-block', padding:pad, fontSize, lineHeight:1,
-      borderRadius:999, fontWeight:800, color:'#111', background:bg, border:'1px solid #00000022', textShadow:'0 1px 0 #ffffff55'
-    }}>{titleCase(key)}</span>
+    <span
+      onClick={onClick}
+      title={onClick ? 'Filter by Type' : titleCase(key)}
+      style={{
+        display:'inline-block', padding:pad, fontSize, lineHeight:1,
+        borderRadius:999, fontWeight:800, color:'#111', background:bg, border:'1px solid #00000022', textShadow:'0 1px 0 #ffffff55',
+        cursor: onClick ? 'pointer' : 'default', userSelect: 'none'
+      }}
+    >{titleCase(key)}</span>
   );
 }
 
@@ -439,16 +444,21 @@ const EGG_GROUP_COLORS = {
   hmanoid:'#C22E28', ditto:'#F7D02C', mineral:'#B7B7CE', 'cannot breed':'#616161',
   genderless:'#616161'
 };
-function EggGroupPill({ group }){
+function EggGroupPill({ group, onClick }){
   const key = normalizeEggGroup(group);
   if (!key) return null;
   const bg = EGG_GROUP_COLORS[key] || '#555';
   return (
-    <span style={{
-      display:'inline-block', padding:'4px 10px', fontSize:13, lineHeight:1,
-      borderRadius:999, fontWeight:800, color:'#111', background:bg,
-      border:'1px solid #00000022'
-    }}>{titleCase(key)}</span>
+    <span
+      onClick={onClick}
+      title={onClick ? 'Filter by Egg Group' : undefined}
+      style={{
+        display:'inline-block', padding:'4px 10px', fontSize:13, lineHeight:1,
+        borderRadius:999, fontWeight:800, color:'#111', background:bg,
+        border:'1px solid #00000022', cursor: onClick ? 'pointer' : 'default',
+        userSelect: 'none'
+      }}
+    >{titleCase(key)}</span>
   );
 }
 
@@ -493,6 +503,59 @@ function AbilityPill({ label, name }){
   );
 }
 
+function LabeledPillBox({ label, value, title }){
+  if (value == null || value === '') return null;
+  return (
+    <div
+      title={title || ''}
+      style={{
+        display:'flex', alignItems:'center', gap:6,
+        padding:'4px 8px',
+        borderRadius:8,
+        background:'var(--surface)',
+        border:'1px solid var(--divider)'
+      }}
+    >
+      <span className="label-muted" style={{ fontSize:12 }}>{label}</span>
+      <span style={{ fontWeight:700 }}>{value}</span>
+    </div>
+  );
+}
+
+// Delayed tooltip wrapper for hover content (e.g., item descriptions)
+function DelayedTooltip({ content, delay = 1000, children }){
+  const [visible, setVisible] = React.useState(false);
+  const timerRef = React.useRef(null);
+  const onEnter = () => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setVisible(true), delay);
+  };
+  const onLeave = () => {
+    clearTimeout(timerRef.current);
+    setVisible(false);
+  };
+  return (
+    <span style={{ position:'relative', display:'inline-flex', alignItems:'center' }} onMouseEnter={onEnter} onMouseLeave={onLeave}>
+      {children}
+      {visible && content && (
+        <span
+          style={{
+            position:'absolute',
+            bottom:'calc(100% + 8px)', left:'50%', transform:'translateX(-50%)',
+            maxWidth:280,
+            background:'var(--surface)', color:'var(--text)',
+            border:'1px solid var(--divider)', borderRadius:8,
+            padding:'8px 10px', fontSize:12, boxShadow:'0 6px 20px rgba(0,0,0,.35)',
+            zIndex:50, whiteSpace:'normal'
+          }}
+        >
+          {content}
+        </span>
+      )}
+    </span>
+  );
+}
+
 function InfoPill({ label, value, large=false }){
   if (value == null || value === '') return null;
   return (
@@ -511,20 +574,25 @@ function InfoPill({ label, value, large=false }){
 }
 
 /* ---------- Compare View ---------- */
-function StatBox({ label, value }){
+function StatBox({ label, value, diff }){
   return (
     <div style={{
       display:'flex', flexDirection:'column', alignItems:'center',
-      padding:'8px 10px', border:'1px solid var(--divider)', borderRadius:8,
-      background:'var(--surface)', minWidth:70
+      padding:'6px 8px', border:'1px solid var(--divider)', borderRadius:8,
+      background:'var(--surface)', minWidth:0
     }}>
-      <div className="label-muted" style={{ fontSize:12 }}>{label}</div>
-      <div style={{ fontWeight:900, fontSize:18 }}>{value ?? '-'}</div>
+      <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
+      <div style={{ fontWeight:900, fontSize:16 }}>{value ?? '-'}</div>
+      {typeof diff === 'number' && diff !== 0 && (
+        <div style={{ fontSize:15, fontWeight:800, marginTop:2, color: diff > 0 ? '#22c55e' : '#ef4444' }}>
+          {diff > 0 ? `+${diff}` : `${diff}`}
+        </div>
+      )}
     </div>
   );
 }
 
-function StatsRow({ mon }){
+function StatsRow({ mon, other=null }){
   const s = mon?.stats || {};
   const map = {
     HP: s.hp ?? s.HP ?? s.base_hp,
@@ -534,13 +602,30 @@ function StatsRow({ mon }){
     'S.Def': s.special_defense ?? s.s_def ?? s.sp_defense ?? s.base_special_defense,
     Spd: s.speed ?? s.spd ?? s.base_speed,
   };
+  const total = [map['HP'], map['Att'], map['Def'], map['S.Att'], map['S.Def'], map['Spd']]
+    .map(v => Number(v) || 0)
+    .reduce((a,b)=>a+b, 0);
+  const otherStats = other?.stats || {};
+  const otherMap = other ? {
+    HP: otherStats.hp ?? otherStats.HP ?? otherStats.base_hp,
+    Att: otherStats.attack ?? otherStats.att ?? otherStats.base_attack,
+    Def: otherStats.defense ?? otherStats.def ?? otherStats.base_defense,
+    'S.Att': otherStats.special_attack ?? otherStats.s_att ?? otherStats.sp_attack ?? otherStats.base_special_attack,
+    'S.Def': otherStats.special_defense ?? otherStats.s_def ?? otherStats.sp_defense ?? otherStats.base_special_defense,
+    Spd: otherStats.speed ?? otherStats.spd ?? otherStats.base_speed,
+  } : null;
+  const totalOther = other ? [otherMap['HP'], otherMap['Att'], otherMap['Def'], otherMap['S.Att'], otherMap['S.Def'], otherMap['Spd']]
+    .map(v => Number(v) || 0)
+    .reduce((a,b)=>a+b, 0) : null;
   return (
-    <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-      {Object.entries(map).map(([k,v]) => <StatBox key={k} label={k} value={v} />)}
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
+      {Object.entries(map).map(([k,v]) => (
+        <StatBox key={k} label={k} value={v} diff={other ? ((Number(v)||0) - (Number(otherMap?.[k])||0)) : undefined} />
+      ))}
+      <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} />
     </div>
   );
 }
-
 function AbilityInline({ idx, name }){
   const desc = useAbilityDesc(name);
   const label = idx === 2 ? 'H.' : `${idx + 1}.`;
@@ -576,19 +661,67 @@ function WeakResLine({ types, kind='weak' }){
   );
 }
 
-function CompareBlock({ mon, onClear }){
+function CompareBlock({ mon, other, onClear, onReplace }){
   if (!mon) return null;
   const types = (mon.types || []).map(normalizeType);
   const abilities = (mon.abilities || []).map(a => a?.name).filter(Boolean);
+
+  // Helpers for two-row chip layout
+  const twoRowSplit = (arr = []) => {
+    const a = [...arr];
+    const mid = Math.ceil(a.length / 2);
+    return [a.slice(0, mid), a.slice(mid)];
+  };
+  const w = computeWeakness(types);
+  const weaknessEntries = [
+    ...w.x4.map(t => ({ t, pct: '400%' })),
+    ...w.x2.map(t => ({ t, pct: '200%' })),
+  ];
+  const resistEntries = [
+    ...w.x0_5.map(t => ({ t, pct: '50%' })),
+    ...w.x0_25.map(t => ({ t, pct: '25%' })),
+    ...w.x0.map(t => ({ t, pct: '0%' })),
+  ];
+  const [weakRow1, weakRow2] = twoRowSplit(weaknessEntries);
+  const [resRow1, resRow2] = twoRowSplit(resistEntries);
+
+  // Stat diffs vs other (when present)
+  const statKeys = [
+    ['HP','hp'], ['Att','attack'], ['Def','defense'],
+    ['S.Att','special_attack'], ['S.Def','special_defense'], ['Spd','speed']
+  ];
+  const sA = mon?.stats || {};
+  const sB = other?.stats || {};
+  const statDiffs = statKeys.map(([lab, key]) => {
+    const a = Number(sA[key] ?? sA[key?.toUpperCase?.()] ?? sA[`base_${key}`]) || 0;
+    const b = Number(sB[key] ?? sB[key?.toUpperCase?.()] ?? sB[`base_${key}`]) || 0;
+    const diff = a - b;
+    return { lab, diff };
+  });
+  const totalA = statKeys.reduce((sum, [,k]) => sum + (Number(sA[k] ?? sA[`base_${k}`]) || 0), 0);
+  const totalB = statKeys.reduce((sum, [,k]) => sum + (Number(sB[k] ?? sB[`base_${k}`]) || 0), 0);
+  const totalDiff = totalA - totalB;
+
+  const rowWrapStyle = { borderTop:'1px solid var(--divider)', paddingTop:8, marginTop:8 };
+
   return (
     <div className="faint-grid" style={{ padding:12, position:'relative' }}>
       <button
         type="button"
+        className="region-btn"
+        title="Replace From Live Battle"
+        onClick={() => onReplace && onReplace()}
+        style={{ position:'absolute', top:8, left:8 }}
+      >
+        Replace From Live Battle
+      </button>
+      <button
+        type="button"
         title="Clear"
         onClick={onClear}
-        style={{ position:'absolute', top:8, right:8, background:'transparent', border:'none', cursor:'pointer', color:'var(--muted)' }}
-      >
+        style={{ position:'absolute', top:8, right:8, background:'transparent', border:'none', cursor:'pointer', color:'var(--muted)' }}>
         ×
+
       </button>
       <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
         <Sprite mon={mon} size={120} alt={mon.name} />
@@ -599,29 +732,79 @@ function CompareBlock({ mon, onClear }){
       </div>
       <div style={{ marginTop:10, display:'grid', gap:8 }}>
         {abilities.length > 0 && (
-          <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-            <span className="label-muted" style={{ fontWeight:700 }}>Abilities:</span>
-            <div>
-              {abilities.map((a,i) => <AbilityInline key={`${a}-${i}`} idx={i} name={a} />)}
+          <div style={rowWrapStyle}>
+            <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8, alignItems:'center' }}>
+              <div className="label-muted" style={{ fontWeight:700 }}>Abilities</div>
+              <div style={{ display:'flex', justifyContent:'space-evenly', gap:8, flexWrap:'wrap' }}>
+                {abilities.map((a,i) => (
+                  <AbilityPill key={`${a}-${i}`} label={i===2? 'Hidden' : `${i+1}`} name={a} />
+                ))}
+              </div>
             </div>
           </div>
         )}
-        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-          <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
-          {(types || []).map(tp => <TypePill key={tp} t={tp} />)}
+
+        <div style={rowWrapStyle}>
+          <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8, alignItems:'center' }}>
+            <div className="label-muted" style={{ fontWeight:700 }}>Type</div>
+            <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
+              {(types || []).map(tp => <TypePill key={tp} t={tp} />)}
+            </div>
+          </div>
         </div>
-        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-          <span className="label-muted" style={{ fontWeight:700 }}>Weakness:</span>
-          <WeakResLine types={types} kind="weak" />
+
+        <div style={rowWrapStyle}>
+          <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8 }}>
+            <div className="label-muted" style={{ fontWeight:700, alignSelf:'center' }}>Weakness</div>
+            <div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', minHeight:28 }}>
+                {weakRow1.length ? weakRow1.map(({t,pct},i) => (
+                  <span key={`w1-${t}-${i}`} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                    <TypePill t={t} />
+                    <span className="label-muted" style={{ fontSize:12 }}>{pct}</span>
+                  </span>
+                )) : <span className="label-muted">None</span>}
+              </div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', marginTop:6, minHeight:28 }}>
+                {weakRow2.length ? weakRow2.map(({t,pct},i) => (
+                  <span key={`w2-${t}-${i}`} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                    <TypePill t={t} />
+                    <span className="label-muted" style={{ fontSize:12 }}>{pct}</span>
+                  </span>
+                )) : <span style={{ visibility:'hidden' }}>.</span>}
+              </div>
+            </div>
+          </div>
         </div>
-        <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
-          <span className="label-muted" style={{ fontWeight:700 }}>Resistance:</span>
-          <WeakResLine types={types} kind="res" />
+
+        <div style={rowWrapStyle}>
+          <div style={{ display:'grid', gridTemplateColumns:'110px 1fr', gap:8 }}>
+            <div className="label-muted" style={{ fontWeight:700, alignSelf:'center' }}>Resistance</div>
+            <div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', minHeight:28 }}>
+                {resRow1.length ? resRow1.map(({t,pct},i) => (
+                  <span key={`r1-${t}-${i}`} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                    <TypePill t={t} />
+                    <span className="label-muted" style={{ fontSize:12 }}>{pct}</span>
+                  </span>
+                )) : <span className="label-muted">None</span>}
+              </div>
+              <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', marginTop:6, minHeight:28 }}>
+                {resRow2.length ? resRow2.map(({t,pct},i) => (
+                  <span key={`r2-${t}-${i}`} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                    <TypePill t={t} />
+                    <span className="label-muted" style={{ fontSize:12 }}>{pct}</span>
+                  </span>
+                )) : <span style={{ visibility:'hidden' }}>.</span>}
+              </div>
+            </div>
+          </div>
         </div>
+
         {(mon.stats && Object.keys(mon.stats).length > 0) && (
-          <div>
+          <div style={rowWrapStyle}>
             <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Base Stats</div>
-            <StatsRow mon={mon} />
+            <StatsRow mon={mon} other={other} />
           </div>
         )}
       </div>
@@ -629,58 +812,16 @@ function CompareBlock({ mon, onClear }){
   );
 }
 
-function StatCompareGrid({ a, b }){
-  const sa = a?.stats || {};
-  const sb = b?.stats || {};
-  const defs = [
-    ['HP', sa.hp ?? sa.HP ?? sa.base_hp, sb.hp ?? sb.HP ?? sb.base_hp],
-    ['Att', sa.attack ?? sa.att ?? sa.base_attack, sb.attack ?? sb.att ?? sb.base_attack],
-    ['Def', sa.defense ?? sa.def ?? sa.base_defense, sb.defense ?? sb.def ?? sb.base_defense],
-    ['S.Att', sa.special_attack ?? sa.s_att ?? sa.sp_attack ?? sa.base_special_attack, sb.special_attack ?? sb.s_att ?? sb.sp_attack ?? sb.base_special_attack],
-    ['S.Def', sa.special_defense ?? sa.s_def ?? sa.sp_defense ?? sa.base_special_defense, sb.special_defense ?? sb.s_def ?? sb.sp_defense ?? sb.base_special_defense],
-    ['Spd', sa.speed ?? sa.spd ?? sa.base_speed, sb.speed ?? sb.spd ?? sb.base_speed],
-  ];
 
-  const Row = ({ label, va, vb }) => {
-    const aHigher = va > vb;
-    const bHigher = vb > va;
-    const diff = Math.abs((va ?? 0) - (vb ?? 0));
-    const Arrow = ({ up }) => (
-      <span style={{ color: up ? '#22c55e' : '#ef4444', fontWeight:800, marginLeft:6 }}>
-        {up ? '▲' : '▼'} {diff > 0 ? `${up ? '+' : '-'}${diff}` : ''}
-      </span>
-    );
-    return (
-      <div style={{ display:'grid', gridTemplateColumns:'160px 1fr 1fr', alignItems:'center', padding:'6px 10px', borderBottom:'1px solid var(--divider)' }}>
-        <div className="label-muted" style={{ fontWeight:700 }}>{label}</div>
-        <div style={{ fontWeight:800 }}>
-          {va ?? '-'} {aHigher && <Arrow up />}
-        </div>
-        <div style={{ fontWeight:800 }}>
-          {vb ?? '-'} {bHigher && <Arrow up />}
-        </div>
-      </div>
-    );
-  };
 
-  return (
-    <div className="faint-grid" style={{ marginTop:16 }}>
-      <div style={{ padding:'8px 10px', fontWeight:900 }}>Stat Compare</div>
-      <div style={{ display:'grid' }}>
-        {defs.map(([lab, va, vb]) => <Row key={lab} label={lab} va={va} vb={vb} />)}
-      </div>
-    </div>
-  );
-}
-
-function CompareView({ left, right, onClearLeft, onClearRight }){
+function CompareView({ left, right, onClearLeft, onClearRight, onReplaceLeft, onReplaceRight }){
   return (
     <div style={{ marginTop:12 }}>
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
-        <CompareBlock mon={left} onClear={onClearLeft} />
-        <CompareBlock mon={right} onClear={onClearRight} />
+        <CompareBlock mon={left} other={right} onClear={onClearLeft} onReplace={onReplaceLeft} />
+        <CompareBlock mon={right} other={left} onClear={onClearRight} onReplace={onReplaceRight} />
       </div>
-      <StatCompareGrid a={left} b={right} />
+      {/*  removed; diffs shown inline above Base Stats */}
     </div>
   );
 }
@@ -688,10 +829,10 @@ function CompareView({ left, right, onClearLeft, onClearRight }){
 function formatHeight(h){ return h==null? '--' : `${(h/10).toFixed(1)} m`; }
 function formatWeight(w){ return w==null? '--' : `${(w/10).toFixed(1)} kg`; }
 function formatGenderRatio(r){
-  if (r == null) return '--';
+  if (r == null) return "--";
   const female = Math.round((r/255)*100);
   const male = 100 - female;
-  return `${male}% ♂ / ${female}% ♀`;
+  return `${male}% M / ${female}% F`;
 }
 /* ---------- Method & Rarity palettes ---------- */
 function methodKey(m=''){ return String(m).toLowerCase().trim(); }
@@ -794,7 +935,7 @@ function ItemPill({ item, compact=false }){
   );
 }
 
-function PokeballIcon({ filled=false, size=16 }){
+function PokeballIcon({ filled=false, size=20 }){
   const stroke = filled ? '#000' : '#bbb';
   return (
     <svg width={size} height={size} viewBox="0 0 32 32">
@@ -818,15 +959,51 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
   const handleClick = () => {
     if (mon && onView) onView(mon);
   };
+  const evLabel = (() => {
+    if (!mon) return null;
+    const evMap = {
+      ev_hp: 'HP',
+      ev_attack: 'Atk',
+      ev_defense: 'Def',
+      ev_sp_attack: 'SpA',
+      ev_sp_defense: 'SpD',
+      ev_speed: 'Spe'
+    };
+    const yields = mon.yields || {};
+    const parts = Object.entries(evMap)
+      .filter(([k]) => (yields[k] || 0) > 0)
+      .map(([k, label]) => `${yields[k]} ${label}`);
+    if (!parts.length) return null;
+    // If multiple EV yields, stack subsequent values on new lines
+    if (parts.length > 1) {
+      return `EV- ${parts[0]}\n${parts.slice(1).join('\n')}`;
+    }
+    return `EV- ${parts[0]}`;
+  })();
   return (
     <div style={cardStyle} onClick={handleClick}>
+      {evLabel && (
+        <span
+          style={{
+            position:'absolute', top:6, left:6,
+            display:'inline-block', padding:'2px 8px',
+            fontSize:11, borderRadius:999,
+            color:'var(--text)', background:'var(--surface)',
+            border:'1px solid var(--divider)', fontWeight:700,
+            whiteSpace:'pre-line'
+          }}
+        >
+          {evLabel}
+        </span>
+      )}
       {showCaught && (
         <button
           onClick={e => { e.stopPropagation(); onToggleCaught && onToggleCaught(); }}
           title={caught ? 'Mark as uncaught' : 'Mark as caught'}
-          style={{ position:'absolute', top:6, right:6, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
+          style={{ position:'absolute', top:6, right:6, background:'transparent', border:'none', cursor:'pointer', padding:0, fontSize:0 }}
         >
-          <PokeballIcon filled={caught} />
+          <PokeballIcon filled={caught} size={30} />
+        ×
         </button>
       )}
       <div style={{ fontWeight:700 }}>{monName}</div>
@@ -911,13 +1088,13 @@ function MoveRow({ mv, showLevel=false }){
       )}
       <td style={{ ...moveCell, textAlign:'left' }}>{name}</td>
       <td style={{ ...moveCell, textAlign:'center' }}>
-        {data?.type ? <TypePill t={data.type} compact /> : '—'}
+        {data?.type ? <TypePill t={data.type} compact /> : 'â€”'}
       </td>
       <td style={{ ...moveCell, textAlign:'center' }}>
-        {data?.category ? <CategoryPill cat={data.category} /> : '—'}
+        {data?.category ? <CategoryPill cat={data.category} /> : 'â€”'}
       </td>
-      <td style={{ ...moveCell, textAlign:'center' }}>{data?.power ?? '—'}</td>
-      <td style={{ ...moveCell, textAlign:'center' }}>{data?.accuracy ?? '—'}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.power ?? 'â€”'}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.accuracy ?? 'â€”'}</td>
     </tr>
   );
 }
@@ -1018,7 +1195,7 @@ function MovesTable({ title, moves = [], showLevel = false }) {
     });
   };
 
-  const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? '▲' : '▼') : '');
+  const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? 'â–²' : 'â–¼') : '');
 
   return (
     <div style={{ border: '1px solid var(--divider)', borderRadius: 8, padding: '8px 10px', background: 'var(--surface)' }}>
@@ -1107,10 +1284,13 @@ function EvolutionChain({ mon, onSelect }) {
 
   const renderMon = (m) => {
     if (!m) return null;
+    const isSelected = !!(mon && m && m.id === mon.id);
     return (
       <div style={{ display:'flex', alignItems:'center', gap:16 }}>
         <div style={{ textAlign:'center' }}>
-          <Sprite mon={m} size={72} alt={m.name} />
+          <div style={{ display:'inline-block', padding:2, border: isSelected ? '2px solid var(--accent)' : '2px solid transparent' }}>
+            <Sprite mon={m} size={72} alt={m.name} />
+          </div>
           <div className="label-muted">#{String(m.id).padStart(3,'0')}</div>
           <button
             className="link-btn"
@@ -1133,13 +1313,26 @@ function EvolutionChain({ mon, onSelect }) {
               let label = titleCase(typeLabel);
 
               const needsItem = rawType.includes('item');
+              const isTrade = rawType.startsWith('trade');
               let val = null;
+              let itemId = null;
               if (evo.item_name) {
                 val = evo.item_name;
+                const found = ITEM_INDEX.byName.get(normalizeKey(evo.item_name));
+                if (found?.id != null) itemId = found.id;
               } else if (needsItem && typeof evo.val === 'number' && ITEM_INDEX.byId.has(evo.val)) {
                 val = ITEM_INDEX.byId.get(evo.val)?.name;
+                itemId = evo.val;
               } else if (evo.val != null) {
                 val = evo.val;
+              }
+
+              // Clean up bogus trade values like "0:" so it renders as plain "Trade"
+              if (isTrade) {
+                const sval = String(val ?? '').trim();
+                if (!sval || /^0:?$/.test(sval)) {
+                  val = null;
+                }
               }
 
               if (val != null) {
@@ -1152,8 +1345,16 @@ function EvolutionChain({ mon, onSelect }) {
 
           return (
                 <div key={evo.id} style={{ display:'flex', alignItems:'center', gap:16 }}>
-                  <div style={{ textAlign:'center', fontSize:12 }}>
-                    <div style={{ fontSize:24 }}>→</div>
+                  <div style={{ textAlign:'center', fontSize:12, display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+                    {itemId != null && (
+                      <img
+                        src={`${ITEM_ICON_BASE}${itemId}.png`}
+                        alt={String(val || 'Item')}
+                        style={{ width:22, height:22, imageRendering:'pixelated' }}
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = ITEM_PLACEHOLDER; e.currentTarget.style.imageRendering = 'auto'; }}
+                      />
+                    )}
+                    <div style={{ fontSize:24 }}>{"\u2192"}</div>
                     <div className="label-muted">{label}</div>
                   </div>
                   {renderMon(child)}
@@ -1303,7 +1504,7 @@ function useTmLocations(){
   return index;
 }
 
-/** Group same Pokémon (per map) into one entry with multiple methods/rarities */
+/** Group same Pokemon (per map) into one entry with multiple methods/rarities */
 function groupEntriesByMon(entries){
   const byId = new Map();
   for (const e of entries){
@@ -1349,7 +1550,7 @@ function normalizeMapForGrouping(region, mapName){
   const r = String(region).toLowerCase().trim();
   let m = String(mapName).trim();
 
-  // Merge halves like "Route 212 (North)" / "(South)" → "Route 212"
+  // Merge halves like "Route 212 (North)" / "(South)" -> "Route 212"
   if (/^route\s*\d+\b/i.test(m)) {
     m = m.replace(/\s*\((north|south|east|west)\)\s*/i, '').trim();
   }
@@ -1412,7 +1613,7 @@ function lookupRarity(monName, region, map, locIndex){
 
 /* ======================= LIVE ROUTE MATCHING ======================= */
 
-/** Known alias fixes (expand as needed) — keys and values are compared after simplifyName(). */
+/** Known alias fixes (expand as needed) â€” keys and values are compared after simplifyName(). */
 const LIVE_ALIASES = {
   "oreburghcity": "oreburghcity",
   "jubilifecity": "jubilifecity",
@@ -1605,7 +1806,7 @@ function normalizeHudText(s=''){
     l = l.replace(/\s{2,}/g,' ').trim();
     return l;
   }).filter(Boolean);
-  t = lines.join('\n');
+  t = lines.join('');
   // Treat OCR results that are just dashes as empty/no data
   if (/^-+$/.test(t)) return '';
   return t;
@@ -1926,7 +2127,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       if (!coerced) return;
 
       let cleaned = normalizeHudText(coerced.routeText);
-      if (DEBUG_LIVE) console.log('[LIVE] OCR raw:', coerced.routeText, '→ cleaned:', cleaned);
+      if (DEBUG_LIVE) console.log('[LIVE] OCR raw:', coerced.routeText, '-> cleaned:', cleaned);
 
       const { cleaned: trimmed, best } = findBestMapInText(cleaned, areasIndex);
       if (!best) return; // ignore noisy frames
@@ -1939,7 +2140,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
       setConfidence(coerced.confidence ?? null);
       if (targetName === displayMapRef.current) return;
 
-      // choose region: saved pref → best → first choice
+      // choose region: saved pref -> best -> first choice
       const prefKey = `regionPref:${targetName}`;
       let picked = localStorage.getItem(prefKey);
       if (picked && !choices.includes(picked)) picked = null;
@@ -2037,7 +2238,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
         <div className="label-muted">
-          Live Location: <span style={{ fontWeight:800 }}>{rawText || '—'}</span>
+          Live Location: <span style={{ fontWeight:800 }}>{rawText || 'â€”'}</span>
           {SHOW_CONFIDENCE && (confPct !== null) && (
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
@@ -2096,7 +2297,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               <div style={{ fontWeight:800, fontSize:16 }}>
                 {displayMap} {region ? <span className="label-muted">({titleCase(region)})</span> : null}
               </div>
-              <div className="label-muted">{entries.length} Pokémon</div>
+              <div className="label-muted">{entries.length} Pokemon</div>
             </div>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               {regionChoices.length > 1 && (
@@ -2162,7 +2363,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 }
 
 /* ======================= LIVE BATTLE PANEL ======================= */
-function LiveBattlePanel({ onViewMon }){
+function LiveBattlePanel({ onViewMon, onCompare }){
   const [ocrEnabled, setOcrEnabled] = useState(isOcrEnabled());
   const [rawText, setRawText] = useState('');
   const [confidence, setConfidence] = useState(null);
@@ -2214,15 +2415,14 @@ function LiveBattlePanel({ onViewMon }){
         // multiple health bars overlap in horde battles. Also ensure digits and
         // letters don't run together.
         .replace(/([a-z])([A-Z])/g, '$1 $2')
-        .replace(/(\d)([A-Za-z])/g, '$1 $2')
-        .replace(/\bLv\.?\s*\d+\b/gi, '\n')
-        .replace(/\b(?:HP|pc)\s*\d+\/\d+\b/gi, '\n')
-        .replace(/\s*\n\s*/g, '\n')
+        .replace(/(\\d)([A-Za-z])/g, '$1 $2')
+        .replace(/\b(?:HP|pc)\s*\d+\/\d+\b/gi, '')
+        .replace(/\s*\s*/g, '')
         .replace(/\s{2,}/g, ' ')
         .trim();
       const compacted = cleaned.replace(/\s+/g, '');
       // If OCR returns nothing, reset the OCR state so the next detection
-      // starts fresh, but keep showing the last detected Pokémon to avoid UI flicker
+      // starts fresh, but keep showing the last detected Pokemon to avoid UI flicker
       if (!compacted) {
         setRawText('');
         setConfidence(null);
@@ -2256,10 +2456,10 @@ function LiveBattlePanel({ onViewMon }){
         names = [...fuzzySet];
       }
       
-      // If no Pokémon names are detected, reset OCR state but keep the last
-      // displayed Pokémon until a different one is identified
+      // If no Pokemon names are detected, reset OCR state but keep the last
+      // displayed Pokemon until a different one is identified
       if (names.length === 0) {
-        if (DEBUG_LIVE) console.log('[LIVE] No Pokémon names detected:', cleaned);
+        if (DEBUG_LIVE) console.log('[LIVE] No Pokemon names detected:', cleaned);
         setRawText('');
         setConfidence(null);
         return;
@@ -2312,7 +2512,10 @@ function LiveBattlePanel({ onViewMon }){
   })();
 
   const confPct = formatConfidence(confidence);
-  const nameText = mons.length > 0 ? mons.map(m => m.name).join(' | ') : 'No Pokémon';
+  const nameText = mons.length > 0 ? mons.map(m => m.name).join(' | ') : 'No Pokemon';
+  useEffect(() => {
+    try { window.liveBattleLastMons = mons; } catch {}
+  }, [mons]);
 
   useEffect(() => {
     mons.forEach(mon => {
@@ -2373,7 +2576,7 @@ function LiveBattlePanel({ onViewMon }){
       )}
 
       {rawText && mons.length === 0 && (
-        <div className="label-muted">No matching Pokémon found.</div>
+        <div className="label-muted">No matching Pokemon found.</div>
       )}
 
       {mons.length > 0 && (
@@ -2428,6 +2631,16 @@ function LiveBattlePanel({ onViewMon }){
                   opacity: showCaught ? (isCaught ? 0.4 : 1) : 1
                 }}
               >
+                {onCompare && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onCompare(mon); }}
+                    title="Compare"
+                    className="region-btn"
+                    style={{ position: 'absolute', top: 6, right: 36 }}
+                  >
+                    Compare
+                  </button>
+                )}
                 <button
                   onClick={() => onViewMon?.(mon)}
                   style={{
@@ -2517,9 +2730,13 @@ function LiveBattlePanel({ onViewMon }){
                         fontSize: isSolo ? 16 : 15
                       }}
                     >
-                      <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-                        <div style={{ fontWeight: 600 }}>EV Yield:</div>
-                        <div>{evs.length ? evs.join(', ') : 'None'}</div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 4, alignItems:'flex-start' }}>
+                        <div style={{ fontWeight: 600, whiteSpace:'nowrap' }}>EV Yield:</div>
+                        <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-start' }}>
+                          {evs.length ? evs.map((e,i) => (
+                            <div key={i} style={{ lineHeight:1.2 }}>{e}</div>
+                          )) : 'None'}
+                        </div>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
                         <div style={{ fontWeight: 600 }}>Held Items:</div>
@@ -2530,7 +2747,7 @@ function LiveBattlePanel({ onViewMon }){
                         <div>
                           {mon.catchRate != null
                             ? `${mon.catchRate} | ${catchPercent}%`
-                            : '—'}
+                            : 'â€”'}
                         </div>
                       </div>
                       <div style={{ fontWeight: 600 }}>Base Stats:</div>
@@ -2538,6 +2755,13 @@ function LiveBattlePanel({ onViewMon }){
                         {Object.entries(statMap).map(([k, label]) => (
                           <InfoPill key={k} label={label} value={(mon.stats || {})[k] ?? '-'} large />
                         ))}
+                        {(() => {
+                          const s = mon.stats || {};
+                          const total = ['hp','attack','defense','sp_attack','sp_defense','speed']
+                            .map(k => Number(s[k]) || 0)
+                            .reduce((a,b)=>a+b, 0);
+                          return <InfoPill label="Total" value={total || '-'} large />;
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -2558,7 +2782,7 @@ function LiveBattlePanel({ onViewMon }){
   );
 }
 
-/* ======================= REVERSE AREAS → MON INDEX ======================= */
+/* ======================= REVERSE AREAS -> MON INDEX ======================= */
 function buildReverseAreasIndex(areasClean) {
   const rev = new Map();
   for (const [region, maps] of Object.entries(areasClean || {})) {
@@ -2616,6 +2840,15 @@ function App(){
   const [compareMode, setCompareMode] = useState(false);
   const [compareA, setCompareA] = useState(null);
   const [compareB, setCompareB] = useState(null);
+  // Always disable compare when leaving the Pokemon Search tab
+  useEffect(() => {
+    if (mode !== 'pokemon') {
+      setCompareMode(false);
+      setCompareA(null);
+      setCompareB(null);
+    }
+  }, [mode]);
+
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
   useEffect(() => {
@@ -2627,7 +2860,7 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
   const [isOneHp, setIsOneHp] = useState(false);
-  // Session-based recent Pokémon selections for quick history in Pokémon Search
+  // Session-based recent Pokemon selections for quick history in Pokemon Search
   const [recentMons, setRecentMons] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('recentMons') || '[]'); }
     catch { return []; }
@@ -2782,6 +3015,15 @@ function App(){
   const [moveFilter, setMoveFilter] = useState('');
   const [moveLevelOnly, setMoveLevelOnly] = useState(false);
   const [itemFilter, setItemFilter] = useState('');
+
+  // Close the Pokemon profile when any filter is selected/changed
+  useEffect(() => {
+    if (!selected) return;
+    const anyFilter = Boolean(
+      typeFilter || typeFilter2 || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter || (moveFilter && moveLevelOnly)
+    );
+    if (anyFilter) setSelected(null);
+  }, [typeFilter, typeFilter2, eggFilter, abilityFilter, regionFilter, moveFilter, moveLevelOnly, itemFilter]);
   const typeOptions = useMemo(() => {
     const set = new Set();
     for (const m of DEX_LIST) for (const t of m.types || []) set.add(normalizeType(t));
@@ -2900,7 +3142,7 @@ const headerSprite = useMemo(() => {
 
 // (Removed: legacy OCR setup auto-open)
 
-  // Search by Pokémon
+  // Search by Pokemon
   const results = React.useMemo(() => {
     if (mode !== 'pokemon') return [];
     const q = query.trim().toLowerCase();
@@ -2973,6 +3215,22 @@ const headerSprite = useMemo(() => {
     const rest = results.filter(r => !sameMon(r, compareA));
     return [compareA, ...rest];
   }, [results, compareMode, compareA, compareB, mode]);
+
+  // Filter recent list based on compare state
+  const recentFiltered = React.useMemo(() => {
+    if (mode !== 'pokemon') return recentMons;
+    if (compareMode && compareA && compareB) return [];
+    if (compareMode && compareA && !compareB) {
+      if (!Array.isArray(recentMons)) return [];
+      return recentMons.filter(r => {
+        const m = getMonByDex(r?.id);
+        if (m) return !sameMon(m, compareA);
+        if (r?.name) return normalizeKey(r.name) !== normalizeKey(compareA.name);
+        return true;
+      });
+    }
+    return recentMons;
+  }, [recentMons, mode, compareMode, compareA, compareB]);
 
   // Track recents when selection changes
   useEffect(() => {
@@ -3088,7 +3346,7 @@ const marketResults = React.useMemo(() => {
     setMarketSelected(item);
   };
 
-  // Selected Pokémon details (MERGED sources)
+  // Selected Pokemon details (MERGED sources)
   const resolved = React.useMemo(() => {
     if (!selected) return null;
 
@@ -3245,7 +3503,7 @@ const marketResults = React.useMemo(() => {
         <div style={{ ...styles.card, marginBottom:16 }}>
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
             <div style={styles.segWrap}>
-              <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokémon Search</button>
+              <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokemon Search</button>
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
@@ -3321,22 +3579,57 @@ const marketResults = React.useMemo(() => {
                 options={moveOptions}
                 placeholder="Move"
               />
-              {moveFilter && (
-                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
-                  <input
-                    type="checkbox"
-                    checked={moveLevelOnly}
-                    onChange={e=>setMoveLevelOnly(e.target.checked)}
-                  />
-                  Level-Up Only
-                </label>
-              )}
               <SearchFilter
                 value={itemFilter}
                 onChange={setItemFilter}
                 options={itemOptions}
                 placeholder="Held Item"
               />
+              <button
+                type="button"
+                className={`region-btn${compareMode ? ' compare-active' : ''}`}
+                aria-pressed={compareMode}
+                onClick={() => {
+                  setMode('pokemon');
+                  if (compareMode) {
+                    setCompareMode(false);
+                    setCompareA(null);
+                    setCompareB(null);
+                    setSelected(null);
+                    setQuery('');
+                  } else {
+                    setCompareMode(true);
+                  }
+                }}
+                title="Compare"
+              >
+                Compare
+              </button>
+              {(hasFilters || compareMode) && (
+                <button
+                  type="button"
+                  className="region-btn"
+                  onClick={() => {
+                    // Reset all Pokemon filters and deactivate Compare
+                    setTypeFilter('');
+                    setTypeFilter2('');
+                    setEggFilter('');
+                    setAbilityFilter('');
+                    setRegionFilter('');
+                    setMoveFilter('');
+                    setMoveLevelOnly(false);
+                    setItemFilter('');
+                    if (compareMode) {
+                      setCompareMode(false);
+                      setCompareA(null);
+                      setCompareB(null);
+                    }
+                  }}
+                  title="Clear Filters"
+                >
+                  Clear Filters
+                </button>
+              )}
               {/* Compare toggle moved to top menu and profile header */}
             </div>
           )}
@@ -3354,6 +3647,16 @@ const marketResults = React.useMemo(() => {
                     ? 'Search by TM name'
                     : 'Search by item name'}
                 </div>
+                {mode==='pokemon' && moveFilter && (
+                  <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
+                    <input
+                      type="checkbox"
+                      checked={moveLevelOnly}
+                      onChange={e=>setMoveLevelOnly(e.target.checked)}
+                    />
+                    Level-up only
+                  </label>
+                )}
                 {mode==='areas' && (
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                     <div ref={methodFilterRef} style={{ position:'relative' }}>
@@ -3473,6 +3776,13 @@ const marketResults = React.useMemo(() => {
             <div style={{ marginTop:4 }}>
               <LiveBattlePanel
                 onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}
+                onCompare={(mon) => {
+                  setCompareMode(true);
+                  setCompareA(mon);
+                  setCompareB(null);
+                  setMode('pokemon');
+                  setQuery('');
+                }}
               />
             </div>
           )}
@@ -3504,8 +3814,8 @@ const marketResults = React.useMemo(() => {
             </div>
           )}
 
-          {/* Recent selections (session) shown when Pokémon search is blank */}
-          {mode==='pokemon' && !query.trim() && recentMons.length > 0 && (
+          {/* Recent selections (session) shown when Pokemon search is blank and no filters are active */}
+          {mode==='pokemon' && !query.trim() && !hasFilters && recentFiltered.length > 0 && (
             <div style={{ marginTop:12 }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
                 <div className="label-muted" style={{ fontWeight:700 }}>Recent</div>
@@ -3522,14 +3832,32 @@ const marketResults = React.useMemo(() => {
                 </button>
               </div>
               <div className="result-grid">
-                {recentMons.map((r) => {
+                {recentFiltered.map((r) => {
                   const mon = getMonByDex(r.id);
                   if (!mon) return null;
                   const t = [...new Set((mon.types || []).map(normalizeType))];
                   return (
                     <button
                       key={`recent-${r.id}`}
-                      onClick={()=>{ setSelected(mon); setQuery(''); }}
+                      onClick={()=>{
+                        if (compareMode) {
+                          if (!compareA || (compareA && compareB)) {
+                            setCompareA(mon);
+                            setCompareB(null);
+                            setSelected(null);
+                            setQuery('');
+                          } else if (compareA && !compareB) {
+                            if (!sameMon(compareA, mon)) {
+                              setCompareB(mon);
+                              setQuery('');
+                              setSelected(null);
+                            }
+                          }
+                        } else {
+                          setSelected(mon);
+                          setQuery('');
+                        }
+                      }}
                       className="result-tile"
                       style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' }}
                     >
@@ -3548,13 +3876,29 @@ const marketResults = React.useMemo(() => {
             </div>
           )}
 
-          {/* Pokémon results */}
+          {/* Pokemon results */}
           {mode==='pokemon' && compareMode && compareA && compareB && (
             <CompareView
               left={compareA}
               right={compareB}
-              onClearLeft={() => { setCompareA(compareB); setCompareB(null); }}
-              onClearRight={() => { setCompareB(null); }}
+              onClearLeft={() => { setCompareA(compareB); setCompareB(null); setSelected(null); setQuery(''); }}
+              onClearRight={() => { setCompareB(null); setSelected(null); setQuery(''); }}
+              onReplaceLeft={() => {
+                const list = (window.liveBattleLastMons || []);
+                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                if (!mon) return; // No notifications
+                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(mon.name)) {
+                  setCompareA(mon);
+                }
+              }}
+              onReplaceRight={() => {
+                const list = (window.liveBattleLastMons || []);
+                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                if (!mon) return; // No notifications
+                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(mon.name)) {
+                  setCompareB(mon);
+                }
+              }}
             />
           )}
 
@@ -3609,7 +3953,7 @@ const marketResults = React.useMemo(() => {
                     <div style={{ fontWeight:800, fontSize:16 }}>
                       {hit.map} <span className="label-muted">({hit.region})</span>
                     </div>
-                    <div className="label-muted">{hit.count} Pokémon</div>
+                    <div className="label-muted">{hit.count} Pokemon</div>
                   </div>
 
                   <div style={{ ...styles.gridCols, marginTop:10 }}>
@@ -3681,7 +4025,7 @@ const marketResults = React.useMemo(() => {
           {mode==='market' && (
             <div style={{ marginTop:12 }}>
               {marketLoading && (
-                <div className="label-muted">Loading market data…</div>
+                <div className="label-muted">Loading market dataâ€¦</div>
               )}
               {marketError && (
                 <div className="label-error">{marketError}</div>
@@ -3711,7 +4055,7 @@ const marketResults = React.useMemo(() => {
                           </div>
                         </div>
                         {item.price != null ? (
-                          <div>₽ {Number(item.price).toLocaleString()}</div>
+                          <div>â‚½ {Number(item.price).toLocaleString()}</div>
                         ) : null}
                       </div>
                     </div>
@@ -3725,11 +4069,11 @@ const marketResults = React.useMemo(() => {
           )}
         </div>
 
-        {/* Detail Panel (Pokémon) */}
-          {mode==='pokemon' && resolved && (
+        {/* Detail Panel (Pokemon) */}
+          {mode==='pokemon' && resolved && !(compareMode && compareA && compareB) && (
              <>
             <div ref={detailRef} className="grid">
-            {/* Left: Pokémon card */}
+            {/* Left: Pokemon card */}
             <div style={{ ...styles.card, position:'relative' }}>
               <div style={{ position:'relative' }}>
                 <button
@@ -3741,8 +4085,10 @@ const marketResults = React.useMemo(() => {
                   <PokeballIcon filled={caught.has(resolved.id)} />
                 </button>
               </div>
-              <div style={{ display:'flex', gap:12 }}>
-                <Sprite mon={selected} size={120} alt={resolved.name} />
+              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:12, alignItems:'start' }}>
+                <div>
+                  <Sprite mon={selected} size={120} alt={resolved.name} />
+                </div>
                 <div>
                   <div style={{ fontSize:22, fontWeight:900 }}>
                     {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
@@ -3752,196 +4098,320 @@ const marketResults = React.useMemo(() => {
                       display: 'grid',
                       gap: 12,
                       marginTop: 6,
-                      alignItems: 'center',
-                      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))'
+                      alignItems: 'start',
+                      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+                      gridAutoRows: 'min-content'
                     }}
                   >
-                    <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                      <span className="label-muted" style={{ fontWeight: 700 }}>Type:</span>
-                      {(resolved.types || []).map(tp => <TypePill key={tp} t={tp} />)}
+                    {/* Column 1: Type — 3 rows */}
+                    <div style={{ gridColumn: '1', gridRow:'1', display:'flex', alignItems:'center' }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
                     </div>
-                    {resolved.eggGroups?.length > 0 && (
-                      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                        <span className="label-muted" style={{ fontWeight: 700 }}>Egg Group:</span>
-                        {resolved.eggGroups.map(g => <EggGroupPill key={g} group={g} />)}
+                    <div style={{ gridColumn: '1', gridRow:'2' }}>
+                      {resolved.types?.[0] ? (
+                        <TypePill
+                          t={resolved.types[0]}
+                          onClick={() => {
+                            setMode('pokemon');
+                            setSelected(null);
+                            setQuery('');
+                            setTypeFilter(normalizeType(resolved.types[0]));
+                            setTypeFilter2('');
+                          }}
+                        />
+                      ) : (
+                        <span className="label-muted">N/A</span>
+                      )}
+                    </div>
+                    <div style={{ gridColumn: '1', gridRow:'3' }}>
+                      {resolved.types?.[1] ? (
+                        <TypePill
+                          t={resolved.types[1]}
+                          onClick={() => {
+                            setMode('pokemon');
+                            setSelected(null);
+                            setQuery('');
+                            setTypeFilter(normalizeType(resolved.types[1]));
+                            setTypeFilter2('');
+                          }}
+                        />
+                      ) : null}
+                    </div>
+
+                    {/* Column 2: Egg Group — 3 rows */}
+                    <div style={{ gridColumn: '2', gridRow:'1', display:'flex', alignItems:'center' }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Egg Group</span>
+                    </div>
+                    <div style={{ gridColumn: '2', gridRow:'2' }}>
+                      {resolved.eggGroups?.[0] ? (
+                        <EggGroupPill
+                          group={resolved.eggGroups[0]}
+                          onClick={() => {
+                            setMode('pokemon');
+                            setSelected(null);
+                            setQuery('');
+                            setEggFilter(normalizeEggGroup(resolved.eggGroups[0]));
+                          }}
+                        />
+                      ) : (
+                        <span className="label-muted">N/A</span>
+                      )}
+                    </div>
+                    <div style={{ gridColumn: '2', gridRow:'3' }}>
+                      {resolved.eggGroups?.[1] ? (
+                        <EggGroupPill
+                          group={resolved.eggGroups[1]}
+                          onClick={() => {
+                            setMode('pokemon');
+                            setSelected(null);
+                            setQuery('');
+                            setEggFilter(normalizeEggGroup(resolved.eggGroups[1]));
+                          }}
+                        />
+                      ) : null}
+                    </div>
+
+                    {/* Column 3: Abilities (3 stacked rows: 1, 2, Hidden) */}
+                    {([0,1,2]).map(i => (
+                      <div key={`ab-row-${i}`} style={{ gridColumn: '3', gridRow: String(i+1), display:'flex', gap:6, alignItems:'center' }}>
+                        <AbilityPill
+                          label={i === 2 ? 'Hidden' : `${i + 1}`}
+                          name={resolved.abilities?.[i]?.name}
+                        />
                       </div>
-                    )}
-                    {resolved.abilities?.length > 0 && (
-                      <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                        <span className="label-muted" style={{ fontWeight: 700 }}>Abilities:</span>
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                          {resolved.abilities.map((a, i) => (
-                            <AbilityPill
-                              key={`${a.name}-${i}`}
-                              label={i === 2 ? 'Hidden' : `${i + 1}`}
-                              name={a.name}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {resolved.catchRate != null && (
-                      <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-                        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                          <span className="label-muted" style={{ fontWeight: 700 }}>Catch Rate:</span>
-                          <span>{resolved.catchRate}</span>
-                        </div>
-                        <div style={{ display:'flex', gap:4, alignItems:'center' }}>
-                          <span className="label-muted" style={{ fontWeight: 700 }}>Catch %:</span>
-                          <span>{catchPercent != null ? catchPercent.toFixed(1) : 'N/A'}%</span>
-                          <button
-                            type="button"
-                            onClick={() => setIsAsleep(v => !v)}
-                            title="Toggle Sleep"
-                            style={{
-                              opacity: isAsleep ? 1 : 0.5,
-                              background: isAsleep ? 'var(--accent)' : 'var(--chip-bg)',
-                              border: `1px solid ${isAsleep ? 'var(--accent)' : 'var(--chip-br)'}`,
-                              color: isAsleep ? '#111' : 'var(--text)',
-                              borderRadius: 6,
-                              padding: '2px 6px',
-                              cursor: 'pointer',
-                              fontWeight: 700,
-                              fontSize: 12
-                            }}
-                          >
-                            zZz
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setIsOneHp(v => !v)}
-                            title="Toggle 1 HP"
-                            style={{
-                              opacity: isOneHp ? 1 : 0.5,
-                              background: isOneHp ? '#f87171' : 'var(--chip-bg)',
-                              border: `1px solid ${isOneHp ? '#f87171' : 'var(--chip-br)'}`,
-                              color: isOneHp ? '#111' : 'var(--text)',
-                              borderRadius: 6,
-                              padding: '2px 6px',
-                              cursor: 'pointer',
-                              fontWeight: 700,
-                              fontSize: 12
-                            }}
-                          >
-                            1HP
-                          </button>
-                        </div>
-                      </div>
-                    )}
+                    ))}
+
+                    {/* Column 4: EV Yield, Catch Rate, Catch % (+ toggles) aligned with abilities */}
+                    {(() => {
+                      const evMap = {
+                        ev_hp: 'HP',
+                        ev_attack: 'Atk',
+                        ev_defense: 'Def',
+                        ev_sp_attack: 'SpA',
+                        ev_sp_defense: 'SpD',
+                        ev_speed: 'Spe'
+                      };
+                      const yields = resolved.yields || {};
+                      const evParts = Object.entries(evMap)
+                        .filter(([k]) => (yields[k] || 0) > 0)
+                        .map(([k, label]) => `${yields[k]} ${label}`);
+                      const evText = evParts.length ? evParts.join(', ') : 'None';
+
+                      return (
+                        <>
+                          <div style={{ gridColumn:'4', gridRow:'1' }}>
+                            <LabeledPillBox label="EV Yield" value={evText} />
+                          </div>
+                          <div style={{ gridColumn:'4', gridRow:'2' }}>
+                            <LabeledPillBox label="Catch Rate" value={resolved.catchRate ?? 'N/A'} />
+                          </div>
+                          <div style={{ gridColumn:'4', gridRow:'3', display:'flex', alignItems:'center', gap:6 }}>
+                            <LabeledPillBox label="Catch %" value={catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'} />
+                            <span style={{ display:'inline-flex', alignItems:'center', gap:6, marginLeft:'auto' }}>
+                              <button
+                                type="button"
+                                onClick={() => setIsAsleep(v => !v)}
+                                title="Toggle Sleep"
+                                style={{
+                                  opacity: isAsleep ? 1 : 0.5,
+                                  background: isAsleep ? 'var(--accent)' : 'var(--chip-bg)',
+                                  border: `1px solid ${isAsleep ? 'var(--accent)' : 'var(--chip-br)'}`,
+                                  color: isAsleep ? '#111' : 'var(--text)',
+                                  borderRadius: 6,
+                                  padding: '3px 8px',
+                                  cursor: 'pointer',
+                                  fontWeight: 700,
+                                  fontSize: 13
+                                }}
+                              >
+                                zZz
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setIsOneHp(v => !v)}
+                                title="Toggle 1 HP"
+                                style={{
+                                  opacity: isOneHp ? 1 : 0.5,
+                                  background: isOneHp ? '#f87171' : 'var(--chip-bg)',
+                                  border: `1px solid ${isOneHp ? '#f87171' : 'var(--chip-br)'}`,
+                                  color: isOneHp ? '#111' : 'var(--text)',
+                                  borderRadius: 6,
+                                  padding: '3px 8px',
+                                  cursor: 'pointer',
+                                  fontWeight: 700,
+                                  fontSize: 13
+                                }}
+                              >
+                                1HP
+                              </button>
+                            </span>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gap: 6,
-                      marginTop: 8,
-                      gridTemplateColumns: 'repeat(5, minmax(0, 1fr))'
+                  
+                </div>
+
+                {/* Row 2, Column 1: Compare button centered under sprite */}
+                <div style={{ gridColumn:'1', display:'flex', justifyContent:'center', alignItems:'center', gap:8, marginTop:8 }}>
+                  <button
+                    type="button"
+                    className={`region-btn${compareMode ? ' compare-active' : ''}`}
+                    aria-pressed={compareMode}
+                    onClick={() => {
+                      // Always enter compare mode with this mon as slot A,
+                      // close the profile, and prep for selecting the next.
+                      setCompareMode(true);
+                      setCompareA(resolved);
+                      setCompareB(null);
+                      setSelected(null);
+                      setQuery('');
                     }}
+                    title="Compare"
                   >
-                    <InfoPill label="Exp" value={titleCase((resolved.expType || '').replace(/_/g, ' '))} />
-                    <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
-                    <InfoPill label="Height" value={formatHeight(resolved.height)} />
-                    <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
-                    <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
-                  </div>
-                  {resolved.forms?.length > 1 && (
-                    <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Forms:</span>
-                      {resolved.forms.map(f => <span key={f.form_id || f.id}>{f.name}</span>)}
-                    </div>
+                    Compare
+                  </button>
+                  {(hasFilters || compareMode) && (
+                    <button
+                      type="button"
+                      className="region-btn"
+                      onClick={() => {
+                        setTypeFilter('');
+                        setTypeFilter2('');
+                        setEggFilter('');
+                        setAbilityFilter('');
+                        setRegionFilter('');
+                        setMoveFilter('');
+                        setMoveLevelOnly(false);
+                        setItemFilter('');
+                        if (compareMode) {
+                          setCompareMode(false);
+                          setCompareA(null);
+                          setCompareB(null);
+                        }
+                      }}
+                      title="Clear Filters"
+                    >
+                      Clear Filters
+                    </button>
                   )}
                 </div>
+
+                {/* Row 2, Column 2: Info pills */}
+                <div
+                  style={{
+                    gridColumn:'2',
+                    display: 'grid',
+                    gap: 6,
+                    marginTop: 8,
+                    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+                    alignItems: 'stretch'
+                  }}
+                >
+                  <InfoPill label="Exp" value={titleCase((resolved.expType || '').replace(/_/g, ' '))} />
+                  <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
+                  <InfoPill label="Height" value={formatHeight(resolved.height)} />
+                  <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
+                  <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
+                </div>
+
+                {/* Row 3, Column 2: Forms (if multiple) */}
+                {resolved.forms?.length > 1 && (
+                  <div style={{ gridColumn:'2', display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
+                    <span className="label-muted" style={{ fontWeight:700 }}>Forms:</span>
+                    {resolved.forms.map(f => <span key={f.form_id || f.id}>{f.name}</span>)}
+                  </div>
+                )}
               </div>
               {Object.keys(resolved.stats || {}).length > 0 && (
                 <>
                   <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>Base Stats</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(100px, 1fr))', gap:6 }}>
-                    {Object.entries(resolved.stats).map(([k,v]) => (
-                      <InfoPill key={k} label={titleCase(k.replace('_',' '))} value={v} />
-                    ))}
+                  <div style={{ display:'flex', justifyContent:'center' }}>
+                    <div style={{ width:'100%' }}>
+                      <StatsRow mon={resolved} />
+                    </div>
                   </div>
                 </>
               )}
-              {Object.entries(resolved.yields || {}).some(([k,v]) => k.startsWith('ev_') && v) && (
-                <>
-                  <div className="label-muted" style={{ fontWeight:700, margin:'16px 0 6px' }}>EV Yields</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:8 }}>
-                    {Object.entries(resolved.yields).filter(([k,v]) => k.startsWith('ev_') && v).map(([k,v]) => (
-                      <InfoPill key={k} label={titleCase(k.replace('ev_','').replace('_',' '))} value={v} />
-                    ))}
-                  </div>
-                </>
-              )}
-              {/* Weakness table */}
+              {/* Weakness table (dynamic/centered) */}
               <div style={{ marginTop:16 }}>
                 <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(260px, 1fr))', gap:8 }}>
-                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
-                    <div style={{ fontWeight:800, marginBottom:6 }}>4× Weak</div>
-                    {resolved.weakness.x4.length ? (
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                        {resolved.weakness.x4.map(t => <TypePill key={`x4-${t}`} t={t} compact />)}
-                      </div>
-                    ) : <div className="label-muted">None</div>}
-                  </div>
-                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
-                    <div style={{ fontWeight:800, marginBottom:6 }}>2× Weak</div>
-                    {resolved.weakness.x2.length ? (
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                        {resolved.weakness.x2.map(t => <TypePill key={`x2-${t}`} t={t} compact />)}
-                      </div>
-                    ) : <div className="label-muted">None</div>}
-                  </div>
-                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
-                    <div style={{ fontWeight:800, marginBottom:6 }}>½× Resist</div>
-                    {resolved.weakness.x0_5.length ? (
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                        {resolved.weakness.x0_5.map(t => <TypePill key={`x05-${t}`} t={t} compact />)}
-                      </div>
-                    ) : <div className="label-muted">None</div>}
-                  </div>
-                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
-                    <div style={{ fontWeight:800, marginBottom:6 }}>¼× Resist</div>
-                    {resolved.weakness.x0_25.length ? (
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                        {resolved.weakness.x0_25.map(t => <TypePill key={`x025-${t}`} t={t} compact />)}
-                      </div>
-                    ) : <div className="label-muted">None</div>}
-                  </div>
-                  <div style={{ border:'1px solid var(--divider)', borderRadius:8, padding:'8px 10px', background:'var(--surface)' }}>
-                    <div style={{ fontWeight:800, marginBottom:6 }}>0× Immune</div>
-                    {resolved.weakness.x0.length ? (
-                      <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                        {resolved.weakness.x0.map(t => <TypePill key={`x0-${t}`} t={t} compact />)}
-                      </div>
-                    ) : <div className="label-muted">None</div>}
-                  </div>
-                </div>
+                {(() => {
+                  const blocks = [
+                    { title: '4x Weak',     list: resolved.weakness.x4 || [] },
+                    { title: '2x Weak',     list: resolved.weakness.x2 || [] },
+                    { title: '1/2x Resist', list: resolved.weakness.x0_5 || [] },
+                    { title: '1/4x Resist', list: resolved.weakness.x0_25 || [] },
+                    { title: '0x Immune',   list: resolved.weakness.x0 || [] },
+                  ].filter(b => (b.list?.length || 0) > 0);
+
+                  if (!blocks.length) {
+                    return <div className="label-muted">No notable matchups.</div>;
+                  }
+
+                  const isCompact = blocks.length === 5;
+                  const cols = isCompact ? 5 : 4;
+                  const cardPad = isCompact ? '8px 10px' : '12px 14px';
+                  const gap = isCompact ? 6 : 10;
+
+                  return (
+                    <div style={{
+                      display:'grid',
+                      gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+                      gap,
+                      alignItems:'stretch'
+                    }}>
+                      {blocks.map((b, i) => (
+                        <div
+                          key={`${b.title}-${i}`}
+                          style={{
+                            border:'1px solid var(--divider)',
+                            borderRadius:8,
+                            padding: cardPad,
+                            background:'var(--surface)'
+                          }}
+                        >
+                          <div style={{ fontWeight:800, marginBottom:isCompact ? 6 : 8, fontSize: isCompact ? 13 : 14 }}>{b.title}</div>
+                          <div style={{ display:'flex', gap:isCompact ? 6 : 8, flexWrap:'wrap' }}>
+                            {b.list.map(t => (
+                              isCompact
+                                ? <TypePill key={`${b.title}-${t}`} t={t} compact />
+                                : <TypePill key={`${b.title}-${t}`} t={t} large />
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
 
               {resolved.heldItems?.length > 0 && (
                 <div style={{ marginTop:16 }}>
                   <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Held Items</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:8 }}>
+                  <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center' }}>
                     {resolved.heldItems.map((h,i) => {
                       const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
                       return (
-                        <div
-                          key={h.id || h.name || i}
-                          style={{ display:'flex', alignItems:'center', gap:6 }}
-                          title={item?.description || ''}
-                        >
-                          <img
-                            src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
-                            alt={h.name || h}
-                            style={{ width:24, height:24, imageRendering:'pixelated' }}
-                            onError={e => {
-                              e.currentTarget.onerror = null;
-                              e.currentTarget.src = ITEM_PLACEHOLDER;
-                              e.currentTarget.style.imageRendering = 'auto';
-                            }}
-                          />
-                          <span style={{ fontWeight:600, color:'var(--accent)' }}>{h.name || h}</span>
-                        </div>
+                        <React.Fragment key={h.id || h.name || i}>
+                          {i > 0 && <span style={{ margin:'0 8px', opacity:0.6 }}>|</span>}
+                          <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                            <img
+                              src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                              alt={h.name || h}
+                              style={{ width:24, height:24, imageRendering:'pixelated' }}
+                              onError={e => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = ITEM_PLACEHOLDER;
+                                e.currentTarget.style.imageRendering = 'auto';
+                              }}
+                            />
+                            <DelayedTooltip content={item?.description || ''}>
+                              <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
+                            </DelayedTooltip>
+                          </span>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -3949,6 +4419,18 @@ const marketResults = React.useMemo(() => {
               )}
 
               <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
+
+              {/* Close button moved to bottom-right of the info block */}
+              <div style={{ display:'flex', justifyContent:'flex-end', marginTop:12 }}>
+                <button
+                  type="button"
+                  className="region-btn"
+                  onClick={() => { setSelected(null); setQuery(''); }}
+                  title="Close"
+                >
+                  Close
+                </button>
+              </div>
             </div>
 
             {/* Right: Locations */}
@@ -4063,7 +4545,7 @@ const marketResults = React.useMemo(() => {
                 onClick={() => setMarketSelected(null)}
                 style={{ cursor: 'pointer' }}
               >
-                ✕
+                X
               </button>
             </div>
             <webview
@@ -4084,3 +4566,10 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
+
+
+
+
+
+
+

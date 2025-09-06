@@ -5,18 +5,42 @@
 ### Added
 - Compare Pokemon!
   - You can now compare 2 different Pokemon inside of Pokemon Search
-  - Displays Sprite, Abilities, Type, Weakness, Resistance, and compares Stats
+  - Displays Sprite, Abilities, Type, Weakness, Resistance, and compares Basic Stats
+  - Uses green & red indicators to quickly see what Basic Stat differences are present
+  - 'Compare' buttons located in Pokemon Search, Pokemon Profile, and Live Battle Tab
+  - Clicking compare in Live Battle Tab auto-selects that Pokemon to compare and switches to Pokemon Search
+  - 'Replace from Live Battle Tab' button overwrites compared Pokemon with the one detected in battle
 
-- Base Stat Total
+- Recent Search History 
+  - See your most recent searches inside of a Pokemon chip in the Pokemon Search Tab
+  - 'Clear Recents' wipes Pokemon chips from screen
+  - Recent Pokemon can be selected when 'Compare' is toggled
+
+- Base Stat Total Display
   - A Base Stat Total # now appears anywhere a Pokemons Base Stats were seen before
 
-
-
-
 ### Fixed
-- 
+- Team Builder Tab
+  - Clicking a Pokemons name now takes you to their profile
 
+- Live Route Tab
+  - Enlarged size of the Caught indicator Pokeball in the Live Route Tab
+  - EV Yield now displays inside of Pokemon block
 
+- Pokemon Search Tab
+  - Dynamic Type Matchups now fill the width with only data that is needed
+  - Clicking on an Egg Group category now starts a filtered search of that Egg Group
+  - Clicking on a Pokemon Type now starts a filtered search of that Type
+  - When any filter is toggled, a 'Clear Filters' button appears for use
+  - Fixed Evolution stage "Trade: 0" to say "Trade"
+  - Updated UI to be more inline with other tab data now
+    - Base Stat row changed to be Boxes
+    - Held Items with sprites & Tooltips on hover
+    - Relocated & Resized EV Yield Pill
+    - Split the top Pokemon information into columns for consistency.
+    - 'Close' button now appears in the bottom corner
+    - Reworked all data to fit into a 'grid' to look pretty
+  
 ---
 
 ## [2.8.2] - 2025-09

@@ -1,0 +1,35 @@
+function StatBox({ label, value }){
+  return (
+    <div style={{
+      display:'flex', flexDirection:'column', alignItems:'center',
+      padding:'8px 10px', border:'1px solid var(--divider)', borderRadius:8,
+      background:'var(--surface)', minWidth:70
+    }}>
+      <div className="label-muted" style={{ fontSize:12 }}>{label}</div>
+      <div style={{ fontWeight:900, fontSize:18 }}>{value ?? '-'}</div>
+    </div>
+  );
+}
+
+function StatsRow({ mon }){
+  const s = mon?.stats || {};
+  const map = {
+    HP: s.hp ?? s.HP ?? s.base_hp,
+    Att: s.attack ?? s.att ?? s.base_attack,
+    Def: s.defense ?? s.def ?? s.base_defense,
+    'S.Att': s.special_attack ?? s.s_att ?? s.sp_attack ?? s.base_special_attack,
+    'S.Def': s.special_defense ?? s.s_def ?? s.sp_defense ?? s.base_special_defense,
+    Spd: s.speed ?? s.spd ?? s.base_speed,
+  };
+  const total = [map['HP'], map['Att'], map['Def'], map['S.Att'], map['S.Def'], map['Spd']]
+    .map(v => Number(v) || 0)
+    .reduce((a,b)=>a+b, 0);
+  return (
+    <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+      {Object.entries(map).map(([k,v]) => <StatBox key={k} label={k} value={v} />)}
+      <StatBox label="Total" value={total || '-'} />
+    </div>
+  );
+}
+
+
