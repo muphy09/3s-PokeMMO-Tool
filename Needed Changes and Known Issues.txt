@@ -5,9 +5,11 @@ Changes to come:
 - Feedback Button
 - Catch rate in Live Route
 - Favorable vs Unfavorable matchup in compare tab
+- Update Live Battle to match new Pokemon profile UI
 --------------------------------------
 Known Issues:
 
 - Evolution data for uncommon methods has weird labels (Eevee)
+- Deoxys Egg ??
 --------------------------------------
 

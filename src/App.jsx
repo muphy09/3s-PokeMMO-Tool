@@ -1088,13 +1088,13 @@ function MoveRow({ mv, showLevel=false }){
       )}
       <td style={{ ...moveCell, textAlign:'left' }}>{name}</td>
       <td style={{ ...moveCell, textAlign:'center' }}>
-        {data?.type ? <TypePill t={data.type} compact /> : 'â€”'}
+        {data?.type ? <TypePill t={data.type} compact /> : '\u2014'}
       </td>
       <td style={{ ...moveCell, textAlign:'center' }}>
-        {data?.category ? <CategoryPill cat={data.category} /> : 'â€”'}
+        {data?.category ? <CategoryPill cat={data.category} /> : '\u2014'}
       </td>
-      <td style={{ ...moveCell, textAlign:'center' }}>{data?.power ?? 'â€”'}</td>
-      <td style={{ ...moveCell, textAlign:'center' }}>{data?.accuracy ?? 'â€”'}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.power ?? '\u2014'}</td>
+      <td style={{ ...moveCell, textAlign:'center' }}>{data?.accuracy ?? '\u2014'}</td>
     </tr>
   );
 }
@@ -1195,7 +1195,8 @@ function MovesTable({ title, moves = [], showLevel = false }) {
     });
   };
 
-  const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? 'â–²' : 'â–¼') : '');
+  // Use proper Unicode arrows for sort indicators (up/down)
+  const sortArrow = key => (sort.key === key ? (sort.dir === 1 ? '\u25B2' : '\u25BC') : '');
 
   return (
     <div style={{ border: '1px solid var(--divider)', borderRadius: 8, padding: '8px 10px', background: 'var(--surface)' }}>

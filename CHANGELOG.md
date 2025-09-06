@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.8.3] - 2025-09
+## [2.8.4] - 2025-09
 ### Added
 - Compare Pokemon!
   - You can now compare 2 different Pokemon inside of Pokemon Search
