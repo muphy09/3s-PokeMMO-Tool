@@ -1812,6 +1812,17 @@ function EvolutionChain({ mon, onSelect }) {
                 }
               }
 
+              if (
+                rawType === 'happiness' ||
+                rawType === 'happiness_day' ||
+                rawType === 'happiness_night'
+              ) {
+                label = 'Evolve with Happiness';
+                if (rawType === 'happiness_day') label += ': Day';
+                if (rawType === 'happiness_night') label += ': Night';
+                val = null;
+              }
+
               // Clean up bogus trade values like "0:" so it renders as plain "Trade"
               if (isTrade) {
                 const sval = String(val ?? '').trim();
