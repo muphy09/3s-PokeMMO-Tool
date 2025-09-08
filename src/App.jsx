@@ -2378,7 +2378,11 @@ class LiveRouteClient {
     try { if (this.ws) this.ws.close(); } catch {}
     this.ws = null;
     this.lastPayload = null;          // <-- clear cached message so UI resets
-    this.pathToggle = !this.pathToggle;
+    // Clear any pending reconnect to avoid residual timers after a manual restart
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
     if (!this.disabled && isOcrEnabled()) setTimeout(()=> this.connect(), 100);
   }
   setEnabled(enabled){
