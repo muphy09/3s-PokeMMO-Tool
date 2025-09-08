@@ -20,6 +20,8 @@
   - Deoxys Eggs no longer appear in the dataset (idk where that came from)
   - Evolutions with weird location methods now correctly displayed (Eevee, Nosepass, & Magneton)
   - Evolutions that required Happiness (friendship) now correctly displayed (Eevee, Pichu, etc)
+  - Abilities that were not spaced correctly are fixed
+    - Lightningrod & Compoundeyes
 
 - Pokemon Profile
   - Switched UI from 3 rows to 4 rows across the top information section
@@ -31,6 +33,7 @@
   - Changed font size of the Dex # to be smaller
 
 - Compare Section
+  - Selecting a Pokemon to Compare now opens the Compare menu with 1 selected Pokemon
   - Clicking "Compare" in the Live Battle Tab now brings you to the compare screen with the 2nd Pokemon unselected
     - Pokemon from the active team can be easily imported this way
   - Changed the 'x' button to be named 'Swap'

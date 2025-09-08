@@ -4605,7 +4605,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Recent selections (session) shown when Pokemon search is blank and no filters are active */}
-          {mode==='pokemon' && !query.trim() && !hasFilters && recentFiltered.length > 0 && (
+          {mode==='pokemon' && !query.trim() && !hasFilters && recentFiltered.length > 0 && !(compareMode && compareA && compareB) && (
             <div style={{ marginTop:12 }}>
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:6 }}>
                 <div className="label-muted" style={{ fontWeight:700 }}>Recent</div>
@@ -4667,43 +4667,6 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Pokemon results */}
-          {mode==='pokemon' && compareMode && (compareA || compareB) && (
-            <CompareView
-              left={compareA}
-              right={compareB}
-              onClearLeft={() => { setCompareA(compareB); setCompareB(null); setSelected(null); setQuery(''); }}
-              onClearRight={() => { setCompareB(null); setSelected(null); setQuery(''); }}
-              onReplaceLeft={() => {
-                const list = (window.liveBattleLastMons || []);
-                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
-                if (!mon) return; // No notifications
-                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(mon.name)) {
-                  setCompareA(mon);
-                }
-              }}
-              onReplaceRight={() => {
-                const list = (window.liveBattleLastMons || []);
-                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
-                if (!mon) return; // No notifications
-                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(mon.name)) {
-                  setCompareB(mon);
-                }
-              }}
-              onReplaceLeftFromTeam={(picked) => {
-                if (!picked) return;
-                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(picked.name)) {
-                  setCompareA(picked);
-                }
-              }}
-              onReplaceRightFromTeam={(picked) => {
-                if (!picked) return;
-                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(picked.name)) {
-                  setCompareB(picked);
-                }
-              }}
-            />
-          )}
-
           {mode==='pokemon' && !(compareMode && compareA && compareB) && !!combinedResults.length && (
             <div className="result-grid" style={{ marginTop:12 }}>
               {combinedResults.map(p => {
@@ -4744,6 +4707,43 @@ const marketResults = React.useMemo(() => {
                 );
               })}
             </div>
+          )}
+
+          {mode==='pokemon' && compareMode && (
+            <CompareView
+              left={compareA}
+              right={compareB}
+              onClearLeft={() => { setCompareA(compareB); setCompareB(null); setSelected(null); setQuery(''); }}
+              onClearRight={() => { setCompareB(null); setSelected(null); setQuery(''); }}
+              onReplaceLeft={() => {
+                const list = (window.liveBattleLastMons || []);
+                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                if (!mon) return; // No notifications
+                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(mon.name)) {
+                  setCompareA(mon);
+                }
+              }}
+              onReplaceRight={() => {
+                const list = (window.liveBattleLastMons || []);
+                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                if (!mon) return; // No notifications
+                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(mon.name)) {
+                  setCompareB(mon);
+                }
+              }}
+              onReplaceLeftFromTeam={(picked) => {
+                if (!picked) return;
+                if (!compareA || normalizeKey(compareA.name) !== normalizeKey(picked.name)) {
+                  setCompareA(picked);
+                }
+              }}
+              onReplaceRightFromTeam={(picked) => {
+                if (!picked) return;
+                if (!compareB || normalizeKey(compareB.name) !== normalizeKey(picked.name)) {
+                  setCompareB(picked);
+                }
+              }}
+            />
           )}
 
           {/* Area results */}
