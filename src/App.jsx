@@ -2068,6 +2068,8 @@ function mapNameMatches(candidate, needle){
     const candRoute = cand.match(/^route\s*(\d+)\b/);
     return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
   }
+// Avoid extremely short non-route queries from matching multiple maps
+  if (search.length < 3) return false;
 
   if (search.startsWith('route')) return false;
   return cand.includes(search);
@@ -2150,6 +2152,8 @@ function findBestMapName(hudText, areasIndex){
   // Avoid treating "Route" with no number as a fuzzy search
   if (/^route\b(?!\s*\d)/i.test(raw)) return null;
   const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
+  // Require a minimum of three alphanumeric characters for non-route searches
+  if (!isRoute && raw.replace(/[^a-z0-9]+/ig, '').length < 3) return null;
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
   const routeNeedle = isRoute
     ? needleKey.match(/^(?:route\s*)?(\d+)\b/)
