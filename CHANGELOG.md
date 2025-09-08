@@ -1,6 +1,14 @@
 # Changelog
 ---
 
+## [2.8.7] - 2025-09
+### Fixed
+- 'Replace from Live Battle' now correctly pulls the most recent Pokemon shown on the Live Battle tab
+  - Broken with last update
+
+
+---
+
 ## [2.8.6] - 2025-09
 ### Added
 - Live Route OCR
@@ -37,6 +45,7 @@
   - Clicking "Compare" in the Live Battle Tab now brings you to the compare screen with the 2nd Pokemon unselected
     - Pokemon from the active team can be easily imported this way
   - Changed the 'x' button to be named 'Swap'
+
  
  - Live Route OCR 
   - Incresed letter match requirment to '3' *previously 2*

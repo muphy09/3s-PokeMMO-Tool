@@ -4185,6 +4185,63 @@ const marketResults = React.useMemo(() => {
   useEffect(() => { setSingleBuild(mkInitialBuild()); }, [resolved]);
   useEffect(() => { setShowAllHeld(false); }, [resolved]);
 
+  const getLatestLiveBattleMon = () => {
+    const fromPayload = (payload) => {
+      const coerced = coerceBattleIncoming(payload);
+      if (!coerced) return [];
+      let cleaned = normalizeHudText(coerced.monText);
+      cleaned = cleaned
+        .replace(/([A-Za-z])([Ll][Vv])/g, '$1 $2')
+        .replace(/([A-Za-z])([Hh][Pp])/g, '$1 $2')
+        .replace(/([A-Za-z])([Pp][Cc])/g, '$1 $2')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/(\d)([A-Za-z])/g, '$1 $2')
+        .replace(/\b(?:HP|pc)\s*\d+\/\d+\b/gi, '')
+        .replace(/\s*\s*/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+      const lower = cleaned.toLowerCase();
+      const compact = lower.replace(/[^a-z0-9]+/g, '');
+      const matches = lower.match(POKE_NAME_REGEX) || [];
+      const compactMatches = compact.match(POKE_NAME_COMPACT_REGEX) || [];
+      let names = Array.from(new Set([...matches, ...compactMatches].map(normalizeKey)))
+        .map(n => getMon(n)?.name)
+        .filter(Boolean);
+      if (names.length === 0) {
+        const candLines = cleaned.split(/\n+/).map(s => s.trim()).filter(Boolean);
+        const fuzzySet = new Set();
+        for (const line of candLines) {
+          const key = normalizeKey(line);
+          let mon = getMon(key);
+          if (!mon) {
+            let best = null;
+            let bestScore = 0;
+            for (const m of DEX_LIST) {
+              const score = similarity(key, normalizeKey(m.name));
+              if (score > bestScore) { best = m; bestScore = score; }
+            }
+            if (best && bestScore >= 0.8) mon = best;
+          }
+          if (mon) fuzzySet.add(mon.name);
+        }
+        names = [...fuzzySet];
+      }
+      return names
+        .map(n => {
+          const m = getMon(n);
+          return m ? { ...m } : null;
+        })
+        .filter(Boolean);
+    };
+
+    let mons = fromPayload(liveBattleClient.lastPayload);
+    if (!mons.length) {
+      const fallback = window.liveBattleLastMons || [];
+      mons = Array.isArray(fallback) ? fallback : [];
+    }
+    return (Array.isArray(mons) && mons.length) ? mons[0] : null;
+  };
+
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught }}>
     <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
@@ -4716,16 +4773,14 @@ const marketResults = React.useMemo(() => {
               onClearLeft={() => { setCompareA(compareB); setCompareB(null); setSelected(null); setQuery(''); }}
               onClearRight={() => { setCompareB(null); setSelected(null); setQuery(''); }}
               onReplaceLeft={() => {
-                const list = (window.liveBattleLastMons || []);
-                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                const mon = getLatestLiveBattleMon();
                 if (!mon) return; // No notifications
                 if (!compareA || normalizeKey(compareA.name) !== normalizeKey(mon.name)) {
                   setCompareA(mon);
                 }
               }}
               onReplaceRight={() => {
-                const list = (window.liveBattleLastMons || []);
-                const mon = (Array.isArray(list) && list.length) ? list[0] : null;
+                const mon = getLatestLiveBattleMon();
                 if (!mon) return; // No notifications
                 if (!compareB || normalizeKey(compareB.name) !== normalizeKey(mon.name)) {
                   setCompareB(mon);
