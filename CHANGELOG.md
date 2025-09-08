@@ -22,13 +22,18 @@
   - Evolutions that required Happiness (friendship) now correctly displayed (Eevee, Pichu, etc)
 
 - Pokemon Profile
-  - Switched from 3 rows to 4 rows across the top information section
+  - Switched UI from 3 rows to 4 rows across the top information section
   - Changed the location of the Held Item to be included in the top
     - If more than 1 held item are applicable; a dropdown arrow will reveal the rest of the items
     - Displays 'No Held Items' if none apply
   - Labeled 'Abilities'
   - Introduced Grid boxes around the 4 columns of top level information
   - Changed font size of the Dex # to be smaller
+
+- Compare Section
+  - Clicking "Compare" in the Live Battle Tab now brings you to the compare screen with the 2nd Pokemon unselected
+    - Pokemon from the active team can be easily imported this way
+  - Changed the 'x' button to be named 'Swap'
  
  - Live Route OCR 
   - Incresed letter match requirment to '3' *previously 2*

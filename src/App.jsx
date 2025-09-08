@@ -995,11 +995,64 @@ function WeakResLine({ types, kind='weak' }){
 }
 
 function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build, onSetIV, onSetEV, onSetLevel, natureEl, override=null, otherOverride=null, underlineKeys=new Set() }){
-  if (!mon) return null;
-  const types = (mon.types || []).map(normalizeType);
-  const abilities = (mon.abilities || []).map(a => a?.name).filter(Boolean);
+  const hasMon = !!mon;
+  const types = (mon?.types || []).map(normalizeType);
+  const abilities = (mon?.abilities || []).map(a => a?.name).filter(Boolean);
   // If any ability names are long, use a more compact presentation.
   const useCompactAbilities = abilities.some(a => (a || '').length > 12) || abilities.join('').length > 28;
+
+  const teamSelect = (() => {
+    let teamNames = [];
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
+      if (Array.isArray(saved)) teamNames = saved;
+      else if (saved && typeof saved === 'object' && Array.isArray(saved.mons)) teamNames = saved.mons;
+    } catch {}
+    const options = (teamNames || []).map(s => String(s || '').trim()).filter(Boolean);
+    const hasAny = options.length > 0;
+    const handleSelect = (e) => {
+      const name = e.target.value;
+      if (!name) return;
+      try {
+        const picked = getMon(name);
+        if (picked && onReplaceFromTeam) onReplaceFromTeam(picked);
+      } catch {}
+      e.target.selectedIndex = 0;
+    };
+    return (
+      <select
+        title="Replace From Active Team"
+        onChange={handleSelect}
+        className="input"
+        style={{ position:'absolute', top:44, left:8, height:28, borderRadius:8, width:'auto', maxWidth:220 }}
+      >
+        <option value="">Replace From Active Team</option>
+        {hasAny ? (
+          options.map((n, i) => <option key={`${n}-${i}`} value={n}>{titleCase(n)}</option>)
+        ) : (
+          <option value="" disabled>No Active Pokemon</option>
+        )}
+      </select>
+    );
+  })();
+
+  if (!hasMon) {
+    return (
+      <div className="faint-grid" style={{ padding:12, position:'relative', minHeight:360, display:'flex', alignItems:'center', justifyContent:'center' }}>
+        <button
+          type="button"
+          className="region-btn"
+          title="Replace From Live Battle"
+          onClick={() => onReplace && onReplace()}
+          style={{ position:'absolute', top:8, left:8 }}
+        >
+          Replace From Live Battle
+        </button>
+        {teamSelect}
+        <div className="label-muted" style={{ fontWeight:700 }}>No Pokemon Selected</div>
+      </div>
+    );
+  }
 
   // Helpers for two-row chip layout
   const twoRowSplit = (arr = []) => {
@@ -1051,47 +1104,15 @@ function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build
       >
         Replace From Live Battle
       </button>
-      {(() => {
-        let teamNames = [];
-        try {
-          const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
-          if (Array.isArray(saved)) teamNames = saved;
-          else if (saved && typeof saved === 'object' && Array.isArray(saved.mons)) teamNames = saved.mons;
-        } catch {}
-        const options = (teamNames || []).map(s => String(s || '').trim()).filter(Boolean);
-        const hasAny = options.length > 0;
-        const handleSelect = (e) => {
-          const name = e.target.value;
-          if (!name) return;
-          try {
-            const picked = getMon(name);
-            if (picked && onReplaceFromTeam) onReplaceFromTeam(picked);
-          } catch {}
-          e.target.selectedIndex = 0;
-        };
-        return (
-          <select
-            title="Replace From Active Team"
-            onChange={handleSelect}
-            className="input"
-            style={{ position:'absolute', top:44, left:8, height:28, borderRadius:8, width:'auto', maxWidth:220 }}
-          >
-            <option value="">Replace From Active Team</option>
-            {hasAny ? (
-              options.map((n, i) => <option key={`${n}-${i}`} value={n}>{titleCase(n)}</option>)
-            ) : (
-              <option value="" disabled>No Active Pokemon</option>
-            )}
-          </select>
-        );
-      })()}
+      {teamSelect}
       <button
         type="button"
-        title="Clear"
+        className="region-btn"
+        title="Swap"
         onClick={onClear}
-        style={{ position:'absolute', top:8, right:8, background:'transparent', border:'none', cursor:'pointer', color:'var(--muted)' }}>
-        ×
-
+        style={{ position:'absolute', top:8, right:8 }}
+      >
+        Swap
       </button>
       <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
         <Sprite mon={mon} size={120} alt={mon.name} />
@@ -4646,7 +4667,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Pokemon results */}
-          {mode==='pokemon' && compareMode && compareA && compareB && (
+          {mode==='pokemon' && compareMode && (compareA || compareB) && (
             <CompareView
               left={compareA}
               right={compareB}
@@ -4856,7 +4877,7 @@ const marketResults = React.useMemo(() => {
         </div>
 
         {/* Detail Panel (Pokemon) */}
-          {mode==='pokemon' && resolved && !(compareMode && compareA && compareB) && (
+          {mode==='pokemon' && resolved && !(compareMode && (compareA || compareB)) && (
              <>
             <div ref={detailRef} className="grid">
             {/* Left: Pokemon card */}
