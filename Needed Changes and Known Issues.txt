@@ -8,6 +8,7 @@ Changes to come:
 - Pull level of Pokemon from OCR data to adjust Base Stats on the fly in Live Battle
 - Multi-view search (compare style block)
 - Compare from Live Battle should bring to compare window with it preselected, in case "replace from team builder" is wanted quick
+- Persist Area search between tab switch, clear on search bar click
 --------------------------------------
 Known Issues:
 

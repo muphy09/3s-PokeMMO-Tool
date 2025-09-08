@@ -3372,6 +3372,7 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
   const [isOneHp, setIsOneHp] = useState(false);
+  const [showAllHeld, setShowAllHeld] = useState(false);
   // Session-based recent Pokemon selections for quick history in Pokemon Search
   const [recentMons, setRecentMons] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('recentMons') || '[]'); }
@@ -3993,6 +3994,7 @@ const marketResults = React.useMemo(() => {
     onSetLevel: (val) => setSingleBuild((prev) => ({ ...prev, level: val }))
   };
   useEffect(() => { setSingleBuild(mkInitialBuild()); }, [resolved]);
+  useEffect(() => { setShowAllHeld(false); }, [resolved]);
 
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught }}>
@@ -4642,18 +4644,20 @@ const marketResults = React.useMemo(() => {
                 </div>
                 <div>
                   <div style={{ fontSize:22, fontWeight:900 }}>
-                    {titleCase(resolved.name)} <span className="label-muted">#{resolved.id}</span>
+                    {titleCase(resolved.name)} <span className="label-muted" style={{ fontSize:'50%' }}>#{resolved.id}</span>
                   </div>
-                  <div
-                    style={{
-                      display: 'grid',
-                      gap: 12,
-                      marginTop: 6,
-                      alignItems: 'start',
-                      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-                      gridAutoRows: 'min-content'
-                    }}
-                  >
+                  <div style={{ position:'relative', marginTop:6 }}>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gap: 12,
+                        alignItems: 'start',
+                        gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+                        gridAutoRows: 'min-content',
+                        position: 'relative',
+                        zIndex: 1
+                      }}
+                    >
                     {/* Column 1: Type — 4 rows (label, type1, type2, blank) */}
                     <div style={{ gridColumn: '1', gridRow:'1', display:'flex', alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Type</span>
@@ -4753,41 +4757,85 @@ const marketResults = React.useMemo(() => {
                         .map(([k, label]) => `${yields[k]} ${label}`);
                       const evText = evParts.length ? evParts.join(', ') : 'None';
 
-                      const heldContent = (resolved.heldItems?.length || 0) > 0
-                        ? (
-                            <span style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
-                              {resolved.heldItems.map((h,i) => {
-                                const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
-                                return (
-                                  <React.Fragment key={h.id || h.name || i}>
-                                    {i > 0 && <span style={{ margin:'0 4px', opacity:0.6 }}>|</span>}
-                                    <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
-                                      <img
-                                        src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
-                                        alt={h.name || h}
-                                        style={{ width:24, height:24, imageRendering:'pixelated' }}
-                                        onError={e => {
-                                          e.currentTarget.onerror = null;
-                                          e.currentTarget.src = ITEM_PLACEHOLDER;
-                                          e.currentTarget.style.imageRendering = 'auto';
-                                        }}
-                                      />
-                                      <DelayedTooltip content={item?.description || ''}>
-                                        <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
-                                      </DelayedTooltip>
-                                    </span>
-                                  </React.Fragment>
-                                );
-                              })}
+                      
+                        const heldItems = resolved.heldItems || [];
+                        const firstHeld = heldItems[0];
+                        const hasMoreHeld = heldItems.length > 1;
+                        const renderItem = (h, i) => {
+                          const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
+                          return (
+                            <span key={h.id || h.name || i} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                              <img
+                                src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                                alt={h.name || h}
+                                style={{ width:24, height:24, imageRendering:'pixelated' }}
+                                onError={e => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = ITEM_PLACEHOLDER;
+                                  e.currentTarget.style.imageRendering = 'auto';
+                                }}
+                              />
+                              <DelayedTooltip content={item?.description || ''}>
+                                <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
+                              </DelayedTooltip>
                             </span>
-                          )
-                        : 'None';
+                          );
+                        };
+                        const heldContent = heldItems.length > 0 ? (
+                          <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                            {renderItem(firstHeld, 0)}
+                            {hasMoreHeld && (
+                              <button
+                                type="button"
+                                onClick={() => setShowAllHeld(v => !v)}
+                                style={{ background:'none', border:'none', cursor:'pointer', color:'var(--muted)' }}
+                              >
+                                {showAllHeld ? '▲' : '▼'}
+                              </button>
+                            )}
+                          </span>
+                        ) : 'None';
 
-                      return (
-                        <>
-                          <div style={{ gridColumn:'4', gridRow:'1' }}>
-                            <LabeledPillBox label="Held Items |" value={heldContent} />
-                          </div>
+                        return (
+                          <>
+                            <div style={{ gridColumn:'4', gridRow:'1', position:'relative' }}>
+                              <div
+                                style={{
+                                  display:'flex',
+                                  alignItems:'center',
+                                  gap:6,
+                                  padding:'4px 8px',
+                                  borderRadius:8,
+                                  background:'var(--surface)',
+                                  border:'1px solid var(--divider)'
+                                }}
+                              >
+                                <span className="label-muted" style={{ fontSize:12 }}>Held Items</span>
+                                {heldContent}
+                              </div>
+                              {hasMoreHeld && showAllHeld && (
+                                <div
+                                  style={{
+                                    position:'absolute',
+                                    top:'100%',
+                                    left:0,
+                                    marginTop:4,
+                                    background:'var(--surface)',
+                                    border:'1px solid var(--divider)',
+                                    borderRadius:8,
+                                    padding:'4px 8px',
+                                    zIndex:10,
+                                    display:'flex',
+                                    flexDirection:'column',
+                                    gap:4
+                                  }}
+                                >
+                                {heldItems.slice(1).map((h,i) => (
+                                  renderItem(h, i+1)
+                                ))}
+                                </div>
+                              )}
+                            </div>
                           <div style={{ gridColumn:'4', gridRow:'2' }}>
                             <LabeledPillBox label="EV Yield" value={evText} />
                           </div>
@@ -4838,8 +4886,24 @@ const marketResults = React.useMemo(() => {
                         </>
                       );
                     })()}
+                    </div>
+                    <div
+                      style={{
+                        position:'absolute',
+                        inset:0,
+                        pointerEvents:'none',
+                        display:'grid',
+                        gridTemplateColumns:'repeat(4, minmax(0, 1fr))',
+                        gap:12,
+                        zIndex:0
+                      }}
+                    >
+                      {[0,1,2,3].map(i => (
+                        <div key={`colbox-${i}`} style={{ border:'1px solid var(--divider)', borderRadius:8, height:'100%' }} />
+                      ))}
+                    </div>
                   </div>
-                  
+
                 </div>
 
                 {/* Row 2, Column 1: Compare button centered under sprite */}

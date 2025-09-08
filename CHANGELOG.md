@@ -3,10 +3,20 @@
 
 ## [2.8.6] - 2025-09
 ### Added
+- Live Route OCR
+  - New 'Encounter Info' filter
+    - Added Catch Rate chip
+    - Added Catch % chip
+    - Added Held Item toggle
+    - Added Lv. Toggle
+    - Moved 'Toggle Caught' option to this menu
 
+- Area Search
+  - Included 'Encounter Info' filter from Live Route Tab
+  - Area Search now persists search upon switching tabs, clears on search bar click
 
 ### Fixed
- - General
+- General
   - Deoxys Eggs no longer appear in the dataset (idk where that came from)
   - Evolutions with weird location methods now correctly displayed (Eevee, Nosepass, & Magneton)
   - Evolutions that required Happiness (friendship) now correctly displayed (Eevee, Pichu, etc)
@@ -14,14 +24,16 @@
 - Pokemon Profile
   - Switched from 3 rows to 4 rows across the top information section
   - Changed the location of the Held Item to be included in the top
+    - If more than 1 held item are applicable; a dropdown arrow will reveal the rest of the items
     - Displays 'No Held Items' if none apply
   - Labeled 'Abilities'
+  - Introduced Grid boxes around the 4 columns of top level information
+  - Changed font size of the Dex # to be smaller
  
  - Live Route OCR 
   - Incresed letter match requirment to '3' *previously 2*
-    - Should help with the Live Route occasionally switching off of the intended route
+    - Should help with the Live Route occasionally switching off of the intended route breifly 
   - Locations that start with 'Mt.' are now properly identified
-
 
 ---
 
