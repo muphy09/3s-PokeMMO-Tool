@@ -114,7 +114,7 @@ class LiveRouteOCR
 
     // ---------- Location extraction ----------
     static readonly Regex LocationCandidate = new(
-        @"\b(?:Route\s*\d+|(?!B(?:i|l)?\b)[A-Z][a-z]+\.?(?:\s+[A-Z][a-z]+)+)\b",
+        @"\b(?:Route\s*\d+|(?!B(?:i|l)?\b)[A-Z][a-z]+\.?(?:\s+[A-Z][a-z]+\.?)+)\b",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     static async Task Main(string[] args)
@@ -955,7 +955,7 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
         var val = m.Value;
 
         val = Regex.Replace(val, @"^(?:B|Bi|Bl)\s+(?=[A-Z])", "", RegexOptions.IgnoreCase);
-        val = Regex.Replace(val, @"\bCh\.\s*\d+\b", "", RegexOptions.IgnoreCase).Trim();
+        val = Regex.Replace(val, @"\bCh\.?\s*\d*\b", "", RegexOptions.IgnoreCase).Trim();
 
         var cut = Regex.Match(val, @"^(.*?(Road|City|Town|Forest|Cave|Woods|Island|Lake|River|Tower|Desert|Marsh|Park|Bridge|Harbor|Port|Path|Trail|Tunnel|Mountain|League))",
                               RegexOptions.IgnoreCase);
