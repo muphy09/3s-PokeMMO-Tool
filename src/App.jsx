@@ -3474,6 +3474,7 @@ function App(){
   };
 
   const [query, setQuery]       = useState('');
+  const [areaQuery, setAreaQuery] = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -3929,7 +3930,7 @@ const headerSprite = useMemo(() => {
   // Search by Area (cleaned + grouped) with Sinnoh Victory Road unified
   const areaHits = React.useMemo(() => {
     if (mode!=='areas') return [];
-    const q = query.trim().toLowerCase();
+    const q = areaQuery.trim().toLowerCase();
     if (q.length < 2) return [];
     // Suppress results while user is typing the word "route"
     if ('route'.startsWith(q)) return [];
@@ -3979,7 +3980,7 @@ const headerSprite = useMemo(() => {
     }
     hits.sort((a,b)=> a.region.localeCompare(b.region) || a.map.localeCompare(b.map));
     return hits.slice(0, 30);
- }, [query, areasClean, locIndex, mode, areaRegion, methodFilters]);
+ }, [areaQuery, areasClean, locIndex, mode, areaRegion, methodFilters]);
 
   const tmHits = React.useMemo(() => {
     if (mode !== 'tm') return [];
@@ -4506,9 +4507,15 @@ const marketResults = React.useMemo(() => {
                 )}
               </div>
               <input
-                value={query}
-                onChange={(e)=> { setQuery(e.target.value); }}
-                onFocus={() => setQuery('')}
+                value={mode==='areas' ? areaQuery : query}
+                onChange={(e)=> {
+                  if (mode==='areas') setAreaQuery(e.target.value);
+                  else setQuery(e.target.value);
+                }}
+                onFocus={() => {
+                  if (mode==='areas') setAreaQuery('');
+                  else setQuery('');
+                }}
                 placeholder={mode==='pokemon'
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
