@@ -959,6 +959,8 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
         TextInfo ti = CultureInfo.InvariantCulture.TextInfo;
         val = ti.ToTitleCase(val.ToLowerInvariant());
         val = Regex.Replace(val, @"^(?:B|Bl|Bi)\s+(?=[A-Z])", "", RegexOptions.IgnoreCase);
+        // Normalize mountain abbreviations: OCR may miss the period in "Mt." names
+        val = Regex.Replace(val, @"\bMt\b\.?", "Mt.", RegexOptions.IgnoreCase);
 
         var lower = val.ToLowerInvariant();
         if (Regex.IsMatch(lower, @"\b(mon|kemon|okemon)\s+league\b")) val = "Pokemon League";

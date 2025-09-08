@@ -355,6 +355,12 @@ async function startLiveRouteOCR() {
     ocrProc.on('error', (err) => { log('LiveRouteOCR spawn error:', err?.message || err); ocrProc = null; });
 
     log('LiveRouteOCR started at', exe);
+    // After starting (or restarting) the OCR helper, ensure the renderer clears
+    // any stale state and attempts a fresh websocket connection. Without this
+    // signal the Live Route tab could remain disconnected until manually
+    // refreshed, effectively bricking the feature after a "Reload OCR" action
+    // or across app restarts.
+    try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   } catch (e) {
     log('startLiveRouteOCR exception:', e?.message || e);
   }
