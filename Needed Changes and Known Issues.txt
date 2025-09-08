@@ -9,13 +9,15 @@ Changes to come:
 - Multi-view search (compare style block)
 - Compare from Live Battle should bring to compare window with it preselected, in case "replace from team builder" is wanted quick
 - Pokemon profile tab change top information change to 4 rows, include held item data in last column row 4
-    - display no held items if there are none
-    - add Abilities label to abilities
+    - Display 'No Held Items' if there are none
+    - Add 'Abilities' label to abilities
 --------------------------------------
 Known Issues:
 
 - Evolution data for uncommon methods has weird labels (Eevee)
 - Deoxys Egg ??
 - Some Pokemon Abilities are not spaced so the tooltips dont index correctly (compoundeyes & more)
+- Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
+- Live Route occasionally loses confidence of the current area
 --------------------------------------
 

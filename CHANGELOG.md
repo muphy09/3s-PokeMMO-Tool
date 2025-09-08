@@ -1,6 +1,16 @@
 # Changelog
 ---
 
+## [2.8.6] - 2025-09
+### Added
+
+
+### Fixed
+ - Live Route OCR 
+  - Locations that start with 'Mt.' are now properly identified
+
+---
+
 ## [2.8.5] - 2025-09
 ### Added
 - Natures, IVs, & EVs Now Included in the Dataset!

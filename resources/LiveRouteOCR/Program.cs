@@ -944,7 +944,12 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
         s = Regex.Replace(s, @"^[^A-Za-z]*([A-Za-z].*)$", "$1");
 
         var m = Regex.Match(s, @"\bRoute\s*\d+\b", RegexOptions.IgnoreCase);
-        if (!m.Success) m = LocationCandidate.Match(s);
+        if (!m.Success)
+        {
+            var matches = LocationCandidate.Matches(s);
+            if (matches.Count > 0)
+                m = matches.Cast<Match>().OrderByDescending(mm => mm.Value.Length).First();
+        }
         if (!m.Success) return "";
 
         var val = m.Value;
