@@ -14,8 +14,6 @@ Changes to come:
 --------------------------------------
 Known Issues:
 
-- Evolution data for uncommon methods has weird labels (Eevee)
-- Deoxys Egg ??
 - Some Pokemon Abilities are not spaced so the tooltips dont index correctly (compoundeyes & more)
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
 - Live Route occasionally loses confidence of the current area
