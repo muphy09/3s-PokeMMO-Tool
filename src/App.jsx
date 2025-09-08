@@ -2154,6 +2154,13 @@ function findBestMapName(hudText, areasIndex){
   const isRoute = /^route\s*\d+/i.test(raw) || /^\d+$/.test(raw);
   // Require a minimum of three alphanumeric characters for non-route searches
   if (!isRoute && raw.replace(/[^a-z0-9]+/ig, '').length < 3) return null;
+  if (!isRoute) {
+    const words = raw.split(/\s+/);
+    if (/^mt\.?$/i.test(words[0])) {
+      const next = words[1] || '';
+      if (next.replace(/[^a-z]/ig, '').length < 3) return null;
+    }
+  }
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
   const routeNeedle = isRoute
     ? needleKey.match(/^(?:route\s*)?(\d+)\b/)
