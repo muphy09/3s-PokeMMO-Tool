@@ -874,56 +874,88 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
   const evTotal = ['hp','attack','defense','special_attack','special_defense','speed']
     .reduce((s,k)=> s + (Number(build?.ev?.[k] || 0) || 0), 0);
 
+  const [showExtras, setShowExtras] = useState(false);
+  const toggleExtras = () => {
+    if (showExtras) {
+      // Clearing values when collapsing
+      for (const [,k] of keys) {
+        onSetEV && onSetEV(k, '');
+        onSetIV && onSetIV(k, '');
+      }
+      onSetLevel && onSetLevel('');
+    }
+    setShowExtras(prev => !prev);
+  };
+
   return (
-    <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
-      {keys.map(([kLabel, kKey]) => (
-        <StatBox key={kLabel} label={kLabel} value={map[kLabel]} diff={other ? ((Number(map[kLabel])||0) - (Number(otherMap?.[kLabel])||0)) : undefined} underline={underlineKeys?.has(kKey)} />
-      ))}
-      <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} underline={underlineKeys?.has('total')} />
+    <div style={{ display:'flex', flexDirection:'column' }}>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
+        {keys.map(([kLabel, kKey]) => (
+          <StatBox key={kLabel} label={kLabel} value={map[kLabel]} diff={other ? ((Number(map[kLabel])||0) - (Number(otherMap?.[kLabel])||0)) : undefined} underline={underlineKeys?.has(kKey)} />
+        ))}
+        <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} underline={underlineKeys?.has('total')} />
+      </div>
 
-      {/* EV row (now above IV row) */}
-      {keys.map(([kLabel, kKey]) => (
-        <StatInputBox
-          key={`ev-${kKey}`}
-          label={`${kLabel} EV`}
-          value={build?.ev?.[kKey] ?? ''}
-          min={0}
-          max={252}
-          onChange={(e) => {
-            const raw = e.target.value;
-            let val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
-            onSetEV && onSetEV(kKey, val);
-          }}
-        />
-      ))}
-      <StatBox label="EV Total" value={evTotal || 0} />
-
-      {/* IV row (moved to bottom) + Level input in 7th slot */}
-      {keys.map(([kLabel, kKey]) => (
-        <StatInputBox
-          key={`iv-${kKey}`}
-          label={`${kLabel} IV`}
-          value={build?.iv?.[kKey] ?? ''}
-          min={0}
-          max={31}
-          onChange={(e) => {
-            const raw = e.target.value;
-            const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
-            onSetIV && onSetIV(kKey, v);
-          }}
-        />
-      ))}
-      <StatInputBox
-        label="Level"
-        value={build?.level ?? ''}
-        min={1}
-        max={100}
-        onChange={(e) => {
-          const raw = e.target.value;
-          const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 1, 1, 100);
-          onSetLevel && onSetLevel(v);
+      <div
+        onClick={toggleExtras}
+        style={{
+          marginTop:6,
+          display:'flex',
+          alignItems:'center',
+          justifyContent:'center',
+          gap:6,
+          cursor:'pointer'
         }}
-      />
+      >
+        <span className="label-muted" style={{ fontWeight:700 }}>Include IVs and EVs</span>
+        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>▶</span>
+      </div>
+
+      {showExtras && (
+        <div style={{ marginTop:6, display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
+          {keys.map(([kLabel, kKey]) => (
+            <StatInputBox
+              key={`ev-${kKey}`}
+              label={`${kLabel} EV`}
+              value={build?.ev?.[kKey] ?? ''}
+              min={0}
+              max={252}
+              onChange={(e) => {
+                const raw = e.target.value;
+                let val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
+                onSetEV && onSetEV(kKey, val);
+              }}
+            />
+          ))}
+          <StatBox label="EV Total" value={evTotal || 0} />
+
+          {keys.map(([kLabel, kKey]) => (
+            <StatInputBox
+              key={`iv-${kKey}`}
+              label={`${kLabel} IV`}
+              value={build?.iv?.[kKey] ?? ''}
+              min={0}
+              max={31}
+              onChange={(e) => {
+                const raw = e.target.value;
+                const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
+                onSetIV && onSetIV(kKey, v);
+              }}
+            />
+          ))}
+          <StatInputBox
+            label="Level"
+            value={build?.level ?? ''}
+            min={1}
+            max={100}
+            onChange={(e) => {
+              const raw = e.target.value;
+              const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 1, 1, 100);
+              onSetLevel && onSetLevel(v);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

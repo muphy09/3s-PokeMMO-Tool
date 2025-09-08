@@ -5,13 +5,17 @@
 ### Added
 - Natures, IVs, & EVs Now Included in the Dataset!
     - View how these values affect Base Stats on Pokemon
-    - *Optional to use,* Pokemon will always default to Lv. 50, 0 IVs, 0 EVs, +/- Nature
-    - Included inside of the Profile & Compare section
-      - *This data will continue to be utilized & implemented across more areas in future updates*
+    - *Optional to use,* Pokemon data will always default to 0 IVs, 0 EVs, +/- Nature
+    - Included inside of the single Profile & Compare section
+      - Dropdown inside of the single view, automatically open inside of compare view
+      - *This data will continue to be implemented across more areas in future updates*
 
 ### Fixed
 - Compare Tab
   - Long ability names now switch to a compact form to fit in a single line as intended
+
+- Pokemon Profile
+  - Highlighted the current Pokemon inside of the Evolution chain
 
 ---
 
