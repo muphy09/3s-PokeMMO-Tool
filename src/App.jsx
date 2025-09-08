@@ -1786,22 +1786,30 @@ function EvolutionChain({ mon, onSelect }) {
               const child = getMonByDex(evo.id);
 
               const rawType = String(evo.type || '').toLowerCase();
+              const locationMap = {
+                level_location_1: 'Lv. Up Near A Special Magnetic Field',
+                level_location_2: 'Lv. Up Near A Moss Rock',
+                level_location_3: 'Lv. Up Near An Ice Rock',
+              };
+              const isLevelLocation = Object.prototype.hasOwnProperty.call(locationMap, rawType);
               const typeLabel = rawType.replace(/_/g, ' ');
-              let label = titleCase(typeLabel);
+              let label = isLevelLocation ? locationMap[rawType] : titleCase(typeLabel);
 
               const needsItem = rawType.includes('item');
               const isTrade = rawType.startsWith('trade');
               let val = null;
               let itemId = null;
-              if (evo.item_name) {
-                val = evo.item_name;
-                const found = ITEM_INDEX.byName.get(normalizeKey(evo.item_name));
-                if (found?.id != null) itemId = found.id;
-              } else if (needsItem && typeof evo.val === 'number' && ITEM_INDEX.byId.has(evo.val)) {
-                val = ITEM_INDEX.byId.get(evo.val)?.name;
-                itemId = evo.val;
-              } else if (evo.val != null) {
-                val = evo.val;
+              if (!isLevelLocation) {
+                if (evo.item_name) {
+                  val = evo.item_name;
+                  const found = ITEM_INDEX.byName.get(normalizeKey(evo.item_name));
+                  if (found?.id != null) itemId = found.id;
+                } else if (needsItem && typeof evo.val === 'number' && ITEM_INDEX.byId.has(evo.val)) {
+                  val = ITEM_INDEX.byId.get(evo.val)?.name;
+                  itemId = evo.val;
+                } else if (evo.val != null) {
+                  val = evo.val;
+                }
               }
 
               // Clean up bogus trade values like "0:" so it renders as plain "Trade"

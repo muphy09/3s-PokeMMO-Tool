@@ -8,6 +8,7 @@
 ### Fixed
  - General
   - Deoxys Eggs no longer appear in the dataset (idk where that came from)
+  - Evolutions with weird location methods now correctly identified (Eevee, Nosepass, & Magneton)
  
  - Live Route OCR 
   - Incresed letter match requirment to '3' *previously 2*
