@@ -1466,11 +1466,12 @@ function AreaMonCard({
     }
     return `EV- ${parts[0]}`;
   })();
-  const catchRateLabel = (mon?.catchRate != null && showCatchRate)
-    ? `CR- ${mon.catchRate}`
+  const catchRate = mon?.catchRate ?? catchRates[mon?.id];
+  const catchRateLabel = (catchRate != null && showCatchRate)
+    ? `CR- ${catchRate}`
     : null;
-  const catchPercentLabel = (mon?.catchRate != null && showCatchPercent)
-    ? `%- ${(calcCatchChance(mon.catchRate) * 100).toFixed(1)}`
+  const catchPercentLabel = (catchRate != null && showCatchPercent)
+    ? `%- ${(calcCatchChance(catchRate) * 100).toFixed(1)}`
     : null;
   const infoChips = [evLabel, catchRateLabel, catchPercentLabel].filter(Boolean);
   return (
@@ -3485,8 +3486,25 @@ function App(){
     }
   });
   const [showMethodMenu, setShowMethodMenu] = useState(false);
+  const [showInfoMenu, setShowInfoMenu] = useState(false);
   const methodFilterRef = useRef(null);
-  const [showCaught, setShowCaught] = useState(true);
+  const infoRef = useRef(null);
+  const [showCaught, setShowCaught] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowCaught') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showEvYield, setShowEvYield] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowEvYield') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showCatchRate, setShowCatchRate] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowCatchRate') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showCatchPercent, setShowCatchPercent] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowCatchPercent') ?? 'true'); }
+    catch { return true; }
+  });
   const [marketData, setMarketData] = useState([]);
   const [marketLoading, setMarketLoading] = useState(false);
   const [marketError, setMarketError] = useState(null);
@@ -3505,6 +3523,9 @@ function App(){
       if (methodFilterRef.current && !methodFilterRef.current.contains(e.target)) {
         setShowMethodMenu(false);
       }
+      if (infoRef.current && !infoRef.current.contains(e.target)) {
+        setShowInfoMenu(false);
+      }
     };
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
@@ -3513,6 +3534,11 @@ function App(){
   useEffect(() => {
     try { localStorage.setItem('areaMethodFilters', JSON.stringify([...methodFilters])); } catch {}
   }, [methodFilters]);
+
+  useEffect(() => { try { localStorage.setItem('areaShowCaught', JSON.stringify(showCaught)); } catch {} }, [showCaught]);
+  useEffect(() => { try { localStorage.setItem('areaShowEvYield', JSON.stringify(showEvYield)); } catch {} }, [showEvYield]);
+  useEffect(() => { try { localStorage.setItem('areaShowCatchRate', JSON.stringify(showCatchRate)); } catch {} }, [showCatchRate]);
+  useEffect(() => { try { localStorage.setItem('areaShowCatchPercent', JSON.stringify(showCatchPercent)); } catch {} }, [showCatchPercent]);
 
   const detailRef = useRef(null);
 
@@ -4297,6 +4323,52 @@ const marketResults = React.useMemo(() => {
                 )}
                 {mode==='areas' && (
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <div ref={infoRef} style={{ position:'relative' }}>
+                      <button
+                        className="region-btn"
+                        onClick={() => setShowInfoMenu(v => !v)}
+                      >
+                        Encounter Info ▾
+                      </button>
+                      {showInfoMenu && (
+                        <div
+                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                        >
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCaught}
+                              onChange={e=>setShowCaught(e.target.checked)}
+                            />
+                            Toggle Caught
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showEvYield}
+                              onChange={e=>setShowEvYield(e.target.checked)}
+                            />
+                            EV Yield
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCatchRate}
+                              onChange={e=>setShowCatchRate(e.target.checked)}
+                            />
+                            Catch Rate
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCatchPercent}
+                              onChange={e=>setShowCatchPercent(e.target.checked)}
+                            />
+                            Catch %
+                          </label>
+                        </div>
+                      )}
+                    </div>
                     <div ref={methodFilterRef} style={{ position:'relative' }}>
                       <button
                         className="region-btn"
@@ -4322,14 +4394,6 @@ const marketResults = React.useMemo(() => {
                         </div>
                       )}
                     </div>
-                    <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
-                      <input
-                        type="checkbox"
-                        checked={showCaught}
-                        onChange={e=>setShowCaught(e.target.checked)}
-                      />
-                      Toggle Caught
-                    </label>
                     <div style={{ position:'relative' }}>
                       <button
                         type="button"
@@ -4622,6 +4686,9 @@ const marketResults = React.useMemo(() => {
                           }}
                           caught={isCaught}
                           showCaught={showCaught}
+                          showEv={showEvYield}
+                          showCatchRate={showCatchRate}
+                          showCatchPercent={showCatchPercent}
                           onToggleCaught={() => mon && toggleCaught(mon.id)}
                         />
                       );
