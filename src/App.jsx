@@ -1433,7 +1433,9 @@ function AreaMonCard({
   showCaught=true,
   showEv=true,
   showCatchRate=true,
-  showCatchPercent=true
+  showCatchPercent=true,
+  showHeldItem=true,
+  showLevel=true
 }){
   const cardStyle = {
     ...styles.monCard,
@@ -1515,8 +1517,8 @@ function AreaMonCard({
           <div key={idx} style={styles.encCol}>
             {enc.method && <MethodPill method={enc.method} compact={compact} />}
             {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />)}
-            <LevelPill min={enc.min} max={enc.max} compact={compact} />
-            {enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
+            {showLevel && <LevelPill min={enc.min} max={enc.max} compact={compact} />}
+            {showHeldItem && enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
           </div>
         ))}
       </div>
@@ -2607,6 +2609,14 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     try { return JSON.parse(localStorage.getItem('liveShowCatchPercent') ?? 'true'); }
     catch { return true; }
   });
+  const [showHeldItem, setShowHeldItem] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowHeldItem') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showLevel, setShowLevel] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowLevel') ?? 'true'); }
+    catch { return true; }
+  });
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const filterRef = useRef(null);
   const infoRef = useRef(null);
@@ -2645,6 +2655,12 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   useEffect(() => {
     try { localStorage.setItem('liveShowCatchPercent', JSON.stringify(showCatchPercent)); } catch {}
   }, [showCatchPercent]);
+  useEffect(() => {
+    try { localStorage.setItem('liveShowHeldItem', JSON.stringify(showHeldItem)); } catch {}
+  }, [showHeldItem]);
+  useEffect(() => {
+    try { localStorage.setItem('liveShowLevel', JSON.stringify(showLevel)); } catch {}
+  }, [showLevel]);
 
   const toggleFilter = (m) => {
     setMethodFilters(prev => {
@@ -2855,6 +2871,22 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
                   />
                   Catch %
                 </label>
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showHeldItem}
+                    onChange={e=>setShowHeldItem(e.target.checked)}
+                  />
+                  Held Item
+                </label>
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showLevel}
+                    onChange={e=>setShowLevel(e.target.checked)}
+                  />
+                  Level
+                </label>
               </div>
             )}
           </div>
@@ -2953,6 +2985,8 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
                     showEv={showEvYield}
                     showCatchRate={showCatchRate}
                     showCatchPercent={showCatchPercent}
+                    showHeldItem={showHeldItem}
+                    showLevel={showLevel}
                     onToggleCaught={() => mon && toggleCaught(mon.id)}
                   />
                 );
@@ -3505,6 +3539,14 @@ function App(){
     try { return JSON.parse(localStorage.getItem('areaShowCatchPercent') ?? 'true'); }
     catch { return true; }
   });
+  const [showHeldItem, setShowHeldItem] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowHeldItem') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showLevel, setShowLevel] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('areaShowLevel') ?? 'true'); }
+    catch { return true; }
+  });
   const [marketData, setMarketData] = useState([]);
   const [marketLoading, setMarketLoading] = useState(false);
   const [marketError, setMarketError] = useState(null);
@@ -3539,6 +3581,8 @@ function App(){
   useEffect(() => { try { localStorage.setItem('areaShowEvYield', JSON.stringify(showEvYield)); } catch {} }, [showEvYield]);
   useEffect(() => { try { localStorage.setItem('areaShowCatchRate', JSON.stringify(showCatchRate)); } catch {} }, [showCatchRate]);
   useEffect(() => { try { localStorage.setItem('areaShowCatchPercent', JSON.stringify(showCatchPercent)); } catch {} }, [showCatchPercent]);
+  useEffect(() => { try { localStorage.setItem('areaShowHeldItem', JSON.stringify(showHeldItem)); } catch {} }, [showHeldItem]);
+  useEffect(() => { try { localStorage.setItem('areaShowLevel', JSON.stringify(showLevel)); } catch {} }, [showLevel]);
 
   const detailRef = useRef(null);
 
@@ -4366,6 +4410,22 @@ const marketResults = React.useMemo(() => {
                             />
                             Catch %
                           </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showHeldItem}
+                              onChange={e=>setShowHeldItem(e.target.checked)}
+                            />
+                            Held Item
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showLevel}
+                              onChange={e=>setShowLevel(e.target.checked)}
+                            />
+                            Level
+                          </label>
                         </div>
                       )}
                     </div>
@@ -4689,6 +4749,8 @@ const marketResults = React.useMemo(() => {
                           showEv={showEvYield}
                           showCatchRate={showCatchRate}
                           showCatchPercent={showCatchPercent}
+                          showHeldItem={showHeldItem}
+                          showLevel={showLevel}
                           onToggleCaught={() => mon && toggleCaught(mon.id)}
                         />
                       );
@@ -5063,7 +5125,15 @@ const marketResults = React.useMemo(() => {
                       }}
                     >
                       {[0,1,2,3].map(i => (
-                        <div key={`colbox-${i}`} style={{ border:'1px solid var(--divider)', borderRadius:8, height:'100%' }} />
+                        <div
+                          key={`colbox-${i}`}
+                          style={{
+                            border: '1px solid var(--divider)',
+                            borderRadius: 8,
+                            height: '100%',
+                            margin: -4
+                          }}
+                        />
                       ))}
                     </div>
                   </div>
