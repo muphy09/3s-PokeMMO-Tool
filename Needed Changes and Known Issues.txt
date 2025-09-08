@@ -8,13 +8,9 @@ Changes to come:
 - Pull level of Pokemon from OCR data to adjust Base Stats on the fly in Live Battle
 - Multi-view search (compare style block)
 - Compare from Live Battle should bring to compare window with it preselected, in case "replace from team builder" is wanted quick
-- Pokemon profile tab change top information change to 4 rows, include held item data in last column row 4
-    - Display 'No Held Items' if there are none
-    - Add 'Abilities' label to abilities
 --------------------------------------
 Known Issues:
 
-- Some Pokemon Abilities are not spaced so the tooltips dont index correctly (compoundeyes & more)
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
 - Live Route occasionally loses confidence of the current area
 --------------------------------------

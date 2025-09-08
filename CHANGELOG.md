@@ -10,6 +10,12 @@
   - Deoxys Eggs no longer appear in the dataset (idk where that came from)
   - Evolutions with weird location methods now correctly displayed (Eevee, Nosepass, & Magneton)
   - Evolutions that required Happiness (friendship) now correctly displayed (Eevee, Pichu, etc)
+
+- Pokemon Profile
+  - Switched from 3 rows to 4 rows across the top information section
+  - Changed the location of the Held Item to be included in the top
+    - Displays 'No Held Items' if none apply
+  - Labeled 'Abilities'
  
  - Live Route OCR 
   - Incresed letter match requirment to '3' *previously 2*

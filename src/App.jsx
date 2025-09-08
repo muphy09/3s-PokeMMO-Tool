@@ -4654,9 +4654,9 @@ const marketResults = React.useMemo(() => {
                       gridAutoRows: 'min-content'
                     }}
                   >
-                    {/* Column 1: Type — 3 rows */}
+                    {/* Column 1: Type — 4 rows (label, type1, type2, blank) */}
                     <div style={{ gridColumn: '1', gridRow:'1', display:'flex', alignItems:'center' }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Type:</span>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Type</span>
                     </div>
                     <div style={{ gridColumn: '1', gridRow:'2' }}>
                       {resolved.types?.[0] ? (
@@ -4688,8 +4688,9 @@ const marketResults = React.useMemo(() => {
                         />
                       ) : null}
                     </div>
+                    <div style={{ gridColumn: '1', gridRow:'4' }} />
 
-                    {/* Column 2: Egg Group — 3 rows */}
+                    {/* Column 2: Egg Group — 4 rows (label, group1, group2, blank) */}
                     <div style={{ gridColumn: '2', gridRow:'1', display:'flex', alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Egg Group</span>
                     </div>
@@ -4721,10 +4722,14 @@ const marketResults = React.useMemo(() => {
                         />
                       ) : null}
                     </div>
+                    <div style={{ gridColumn: '2', gridRow:'4' }} />
 
-                    {/* Column 3: Abilities (3 stacked rows: 1, 2, Hidden) */}
+                    {/* Column 3: Abilities — label + rows for 1,2,Hidden */}
+                    <div style={{ gridColumn: '3', gridRow:'1', display:'flex', alignItems:'center' }}>
+                      <span className="label-muted" style={{ fontWeight:700 }}>Abilities</span>
+                    </div>
                     {([0,1,2]).map(i => (
-                      <div key={`ab-row-${i}`} style={{ gridColumn: '3', gridRow: String(i+1), display:'flex', gap:6, alignItems:'center' }}>
+                      <div key={`ab-row-${i}`} style={{ gridColumn: '3', gridRow: String(i+2), display:'flex', gap:6, alignItems:'center' }}>
                         <AbilityPill
                           label={i === 2 ? 'Hidden' : `${i + 1}`}
                           name={resolved.abilities?.[i]?.name}
@@ -4732,7 +4737,7 @@ const marketResults = React.useMemo(() => {
                       </div>
                     ))}
 
-                    {/* Column 4: EV Yield, Catch Rate, Catch % (+ toggles) aligned with abilities */}
+                    {/* Column 4: Held Items, EV Yield, Catch Rate, Catch % (+ toggles) */}
                     {(() => {
                       const evMap = {
                         ev_hp: 'HP',
@@ -4748,15 +4753,48 @@ const marketResults = React.useMemo(() => {
                         .map(([k, label]) => `${yields[k]} ${label}`);
                       const evText = evParts.length ? evParts.join(', ') : 'None';
 
+                      const heldContent = (resolved.heldItems?.length || 0) > 0
+                        ? (
+                            <span style={{ display:'inline-flex', alignItems:'center', gap:6, flexWrap:'wrap' }}>
+                              {resolved.heldItems.map((h,i) => {
+                                const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
+                                return (
+                                  <React.Fragment key={h.id || h.name || i}>
+                                    {i > 0 && <span style={{ margin:'0 4px', opacity:0.6 }}>|</span>}
+                                    <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
+                                      <img
+                                        src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                                        alt={h.name || h}
+                                        style={{ width:24, height:24, imageRendering:'pixelated' }}
+                                        onError={e => {
+                                          e.currentTarget.onerror = null;
+                                          e.currentTarget.src = ITEM_PLACEHOLDER;
+                                          e.currentTarget.style.imageRendering = 'auto';
+                                        }}
+                                      />
+                                      <DelayedTooltip content={item?.description || ''}>
+                                        <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
+                                      </DelayedTooltip>
+                                    </span>
+                                  </React.Fragment>
+                                );
+                              })}
+                            </span>
+                          )
+                        : 'None';
+
                       return (
                         <>
                           <div style={{ gridColumn:'4', gridRow:'1' }}>
-                            <LabeledPillBox label="EV Yield" value={evText} />
+                            <LabeledPillBox label="Held Items |" value={heldContent} />
                           </div>
                           <div style={{ gridColumn:'4', gridRow:'2' }}>
+                            <LabeledPillBox label="EV Yield" value={evText} />
+                          </div>
+                          <div style={{ gridColumn:'4', gridRow:'3' }}>
                             <LabeledPillBox label="Catch Rate" value={resolved.catchRate ?? 'N/A'} />
                           </div>
-                          <div style={{ gridColumn:'4', gridRow:'3', display:'flex', alignItems:'center', gap:6 }}>
+                          <div style={{ gridColumn:'4', gridRow:'4', display:'flex', alignItems:'center', gap:6 }}>
                             <LabeledPillBox label="Catch %" value={catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'} />
                             <span style={{ display:'inline-flex', alignItems:'center', gap:6, marginLeft:'auto' }}>
                               <button
@@ -4951,36 +4989,6 @@ const marketResults = React.useMemo(() => {
                 })()}
               </div>
 
-              {resolved.heldItems?.length > 0 && (
-                <div style={{ marginTop:16 }}>
-                  <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Held Items</div>
-                  <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center' }}>
-                    {resolved.heldItems.map((h,i) => {
-                      const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
-                      return (
-                        <React.Fragment key={h.id || h.name || i}>
-                          {i > 0 && <span style={{ margin:'0 8px', opacity:0.6 }}>|</span>}
-                          <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
-                            <img
-                              src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
-                              alt={h.name || h}
-                              style={{ width:24, height:24, imageRendering:'pixelated' }}
-                              onError={e => {
-                                e.currentTarget.onerror = null;
-                                e.currentTarget.src = ITEM_PLACEHOLDER;
-                                e.currentTarget.style.imageRendering = 'auto';
-                              }}
-                            />
-                            <DelayedTooltip content={item?.description || ''}>
-                              <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
-                            </DelayedTooltip>
-                          </span>
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
 
