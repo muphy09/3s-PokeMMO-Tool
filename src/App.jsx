@@ -143,8 +143,8 @@ const DEX_LIST = dexRaw
     const base = toLegacyShape(m);
     if (Array.isArray(m.forms)) {
       base.forms = m.forms
-        // Skip the base form (form_id 0 or identical name)
-        .filter(f => f.form_id !== 0 && f.name !== m.name)
+        // Skip the base form (form_id 0 or identical name) and egg placeholders
+        .filter(f => f.form_id !== 0 && f.name !== m.name && f.name?.toLowerCase() !== 'egg')
         .map(f => {
           const formBase = {
             ...(f.id != null ? RAW_DEX_BY_ID.get(f.id) : {}),

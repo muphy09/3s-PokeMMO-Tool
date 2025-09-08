@@ -6,8 +6,14 @@
 
 
 ### Fixed
+ - General
+  - Deoxys Eggs no longer appear in the dataset (idk where that came from)
+ 
  - Live Route OCR 
+  - Incresed letter match requirment to '3' *previously 2*
+    - Should help with the Live Route occasionally switching off of the intended route
   - Locations that start with 'Mt.' are now properly identified
+
 
 ---
 
