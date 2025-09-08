@@ -5130,8 +5130,8 @@ const marketResults = React.useMemo(() => {
                           style={{
                             border: '1px solid var(--divider)',
                             borderRadius: 8,
-                            height: '100%',
-                            margin: -4
+                            height: '105%',
+                            margin: '0 -6px'
                           }}
                         />
                       ))}
