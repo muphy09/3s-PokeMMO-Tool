@@ -1423,7 +1423,18 @@ function PokeballIcon({ filled=false, size=20 }){
   );
 }
 
-function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleCaught, showCaught=true }){
+function AreaMonCard({
+  mon,
+  monName,
+  encounters,
+  onView,
+  caught=false,
+  onToggleCaught,
+  showCaught=true,
+  showEv=true,
+  showCatchRate=true,
+  showCatchPercent=true
+}){
   const cardStyle = {
     ...styles.monCard,
     opacity: showCaught ? (caught ? 0.4 : 1) : 1,
@@ -1436,7 +1447,7 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
     if (mon && onView) onView(mon);
   };
   const evLabel = (() => {
-    if (!mon) return null;
+    if (!mon || !showEv) return null;
     const evMap = {
       ev_hp: 'HP',
       ev_attack: 'Atk',
@@ -1450,27 +1461,42 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
       .filter(([k]) => (yields[k] || 0) > 0)
       .map(([k, label]) => `${yields[k]} ${label}`);
     if (!parts.length) return null;
-    // If multiple EV yields, stack subsequent values on new lines
     if (parts.length > 1) {
       return `EV- ${parts[0]}\n${parts.slice(1).join('\n')}`;
     }
     return `EV- ${parts[0]}`;
   })();
+  const catchRateLabel = (mon?.catchRate != null && showCatchRate)
+    ? `CR- ${mon.catchRate}`
+    : null;
+  const catchPercentLabel = (mon?.catchRate != null && showCatchPercent)
+    ? `%- ${(calcCatchChance(mon.catchRate) * 100).toFixed(1)}`
+    : null;
+  const infoChips = [evLabel, catchRateLabel, catchPercentLabel].filter(Boolean);
   return (
     <div style={cardStyle} onClick={handleClick}>
-      {evLabel && (
-        <span
+      {infoChips.length > 0 && (
+        <div
           style={{
             position:'absolute', top:6, left:6,
-            display:'inline-block', padding:'2px 8px',
-            fontSize:11, borderRadius:999,
-            color:'var(--text)', background:'var(--surface)',
-            border:'1px solid var(--divider)', fontWeight:700,
-            whiteSpace:'pre-line'
+            display:'flex', flexDirection:'column', gap:4,
+            alignItems:'flex-start'
           }}
         >
-          {evLabel}
-        </span>
+          {infoChips.map((txt, i) => (
+            <span
+              key={i}
+              style={{
+                display:'inline-block', padding:'2px 8px', fontSize:11,
+                borderRadius:999, color:'var(--text)', background:'var(--surface)',
+                border:'1px solid var(--divider)', fontWeight:700,
+                whiteSpace:'pre-line'
+              }}
+            >
+              {txt}
+            </span>
+          ))}
+        </div>
       )}
       {showCaught && (
         <button
@@ -1479,7 +1505,6 @@ function AreaMonCard({ mon, monName, encounters, onView, caught=false, onToggleC
           style={{ position:'absolute', top:6, right:6, background:'transparent', border:'none', cursor:'pointer', padding:0, fontSize:0 }}
         >
           <PokeballIcon filled={caught} size={30} />
-        ×
         </button>
       )}
       <div style={{ fontWeight:700 }}>{monName}</div>
@@ -2564,9 +2589,26 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     }
   });
   const [showFilterMenu, setShowFilterMenu] = useState(false);
-  const [showCaught, setShowCaught] = useState(true);
+  const [showInfoMenu, setShowInfoMenu] = useState(false);
+  const [showCaught, setShowCaught] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowCaught') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showEvYield, setShowEvYield] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowEvYield') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showCatchRate, setShowCatchRate] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowCatchRate') ?? 'true'); }
+    catch { return true; }
+  });
+  const [showCatchPercent, setShowCatchPercent] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('liveShowCatchPercent') ?? 'true'); }
+    catch { return true; }
+  });
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const filterRef = useRef(null);
+  const infoRef = useRef(null);
   const methodFiltersRef = useRef(methodFilters);
   const displayMapRef = useRef(displayMap);
 
@@ -2584,10 +2626,24 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
   useEffect(() => {
     const onDoc = (e) => {
       if (filterRef.current && !filterRef.current.contains(e.target)) setShowFilterMenu(false);
+      if (infoRef.current && !infoRef.current.contains(e.target)) setShowInfoMenu(false);
     };
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem('liveShowCaught', JSON.stringify(showCaught)); } catch {}
+  }, [showCaught]);
+  useEffect(() => {
+    try { localStorage.setItem('liveShowEvYield', JSON.stringify(showEvYield)); } catch {}
+  }, [showEvYield]);
+  useEffect(() => {
+    try { localStorage.setItem('liveShowCatchRate', JSON.stringify(showCatchRate)); } catch {}
+  }, [showCatchRate]);
+  useEffect(() => {
+    try { localStorage.setItem('liveShowCatchPercent', JSON.stringify(showCatchPercent)); } catch {}
+  }, [showCatchPercent]);
 
   const toggleFilter = (m) => {
     setMethodFilters(prev => {
@@ -2755,6 +2811,52 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
           )}
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <div ref={infoRef} style={{ position:'relative' }}>
+            <button
+              className="region-btn"
+              onClick={() => setShowInfoMenu(v => !v)}
+            >
+              Encounter Info ▾
+            </button>
+            {showInfoMenu && (
+              <div
+                style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+              >
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showCaught}
+                    onChange={e=>setShowCaught(e.target.checked)}
+                  />
+                  Toggle Caught
+                </label>
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showEvYield}
+                    onChange={e=>setShowEvYield(e.target.checked)}
+                  />
+                  EV Yield
+                </label>
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showCatchRate}
+                    onChange={e=>setShowCatchRate(e.target.checked)}
+                  />
+                  Catch Rate
+                </label>
+                <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <input
+                    type="checkbox"
+                    checked={showCatchPercent}
+                    onChange={e=>setShowCatchPercent(e.target.checked)}
+                  />
+                  Catch %
+                </label>
+              </div>
+            )}
+          </div>
           <div ref={filterRef} style={{ position:'relative' }}>
             <button
               className="region-btn"
@@ -2779,14 +2881,6 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               </div>
             )}
           </div>
-          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
-            <input
-              type="checkbox"
-              checked={showCaught}
-              onChange={e=>setShowCaught(e.target.checked)}
-            />
-            Toggle Caught
-          </label>
           <div className="label-muted">{statusPill}</div>
         </div>
       </div>
@@ -2855,6 +2949,9 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
                     onView={onViewMon}
                     caught={isCaught}
                     showCaught={showCaught}
+                    showEv={showEvYield}
+                    showCatchRate={showCatchRate}
+                    showCatchPercent={showCatchPercent}
                     onToggleCaught={() => mon && toggleCaught(mon.id)}
                   />
                 );
