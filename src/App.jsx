@@ -1334,6 +1334,17 @@ function formatGenderRatio(r){
 /* ---------- Method & Rarity palettes ---------- */
 function methodKey(m=''){ return String(m).toLowerCase().trim(); }
 
+function normalizeTimeTag(tag=''){
+  const parts = String(tag).toLowerCase().split(/[\/]/).map(s=>s.trim()).filter(Boolean);
+  if (!parts.length) return '';
+  if (parts.includes('morning')) return 'Morning';
+  if (parts.includes('day')) return 'Day';
+  if (parts.includes('night')) return 'Night';
+  const season = parts.find(p=>/^season\d+$/.test(p));
+  if (season) return season.replace(/^season/, 'Season ');
+  return titleCase(parts[0]);
+}
+
 // Balance methods like "Lure (Water" -> "Lure (Water)"
 function cleanMethodLabel(method=''){
   let m = String(method || '').trim();
@@ -1345,7 +1356,12 @@ function cleanMethodLabel(method=''){
   if (open > close) m = m + ')';
   // Normalize Horde casing
   if (/^hordes?\b/i.test(m)) m = 'Horde';
-  return m;
+  // Normalize time/season tags
+  m = m.replace(/\(([^)]+)\)/g, (_, t) => {
+    const norm = normalizeTimeTag(t);
+    return norm ? `(${norm})` : '';
+  });
+  return m.trim();
 }
 
 function MethodPill({ method, compact=false }){
@@ -2052,42 +2068,66 @@ function useTmLocations(){
 /** Group same Pokemon (per map) into one entry with multiple methods/rarities */
 function groupEntriesByMon(entries){
   const byId = new Map();
+
+  const splitMethod = (m='') => {
+    const clean = cleanMethodLabel(m);
+    const match = clean.match(/^(.*?)(?:\s*\(([^()]+)\))?$/);
+    const base = match ? match[1].trim() : clean;
+    const time = match && match[2] ? normalizeTimeTag(match[2]) : '';
+    return { base, time };
+  };
+
+  const mergeEnc = (into, from) => {
+    from.rarities.forEach(r => into.rarities.add(r));
+    if (from.min != null) into.min = into.min==null ? from.min : Math.min(into.min, from.min);
+    if (from.max != null) into.max = into.max==null ? from.max : Math.max(into.max, from.max);
+    from.items.forEach(i => into.items.add(i));
+  };
+
   for (const e of entries){
     if (!byId.has(e.monId)){
-      byId.set(e.monId, {
-        monId: e.monId,
-        monName: e.monName,
-        encounters: new Map()
-      });
+      byId.set(e.monId, { monId:e.monId, monName:e.monName, methods:new Map() });
     }
     const g = byId.get(e.monId);
-    const mKey = e.method || '';
-    if (!g.encounters.has(mKey)){
-      g.encounters.set(mKey, {
-        method: e.method,
-        rarities: new Set(),
-        min: e.min,
-        max: e.max,
-        items: new Set(e.items || [])
-      });
+    const { base, time } = splitMethod(e.method);
+    const key = base.toLowerCase();
+    if (!g.methods.has(key)) g.methods.set(key, new Map());
+    const timeMap = g.methods.get(key);
+    const tKey = time || '';
+    if (!timeMap.has(tKey)){
+      timeMap.set(tKey, { method: base, time, rarities:new Set(), min:e.min, max:e.max, items:new Set(e.items || []) });
     }
-    const enc = g.encounters.get(mKey);
+    const enc = timeMap.get(tKey);
     if (e.rarity) enc.rarities.add(e.rarity);
-    if (e.min != null) enc.min = Math.min(enc.min ?? e.min, e.min);
-    if (e.max != null) enc.max = Math.max(enc.max ?? e.max, e.max);
+    if (e.min != null) enc.min = enc.min==null ? e.min : Math.min(enc.min, e.min);
+    if (e.max != null) enc.max = enc.max==null ? e.max : Math.max(enc.max, e.max);
     if (Array.isArray(e.items)) e.items.forEach(i => enc.items.add(i));
   }
-  return [...byId.values()].map(g => ({
-    monId: g.monId,
-    monName: g.monName,
-    encounters: [...g.encounters.values()].map(enc => ({
-      method: enc.method,
-      rarities: selectRarest([...enc.rarities]),
-      min: enc.min,
-      max: enc.max,
-      items: [...enc.items]
-    }))
-  }));
+
+  return [...byId.values()].map(g => {
+    const encounters = [];
+    for (const timeMap of g.methods.values()) {
+      const baseEnc = timeMap.get('');
+      if (baseEnc && timeMap.size > 1) {
+        for (const [tKey, enc] of timeMap) {
+          if (tKey === '') continue;
+          mergeEnc(enc, baseEnc);
+        }
+        timeMap.delete('');
+      }
+      for (const enc of timeMap.values()) {
+        const label = enc.time ? `${enc.method} (${enc.time})` : enc.method;
+        encounters.push({
+          method: label,
+          rarities: selectRarest([...enc.rarities]),
+          min: enc.min,
+          max: enc.max,
+          items: [...enc.items]
+        });
+      }
+    }
+    return { monId:g.monId, monName:g.monName, encounters };
+  });
 }
 
 /* Normalize map names for grouping (Sinnoh Victory Road unification & split routes) */
