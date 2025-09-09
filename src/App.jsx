@@ -70,7 +70,14 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid var(--divider)', borderRadius:10, padding:'10px', background:'var(--surface)', textAlign:'center' },
-  encWrap: { display:'flex', gap:8, marginTop:8, width:'100%', justifyContent:'center', overflowX:'auto', scrollBehavior:'smooth' },
+  encWrap: {
+    display:'flex',
+    gap:8,
+    marginTop:8,
+    width:'100%',
+    overflowX:'auto',
+    scrollBehavior:'smooth'
+  },
   encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
 };
 
@@ -1339,9 +1346,9 @@ function normalizeTimeTag(tag=''){
   if (!parts.length) return '';
   const order = ['morning','day','night'];
   const times = order.filter(t => parts.includes(t)).map(titleCase);
-  const seasons = parts.filter(p => /^season\d+$/.test(p)).map(p => `Season ${p.replace(/^season/,'')}`);
+  // Ignore season tags entirely since seasonal encounters are now uniform
   const others = parts.filter(p => !order.includes(p) && !/^season\d+$/.test(p)).map(titleCase);
-  const result = [...times, ...seasons, ...others];
+  const result = [...times, ...others];
   return result.join('/') || '';
 }
 
@@ -1480,16 +1487,21 @@ function AreaMonCard({
     cursor: mon && onView ? 'pointer' : 'default'
   };
   const compact = encounters.length > 1;
-  const wrapStyle = styles.encWrap;
   const scrollRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
+  const wrapStyle = {
+    ...styles.encWrap,
+    justifyContent: hasOverflow ? 'flex-start' : 'center'
+  };
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const update = () => {
       setShowLeftArrow(el.scrollLeft > 0);
       setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth);
+      setHasOverflow(el.scrollWidth > el.clientWidth);
     };
     update();
     el.addEventListener('scroll', update);
@@ -1586,7 +1598,23 @@ function AreaMonCard({
         {showLeftArrow && (
           <button
             onClick={e => { e.stopPropagation(); scroll(-1); }}
-            style={{ position:'absolute', top:'50%', left:0, transform:'translateY(-50%)', background:'none', border:'none', color:'var(--muted)', cursor:'pointer' }}
+            style={{
+              position:'absolute',
+              top:'50%',
+              left:0,
+              transform:'translateY(-50%)',
+              background:'var(--card)',
+              border:'1px solid var(--divider)',
+              color:'var(--text)',
+              cursor:'pointer',
+              borderRadius:'50%',
+              width:24,
+              height:24,
+              display:'flex',
+              alignItems:'center',
+              justifyContent:'center',
+              boxShadow:'0 0 4px rgba(0,0,0,0.5)'
+            }}
             aria-label="Scroll left"
           >
             ◀
@@ -1595,7 +1623,23 @@ function AreaMonCard({
         {showRightArrow && (
           <button
             onClick={e => { e.stopPropagation(); scroll(1); }}
-            style={{ position:'absolute', top:'50%', right:0, transform:'translateY(-50%)', background:'none', border:'none', color:'var(--muted)', cursor:'pointer' }}
+            style={{
+              position:'absolute',
+              top:'50%',
+              right:0,
+              transform:'translateY(-50%)',
+              background:'var(--card)',
+              border:'1px solid var(--divider)',
+              color:'var(--text)',
+              cursor:'pointer',
+              borderRadius:'50%',
+              width:24,
+              height:24,
+              display:'flex',
+              alignItems:'center',
+              justifyContent:'center',
+              boxShadow:'0 0 4px rgba(0,0,0,0.5)'
+            }}
             aria-label="Scroll right"
           >
             ▶
