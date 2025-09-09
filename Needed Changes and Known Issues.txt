@@ -7,7 +7,6 @@ Changes to come:
 - Multi-view search (compare style block)
 - Team Builder should include EVs IVs Nature and Lv to display proper stats
     - Import this data to Compare when pulled from 'Replace from Active Team'
-- Make the day/night encounters appear in the Area Search as one block like Live Route
 --------------------------------------
 Known Issues:
 

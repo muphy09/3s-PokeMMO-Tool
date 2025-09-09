@@ -6,6 +6,9 @@
 - Compare Section
   - Level is now formatted in the textbox correctly
 
+- Area Tab
+  - Day/Night dependant encounters now all appear together like they do in the Live Route Tab
+
 ---
 
 ## [2.8.7] - 2025-09

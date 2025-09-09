@@ -2108,13 +2108,13 @@ function normalizeMapForGrouping(region, mapName){
 
 // Extract trailing time-of-day tag like "(Night)" from map name
 function extractTimeTag(name=''){
-  const m = String(name).match(/\((Morning|Day|Night)\)\s*$/i);
+  const m = String(name).match(/\(((?:Morning|Day|Night|Season\d+)(?:\/(?:Morning|Day|Night|Season\d+))*)\)\s*$/i);
   return m ? m[1] : '';
 }
 
-// Remove trailing time-of-day tag from map name
+// Remove trailing time-of-day/season tag from map name
 function stripTimeTag(name=''){
-  return String(name).replace(/\s*\((Morning|Day|Night)\)\s*$/i, '').trim();
+  return String(name).replace(/\s*\(((?:Morning|Day|Night|Season\d+)(?:\/(?:Morning|Day|Night|Season\d+))*)\)\s*$/i, '').trim();
 }
 
 // Determine if two map names should be considered a match.
@@ -2311,7 +2311,7 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, met
     for (const [mapName, list] of Object.entries(maps || {})) {
       const norm = normalizeMapForGrouping(reg, mapName);
       if (mapNameMatches(norm, displayMap)) {
-        const time = extractTimeTag(norm);
+        const time = extractTimeTag(norm).toLowerCase();
         const adjusted = time
           ? (list || []).map(e => ({ ...e, method: e.method ? `${e.method} (${time})` : `(${time})` }))
           : (list || []);
@@ -3965,9 +3965,14 @@ const headerSprite = useMemo(() => {
       for (const [mapName, entries] of Object.entries(maps)) {
         const displayMap = normalizeMapForGrouping(region, mapName);
         if (!mapNameMatches(displayMap, q)) continue;
-        const key = `${region}|||${displayMap}`;
-        if (!buckets.has(key)) buckets.set(key, { region, map: displayMap, entries: [] });
-        buckets.get(key).entries.push(...entries);
+        const time = extractTimeTag(displayMap).toLowerCase();
+        const baseMap = stripTimeTag(displayMap);
+        const key = `${region}|||${baseMap}`;
+        if (!buckets.has(key)) buckets.set(key, { region, map: baseMap, entries: [] });
+        const adjusted = time
+          ? entries.map(e => ({ ...e, method: e.method ? `${e.method} (${time})` : `(${time})` }))
+          : entries;
+        buckets.get(key).entries.push(...adjusted);
       }
     }
     const hits = [];
