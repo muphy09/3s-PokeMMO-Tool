@@ -1,6 +1,13 @@
 # Changelog
 ---
 
+## [2.8.8] - 2025-09
+### Fixed
+- Compare Section
+  - Level is now formatted in the textbox correctly
+
+---
+
 ## [2.8.7] - 2025-09
 ### Fixed
 - 'Replace from Live Battle' now correctly pulls the most recent Pokemon shown on the Live Battle tab

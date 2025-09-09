@@ -839,7 +839,7 @@ function StatInputBox({ label, value, min, max, onChange }){
   return (
     <div style={{
       display:'flex', flexDirection:'column', alignItems:'center',
-      padding:'6px 8px', border:'1px solid var(--divider)', borderRadius:8,
+      padding:'4px 6px', border:'1px solid var(--divider)', borderRadius:8,
       background:'var(--surface)', minWidth:0
     }}>
       <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
@@ -852,7 +852,7 @@ function StatInputBox({ label, value, min, max, onChange }){
         max={max}
         value={value}
         onChange={onChange}
-        style={{ width:'100%', textAlign:'center', marginTop:2 }}
+        style={{ width:'100%', textAlign:'center', marginTop:2, padding:'4px 6px', fontSize:'14px' }}
       />
     </div>
   );
