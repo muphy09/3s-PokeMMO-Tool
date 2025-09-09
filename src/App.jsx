@@ -2479,11 +2479,13 @@ function buildGroupedEntries(areasIndex, displayMap, regionFilter, locIndex, met
         encounters: g.encounters.filter(enc => {
           const method = (enc.method || '').toLowerCase();
           const rarities = (enc.rarities || []).map(r => r.toLowerCase());
-          for (const f of methodFilters) {
-            const fL = String(f).toLowerCase();
-            if (method.includes(fL) || rarities.some(r => r.includes(fL))) return true;
+          const filters = Array.from(methodFilters).map(f => String(f).toLowerCase());
+          // Lure encounters should only appear when the 'Lure' filter is active,
+          // even if the method string contains additional tags like '(Water)'.
+          if (/lure/.test(method) || rarities.some(r => /lure/.test(r))) {
+            return filters.includes('lure');
           }
-          return false;
+          return filters.some(fL => method.includes(fL) || rarities.some(r => r.includes(fL)));
         })
       }))
       .filter(g => g.encounters.length);
@@ -4137,11 +4139,12 @@ const headerSprite = useMemo(() => {
             encounters: g.encounters.filter(enc => {
               const method = (enc.method || '').toLowerCase();
               const rarities = (enc.rarities || []).map(r => r.toLowerCase());
-              for (const f of methodFilters) {
-                const fL = String(f).toLowerCase();
-                if (method.includes(fL) || rarities.some(r => r.includes(fL))) return true;
+              const filters = Array.from(methodFilters).map(f => String(f).toLowerCase());
+              // Only show lure encounters when the 'Lure' filter is enabled.
+              if (/lure/.test(method) || rarities.some(r => /lure/.test(r))) {
+                return filters.includes('lure');
               }
-              return false;
+              return filters.some(fL => method.includes(fL) || rarities.some(r => r.includes(fL)));
             })
           }))
           .filter(g => g.encounters.length);
