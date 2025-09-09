@@ -70,7 +70,7 @@ const styles = {
   areaCard: { padding:12, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' },
   gridCols: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(260px, 1fr))', gap:10 },
   monCard: { position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:8, border:'1px solid var(--divider)', borderRadius:10, padding:'10px', background:'var(--surface)', textAlign:'center' },
-  encWrap: { display:'grid', gap:8, marginTop:8, width:'100%' },
+  encWrap: { display:'flex', gap:8, marginTop:8, width:'100%', justifyContent:'center', overflowX:'auto', scrollBehavior:'smooth' },
   encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
 };
 
@@ -1337,12 +1337,12 @@ function methodKey(m=''){ return String(m).toLowerCase().trim(); }
 function normalizeTimeTag(tag=''){
   const parts = String(tag).toLowerCase().split(/[\/]/).map(s=>s.trim()).filter(Boolean);
   if (!parts.length) return '';
-  if (parts.includes('morning')) return 'Morning';
-  if (parts.includes('day')) return 'Day';
-  if (parts.includes('night')) return 'Night';
-  const season = parts.find(p=>/^season\d+$/.test(p));
-  if (season) return season.replace(/^season/, 'Season ');
-  return titleCase(parts[0]);
+  const order = ['morning','day','night'];
+  const times = order.filter(t => parts.includes(t)).map(titleCase);
+  const seasons = parts.filter(p => /^season\d+$/.test(p)).map(p => `Season ${p.replace(/^season/,'')}`);
+  const others = parts.filter(p => !order.includes(p) && !/^season\d+$/.test(p)).map(titleCase);
+  const result = [...times, ...seasons, ...others];
+  return result.join('/') || '';
 }
 
 // Balance methods like "Lure (Water" -> "Lure (Water)"
@@ -1480,8 +1480,31 @@ function AreaMonCard({
     cursor: mon && onView ? 'pointer' : 'default'
   };
   const compact = encounters.length > 1;
-  const colCount = Math.max(encounters.length, 1);
-  const wrapStyle = { ...styles.encWrap, gridTemplateColumns: `repeat(${colCount}, 1fr)` };
+  const wrapStyle = styles.encWrap;
+  const scrollRef = useRef(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      setShowLeftArrow(el.scrollLeft > 0);
+      setShowRightArrow(el.scrollLeft + el.clientWidth < el.scrollWidth);
+    };
+    update();
+    el.addEventListener('scroll', update);
+    window.addEventListener('resize', update);
+    return () => {
+      el.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [encounters]);
+  const scroll = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * step, behavior:'smooth' });
+  };
   const handleClick = () => {
     if (mon && onView) onView(mon);
   };
@@ -1549,15 +1572,35 @@ function AreaMonCard({
       )}
       <div style={{ fontWeight:700 }}>{monName}</div>
       <Sprite mon={mon} size={80} alt={monName} />
-      <div style={wrapStyle}>
-        {encounters.map((enc, idx) => (
-          <div key={idx} style={styles.encCol}>
-            {enc.method && <MethodPill method={enc.method} compact={compact} />}
-            {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />)}
-            {showLevel && <LevelPill min={enc.min} max={enc.max} compact={compact} />}
-            {showHeldItem && enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
-          </div>
-        ))}
+      <div style={{ position:'relative', width:'100%', overflow:'hidden' }}>
+        <div ref={scrollRef} className="encounter-scroll" style={wrapStyle}>
+          {encounters.map((enc, idx) => (
+            <div key={idx} style={styles.encCol}>
+              {enc.method && <MethodPill method={enc.method} compact={compact} />}
+              {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />)}
+              {showLevel && <LevelPill min={enc.min} max={enc.max} compact={compact} />}
+              {showHeldItem && enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
+            </div>
+          ))}
+        </div>
+        {showLeftArrow && (
+          <button
+            onClick={e => { e.stopPropagation(); scroll(-1); }}
+            style={{ position:'absolute', top:'50%', left:0, transform:'translateY(-50%)', background:'none', border:'none', color:'var(--muted)', cursor:'pointer' }}
+            aria-label="Scroll left"
+          >
+            ◀
+          </button>
+        )}
+        {showRightArrow && (
+          <button
+            onClick={e => { e.stopPropagation(); scroll(1); }}
+            style={{ position:'absolute', top:'50%', right:0, transform:'translateY(-50%)', background:'none', border:'none', color:'var(--muted)', cursor:'pointer' }}
+            aria-label="Scroll right"
+          >
+            ▶
+          </button>
+        )}
       </div>
     </div>
   );
@@ -2115,15 +2158,32 @@ function groupEntriesByMon(entries){
         }
         timeMap.delete('');
       }
-      for (const enc of timeMap.values()) {
-        const label = enc.time ? `${enc.method} (${enc.time})` : enc.method;
+      const encs = [...timeMap.values()];
+      if (encs.length > 1) {
+        const combo = { method: encs[0].method, timeSet: new Set(), rarities: new Set(), min:null, max:null, items:new Set() };
+        for (const enc of encs) {
+          if (enc.time) combo.timeSet.add(enc.time);
+          mergeEnc(combo, enc);
+        }
+        const label = `${combo.method} (${[...combo.timeSet].join('/')})`;
         encounters.push({
           method: label,
-          rarities: selectRarest([...enc.rarities]),
-          min: enc.min,
-          max: enc.max,
-          items: [...enc.items]
+          rarities: selectRarest([...combo.rarities]),
+          min: combo.min,
+          max: combo.max,
+          items: [...combo.items]
         });
+      } else {
+        for (const enc of encs) {
+          const label = enc.time ? `${enc.method} (${enc.time})` : enc.method;
+          encounters.push({
+            method: label,
+            rarities: selectRarest([...enc.rarities]),
+            min: enc.min,
+            max: enc.max,
+            items: [...enc.items]
+          });
+        }
       }
     }
     return { monId:g.monId, monName:g.monName, encounters };

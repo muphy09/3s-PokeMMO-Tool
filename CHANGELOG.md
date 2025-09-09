@@ -7,7 +7,15 @@
   - Level is now formatted in the textbox correctly
 
 - Area Tab
-  - Day/Night dependant encounters now all appear together like they do in the Live Route Tab
+  - Day/Night dependant encounters are now all grouped together
+    - Ex- 'Grass (Morning)' and 'Grass (Night)' have now been grouped to say 'Grass (Morning/Night)'
+  - Data that overfills a Pokemons block is now properly formatted and can be scrolled
+
+- Live Route OCR
+  - Matched Live Route output to mirror Area Search Tab (Encounter time of day, seasons, grouped methods)
+  - Data that overfills a Pokemons block is now properly formatted and can be scrolled
+  - Areas that were matching too early have been cleared up (Eterna Forest matching to Eterna City)
+    - This should also fix some instances of the OCR briefly grabbing the wrong route
 
 ---
 

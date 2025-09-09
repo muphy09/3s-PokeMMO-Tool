@@ -681,3 +681,12 @@ select.input option {
   /* Slightly darker visual cue */
   opacity: 0.9;
 }
+
+/* Hide scrollbars on encounter lists */
+.encounter-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.encounter-scroll::-webkit-scrollbar {
+  display: none;
+}
