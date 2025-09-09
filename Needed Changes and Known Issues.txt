@@ -1,7 +1,6 @@
 --------------------------------------
 Changes to come:
 
-- Feedback Button
 - Favorable vs Unfavorable matchup in compare tab
 - Pull level of Pokemon from OCR data to adjust Base Stats on the fly in Live Battle
 - Multi-view search (compare style block)
