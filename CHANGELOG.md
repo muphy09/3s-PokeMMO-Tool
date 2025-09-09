@@ -2,6 +2,10 @@
 ---
 
 ## [2.8.8] - 2025-09
+### Added
+- Feedback Button
+  - Displays how you can submit feedback or suggestions for the app
+
 ### Fixed
 - General
   - Mantyke and Mantine now show "Level up with Remoraid" for their evolution requirement
