@@ -4,7 +4,7 @@
 ## [2.8.8] - 2025-09
 ### Fixed
 - General
-  - Fixed Mantyke and Mantines' evolution data
+  - Mantyke and Mantine now show "Level up with Remoraid" for their evolution requirement
 
 - Compare Section
   - Level is now formatted in the textbox correctly

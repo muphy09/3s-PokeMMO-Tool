@@ -1967,6 +1967,14 @@ function EvolutionChain({ mon, onSelect }) {
                 }
               }
 
+              if (rawType === 'level_with_monster' && typeof evo.val === 'number') {
+                const partner = getMonByDex(evo.val);
+                if (partner) {
+                  label = `Level up with ${titleCase(partner.name)}`;
+                  val = null;
+                }
+              }
+
               if (
                 rawType === 'happiness' ||
                 rawType === 'happiness_day' ||

@@ -12,5 +12,5 @@ Known Issues:
 
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
 - Live Route occasionally loses confidence of the current area
-- Mantyke evolution data
+- Element Scale is wonkey
 --------------------------------------
