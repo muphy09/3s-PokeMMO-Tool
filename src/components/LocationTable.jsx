@@ -107,7 +107,7 @@ export default function LocationTable({ allLocations, region }) {
               <td className="px-3 py-2 align-top whitespace-nowrap">{r.region || "-"}</td>
               <td className="px-3 py-2 align-top">{r.map || "-"}</td>
               <td className="px-3 py-2 align-top whitespace-nowrap">{r.method || r.type || "-"}</td>
-              <td className="px-3 py-2 align-top"><RarityBadge rarity={r.rarity} /></td>
+              <td className="px-3 py-2 align-top"><RarityBadge rarity={/lure/i.test(r.method) ? null : r.rarity} /></td>
               <td className="px-3 py-2 align-top whitespace-nowrap">{r.level || "-"}</td>
               <td className="px-3 py-2 align-top"><ItemsList items={r.items} /></td>
               <td className="px-3 py-2 align-top"><HordeFlags row={r} /></td>

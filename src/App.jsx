@@ -1589,7 +1589,10 @@ function AreaMonCard({
           {encounters.map((enc, idx) => (
             <div key={idx} style={styles.encCol}>
               {enc.method && <MethodPill method={enc.method} compact={compact} />}
-              {enc.rarities.map(r => <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />)}
+              {!/lure/i.test(enc.method || '') &&
+                enc.rarities.map(r => (
+                  <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />
+                ))}
               {showLevel && <LevelPill min={enc.min} max={enc.max} compact={compact} />}
               {showHeldItem && enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
             </div>
@@ -2076,6 +2079,10 @@ function useLocationsDb(){
           method = `Lure${method ? ` (${method})` : ''}`;
           rarity = '';
         }
+        // Any encounter whose method is Lure should have no rarity
+        if (method && /lure/i.test(method)) {
+          rarity = '';
+        }
         return {
           region: l.region_name,
           map: l.location,
@@ -2113,6 +2120,10 @@ function useAreasDbCleaned(){
         // Handle lure encounters represented as rarities in source data
         if (rarity && /lure/i.test(rarity)) {
           method = cleanAreaMethod(`Lure${method ? ` (${method})` : ''}`);
+          rarity = '';
+        }
+        // Any encounter whose method is Lure should have no rarity
+        if (method && /lure/i.test(method)) {
           rarity = '';
         }
         const entry = {
@@ -4236,15 +4247,26 @@ const marketResults = React.useMemo(() => {
 
 
     // Locations from dex data
-    const dexLocs = (selected.locations || []).map(l => ({
-      region: titleCase(l.region_name || 'Unknown'),
-      map: l.location,
-      method: [l.type].filter(Boolean),
-      rarity: [l.rarity].filter(Boolean),
-      min: l.min_level,
-      max: l.max_level,
-      items: (selected.heldItems || []).map(h => h.name),
-    }));
+    const dexLocs = (selected.locations || []).map(l => {
+      let method = l.type;
+      let rarity = l.rarity;
+      if (rarity && /lure/i.test(rarity)) {
+        method = `Lure${method ? ` (${method})` : ''}`;
+        rarity = '';
+      }
+      if (method && /lure/i.test(method)) {
+        rarity = '';
+      }
+      return {
+        region: titleCase(l.region_name || 'Unknown'),
+        map: l.location,
+        method: [method].filter(Boolean),
+        rarity: [rarity].filter(Boolean),
+        min: l.min_level,
+        max: l.max_level,
+        items: (selected.heldItems || []).map(h => h.name),
+      };
+    });
 
     // Merge & dedupe by region+map; union methods/rarities
     const byKey = new Map();
@@ -5566,9 +5588,11 @@ const marketResults = React.useMemo(() => {
                               {(Array.isArray(loc.method) ? loc.method : [loc.method])
                                 .filter(Boolean)
                                 .map((m, j) => <MethodPill key={`m-${i}-${j}-${m}`} method={m} />)}
-                              {(Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
-                                .filter(Boolean)
-                                .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
+                              {!(Array.isArray(loc.method) ? loc.method : [loc.method])
+                                .some(m => /lure/i.test(m || '')) &&
+                                (Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
+                                  .filter(Boolean)
+                                  .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
                             </div>
                           </div>
                         ))}
