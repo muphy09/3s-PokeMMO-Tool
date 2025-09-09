@@ -9,6 +9,7 @@ import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
+import FeedbackButton from './components/FeedbackButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import HomeScreen from './components/HomeScreen.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
@@ -5726,6 +5727,7 @@ const marketResults = React.useMemo(() => {
 
       {/* Fixed controls */}
       <ThemeButton theme={theme} setTheme={setTheme} />
+      <FeedbackButton />
       <VersionBadge />
     </>
     </ColorContext.Provider>
