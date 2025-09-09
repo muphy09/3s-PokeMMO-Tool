@@ -2342,6 +2342,29 @@ function simplifyName(s='') {
     .replace(/\s+/g, '');
 }
 
+/**
+ * Tokenize a name into cleaned, lowercased words without stripping generic
+ * location suffixes.  Used for disambiguating cases like "Eterna Forest"
+ * vs. "Eterna City" where aliasKey() would otherwise collapse both to
+ * the same key.
+ */
+function tokenizeName(s='') {
+  return String(s)
+    .replace(/\s+Ch\.?\s*\d+\b/ig, '')
+    .replace(/\$[\d,\.]+/g, '')
+    .replace(/\b(Sun|Mon|Tue|Tues|Wed|Thu|Thur|Fri|Sat|Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\b/ig, '')
+    .replace(/\b\d{1,2}:\d{2}\b/g, '')
+    .replace(/\bmt\.?\b/ig, 'mount')
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .replace(/\b(?:b\d+f|\d+f)\b/ig, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean);
+}
+
 function aliasKey(s='') {
   const key = simplifyName(s);
   if (LIVE_ALIASES[key]) return LIVE_ALIASES[key];
@@ -2385,6 +2408,8 @@ function findBestMapName(hudText, areasIndex){
     }
   }
   const needleKey = isRoute ? raw.toLowerCase() : aliasKey(raw);
+  const needleTokens = tokenizeName(raw);
+  const needleFull = needleTokens.join(' ');
   const routeNeedle = isRoute
     ? needleKey.match(/^(?:route\s*)?(\d+)\b/)
     : needleKey.match(/(?:^|\b)route(\d+)\b/);
@@ -2396,11 +2421,17 @@ function findBestMapName(hudText, areasIndex){
         return { region, displayMap: normalizeMapForGrouping(region, mapName), rawMap: mapName };
       }
       const candidateKey = aliasKey(mapName);
+      const candTokens = tokenizeName(mapName);
+      const candFull = candTokens.join(' ');
       if (routeNeedle) {
         const routeCand = candidateKey.match(/(?:^|\b)route(\d+)\b/);
         if (!routeCand || routeCand[1] !== routeNeedle[1]) continue;
       }
-      if (candidateKey === needleKey) {
+      let exact = candidateKey === needleKey;
+      if (exact && needleTokens.length > 1 && candTokens.length > 1 && needleTokens[1] !== candTokens[1]) {
+        exact = false;
+      }
+      if (exact) {
         const s = 100;
         if (
           s > bestScore ||
@@ -2416,7 +2447,7 @@ function findBestMapName(hudText, areasIndex){
         }
         continue;
       }
-      const s = scoreNames(candidateKey, needleKey);
+      const s = scoreNames(candFull, needleFull);
       if (s > bestScore) {
         bestScore = s;
         best = { region, displayMap: normalizeMapForGrouping(region, mapName), rawMap: mapName, score: s };

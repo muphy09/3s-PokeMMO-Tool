@@ -3,21 +3,25 @@
 
 ## [2.8.8] - 2025-09
 ### Fixed
+- General
+  - Fixed Mantyke and Mantines' evolution data
+
 - Compare Section
   - Level is now formatted in the textbox correctly
 
-- Area Tab
+- Area Search Tab
   - Day/Night dependant encounters are now all grouped together
     - Ex- 'Grass (Morning)' and 'Grass (Night)' have now been grouped to say 'Grass (Morning/Night)'
   - Lure encounters with multiple methods have been grouped together in one 'Lure' chip
     - Ex- 'Lure (Grass)' and 'Lure (Inside)' now display 'Lure (Grass/Inside)'
-  - Data that overfills a Pokemons block is now properly formatted and can be scrolled
+  - Data that overfills a Pokemons' block is now properly formatted and can be scrolled
 
 - Live Route OCR
-  - Matched Live Route display to mirror Area Search Tab (Encounter time of day, grouped methods)
-  - Data that overfills a Pokemons block is now properly formatted and can be scrolled
   - Areas that were matching too early have been cleared up (Eterna Forest matching to Eterna City)
     - This should also fix some instances of the OCR briefly grabbing the wrong route
+  - Updated Live Route display to mirror Area Search Tab (encounter time of day, grouped methods)
+  - Data that overfills a Pokemons' block is now properly formatted and can be scrolled
+  
 
 ---
 
