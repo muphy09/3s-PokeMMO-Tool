@@ -1,9 +1,10 @@
 # Changelog
 ---
 
-## [2.8.9] - 2025-09
+## [2.9.0] - 2025-09
 ### Added
-- 
+- Horde Search!
+  - 
 
 ### Fixed
 - General

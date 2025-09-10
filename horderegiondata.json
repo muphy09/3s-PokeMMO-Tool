@@ -1,0 +1,6769 @@
+{
+  "horderegiondata": [
+    {
+      "region": "Kanto",
+      "areas": [
+        {
+          "name": "Route 4",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Rattata",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Spearow",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 5",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pidgey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Mankey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Meowth",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 6",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Magnemite",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Drowzee",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 7",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Rattata",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Growlithe",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Houndour",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 8",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pidgey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Growlithe",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Hoothoot",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 9",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Rattata",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Spearow",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 10",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Magnemite",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Voltorb",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 11",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Drowzee",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 12",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Krabby",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Pidgey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Venonat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 13",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Bellsprout",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Oddish",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 14",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Nidorina",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 15",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Nidorino",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 16",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Grimer",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 17",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 18",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Doduo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Grimer",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 19",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 20",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tentacruel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 21",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tangela",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 22",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 23",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Arbok",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Primeape",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 24",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pidgey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Venonat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 25",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Bellsprout",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Oddish",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Seaking",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Berry Forest",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Hypno",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowbro",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Bond Bridge",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gloom",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Canyon Entrance",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Phanpy",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Persian",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cape Brink",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Slowbro",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Celadon City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Grimer",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cerulean Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Wobbuffet",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lickitung",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Parasect",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Kadabra",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Slowbro",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cerulean City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Diglett's Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Diglett",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Five Island",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Hoppip",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Five Isle Meadow",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Pidgeotto",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Hoppip",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Four Island",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Wooper",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Fuchsia City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Icefall Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Dewgong",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Seel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Piloswine",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Kindle Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Meowth",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ponyta",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lost Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Haunter",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Murkrow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Misdreavus",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Memorial Pillar",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Skiploom",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Hoppip",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Ember",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Rapidash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machop",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Geodude",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Slugma",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Magcargo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                4
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Moon",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Geodude",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Paras",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Pattern Bush",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Kakuna",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Metapod",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Pokémon Mansion",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Koffing",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Grimer",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rattata",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ponyta",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2,
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Growlithe",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Ditto",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Pokémon Tower",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Gastly",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Haunter",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cubone",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Power Plant",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Pikachu",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Resort Gorgeous",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Hoppip",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Rock Tunnel",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Geodude",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Onix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ruin Valley",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Seafoam Islands",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Seel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2,
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Krabby",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Kingler",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [
+                4
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Sevault Canyon",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Marowak",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Three Isle Port",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Dunsparce",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Treasure Beach",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Persian",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tangela",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Victory Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rhydon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marowak",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sandslash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Onix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Donphan",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ursaring",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Viridian City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwag",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Water Labyrinth",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Hoppip",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Water Path",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Persian",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "region": "Johto",
+      "areas": [
+        {
+          "name": "Route 26",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Sandslash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tentacruel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 27",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Arbok",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Dodrio",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 28",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Rapidash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tangela",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 30",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwag",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 31",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwag",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 32",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Wooper",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 33",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Hoppip",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rattata",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 34",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Drowzee",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Snubbull",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 35",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Nidoran",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 36",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Growlithe",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 37",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Stantler",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 38",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Magnemite",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 39",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Pidgeotto",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 40",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 41",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Mantine",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 42",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Mareep",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Mankey",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 43",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Girafarig",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Flaaffy",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magikarp",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 44",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Lickitung",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 45",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Gligar",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magikarp",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 47",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Miltank",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Noctowl",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Seel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 48",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gloom",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tauros",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Bell Tower",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Haunter",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Blackthorn City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Burned Tower",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Rattata",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Koffing",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cherrygrove City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cianwood City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cliff Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Kingler",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cliff Edge Gate",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Quagsire",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Dark Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Wobbuffet",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magikarp",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Dragon's Den",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Dratini",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magikarp",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ecruteak City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwag",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ice Path",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Jynx",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2,
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Delibird",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                3
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ilex Forest",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pidgey",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Venonat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lake of Rage",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gyarados",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Mortar",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machop",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rattata",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Geodude",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Silver Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Donphan",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Dodrio",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sneasel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Seaking",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Parasect",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Steelix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Misdreavus",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ursaring",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Quagsire",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Larvitar",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                4
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Onix",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                4
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "National Park",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Ledyba",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sunkern",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Spinarak",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "New Bark Town",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Olivine City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ruins of Alph",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Natu",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Smeargle",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Quagsire",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cliff Edge Gate",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Slowpoke",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Team Rocket HQ",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Geodude",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Voltorb",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2,
+                3
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Tohjo Falls",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowbro",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Goldeen",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Union Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sandshrew",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Quagsire",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Victory Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Ursaring",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Donphan",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sandslash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Violet City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Poliwag",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Whirl Islands",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Seel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Krabby",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Horsea",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Tentacool",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "region": "Hoenn",
+      "areas": [
+        {
+          "name": "Route 102",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 110",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Electrike",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 111",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Trapinch",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cacnea",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sandshrew",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marill",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Surskit",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 112",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Numel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 113",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Spinda",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 114",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Seedot",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zangoose",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lotad",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Seviper",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 115",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Swellow",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Jigglypuff",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Swablu",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 117",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Roselia",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Oddish",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Volbeat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Illumise",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lombre",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 118",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Linoone",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Electrike",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 119",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gloom",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 120",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Mightyena",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 121",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Linoone",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 123",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Linoone",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Mightyena",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Surskit",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Artisan Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Smeargle",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cave of Origin",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Desert Underpass",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Loudred",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Fiery Path",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Numel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Torkoal",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Granite Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Makuhita",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Aron",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Mawile",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sableye",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Jagged Pass",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Machop",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Spoink",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Magma Hideout",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Torkoal",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Geodude",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                3
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Meteor Falls",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Lunatone",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Solrock",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Solrock",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lunatone",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sandshrew",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Trapinch",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cacnea",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Pyre",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Shuppet",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Duskull",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                6
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Meditite",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "New Mauville",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Magnemite",
+              "hordeSize": 3,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Voltorb",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Petalburg City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Marill",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Surskit",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Rusturf Tunnel",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Whismur",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Scorched Slab",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Seafloor Cavern",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Shoal Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Sealeo Ice room",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Snorunt Ice room",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sky Pillar",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ariados",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Banette",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Claydol",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3,
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Altaria",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Sootopolis City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Magikarp",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Underwater",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Corsola",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Chinchou",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Victory Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Hariyama",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lairon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Medicham",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "region": "Sinnoh",
+      "areas": [
+        {
+          "name": "Route 203",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 204",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Bidoof",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Wurmple",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Kricketot",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 205",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Buizel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bidoof",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Shellos",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 206",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Ponyta",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Stunky",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 208",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Budew",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 209",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Bibarel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ralts",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 210",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Staravia",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ponyta",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Kricketune",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Swablu West",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 211",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Meditite",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bidoof",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 212",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Staravia",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Kricketune",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Shellos",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Quagsire",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Shellos",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Wooper",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 213",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Buizel",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Shellos",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Chatot",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 214",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Stunky",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rhyhorn",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 215",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Marill",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Staravia",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 216",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Snover",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sneasel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 217",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Swinub",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Snover",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 218",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Floatzel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 221",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gastrodon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 222",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Floatzel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Electabuzz",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 224",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gastrodon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 225",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 226",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Banette",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Dewgong",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sealeo",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 227",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Camerupt",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Banette",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 228",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Dugtrio",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Poliwhirl",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 229",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Purugly",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Roselia",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Surskit",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 230",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Roselia",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sealeo",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Acuity Lakefront",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Snover",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Noctowl",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Celestic Town",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Eterna City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Eterna Forest",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Budew",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Buneary",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Hoothoot",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Fuego Ironworks",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Luxio",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magmar",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Iron Island",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Geodude",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Onix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lake Acuity",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Snover",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Snorunt",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lake Valor",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Bibarel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lake Verity",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lost Tower",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1,
+                4,
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Gastly",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                2,
+                4,
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Duskull",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Murkrow",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Maniac Tunnel",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Geodude",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Hippopotas",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mt. Coronet",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Geodude",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machop",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bronzor",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2,
+                7
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bronzong",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2,
+                3,
+                5,
+                6,
+                7
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Medicham",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Abomasnow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Clefairy",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Machoke",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                5
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Nosepass",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                6
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Chimecho",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                7
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Meditite",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                7
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Old Chateau",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Gastly",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Oreburgh Gate",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ravaged Path",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Resort Area",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Ruin Maniac Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Geodude",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zubat",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Sendoff Spring",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Bibarel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Snowpoint Temple",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Onix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2,
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sneasel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                3,
+                4,
+                5
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Jynx",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                5
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Stark Mountain",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Camerupt",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Magcargo",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Trophy Garden",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pikachu",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Turnback Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Haunter",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Twinleaf Town",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Psyduck",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Valley Windworks",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Shinx",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Pachirisu",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Shellos",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Valor Lakefront",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Girafarig",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Houndour",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Staravia",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bibarel",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Victory Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Rhydon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": [
+                1
+              ]
+            },
+            {
+              "name": "Gabite",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Floatzel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": [
+                2,
+                3
+              ]
+            },
+            {
+              "name": "Medicham",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": [
+                3
+              ]
+            },
+            {
+              "name": "Azumarill",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Kadabra",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Dewgong",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": [
+                2
+              ]
+            },
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Wayward Cave",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Bronzor",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Gible",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "region": "Unova",
+      "areas": [
+        {
+          "name": "Route 1",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Watchog",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 3",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Pidove",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Blitzel",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Purrloin",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 4",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Darumaka",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Frillish",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 5",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Minccino",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Liepard",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 6",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Karrablast",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Deerling",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tranquill",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 7",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Watchog",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zebstrika",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 8",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Palpitoad",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Stunfisk",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 9",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Duosion",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Gothorita",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 10",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Bouffalant",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Amoonguss",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Herdier",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 11",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golduck",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Gligar",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Amoonguss",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Buizel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 12",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Rapidash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tranquill",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 13",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Swellow",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Solrock",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lunatone",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Drifblim",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 14",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Beheeyem",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Jigglypuff",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Buizel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 15",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Sawk",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Throh",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Marowak",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Fearow",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 16",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Solosis",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Gothita",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Trubbish",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Minccino",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 17",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Frillish",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Route 18",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Throh",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sawk",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Scraggy",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Crustle",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Frillish",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Abundant Shrine",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Bronzong",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vulpix",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Stantler",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Slowpoke",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Celestial Tower",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Litwick",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Elgyem",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Challenger's Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Lickitung",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Boldore",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Graveler",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sableye",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Mawile",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Chargestone Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Klink",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Ferroseed",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Joltik",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1,
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Tynamo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Cold Storage",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Herdier",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vanillite",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Timburr",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Desert Resort",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Sandile",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Darumaka",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sigilyph",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Maractus",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Dragonspiral Tower",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Deerling",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Mienfoo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sawsbuck",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Beartic",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vanillite",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Druddigon",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Golett",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                2
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Dragonspiral Tower",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Mienfoo",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vanillite",
+              "hordeSize": 3,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Vanillish",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Dreamyard",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Liepard",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Raticate",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Kricketune",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Driftveil City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Frillish",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Giant Chasm",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Golbat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Tangela",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sneasel",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Piloswine",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Seel",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Piloswine",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Solrock",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Lunatone",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Guidance Chamber",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Woobat",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Axew",
+              "hordeSize": 5,
+              "method": "cave",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Icirrus City",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Shelmet",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Stunfisk",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Lostlorn Forest",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Venipede",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cottonee",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Petilil",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Zorua",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Swadloon",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Mistralton Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Boldore",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Woobat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Moor of Icirrus",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Palpitoad",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Stunfisk",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "P2 Laboratory",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Herdier",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Frillish",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Pinwheel Forest",
+          "defaultHordeSize": 3,
+          "pokemon": [
+            {
+              "name": "Tympole",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Timburr",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Pidove",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Sewaddle",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Venipede",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Whirlipede",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cottonee",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Petilil",
+              "hordeSize": 3,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Relic Castle",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Yamask",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sandile",
+              "hordeSize": 3,
+              "method": "grass",
+              "floors": [
+                1
+              ],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Cofagrigus",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                2
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Krokorok",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                4
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Sandslash",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                5
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Onix",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                5
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Claydol",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                5
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Twist Mountain",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Gurdurr",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Boldore",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Woobat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Cubchoo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1,
+                2
+              ],
+              "basements": [
+                3
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Cryogonal",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                3
+              ],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Undella Town",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Mantine",
+              "hordeSize": 5,
+              "method": "water",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Victory Road",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Heatmor",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Boldore",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Durant",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Deino",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Mienfoo",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                1,
+                3
+              ],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Woobat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [
+                4
+              ],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Village Bridge",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Vullaby",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Rufflet",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bibarel",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            },
+            {
+              "name": "Bibarel",
+              "hordeSize": 5,
+              "method": "dark_grass",
+              "floors": [],
+              "basements": [],
+              "rooms": []
+            }
+          ]
+        },
+        {
+          "name": "Wellspring Cave",
+          "defaultHordeSize": 5,
+          "pokemon": [
+            {
+              "name": "Boldore",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            },
+            {
+              "name": "Woobat",
+              "hordeSize": 5,
+              "method": "grass",
+              "floors": [],
+              "basements": [
+                1
+              ],
+              "rooms": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
