@@ -13,4 +13,6 @@ Known Issues:
 - Live Route occasionally loses confidence of the current area
 - Live Battle can be inconsistent, especially within double battles
 - Element Scale is wonkey
+- Mime Jr. Evolution
+- Desert Underpass routes to Desert in Live OCR
 --------------------------------------

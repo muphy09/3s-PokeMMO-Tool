@@ -1925,13 +1925,20 @@ function EvolutionChain({ mon, onSelect }) {
             <Sprite mon={m} size={72} alt={m.name} />
           </div>
           <div className="label-muted">#{String(m.id).padStart(3,'0')}</div>
-          <button
-            className="link-btn"
-            style={{ background:'none', border:0, padding:0, color:'var(--accent)', fontWeight:700, cursor:'pointer' }}
-            onClick={() => onSelect && onSelect(m)}
-          >
-            {titleCase(m.name)}
-          </button>
+          {isSelected ? (
+            <span style={{ color:'var(--accent)', fontWeight:700 }}>
+              {titleCase(m.name)}
+            </span>
+          ) : (
+            <button
+              type="button"
+              className="link-btn"
+              style={{ background:'none', border:0, padding:0, color:'var(--accent)', fontWeight:700, cursor:'pointer' }}
+              onClick={() => onSelect && onSelect(m)}
+            >
+              {titleCase(m.name)}
+            </button>
+          )}
           <div style={{ display:'flex', gap:6, flexWrap:'wrap', justifyContent:'center', marginTop:4 }}>
             {(m.types || []).map(t => <TypePill key={t} t={t} compact />)}
           </div>

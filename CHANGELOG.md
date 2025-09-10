@@ -1,6 +1,17 @@
 # Changelog
 ---
 
+## [2.8.9] - 2025-09
+### Added
+- 
+
+### Fixed
+- General
+  - Clicking the currently focused Pokemon from the Evolution flow no longer crashes the App
+    - *Thanks individualcontributordev!*
+
+---
+
 ## [2.8.8] - 2025-09
 ### Added
 - Feedback Button
