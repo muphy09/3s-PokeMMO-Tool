@@ -2402,8 +2402,10 @@ function scoreNames(a, b) {
   const numsA = (a.match(/\d+/g) || []).join(',');
   const numsB = (b.match(/\d+/g) || []).join(',');
   if (numsA && numsA === numsB) score += 30;
-  const lenRatio = Math.min(a.length, b.length) / Math.max(a.length, b.length);
-  score += Math.round(lenRatio * 15);
+  if (a.includes(' ') && b.includes(' ')) {
+    const lenRatio = Math.min(a.length, b.length) / Math.max(a.length, b.length);
+    score += Math.round(lenRatio * 15);
+  }
   return score;
 }
 
@@ -2438,6 +2440,14 @@ function findBestMapName(hudText, areasIndex){
       }
       const candidateKey = aliasKey(mapName);
       const candTokens = tokenizeName(mapName);
+      if (
+        needleTokens.length > 1 &&
+        candTokens.length > 1 &&
+        candTokens[0] === needleTokens[0] &&
+        candTokens[1] !== needleTokens[1]
+      ) {
+        continue;
+      }
       const candFull = candTokens.join(' ');
       if (routeNeedle) {
         const routeCand = candidateKey.match(/(?:^|\b)route(\d+)\b/);
