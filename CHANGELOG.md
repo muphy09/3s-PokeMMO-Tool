@@ -3,8 +3,9 @@
 
 ## [2.9.0] - 2025-09
 ### Added
-- Horde Search!
-  - 
+- Horde Search Tab
+  - Filter Region, EV Yield, Horde Size, & Location
+  - Horde Size data now added to the dataset
 
 ### Fixed
 - General

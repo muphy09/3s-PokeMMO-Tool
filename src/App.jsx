@@ -16,6 +16,7 @@ import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './co
 import { CaughtContext } from './caughtContext.js';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
+import HordeSearch from './components/HordeSearch.jsx';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -3713,7 +3714,8 @@ function App(){
   const [areaRegion, setAreaRegion] = useState('All');
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'horde' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
+  const [toolsOpen, setToolsOpen] = useState(false);
 
   // Compare mode state for Pokemon Search
   const [compareMode, setCompareMode] = useState(false);
@@ -3728,6 +3730,8 @@ function App(){
       setCompareB(null);
     }
   }, [mode]);
+
+  useEffect(() => { setToolsOpen(false); }, [mode]);
 
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
@@ -4523,29 +4527,41 @@ const marketResults = React.useMemo(() => {
             <div style={styles.segWrap}>
               <button style={styles.segBtn(mode==='pokemon')} onClick={()=>setMode('pokemon')}>Pokemon Search</button>
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
+              <button style={styles.segBtn(mode==='horde')} onClick={()=>setMode('horde')}>Horde Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
-              <button style={styles.segBtn(mode==='breeding')} onClick={()=>setMode('breeding')}>Breeding</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
-              <button style={styles.segBtn(mode==='market')} onClick={()=>setMode('market')}>Market</button>
-            </div>
-            {isWindows && (
-              <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
-                <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
-                <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
+              <div style={{ position:'relative' }}>
+                <button style={styles.segBtn(mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ▾</button>
+                {toolsOpen && (
+                  <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10 }}>
+                    <button style={{ ...styles.segBtn(mode==='breeding'), width:'100%', borderRadius:0 }} onClick={()=>setMode('breeding')}>Breeding</button>
+                    <button style={{ ...styles.segBtn(mode==='market'), width:'100%', borderRadius:0 }} onClick={()=>setMode('market')}>Market</button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          {isLinux && (
-            <div className="label-muted" style={{ marginBottom:8 }}>
-              Live route tracking is unavailable on Linux.
+            </div>
+          {isWindows && (
+            <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
+              <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
+              <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
             </div>
           )}
+        </div>
+        {isLinux && (
+          <div className="label-muted" style={{ marginBottom:8 }}>
+            Live route tracking is unavailable on Linux.
+          </div>
+        )}
 
-          {mode==='pokemon' && (
-            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
-              <select
-                value={typeFilter}
+        {mode==='horde' && (
+          <HordeSearch />
+        )}
+
+        {mode==='pokemon' && (
+          <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
+            <select
+              value={typeFilter}
                 onChange={e=>setTypeFilter(e.target.value)}
                 className="input"
                 style={{ height:44, borderRadius:10, width:'auto' }}
@@ -4653,7 +4669,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Context label + search input (hidden for Live) */}
-          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && (
+          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && mode!=='horde' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted">

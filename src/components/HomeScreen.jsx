@@ -3,6 +3,7 @@ import React from 'react';
 const CORE_FEATURES = [
   { key: 'pokemon', label: 'Pokémon Search' },
   { key: 'areas', label: 'Area Search' },
+  { key: 'horde', label: 'Horde Search' },
   { key: 'tm', label: 'TM Locations' },
   { key: 'items', label: 'Items' },
   { key: 'breeding', label: 'Breeding' },

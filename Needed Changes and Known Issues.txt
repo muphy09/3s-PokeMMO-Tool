@@ -14,4 +14,7 @@ Known Issues:
 - Live Battle can be inconsistent, especially within double battles
 - Element Scale is wonkey
 - Eevee evolution flow is a disaster
+
+- Horde Amount label
+- include F1 B1 R1
 --------------------------------------
