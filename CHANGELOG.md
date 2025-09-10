@@ -9,6 +9,10 @@
 - General
   - Clicking the currently focused Pokemon from the Evolution flow no longer crashes the App
     - *Thanks individualcontributordev!*
+  - Bonsly, Mime Jr, Feebas, and Nincada's evolution data have been properly updated
+
+- Live Route OCR
+  - Cleared up even more areas that were matching too early (Desert Underpass matching to Desert Resort)
 
 ---
 
