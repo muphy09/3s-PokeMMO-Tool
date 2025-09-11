@@ -5742,7 +5742,8 @@ const marketResults = React.useMemo(() => {
                               onClick={() => {
                                 setMode('areas');
                                 setAreaRegion(reg);
-                                setAreaQuery(loc.map);
+                                // Remove any parenthetical notes from the location name
+                                setAreaQuery(loc.map.replace(/\s*\([^)]*\)/g, '').trim());
                                 setShowLocations(false);
                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                               }}

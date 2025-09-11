@@ -10,9 +10,13 @@
   - Horde Size now shows inside of the Pokemons' Profile screen
   - Clicking a Location inside of a Pokemons' Profile screen opens the Area Search Tab with that location selected
 
+- Horde Search
+  - Changed the 'Clear Filters' button to the match your current theme
+
 ### Fixed
 - General
   - Nidoran (M/F) data has been cleared up
+  - Removed the yellow shadow that appeared when selecting a Pokemon to Compare
 
 - Pokemon Profile
   - Cleaned all Locations of duplicate Season data
