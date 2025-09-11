@@ -53,8 +53,22 @@ const HORDE_SIZE_MAP = (() => {
   return map;
 })();
 
+function normalizeAreaName(area = "") {
+  return String(area)
+    .toLowerCase()
+    .replace(/\s*\([^)]*\)\s*/g, "")
+    .trim();
+}
+
 function getHordeSize(region, area, name) {
-  return HORDE_SIZE_MAP[region?.toLowerCase()]?.[area?.toLowerCase()]?.[name?.toLowerCase()] || null;
+  const rKey = region?.toLowerCase();
+  const aKey = area?.toLowerCase();
+  const pKey = name?.toLowerCase();
+  return (
+    HORDE_SIZE_MAP[rKey]?.[aKey]?.[pKey] ??
+    HORDE_SIZE_MAP[rKey]?.[normalizeAreaName(area)]?.[pKey] ??
+    null
+  );
 }
 
 const SHOW_CONFIDENCE = (import.meta?.env?.VITE_SHOW_CONFIDENCE ?? '1') === '1';
@@ -1440,19 +1454,23 @@ function selectRarest(rarities = []) {
     }
   return unique;
 }
-function RarityPill({ rarity, compact=false }){
+function RarityPill({ rarity, compact=false, hordeSize }){
   const { rarityColors } = React.useContext(ColorContext);
   if (!rarity) return null;
   const k = rarityKey(rarity);
   const isPercent = /^\d+%$/.test(k);
   const bg = isPercent ? '#13B5A6' : (rarityColors[k] || '#BDC3C7');
   const color = '#111';
+  let label = rarity;
+  if (hordeSize && /^horde/i.test(rarity)) {
+    label = `Horde (x${hordeSize})`;
+  }
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
       color, background:bg, fontWeight:800, border:'1px solid #00000022'
     }}>
-      {rarity}
+      {label}
     </span>
   );
 }
@@ -1626,7 +1644,7 @@ function AreaMonCard({
               {enc.method && <MethodPill method={enc.method} compact={compact} hordeSize={enc.hordeSize} />}
               {!/lure/i.test(enc.method || '') &&
                 enc.rarities.map(r => (
-                  <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />
+                  <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} hordeSize={enc.hordeSize} />
                 ))}
               {showLevel && <LevelPill min={enc.min} max={enc.max} compact={compact} />}
               {showHeldItem && enc.items.map(i => <ItemPill key={`i-${idx}-${i}`} item={i} compact={compact} />)}
@@ -5705,7 +5723,7 @@ const marketResults = React.useMemo(() => {
                                 .some(m => /lure/i.test(m || '')) &&
                                 (Array.isArray(loc.rarity) ? loc.rarity : [loc.rarity])
                                   .filter(Boolean)
-                                  .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} />)}
+                                  .map((r, j) => <RarityPill key={`r-${i}-${j}-${r}`} rarity={r} hordeSize={loc.hordeSize} />)}
                             </div>
                           </div>
                         ))}
