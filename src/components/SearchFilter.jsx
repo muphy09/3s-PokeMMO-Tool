@@ -3,7 +3,14 @@ import React, { useState, useRef, useEffect } from 'react';
 // Allow an empty options array by default so the component can render even if
 // the caller forgets to supply one. This prevents runtime errors that would
 // otherwise hide the input entirely.
-export default function SearchFilter({ value, onChange, options = [], placeholder = '' }) {
+export default function SearchFilter({
+  value,
+  onChange,
+  options = [],
+  placeholder = '',
+  style = {},
+  minChars = 0
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value || '');
   const ref = useRef(null);
@@ -21,21 +28,22 @@ export default function SearchFilter({ value, onChange, options = [], placeholde
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filtered = options.filter(opt =>
-    opt.toLowerCase().includes(query.toLowerCase())
-  );
+  const filtered = query.length >= minChars
+    ? options.filter(opt => opt.toLowerCase().includes(query.toLowerCase()))
+    : [];
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <input
         value={query}
         onChange={e => {
-          setQuery(e.target.value);
-          onChange(e.target.value);
+          const val = e.target.value;
+          setQuery(val);
+          onChange(val);
+          setOpen(val.length >= minChars);
         }}
-        onFocus={() => setOpen(true)}
         className="input"
-        style={{ height:44, borderRadius:10, width:160 }}
+        style={{ height:44, borderRadius:10, width:160, ...style }}
         placeholder={placeholder}
       />
       {open && (

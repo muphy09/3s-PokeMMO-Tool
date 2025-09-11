@@ -6,6 +6,11 @@
 - Horde Search Tab
   - Filter Region, EV Yield, Horde Size, & Location
   - Horde Size data now added to the dataset
+    - Horde Size now appears inside of the 'Horde' pills for each Pokemon. 
+
+- Tools Tab
+  - Relocated the Items, Breeding, and Market tabs into a new 'Tools' tab
+    - *Items may move back if locations can be added*
 
 ### Fixed
 - General

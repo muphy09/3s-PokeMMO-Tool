@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import dexData from '../../UpdatedDex.json';
 import hordeData from '../../horderegiondata.json';
+import SearchFilter from './SearchFilter';
 
-const REGION_OPTIONS = ['All', 'Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova'];
-const EV_OPTIONS = ['','HP','Attack','Defense','Sp. Attack','Sp. Defense','Speed'];
-const SIZE_OPTIONS = ['All','x3','x5'];
+const REGION_OPTIONS = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova'];
+const EV_OPTIONS = ['', 'HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed'];
+const SIZE_OPTIONS = ['x3', 'x5'];
 
 function normalizeName(s=''){return s.toLowerCase();}
 
@@ -13,22 +14,32 @@ function getDexMon(name){
   return dexData.find(m => normalizeName(m.name) === key) || null;
 }
 
-function buildHordeIndex(){
+function buildHordeData(){
   const map = new Map();
+  const areas = new Set();
   for (const region of hordeData.horderegiondata){
     for (const area of region.areas){
+      areas.add(area.name);
       for (const p of area.pokemon){
         const key = normalizeName(p.name);
-        const entry = {region: region.region, area: area.name, hordeSize: p.hordeSize || area.defaultHordeSize};
+        const entry = {
+          region: region.region,
+          area: area.name,
+          hordeSize: p.hordeSize || area.defaultHordeSize,
+          method: p.method,
+          floors: p.floors || [],
+          basements: p.basements || [],
+          rooms: p.rooms || []
+        };
         if(!map.has(key)) map.set(key, []);
         map.get(key).push(entry);
       }
     }
   }
-  return map;
+  return { map, areas: Array.from(areas).sort() };
 }
 
-const HORDE_INDEX = buildHordeIndex();
+const { map: HORDE_INDEX, areas: AREA_OPTIONS } = buildHordeData();
 
 function formatEvYield(yields){
   if(!yields) return '';
@@ -47,15 +58,27 @@ function formatEvYield(yields){
   return parts.join(', ');
 }
 
+function formatLocationExtras(l){
+  const extras = [];
+  if(l.floors && l.floors.length) extras.push('F' + l.floors.join(', F'));
+  if(l.basements && l.basements.length) extras.push('B' + l.basements.join(', B'));
+  if(l.rooms && l.rooms.length) extras.push('R' + l.rooms.join(', R'));
+  return extras.length ? ' ' + extras.join(', ') : '';
+}
+
+function formatMethod(m=''){return m.replace('-', ' ');}
+
 export default function HordeSearch(){
   const [term,setTerm] = useState('');
-  const [region,setRegion] = useState('All');
+  const [area,setArea] = useState('');
+  const [region,setRegion] = useState('');
   const [evFilter,setEvFilter] = useState('');
-  const [size,setSize] = useState('All');
+  const [size,setSize] = useState('');
   const [open,setOpen] = useState(null);
 
   const filtered = useMemo(()=>{
     const q = normalizeName(term);
+    const areaQ = normalizeName(area);
     const results = [];
     for(const [name,locs] of HORDE_INDEX.entries()){
       if(q && !name.includes(q)) continue;
@@ -66,42 +89,58 @@ export default function HordeSearch(){
         if(!(mon.yields && mon.yields[key] > 0)) continue;
       }
       const locFiltered = locs.filter(l =>
-        (region==='All' || l.region===region) &&
-        (size==='All' || l.hordeSize === Number(size.replace('x','')))
+        (!region || l.region===region) &&
+        (!size || l.hordeSize === Number(size.replace('x',''))) &&
+        (!areaQ || normalizeName(l.area).includes(areaQ))
       );
       if(locFiltered.length===0) continue;
       results.push({name, mon, locations: locFiltered});
     }
     results.sort((a,b)=>a.name.localeCompare(b.name));
     return results;
-  },[term,region,evFilter,size]);
+  },[term,area,region,evFilter,size]);
 
-  const clearFilters = () => { setRegion('All'); setEvFilter(''); setSize('All'); };
-  const filtersActive = region!=='All' || evFilter || size!=='All';
+  const clearFilters = () => { setRegion(''); setEvFilter(''); setSize(''); };
+  const filtersActive = region || evFilter || size;
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:12}}>
+      <input
+        value={term}
+        onChange={e=>setTerm(e.target.value)}
+        placeholder="Search Pokémon"
+        className="input"
+        style={{width:260,height:44,borderRadius:10,padding:'0 10px'}}
+      />
+      <SearchFilter
+        value={area}
+        onChange={setArea}
+        options={AREA_OPTIONS}
+        placeholder="Route/Area Search"
+        style={{width:260}}
+        minChars={2}
+      />
       <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-        <input
-          value={term}
-          onChange={e=>setTerm(e.target.value)}
-          placeholder="Search Pokémon"
-          className="input"
-          style={{flex:'1 1 200px',height:44,borderRadius:10,padding:'0 10px'}}
-        />
         <select value={region} onChange={e=>setRegion(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
+          <option value="">Select Region</option>
           {REGION_OPTIONS.map(r=> <option key={r} value={r}>{r}</option>)}
         </select>
         <select value={evFilter} onChange={e=>setEvFilter(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
-          {EV_OPTIONS.map(o=> <option key={o} value={o}>{o || 'EV Yield'}</option>)}
+          {EV_OPTIONS.map(o=> <option key={o} value={o}>{o || 'Select EV'}</option>)}
         </select>
         <select value={size} onChange={e=>setSize(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
+          <option value="">Select Horde Amount</option>
           {SIZE_OPTIONS.map(o=> <option key={o} value={o}>{o}</option>)}
         </select>
-        {filtersActive && (
-          <button className="btn" onClick={clearFilters} style={{height:44,borderRadius:10}}>Clear Filters</button>
-        )}
       </div>
+      {filtersActive && (
+        <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
+          <button className="btn" onClick={clearFilters} style={{height:32,borderRadius:8}}>Clear Filters</button>
+          {region && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{region}</div>}
+          {evFilter && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{evFilter}</div>}
+          {size && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{size}</div>}
+        </div>
+      )}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:10}}>
         {filtered.map(p => {
           const evText = formatEvYield(p.mon.yields);
@@ -120,7 +159,10 @@ export default function HordeSearch(){
               {isOpen && (
                 <div style={{width:'100%',textAlign:'left',marginTop:4}}>
                   {p.locations.map((l,i)=>(
-                    <div key={i} style={{fontSize:14,padding:'2px 0'}}>{l.region} - {l.area} (x{l.hordeSize})</div>
+                    <div key={i} style={{fontSize:14,padding:'2px 0',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+                      <span>{l.region} - {l.area}{formatLocationExtras(l)} (x{l.hordeSize})</span>
+                      <span style={{border:'1px solid var(--divider)',padding:'0 6px',borderRadius:6,fontSize:12,textTransform:'capitalize'}}>{formatMethod(l.method)}</span>
+                    </div>
                   ))}
                 </div>
               )}
