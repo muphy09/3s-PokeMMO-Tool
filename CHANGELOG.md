@@ -1,6 +1,14 @@
 # Changelog
 ---
 
+## [2.9.1] - 2025-09
+### Changed
+- Pokemon Profile
+  - Horde Size now shows inside of the Pokemons' Profile screen
+  - Clicking a Location inside of a Pokemons' Profile screen opens the Area Search Tab with that location selected
+
+---
+
 ## [2.9.0] - 2025-09
 ### Added
 - Horde Search Tab

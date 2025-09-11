@@ -4407,11 +4407,13 @@ const marketResults = React.useMemo(() => {
       if (methods.length === 1) {
         rarities = selectRarest(rarities);
       }
+      const hordeSize = getHordeSize(l.region, l.map, selected.name);
       return {
         ...l,
         method: methods,
         rarity: rarities,
         items: [...new Set(l.items)],
+        ...(hordeSize ? { hordeSize } : {}),
       };
     });
 
@@ -5708,7 +5710,16 @@ const marketResults = React.useMemo(() => {
                       <div style={{ fontWeight:800, marginBottom:6 }}>{reg}</div>
                       <div style={{ display:'grid', gap:8 }}>
                         {list.map((loc, i) => (
-                          <div key={i} style={{ border:'1px solid var(--divider)', borderRadius:10, padding:'8px 10px', background:'var(--surface)' }}>
+                          <div
+                            key={i}
+                            style={{ border:'1px solid var(--divider)', borderRadius:10, padding:'8px 10px', background:'var(--surface)', cursor:'pointer' }}
+                            onClick={() => {
+                              setMode('areas');
+                              setAreaRegion(reg);
+                              setAreaQuery(loc.map);
+                              setShowLocations(false);
+                            }}
+                          >
                             <div style={{ fontWeight:700 }}>{loc.map}</div>
                             {(loc.min || loc.max) && (
                               <div className="label-muted" style={{ marginTop:4 }}>
