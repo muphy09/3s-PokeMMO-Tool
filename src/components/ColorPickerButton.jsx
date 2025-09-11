@@ -62,7 +62,7 @@ export default function ColorPickerButton(){
     <>
       <button style={btnStyle} onClick={()=>setOpen(true)} title="Choose Colors">Choose Colors</button>
       {open && (
-        <div style={overlayStyle} onClick={()=>setOpen(false)}>
+        <div style={overlayStyle} onClick={onSave}>
           <div style={modalStyle} onClick={e=>e.stopPropagation()}>
             <div style={sectionStyle}>
               <div style={{ fontWeight:800, marginBottom:8 }}>Method Colors</div>
