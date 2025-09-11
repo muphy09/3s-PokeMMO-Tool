@@ -33,6 +33,9 @@
 - Live Route OCR
   - Cleared up even more areas that were matching too early (Desert Underpass matching to Desert Resort)
 
+### Known Issues
+- Basculin Horde Data is not properly included
+
 ---
 
 ## [2.8.8] - 2025-09

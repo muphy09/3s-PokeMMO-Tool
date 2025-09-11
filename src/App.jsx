@@ -4612,9 +4612,9 @@ const marketResults = React.useMemo(() => {
           </div>
         )}
 
-        {mode==='horde' && (
+        <div style={{ display: mode==='horde' ? 'block' : 'none' }}>
           <HordeSearch />
-        )}
+        </div>
 
         {mode==='pokemon' && (
           <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:8 }}>
