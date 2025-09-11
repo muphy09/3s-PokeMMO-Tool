@@ -398,7 +398,26 @@ body.theme-neo {
 }
 
 html, body, #root { height: 100%; }
-* { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--surface);
+}
+
+/* Global scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 4px;
+  border: 2px solid var(--surface);
+}
 
 body {
   margin: 0;

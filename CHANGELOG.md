@@ -11,6 +11,9 @@
   - Clicking a Location inside of a Pokemons' Profile screen opens the Area Search Tab with that location selected
 
 ### Fixed
+- General
+  - Nidoran (M/F) data has been cleared up
+
 - Pokemon Profile
   - Cleaned all Locations of duplicate Season data
 

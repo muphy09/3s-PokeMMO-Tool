@@ -5731,13 +5731,14 @@ const marketResults = React.useMemo(() => {
                           <div
                             key={i}
                             style={{ border:'1px solid var(--divider)', borderRadius:10, padding:'8px 10px', background:'var(--surface)', cursor:'pointer' }}
-                            onClick={() => {
-                              setMode('areas');
-                              setAreaRegion(reg);
-                              setAreaQuery(loc.map);
-                              setShowLocations(false);
-                            }}
-                          >
+                              onClick={() => {
+                                setMode('areas');
+                                setAreaRegion(reg);
+                                setAreaQuery(loc.map);
+                                setShowLocations(false);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                              }}
+                            >
                             <div style={{ fontWeight:700 }}>{loc.map}</div>
                             {(loc.min || loc.max) && (
                               <div className="label-muted" style={{ marginTop:4 }}>
