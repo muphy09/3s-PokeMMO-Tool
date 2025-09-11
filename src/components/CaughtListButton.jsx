@@ -7,7 +7,17 @@ const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 const TRANSPARENT_PNG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
 
-function normalizeKey(s=''){ return String(s).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim(); }
+function normalizeKey(s=''){
+  return String(s)
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/♀/g,'-f')
+    .replace(/♂/g,'-m')
+    .replace(/[^\w\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .trim();
+}
 
 function localSpriteCandidates(mon){
   const id = String(mon?.id||'').trim();

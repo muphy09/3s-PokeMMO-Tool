@@ -43,7 +43,15 @@ const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-
 const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
 
 function normalizeKey(s=''){
-  return String(s).toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
+  return String(s)
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/♀/g,'-f')
+    .replace(/♂/g,'-m')
+    .replace(/[^\w\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .trim();
 }
 
 function cleanItemDescription(desc) {

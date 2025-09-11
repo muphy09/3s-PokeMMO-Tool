@@ -4,8 +4,15 @@
 import dexRaw from '../../UpdatedDex.json';
 
 function normalizeKey(s=''){
-  return String(s).toLowerCase().normalize('NFKD')
-    .replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').trim();
+  return String(s)
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/♀/g,'-f')
+    .replace(/♂/g,'-m')
+    .replace(/[^\w\s-]/g,'')
+    .replace(/\s+/g,'-')
+    .replace(/-+/g,'-')
+    .trim();
 }
 function normalizeType(t){ return String(t||'').toLowerCase().trim(); }
 

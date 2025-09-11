@@ -29,6 +29,8 @@ function normalizeKey(s) {
   return String(s || "")
     .toLowerCase()
     .normalize("NFKD")
+    .replace(/♀/g, "-f")
+    .replace(/♂/g, "-m")
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
