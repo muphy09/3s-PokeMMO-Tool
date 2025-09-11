@@ -3,15 +3,22 @@
 
 ## [2.9.1] - 2025-09
 ### Changed
+- General
+  - Modernized the ugly white scroll bar on the right side to match your current Theme
+
 - Pokemon Profile
   - Horde Size now shows inside of the Pokemons' Profile screen
   - Clicking a Location inside of a Pokemons' Profile screen opens the Area Search Tab with that location selected
+
+### Fixed
+- Pokemon Profile
+  - Cleaned all Locations of duplicate Season data
 
 ---
 
 ## [2.9.0] - 2025-09
 ### Added
-- Horde Search Tab
+- Horde Search Tab | *Thanks @viktorblack*
   - Filter Region, EV Yield, Horde Size, Location, & Encounter Method
   - Displays all Horde Pokemon by default allowing filtering by the set options
     - Location shown inside of Pokemon block along with Horde Size (x3, x5), Encounter Method, and EV Yield

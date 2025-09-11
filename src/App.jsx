@@ -60,6 +60,14 @@ function normalizeAreaName(area = "") {
     .trim();
 }
 
+function stripSeason(str = "") {
+  return String(str)
+    .replace(/\/SEASON\d+/gi, "")
+    .replace(/\(\s*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function getHordeSize(region, area, name) {
   const rKey = region?.toLowerCase();
   const aKey = area?.toLowerCase();
@@ -2138,7 +2146,9 @@ function useLocationsDb(){
     const idx = {};
     for (const mon of DEX_LIST) {
       const key = normalizeKey(mon.name);
-      const locations = (mon.locations || []).map(l => {
+      const locations = [];
+      const seen = new Set();
+      for (const l of mon.locations || []) {
         let method = l.type;
         let rarity = l.rarity;
         // Some "Lure" encounters are stored as a rarity rather than a method.
@@ -2151,16 +2161,20 @@ function useLocationsDb(){
         if (method && /lure/i.test(method)) {
           rarity = '';
         }
-        return {
+        const map = stripSeason(l.location);
+        const dedupeKey = [l.region_name, map, method || '', rarity || '', l.min_level ?? '', l.max_level ?? ''].join('|');
+        if (seen.has(dedupeKey)) continue;
+        seen.add(dedupeKey);
+        locations.push({
           region: l.region_name,
-          map: l.location,
+          map,
           method,
           rarity,
           min_level: l.min_level,
           max_level: l.max_level,
           items: (mon.heldItems || []).map(h => h.name)
-        };
-      });
+        });
+      }
       idx[key] = { locations };
     }
     return idx;
@@ -2179,9 +2193,10 @@ function useAreasDbCleaned(){
     const out = {};
     for (const mon of DEX_LIST) {
       const items = (mon.heldItems || []).map(h => h.name);
+      const seen = new Set();
       for (const loc of mon.locations || []) {
         const region = loc.region_name || 'Unknown';
-        const mapName = loc.location;
+        const mapName = stripSeason(loc.location);
         if (!mapName) continue;
         let method = cleanAreaMethod(loc.type || '');
         let rarity = loc.rarity || '';
@@ -2194,6 +2209,9 @@ function useAreasDbCleaned(){
         if (method && /lure/i.test(method)) {
           rarity = '';
         }
+        const key = [region, mapName, method, rarity, loc.min_level ?? '', loc.max_level ?? ''].join('|');
+        if (seen.has(key)) continue;
+        seen.add(key);
         const entry = {
           monId: mon.id,
           monName: mon.name,
@@ -4378,7 +4396,7 @@ const marketResults = React.useMemo(() => {
       }
       return {
         region: titleCase(l.region_name || 'Unknown'),
-        map: l.location,
+        map: stripSeason(l.location),
         method: [method].filter(Boolean),
         rarity: [rarity].filter(Boolean),
         min: l.min_level,

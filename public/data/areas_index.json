@@ -263,12 +263,12 @@
         "method": "Grass"
       },
       {
-        "pokemon": "Nidoran Female",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
       {
-        "pokemon": "Nidoran Male",
+        "pokemon": "Nidoran♂",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -304,7 +304,7 @@
         "rarity": "Common"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -412,7 +412,7 @@
         "rarity": "Uncommon"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -1743,7 +1743,7 @@
         "method": "Grass"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -1826,7 +1826,7 @@
         "rarity": "Rare"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Rare"
       },
@@ -2591,7 +2591,7 @@
     ],
     "Safari Zone": [
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -9263,7 +9263,7 @@
         "rarity": "Rare"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass"
       },
       {
@@ -9453,7 +9453,7 @@
         "method": "Grass"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },
@@ -9548,7 +9548,7 @@
         "method": "Grass"
       },
       {
-        "pokemon": "Nidoran♂",
+        "pokemon": "Nidoran♀",
         "method": "Grass",
         "rarity": "Uncommon"
       },

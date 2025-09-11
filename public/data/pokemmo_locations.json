@@ -14546,28 +14546,6 @@
       }
     ]
   },
-  "nidoran-female": {
-    "pokedex": "Nidoran Female",
-    "locations": [
-      {
-        "region": "Kanto",
-        "map": "Route 22",
-        "method": "Grass",
-        "rarity": "Uncommon"
-      }
-    ]
-  },
-  "nidoran-male": {
-    "pokedex": "Nidoran Male",
-    "locations": [
-      {
-        "region": "Kanto",
-        "map": "Route 22",
-        "method": "Grass",
-        "rarity": "Uncommon"
-      }
-    ]
-  },
   "ponyta": {
     "pokedex": "Ponyta",
     "locations": [
@@ -14790,7 +14768,106 @@
       }
     ]
   },
-  "nidoran": {
+  "nidoran-female": {
+    "pokedex": "Nidoran♀",
+    "locations": [
+      {
+        "region": "Kanto",
+        "map": "Route 2",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 2",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 3",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 3",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 9",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 9",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 10",
+        "method": "Grass",
+        "rarity": "Rare"
+      },
+      {
+        "region": "Kanto",
+        "map": "Route 10",
+        "method": "Grass",
+        "rarity": "Rare"
+      },
+      {
+        "region": "Kanto",
+        "map": "Safari Zone",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Kanto",
+        "map": "Safari Zone",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Johto",
+        "map": "Route 35",
+        "method": "Grass"
+      },
+      {
+        "region": "Johto",
+        "map": "Route 35",
+        "method": "Grass"
+      },
+      {
+        "region": "Johto",
+        "map": "National Park",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Johto",
+        "map": "National Park",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Johto",
+        "map": "Route 36",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      },
+      {
+        "region": "Johto",
+        "map": "Route 36",
+        "method": "Grass",
+        "rarity": "Uncommon"
+      }
+    ]
+  },
+  "nidoran-male": {
     "pokedex": "Nidoran♂",
     "locations": [
       {
