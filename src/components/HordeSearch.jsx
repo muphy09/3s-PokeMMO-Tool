@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import dexData from '../../UpdatedDex.json';
 import hordeData from '../../horderegiondata.json';
 import SearchFilter from './SearchFilter';
+import { ColorContext } from '../colorConfig';
 
 const REGION_OPTIONS = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova'];
 const EV_OPTIONS = ['', 'HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed'];
@@ -66,7 +67,49 @@ function formatLocationExtras(l){
   return extras.length ? ' ' + extras.join(', ') : '';
 }
 
-function formatMethod(m=''){return m.replace('-', ' ');}
+function methodKey(m=''){ return String(m).toLowerCase().trim(); }
+
+function normalizeTimeTag(tag=''){
+  const map = { day:'Day', night:'Night', morning:'Morning', afternoon:'Afternoon', dawn:'Dawn', dusk:'Dusk' };
+  const k = methodKey(tag);
+  return map[k] || '';
+}
+
+function cleanMethodLabel(method=''){
+  let m = String(method || '').trim();
+  m = m.replace(/\)+$/, '');
+  const open = (m.match(/\(/g) || []).length;
+  const close = (m.match(/\)/g) || []).length;
+  if(open > close) m = m + ')';
+  if(/^hordes?\b/i.test(m)) m = 'Horde';
+  m = m.replace(/\(([^)]+)\)/g, (_, t) => {
+    const norm = normalizeTimeTag(t);
+    return norm ? `(${norm})` : '';
+  });
+  return m.trim();
+}
+
+function MethodPill({ method, compact=false }){
+  const { methodColors } = useContext(ColorContext);
+  if(!method) return null;
+  const label = cleanMethodLabel(method);
+  const m = methodKey(label);
+  const raw = m.replace(/[^a-z]+/g, ' ');
+  const base = /\blure\b/.test(raw)
+    ? 'lure'
+    : /\bhorde\b/.test(raw)
+    ? 'horde'
+    : (methodColors[m] ? m : m.replace(/\s*\(.*\)$/,''));
+  const bg = methodColors[base] || '#7f8c8d';
+  return (
+    <span style={{
+      display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
+      color:'#111', background:bg, fontWeight:800, border:'1px solid #00000022'
+    }}>
+      {label}
+    </span>
+  );
+}
 
 export default function HordeSearch(){
   const [term,setTerm] = useState('');
@@ -102,33 +145,42 @@ export default function HordeSearch(){
 
   const clearFilters = () => { setRegion(''); setEvFilter(''); setSize(''); };
   const filtersActive = region || evFilter || size;
+  const chipStyle = {
+    padding:'4px 8px',
+    borderRadius:6,
+    background:'var(--primary)',
+    color:'var(--onprimary)',
+    fontSize:14,
+    border:'1px solid var(--accent)',
+    boxShadow:'0 0 0 2px var(--accent), 0 0 0 6px rgba(234,196,44,0.25)'
+  };
 
   return (
     <div style={{display:'flex',flexDirection:'column',gap:12}}>
-      <input
-        value={term}
-        onChange={e=>setTerm(e.target.value)}
-        placeholder="Search Pokémon"
-        className="input"
-        style={{width:260,height:44,borderRadius:10,padding:'0 10px'}}
-      />
-      <SearchFilter
-        value={area}
-        onChange={setArea}
-        options={AREA_OPTIONS}
-        placeholder="Route/Area Search"
-        style={{width:260}}
-        minChars={2}
-      />
       <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
-        <select value={region} onChange={e=>setRegion(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
+        <input
+          value={term}
+          onChange={e=>setTerm(e.target.value)}
+          placeholder="Search Pokémon"
+          className="input"
+          style={{flex:'1 1 200px',height:44,borderRadius:10,padding:'0 10px'}}
+        />
+        <SearchFilter
+          value={area}
+          onChange={setArea}
+          options={AREA_OPTIONS}
+          placeholder="Route/Area Search"
+          style={{flex:'1 1 200px'}}
+          minChars={2}
+        />
+        <select value={region} onChange={e=>setRegion(e.target.value)} className="input" style={{flex:'1 1 160px',height:44,borderRadius:10}}>
           <option value="">Select Region</option>
           {REGION_OPTIONS.map(r=> <option key={r} value={r}>{r}</option>)}
         </select>
-        <select value={evFilter} onChange={e=>setEvFilter(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
+        <select value={evFilter} onChange={e=>setEvFilter(e.target.value)} className="input" style={{flex:'1 1 160px',height:44,borderRadius:10}}>
           {EV_OPTIONS.map(o=> <option key={o} value={o}>{o || 'Select EV'}</option>)}
         </select>
-        <select value={size} onChange={e=>setSize(e.target.value)} className="input" style={{height:44,borderRadius:10}}>
+        <select value={size} onChange={e=>setSize(e.target.value)} className="input" style={{flex:'1 1 140px',height:44,borderRadius:10}}>
           <option value="">Select Horde Amount</option>
           {SIZE_OPTIONS.map(o=> <option key={o} value={o}>{o}</option>)}
         </select>
@@ -136,9 +188,9 @@ export default function HordeSearch(){
       {filtersActive && (
         <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
           <button className="btn" onClick={clearFilters} style={{height:32,borderRadius:8}}>Clear Filters</button>
-          {region && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{region}</div>}
-          {evFilter && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{evFilter}</div>}
-          {size && <div style={{padding:'4px 8px',borderRadius:6,background:'var(--primary)',color:'var(--onprimary)',fontSize:14}}>{size}</div>}
+          {region && <div style={chipStyle}>{region}</div>}
+          {evFilter && <div style={chipStyle}>{evFilter}</div>}
+          {size && <div style={chipStyle}>{size}</div>}
         </div>
       )}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:10}}>
@@ -161,15 +213,15 @@ export default function HordeSearch(){
                   {p.locations.map((l,i)=>(
                     <div key={i} style={{fontSize:14,padding:'2px 0',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
                       <span>{l.region} - {l.area}{formatLocationExtras(l)} (x{l.hordeSize})</span>
-                      <span style={{border:'1px solid var(--divider)',padding:'0 6px',borderRadius:6,fontSize:12,textTransform:'capitalize'}}>{formatMethod(l.method)}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                      <MethodPill method={l.method} compact />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
 }
