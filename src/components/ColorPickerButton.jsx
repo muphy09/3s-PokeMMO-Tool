@@ -30,24 +30,30 @@ export default function ColorPickerButton(){
   const labelStyle = { width:140, fontWeight:600, textTransform:'capitalize' };
 
   const onSave = () => {
-    setMethodColors(mColors);
-    setRarityColors(rColors);
+    const m = { ...mColors };
+    const r = { ...rColors };
+    setMethodColors(m);
+    setRarityColors(r);
     try {
-      localStorage.setItem('methodColors', JSON.stringify(mColors));
-      localStorage.setItem('rarityColors', JSON.stringify(rColors));
+      localStorage.setItem('methodColors', JSON.stringify(m));
+      localStorage.setItem('rarityColors', JSON.stringify(r));
     } catch {}
     setOpen(false);
   };
   const onDefault = () => {
-    setMColors(DEFAULT_METHOD_COLORS);
-    setRColors(DEFAULT_RARITY_COLORS);
+    setMColors({ ...DEFAULT_METHOD_COLORS });
+    setRColors({ ...DEFAULT_RARITY_COLORS });
   };
 
   const renderInputs = (colors, setter) => (
     Object.entries(colors).map(([key,val]) => (
       <div key={key} style={rowStyle}>
         <span style={labelStyle}>{key}</span>
-        <input type="color" value={stripAlpha(val)} onChange={e=> setter(prev=>({ ...prev, [key]: e.target.value + 'ff' }))} />
+        <input
+          type="color"
+          value={stripAlpha(val)}
+          onChange={e => setter(prev => ({ ...prev, [key]: e.target.value + 'ff' }))}
+        />
       </div>
     ))
   );

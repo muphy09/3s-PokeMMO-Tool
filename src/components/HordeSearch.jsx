@@ -199,7 +199,7 @@ export default function HordeSearch(){
           {EV_OPTIONS.map(o=> <option key={o} value={o}>{o || 'EV Yield (All)'}</option>)}
         </select>
         <select value={method} onChange={e=>setMethod(e.target.value)} className="input" style={{flex:'1 1 160px',height:44,borderRadius:10}}>
-          {METHOD_OPTIONS.map(o=> <option key={o} value={o}>{o || 'Select Method'}</option>)}
+          {METHOD_OPTIONS.map(o=> <option key={o} value={o}>{o || 'Method (All)'}</option>)}
         </select>
         <select value={size} onChange={e=>setSize(e.target.value)} className="input" style={{flex:'1 1 160px',height:44,borderRadius:10}}>
           <option value="">Horde Amount (All)</option>

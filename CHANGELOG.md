@@ -21,9 +21,6 @@
 - Live Route OCR
   - Cleared up even more areas that were matching too early (Desert Underpass matching to Desert Resort)
 
-### Known Issues
-- Choose Colors button does not function as intended
-
 ---
 
 ## [2.8.8] - 2025-09
