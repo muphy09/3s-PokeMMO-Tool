@@ -1,7 +1,7 @@
 /* src/index.css */
 /* Theme variables */
 :root,
-body.theme-classic {
+html.theme-classic, body.theme-classic {
   --bg: #0f172c;
   --card: #0f172a;
   --card-dark: #0d1629;
@@ -37,7 +37,7 @@ body.theme-classic {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.28);
 }
 
-body.theme-black {
+html.theme-black, body.theme-black {
   --bg: #000000;
   --card: #0a0a0a;
   --card-dark: #000000;
@@ -73,7 +73,7 @@ body.theme-black {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-white {
+html.theme-white, body.theme-white {
   --bg: #f9fafb;
   --card: #ffffff;
   --card-dark: #f3f4f6;
@@ -109,7 +109,7 @@ body.theme-white {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-body.theme-diamond {
+html.theme-diamond, body.theme-diamond {
   --bg: #0a192f;
   --card: #0d2244;
   --card-dark: #091a36;
@@ -145,7 +145,7 @@ body.theme-diamond {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-pearl {
+html.theme-pearl, body.theme-pearl {
   --bg: #2e0b2e;
   --card: #401042;
   --card-dark: #2a082c;
@@ -181,7 +181,7 @@ body.theme-pearl {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-red {
+html.theme-red, body.theme-red {
   --bg: #7a0c0c;
   --card: #8c1111;
   --card-dark: #5c0404;
@@ -217,7 +217,7 @@ body.theme-red {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-blue {
+html.theme-blue, body.theme-blue {
   --bg: #0a1b4b;
   --card: #0d2b6b;
   --card-dark: #091f4b;
@@ -253,7 +253,7 @@ body.theme-blue {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-gold {
+html.theme-gold, body.theme-gold {
   --bg: #4a3900;
   --card: #70520a;
   --card-dark: #593f05;
@@ -289,7 +289,7 @@ body.theme-gold {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-silver {
+html.theme-silver, body.theme-silver {
   --bg: #3a3f47;
   --card: #525760;
   --card-dark: #3e434a;
@@ -325,7 +325,7 @@ body.theme-silver {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-emerald {
+html.theme-emerald, body.theme-emerald {
   --bg: #064e3b;
   --card: #0b5e46;
   --card-dark: #064536;
@@ -361,7 +361,7 @@ body.theme-emerald {
   --shadow-2: 0 8px 24px rgba(0,0,0,0.8);
 }
 
-body.theme-neo {
+html.theme-neo, body.theme-neo {
   --bg: #05070a;
   --card: #0b0f16;
   --card-dark: #06080c;
@@ -515,7 +515,7 @@ select.input option {
 /* Highlight for Compare-selected tile */
 .compare-selected {
   position: relative;
-  box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px rgba(234, 196, 44, 0.25);
+  box-shadow: 0 0 0 2px var(--accent);
   border-color: var(--accent);
 }
 
@@ -611,7 +611,7 @@ select.input option {
 /* Active state for Compare toggle */
 .region-btn.compare-active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent), 0 0 0 6px rgba(234, 196, 44, 0.25);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 .region-menu {
   position: absolute;

@@ -7,8 +7,8 @@
   - Modernized the ugly white scroll bar on the right side to match your current Theme
 
 - Pokemon Profile
-  - Horde Size now shows inside of the Pokemons' Profile screen
-  - Clicking a Location inside of a Pokemons' Profile screen opens the Area Search Tab with that location selected
+  - Horde Size now shows inside of the Pokemons' Profile screen (x3, x5)
+  - Clicking a Location inside of a Pokemons' Profile opens the Area Search Tab with that location selected
 
 - Horde Search
   - Changed the 'Clear Filters' button to the match your current theme

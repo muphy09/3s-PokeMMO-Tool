@@ -210,7 +210,7 @@ export default function HordeSearch(){
       </div>
       {filtersActive && (
         <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
-          <button className="btn" onClick={clearFilters} style={{height:32,borderRadius:8}}>Clear Filters</button>
+          <button type="button" className="region-btn" onClick={clearFilters}>Clear Filters</button>
           {term && <div style={chipStyle}>{term}</div>}
           {area && <div style={chipStyle}>{area}</div>}
           {region && <div style={chipStyle}>{region}</div>}

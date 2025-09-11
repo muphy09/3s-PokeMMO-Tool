@@ -3820,7 +3820,9 @@ function App(){
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
   useEffect(() => {
     document.body.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond','theme-red','theme-blue','theme-gold','theme-silver','theme-emerald','theme-neo');
+    document.documentElement.classList.remove('theme-classic','theme-white','theme-black','theme-pearl','theme-diamond','theme-red','theme-blue','theme-gold','theme-silver','theme-emerald','theme-neo');
     document.body.classList.add(`theme-${theme}`);
+    document.documentElement.classList.add(`theme-${theme}`);
     try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
   const [showMoveset, setShowMoveset] = useState(false);
