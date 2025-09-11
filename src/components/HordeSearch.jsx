@@ -93,7 +93,7 @@ function cleanMethodLabel(method=''){
 }
 
 function MethodPill({ method, compact=false }){
-  const { methodColors } = useContext(ColorContext);
+  const { methodColors, rarityColors } = useContext(ColorContext);
   if(!method) return null;
   const label = cleanMethodLabel(method);
   const m = methodKey(label);
@@ -103,7 +103,9 @@ function MethodPill({ method, compact=false }){
     : /\bhorde\b/.test(raw)
     ? 'horde'
     : (methodColors[m] ? m : m.replace(/\s*\(.*\)$/,''));
-  const bg = methodColors[base] || '#7f8c8d';
+  const bg = base === 'lure'
+    ? (rarityColors[base] || '#7f8c8d')
+    : (methodColors[base] || '#7f8c8d');
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,

@@ -1374,7 +1374,7 @@ function cleanMethodLabel(method=''){
 }
 
 function MethodPill({ method, compact=false }){
-  const { methodColors } = React.useContext(ColorContext);
+  const { methodColors, rarityColors } = React.useContext(ColorContext);
   if (!method) return null;
   const label = cleanMethodLabel(method);
   const m = methodKey(label);
@@ -1384,7 +1384,9 @@ function MethodPill({ method, compact=false }){
     : /\bhorde\b/.test(raw)
     ? 'horde'
     : (methodColors[m] ? m : m.replace(/\s*\(.*\)$/,''));
-  const bg = methodColors[base] || '#7f8c8d';
+  const bg = base === 'lure'
+    ? (rarityColors[base] || '#7f8c8d')
+    : (methodColors[base] || '#7f8c8d');
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
@@ -3906,7 +3908,8 @@ function App(){
   const [methodColors, setMethodColors] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('methodColors') || '{}');
-      return { ...DEFAULT_METHOD_COLORS, ...saved };
+      const { lure, ...rest } = saved || {};
+      return { ...DEFAULT_METHOD_COLORS, ...rest };
     } catch {
       return DEFAULT_METHOD_COLORS;
     }
