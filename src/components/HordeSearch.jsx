@@ -78,6 +78,7 @@ function normalizeTimeTag(tag=''){
 
 function cleanMethodLabel(method=''){
   let m = String(method || '').trim();
+  m = m.replace(/_/g,' ');
   m = m.replace(/\)+$/, '');
   const open = (m.match(/\(/g) || []).length;
   const close = (m.match(/\)/g) || []).length;
@@ -163,7 +164,13 @@ export default function HordeSearch(){
     color:'var(--onprimary)',
     fontSize:14,
     border:'1px solid var(--accent)',
-    boxShadow:'0 0 0 2px var(--accent), 0 0 0 6px rgba(234,196,44,0.25)'
+    boxShadow:'0 0 0 2px var(--accent)',
+    display:'inline-block',
+    margin:4
+  };
+  const selectedStyle = {
+    border:'1px solid var(--accent)',
+    boxShadow:'0 0 0 2px var(--accent)'
   };
 
   return (
@@ -216,15 +223,15 @@ export default function HordeSearch(){
           const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.mon.id}.png`;
           const isOpen = open===p.name;
           return (
-            <div key={p.name} style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center',gap:8,border:'1px solid var(--divider)',borderRadius:10,padding:10,background:'var(--surface)',textAlign:'center'}}>
-              <div style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',width:'100%'}} onClick={()=>setOpen(isOpen?null:p.name)}>
-                <img src={img} alt={p.mon.name} width={56} height={56}/>
-                <div style={{flex:1}}>
-                  <div style={{fontWeight:700}}>{p.mon.name}</div>
-                  <div style={{fontSize:14}}>Locations: {p.locations.length}</div>
-                  <div style={{border:'1px solid var(--divider)',padding:'2px 4px',borderRadius:6,fontSize:12,marginTop:4,maxWidth:180,display:'inline-block'}}>{evText}</div>
+              <div key={p.name} style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center',gap:8,border:'1px solid var(--divider)',borderRadius:10,padding:10,background:'var(--surface)',textAlign:'center',...(isOpen?selectedStyle:{})}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',width:'100%'}} onClick={()=>setOpen(isOpen?null:p.name)}>
+                  <img src={img} alt={p.mon.name} width={72} height={72} style={{imageRendering:'pixelated'}}/>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:700}}>{p.mon.name}</div>
+                    <div style={{fontSize:13}}><em>Locations:</em> {p.locations.length}</div>
+                    <div style={{border:'1px solid var(--divider)',padding:'2px 4px',borderRadius:6,fontSize:12,marginTop:4,maxWidth:180,display:'inline-block'}}>{evText}</div>
+                  </div>
                 </div>
-              </div>
               {isOpen && (
                 <div style={{width:'100%',textAlign:'left',marginTop:4}}>
                   {p.locations.map((l,i)=>(
