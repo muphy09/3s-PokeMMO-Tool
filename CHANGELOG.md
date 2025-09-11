@@ -22,7 +22,9 @@
   - Bonsly, Mime Jr, Feebas, and Nincada's evolution data have been properly updated
   - 'Dark Grass' Encounter Pill color updated to a dark green
   - More color options inside of 'Choose Colors'
+    - Level, Held Item, Honey Tree, Storm Clouds, & Special
     - Removed duplicate 'Lure' color entries
+    - Clicking out of the Choose Color screen now automatically saves the choice made
 
 - Live Route OCR
   - Cleared up even more areas that were matching too early (Desert Underpass matching to Desert Resort)

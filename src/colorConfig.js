@@ -11,7 +11,8 @@ export const DEFAULT_METHOD_COLORS = {
 
 export const DEFAULT_RARITY_COLORS = {
   'very common':'#fbfafaff','common':'#969696ff','uncommon':'#97e9b9ff','rare':'#eb9438cb',
-  'very rare':'#ff8800ff','horde':'#fca996ff','lure':'#cb1f2dff','special':'#F4B400'
+  'very rare':'#ff8800ff','horde':'#fca996ff','lure':'#cb1f2dff','special':'#F4B400',
+  'level':'#9e50aaff','held item':'#f8e473ff'
 };
 
 export const ColorContext = React.createContext({

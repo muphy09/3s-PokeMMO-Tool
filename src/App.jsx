@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState, useRef } from 'react';
+﻿import React, { useEffect, useMemo, useState, useRef, useContext } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
@@ -1431,16 +1431,18 @@ function RarityPill({ rarity, compact=false }){
 }
 
 function LevelPill({ min, max, compact=false }){
+  const { rarityColors } = useContext(ColorContext);
   const hasMin = min != null;
   const hasMax = max != null;
   if (!hasMin && !hasMax) return null;
   const label = hasMin && hasMax
     ? (min === max ? `Lv. ${min}` : `Lv. ${min}-${max}`)
     : `Lv. ${hasMin ? min : max}`;
+  const bg = rarityColors['level'] || '#9e50aaff';
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
-      color:'#111', background:'#9e50aaff', fontWeight:800, border:'1px solid #00000022'
+      color:'#111', background:bg, fontWeight:800, border:'1px solid #00000022'
     }}>
       {label}
     </span>
@@ -1448,11 +1450,13 @@ function LevelPill({ min, max, compact=false }){
 }
 
 function ItemPill({ item, compact=false }){
+  const { rarityColors } = useContext(ColorContext);
   if (!item) return null;
+  const bg = rarityColors['held item'] || '#F8E473';
   return (
     <span style={{
       display:'inline-block', padding:'2px 8px', fontSize:compact?11:12, borderRadius:999,
-      color:'#111', background:'#F8E473', fontWeight:800, border:'1px solid #00000022'
+      color:'#111', background:bg, fontWeight:800, border:'1px solid #00000022'
     }}>
       {item}
     </span>
