@@ -47,9 +47,12 @@ function RarityBadge({ rarity }) {
 
 function HordeFlags({ row }) {
   const bits = [];
-  if (row.horde || row.hordeFromEntry) bits.push("Horde");
+  if (row.horde || row.hordeFromEntry) {
+    const sizeVal = row.groupSize || row.hordeSize;
+    const size = sizeVal ? ` (x${sizeVal})` : '';
+    bits.push(`Horde${size}`);
+  }
   if (row.hordeOnly) bits.push("Horde Only");
-  if (row.groupSize) bits.push(`x${row.groupSize}`);
   if (!bits.length) return null;
   return (
     <div className="flex gap-1 flex-wrap">

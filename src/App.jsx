@@ -17,6 +17,7 @@ import { CaughtContext } from './caughtContext.js';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
+import hordeRegions from '../horderegiondata.json';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -32,6 +33,29 @@ const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BA
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-data/main/assets/itemicons/';
 const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
+
+// Precompute horde sizes by region and area for quick lookup
+const HORDE_SIZE_MAP = (() => {
+  const map = {};
+  for (const region of hordeRegions.horderegiondata || []) {
+    const rKey = region.region.toLowerCase();
+    if (!map[rKey]) map[rKey] = {};
+    for (const area of region.areas || []) {
+      const aKey = area.name.toLowerCase();
+      if (!map[rKey][aKey]) map[rKey][aKey] = {};
+      const defSize = area.defaultHordeSize;
+      for (const p of area.pokemon || []) {
+        const pKey = p.name.toLowerCase();
+        map[rKey][aKey][pKey] = p.hordeSize || defSize;
+      }
+    }
+  }
+  return map;
+})();
+
+function getHordeSize(region, area, name) {
+  return HORDE_SIZE_MAP[region?.toLowerCase()]?.[area?.toLowerCase()]?.[name?.toLowerCase()] || null;
+}
 
 const SHOW_CONFIDENCE = (import.meta?.env?.VITE_SHOW_CONFIDENCE ?? '1') === '1';
 function isOcrEnabled() {
@@ -1373,10 +1397,13 @@ function cleanMethodLabel(method=''){
   return m.trim();
 }
 
-function MethodPill({ method, compact=false }){
+function MethodPill({ method, compact=false, hordeSize }){
   const { methodColors, rarityColors } = React.useContext(ColorContext);
   if (!method) return null;
-  const label = cleanMethodLabel(method);
+  let label = cleanMethodLabel(method);
+  if (hordeSize && /^horde/i.test(label)) {
+    label = `${label} (x${hordeSize})`;
+  }
   const m = methodKey(label);
   const raw = m.replace(/[^a-z]+/g, ' ');
   const base = /\blure\b/.test(raw)
@@ -1596,7 +1623,7 @@ function AreaMonCard({
         <div ref={scrollRef} className="encounter-scroll" style={wrapStyle}>
           {encounters.map((enc, idx) => (
             <div key={idx} style={styles.encCol}>
-              {enc.method && <MethodPill method={enc.method} compact={compact} />}
+              {enc.method && <MethodPill method={enc.method} compact={compact} hordeSize={enc.hordeSize} />}
               {!/lure/i.test(enc.method || '') &&
                 enc.rarities.map(r => (
                   <RarityPill key={`r-${idx}-${r}`} rarity={r} compact={compact} />
@@ -2158,6 +2185,8 @@ function useAreasDbCleaned(){
           max: loc.max_level,
           items,
         };
+        const hSize = getHordeSize(region, mapName, mon.name);
+        if (hSize) entry.hordeSize = hSize;
         if (!out[region]) out[region] = {};
         if (!out[region][mapName]) out[region][mapName] = [];
         out[region][mapName].push(entry);
@@ -2203,6 +2232,7 @@ function groupEntriesByMon(entries){
     if (from.min != null) into.min = into.min==null ? from.min : Math.min(into.min, from.min);
     if (from.max != null) into.max = into.max==null ? from.max : Math.max(into.max, from.max);
     from.items.forEach(i => into.items.add(i));
+    if (from.hordeSize != null && into.hordeSize == null) into.hordeSize = from.hordeSize;
   };
 
   for (const e of entries){
@@ -2216,13 +2246,14 @@ function groupEntriesByMon(entries){
     const timeMap = g.methods.get(key);
     const tKey = time || '';
     if (!timeMap.has(tKey)){
-      timeMap.set(tKey, { method: base, time, rarities:new Set(), min:e.min, max:e.max, items:new Set(e.items || []) });
+      timeMap.set(tKey, { method: base, time, rarities:new Set(), min:e.min, max:e.max, items:new Set(e.items || []), hordeSize:e.hordeSize });
     }
     const enc = timeMap.get(tKey);
     if (e.rarity) enc.rarities.add(e.rarity);
     if (e.min != null) enc.min = enc.min==null ? e.min : Math.min(enc.min, e.min);
     if (e.max != null) enc.max = enc.max==null ? e.max : Math.max(enc.max, e.max);
     if (Array.isArray(e.items)) e.items.forEach(i => enc.items.add(i));
+    if (e.hordeSize != null && enc.hordeSize == null) enc.hordeSize = e.hordeSize;
   }
 
   return [...byId.values()].map(g => {
@@ -2249,7 +2280,8 @@ function groupEntriesByMon(entries){
           rarities: selectRarest([...combo.rarities]),
           min: combo.min,
           max: combo.max,
-          items: [...combo.items]
+          items: [...combo.items],
+          hordeSize: combo.hordeSize
         });
       } else {
         for (const enc of encs) {
@@ -2259,7 +2291,8 @@ function groupEntriesByMon(entries){
             rarities: selectRarest([...enc.rarities]),
             min: enc.min,
             max: enc.max,
-            items: [...enc.items]
+            items: [...enc.items],
+            hordeSize: enc.hordeSize
           });
         }
       }
@@ -4536,12 +4569,12 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='areas')} onClick={()=>setMode('areas')}>Area Search</button>
               <button style={styles.segBtn(mode==='horde')} onClick={()=>setMode('horde')}>Horde Search</button>
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
-              <button style={styles.segBtn(mode==='items')} onClick={()=>setMode('items')}>Items</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
               <div style={{ position:'relative' }}>
-                <button style={styles.segBtn(mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ▾</button>
+                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ▾</button>
                 {toolsOpen && (
                   <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10 }}>
+                    <button style={{ ...styles.segBtn(mode==='items'), width:'100%', borderRadius:0 }} onClick={()=>setMode('items')}>Items</button>
                     <button style={{ ...styles.segBtn(mode==='breeding'), width:'100%', borderRadius:0 }} onClick={()=>setMode('breeding')}>Breeding</button>
                     <button style={{ ...styles.segBtn(mode==='market'), width:'100%', borderRadius:0 }} onClick={()=>setMode('market')}>Market</button>
                   </div>

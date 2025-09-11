@@ -9,22 +9,22 @@
     - Location shown inside of Pokemon block along with Horde Size (x3, x5), Encounter Method, and EV Yield
   
 - Horde Size Data
-    - Horde Size now appears inside of the 'Horde' pills for each Pokemon. 
+    - Horde Size now appears inside of the 'Horde' pills for each Pokemon. (x3, x5)
 
 - Tools Tab
   - Relocated the Items, Breeding, and Market tabs into a new 'Tools' tab
-    - *Items may move back if locations can be added*
+    - *Items Tab may move back if locations can be implemented for them*
 
 ### Fixed
 - General
   - Clicking the currently focused Pokemon from the Evolution flow no longer crashes the App
-    - *Thanks individualcontributordev!*
+    - *Thanks @individualcontributordev!*
   - Bonsly, Mime Jr, Feebas, and Nincada's evolution data have been properly updated
   - 'Dark Grass' Encounter Pill color updated to a dark green
   - More color options inside of 'Choose Colors'
     - Level, Held Item, Honey Tree, Storm Clouds, & Special
     - Removed duplicate 'Lure' color entries
-    - Clicking out of the Choose Color screen now automatically saves the choice made
+    - Clicking out of the Choose Color screen now automatically saves the choices made
 
 - Live Route OCR
   - Cleared up even more areas that were matching too early (Desert Underpass matching to Desert Resort)
