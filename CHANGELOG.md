@@ -2,11 +2,21 @@
 ---
 
 ## [2.9.2] - 2025-09
+### Changed
+- Pokemon Search
+  - Filters that are selected now appear inline at the top, just like the Horde Search Tab
+
+- Area Search
+  - If the Region filter is active, it will display inline at the top, just like the Horde Search Tab
+
+
 ### Fixed
 - General
-  - Sinnoh: Fixed misencoded 'Pokémon League' label; now 'Pokemon League'.
-  - Kanto Route 10: Removed Dratini; removed Elekid Grass entry (Lure-only). | *Thanks @Bog!*
-  - Horde: Johto - Dragon's Den Magikarp corrected to Water (x5).
+  - The 'Pokemon League' location for Sinnoh is now properly referenced
+  - Route 10 (Kanto) has been cleaned up | *Thanks @Bog*
+    - Elekid enounter data
+    - Dratini encounter data
+  - Magikarp Horde data fixed
 
 ---
 
