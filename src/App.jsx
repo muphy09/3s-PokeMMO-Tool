@@ -126,7 +126,17 @@ const styles = {
     overflowX:'auto',
     scrollBehavior:'smooth'
   },
-  encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 }
+  encCol: { display:'flex', flexDirection:'column', alignItems:'center', gap:4 },
+  chip: {
+    padding:'4px 8px',
+    borderRadius:6,
+    background:'var(--primary)',
+    color:'var(--onprimary)',
+    fontSize:14,
+    border:'1px solid var(--accent)',
+    boxShadow:'0 0 0 2px var(--accent)',
+    display:'inline-block'
+  }
 };
 
 /* ---------- utils ---------- */
@@ -4756,6 +4766,38 @@ const marketResults = React.useMemo(() => {
             </div>
           )}
 
+          {/* Active filter chips (Pokemon) */}
+          {mode==='pokemon' && hasFilters && (
+            <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:8 }}>
+              <button
+                type="button"
+                className="region-btn"
+                onClick={() => {
+                  // Reset all Pokemon filters
+                  setTypeFilter('');
+                  setTypeFilter2('');
+                  setEggFilter('');
+                  setAbilityFilter('');
+                  setRegionFilter('');
+                  setMoveFilter('');
+                  setMoveLevelOnly(false);
+                  setItemFilter('');
+                }}
+                title="Clear Filters"
+              >
+                Clear Filters
+              </button>
+              {typeFilter && <div style={styles.chip}>{titleCase(typeFilter)}</div>}
+              {typeFilter2 && <div style={styles.chip}>{titleCase(typeFilter2)}</div>}
+              {eggFilter && <div style={styles.chip}>{titleCase(eggFilter)}</div>}
+              {abilityFilter && <div style={styles.chip}>{abilityFilter}</div>}
+              {regionFilter && <div style={styles.chip}>{regionFilter}</div>}
+              {moveFilter && <div style={styles.chip}>{moveFilter}</div>}
+              {moveFilter && moveLevelOnly && <div style={styles.chip}>Level-up only</div>}
+              {itemFilter && <div style={styles.chip}>{itemFilter}</div>}
+            </div>
+          )}
+
           {/* Context label + search input (hidden for Live) */}
           {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && mode!=='horde' && (
             <>
@@ -4891,6 +4933,20 @@ const marketResults = React.useMemo(() => {
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
+                {/* Active filter chips (Areas - Region only) */}
+                {mode==='areas' && areaRegion !== 'All' && (
+                  <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:8 }}>
+                    <button
+                      type="button"
+                      className="region-btn"
+                      onClick={() => setAreaRegion('All')}
+                      title="Clear Region"
+                    >
+                      Clear Region
+                    </button>
+                    <div style={styles.chip}>{areaRegion}</div>
                   </div>
                 )}
                 {mode==='tm' && (
@@ -5868,8 +5924,6 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
-
-
 
 
 
