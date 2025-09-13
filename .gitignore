@@ -19,3 +19,8 @@ release/*
 *.msi
 *.zip
 *.asar
+
+# Dev scratch files (ignore in repo)
+temp_*.txt
+tmp_*.txt
+patchnotes.txt
