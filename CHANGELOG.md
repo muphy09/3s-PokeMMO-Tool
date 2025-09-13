@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [2.9.2] - 2025-09
+## [2.9.3] - 2025-09
 ### Changed
 - Pokemon Search
   - Filters that are selected now appear inline at the top, just like the Horde Search Tab
@@ -10,6 +10,9 @@
 - Area Search
   - If the Region filter is active, it will display inline at the top, just like the Horde Search Tab
   - Small 'x' to clear active filter
+
+- Horde Search
+  - 'Horde Amount' changed to 'Horde Size'
 
 
 ### Fixed

@@ -47,8 +47,7 @@ export default function FeedbackButton() {
       <button style={btnStyle} onClick={() => setOpen(v => !v)}>Feedback</button>
       {open && (
         <div style={windowStyle}>
-          I greatly appreciate any feedback & suggestions! For convenience, please
-          message me on Discord @ bkummer3
+          Find a bug or want a feature added? Any feedback is greatly appreciated! You can message me on Discord @ bkummer3
         </div>
       )}
     </div>

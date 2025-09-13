@@ -222,7 +222,7 @@ export default function HordeSearch(){
           {METHOD_OPTIONS.map(o=> <option key={o} value={o}>{o || 'Method (All)'}</option>)}
         </select>
         <select value={size} onChange={e=>setSize(e.target.value)} className="input" style={{flex:'1 1 160px',height:44,borderRadius:10}}>
-          <option value="">Horde Amount (All)</option>
+          <option value="">Horde Size (All)</option>
           {SIZE_OPTIONS.map(o=> <option key={o} value={o}>{o}</option>)}
         </select>
       </div>
