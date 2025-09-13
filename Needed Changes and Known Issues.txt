@@ -6,6 +6,8 @@ Changes to come:
 - Multi-view search (compare style block)
 - Team Builder should include EVs IVs Nature and Lv to display proper stats
     - Import this data to Compare when pulled from 'Replace from Active Team'
+- OCR adjustment panel
+    - Tune OCR capture to be zoomed out/in more
 --------------------------------------
 Known Issues:
 
@@ -15,4 +17,6 @@ Known Issues:
 - Element Scale is wonkey
 - Eevee evolution flow is a disaster
 - Basculin Horde Data not included
+- Elekid Route 10 only Lure encounter
+- Dratini Route 10 no encounter
 --------------------------------------

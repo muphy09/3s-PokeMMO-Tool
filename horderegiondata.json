@@ -2194,7 +2194,7 @@
             {
               "name": "Magikarp",
               "hordeSize": 5,
-              "method": "grass",
+              "method": "water",
               "floors": [],
               "basements": [],
               "rooms": []

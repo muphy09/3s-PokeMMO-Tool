@@ -1,6 +1,15 @@
 # Changelog
 ---
 
+## [2.9.2] - 2025-09
+### Fixed
+- General
+  - Sinnoh: Fixed misencoded 'Pokémon League' label; now 'Pokemon League'.
+  - Kanto Route 10: Removed Dratini; removed Elekid Grass entry (Lure-only). | *Thanks @Bog!*
+  - Horde: Johto - Dragon's Den Magikarp corrected to Water (x5).
+
+---
+
 ## [2.9.1] - 2025-09
 ### Changed
 - General
