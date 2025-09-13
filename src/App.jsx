@@ -4737,26 +4737,11 @@ const marketResults = React.useMemo(() => {
               >
                 Compare
               </button>
-              {(hasFilters || compareMode) && (
+              {false && (/* Clear Filters moved to inline chips row */
                 <button
                   type="button"
                   className="region-btn"
-                  onClick={() => {
-                    // Reset all Pokemon filters and deactivate Compare
-                    setTypeFilter('');
-                    setTypeFilter2('');
-                    setEggFilter('');
-                    setAbilityFilter('');
-                    setRegionFilter('');
-                    setMoveFilter('');
-                    setMoveLevelOnly(false);
-                    setItemFilter('');
-                    if (compareMode) {
-                      setCompareMode(false);
-                      setCompareA(null);
-                      setCompareB(null);
-                    }
-                  }}
+                  onClick={() => {}}
                   title="Clear Filters"
                 >
                   Clear Filters
@@ -4802,14 +4787,19 @@ const marketResults = React.useMemo(() => {
           {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && mode!=='horde' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
-                <div className="label-muted">
-                  {mode==='pokemon'
-                    ? 'Search by name or Dex #'
-                    : mode==='areas'
-                    ? 'Search by route/area name'
-                    : mode==='tm'
-                    ? 'Search by TM name'
-                    : 'Search by item name'}
+                <div className="label-muted" style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span>
+                    {mode==='pokemon'
+                      ? 'Search by name or Dex #'
+                      : mode==='areas'
+                      ? 'Search by route/area name'
+                      : mode==='tm'
+                      ? 'Search by TM name'
+                      : 'Search by item name'}
+                  </span>
+                  {mode==='areas' && areaRegion !== 'All' && (
+                    <span style={{ ...styles.chip, marginLeft:4 }}>{areaRegion}</span>
+                  )}
                 </div>
                 {mode==='pokemon' && moveFilter && (
                   <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:6, fontSize:12 }}>
@@ -4935,20 +4925,7 @@ const marketResults = React.useMemo(() => {
                     </div>
                   </div>
                 )}
-                {/* Active filter chips (Areas - Region only) */}
-                {mode==='areas' && areaRegion !== 'All' && (
-                  <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:8 }}>
-                    <button
-                      type="button"
-                      className="region-btn"
-                      onClick={() => setAreaRegion('All')}
-                      title="Clear Region"
-                    >
-                      Clear Region
-                    </button>
-                    <div style={styles.chip}>{areaRegion}</div>
-                  </div>
-                )}
+                {/* Region chip now shown inline with label on the left; no separate row here */}
                 {mode==='tm' && (
                   <div style={{ position:'relative' }}>
                     <button
@@ -5633,25 +5610,11 @@ const marketResults = React.useMemo(() => {
                   >
                     Compare
                   </button>
-                  {(hasFilters || compareMode) && (
+                  {false && (
                     <button
                       type="button"
                       className="region-btn"
-                      onClick={() => {
-                        setTypeFilter('');
-                        setTypeFilter2('');
-                        setEggFilter('');
-                        setAbilityFilter('');
-                        setRegionFilter('');
-                        setMoveFilter('');
-                        setMoveLevelOnly(false);
-                        setItemFilter('');
-                        if (compareMode) {
-                          setCompareMode(false);
-                          setCompareA(null);
-                          setCompareB(null);
-                        }
-                      }}
+                      onClick={() => {}}
                       title="Clear Filters"
                     >
                       Clear Filters
@@ -5924,8 +5887,4 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
-
-
-
-
 
