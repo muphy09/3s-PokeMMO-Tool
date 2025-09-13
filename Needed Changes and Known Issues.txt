@@ -17,6 +17,4 @@ Known Issues:
 - Element Scale is wonkey
 - Eevee evolution flow is a disaster
 - Basculin Horde Data not included
-- Elekid Route 10 only Lure encounter
-- Dratini Route 10 no encounter
 --------------------------------------
