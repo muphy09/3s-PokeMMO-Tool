@@ -167,8 +167,26 @@ export default function HordeSearch(){
     fontSize:14,
     border:'1px solid var(--accent)',
     boxShadow:'0 0 0 2px var(--accent)',
-    display:'inline-block',
+    display:'inline-flex',
+    alignItems:'center',
+    gap:6,
     margin:4
+  };
+  const chipX = {
+    marginLeft:4,
+    display:'inline-flex',
+    alignItems:'center',
+    justifyContent:'center',
+    width:16,
+    height:16,
+    borderRadius:999,
+    border:'1px solid #ffffff55',
+    background:'transparent',
+    color:'var(--onprimary)',
+    fontWeight:900,
+    lineHeight:1,
+    cursor:'pointer',
+    opacity:.9
   };
   const selectedStyle = {
     border:'1px solid var(--accent)',
@@ -211,12 +229,42 @@ export default function HordeSearch(){
       {filtersActive && (
         <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap'}}>
           <button type="button" className="region-btn" onClick={clearFilters}>Clear Filters</button>
-          {term && <div style={chipStyle}>{term}</div>}
-          {area && <div style={chipStyle}>{area}</div>}
-          {region && <div style={chipStyle}>{region}</div>}
-          {evFilter && <div style={chipStyle}>{evFilter}</div>}
-          {method && <div style={chipStyle}>{method}</div>}
-          {size && <div style={chipStyle}>{size}</div>}
+          {term && (
+            <div style={chipStyle}>
+              <span>{term}</span>
+              <button type="button" aria-label="Clear Name Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setTerm(''); }}>×</button>
+            </div>
+          )}
+          {area && (
+            <div style={chipStyle}>
+              <span>{area}</span>
+              <button type="button" aria-label="Clear Area Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setArea(''); }}>×</button>
+            </div>
+          )}
+          {region && (
+            <div style={chipStyle}>
+              <span>{region}</span>
+              <button type="button" aria-label="Clear Region Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setRegion(''); }}>×</button>
+            </div>
+          )}
+          {evFilter && (
+            <div style={chipStyle}>
+              <span>{evFilter}</span>
+              <button type="button" aria-label="Clear EV Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setEvFilter(''); }}>×</button>
+            </div>
+          )}
+          {method && (
+            <div style={chipStyle}>
+              <span>{method}</span>
+              <button type="button" aria-label="Clear Method Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setMethod(''); }}>×</button>
+            </div>
+          )}
+          {size && (
+            <div style={chipStyle}>
+              <span>{size}</span>
+              <button type="button" aria-label="Clear Horde Size Filter" title="Clear" style={chipX} className="chip-x" onClick={(e)=>{ e.stopPropagation(); setSize(''); }}>×</button>
+            </div>
+          )}
         </div>
       )}
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:10}}>

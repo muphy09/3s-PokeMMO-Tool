@@ -1,0 +1,19 @@
+              </button>
+              {typeFilter && (
+                <div style={styles.chip}>
+                  <span>{titleCase(typeFilter)}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Type Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    onClick={(e)=>{ e.stopPropagation(); setTypeFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {typeFilter2 && (
+                <div style={styles.chip}>
+                  <span>{titleCase(typeFilter2)}</span>
+                  <button

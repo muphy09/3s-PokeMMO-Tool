@@ -1,0 +1,25 @@
+                  setMoveLevelOnly(false);
+                  setItemFilter('');
+                }}
+                title="Clear Filters"
+              >
+                Clear Filters
+              </button>
+              {typeFilter && <div style={styles.chip}>{titleCase(typeFilter)}</div>}
+              {typeFilter2 && <div style={styles.chip}>{titleCase(typeFilter2)}</div>}
+              {eggFilter && <div style={styles.chip}>{titleCase(eggFilter)}</div>}
+              {abilityFilter && <div style={styles.chip}>{abilityFilter}</div>}
+              {regionFilter && <div style={styles.chip}>{regionFilter}</div>}
+              {moveFilter && <div style={styles.chip}>{moveFilter}</div>}
+              {moveFilter && moveLevelOnly && <div style={styles.chip}>Level-up only</div>}
+              {itemFilter && <div style={styles.chip}>{itemFilter}</div>}
+            </div>
+          )}
+
+          {/* Context label + search input (hidden for Live) */}
+          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && mode!=='horde' && (
+            <>
+               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+                <div className="label-muted" style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span>
+                    {mode==='pokemon'

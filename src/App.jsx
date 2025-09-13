@@ -135,7 +135,25 @@ const styles = {
     fontSize:14,
     border:'1px solid var(--accent)',
     boxShadow:'0 0 0 2px var(--accent)',
-    display:'inline-block'
+    display:'inline-flex',
+    alignItems:'center',
+    gap:6
+  },
+  chipX: {
+    marginLeft:4,
+    display:'inline-flex',
+    alignItems:'center',
+    justifyContent:'center',
+    width:16,
+    height:16,
+    borderRadius:999,
+    border:'1px solid #ffffff55',
+    background:'transparent',
+    color:'var(--onprimary)',
+    fontWeight:900,
+    lineHeight:1,
+    cursor:'pointer',
+    opacity:.9
   }
 };
 
@@ -4772,14 +4790,126 @@ const marketResults = React.useMemo(() => {
               >
                 Clear Filters
               </button>
-              {typeFilter && <div style={styles.chip}>{titleCase(typeFilter)}</div>}
-              {typeFilter2 && <div style={styles.chip}>{titleCase(typeFilter2)}</div>}
-              {eggFilter && <div style={styles.chip}>{titleCase(eggFilter)}</div>}
-              {abilityFilter && <div style={styles.chip}>{abilityFilter}</div>}
-              {regionFilter && <div style={styles.chip}>{regionFilter}</div>}
-              {moveFilter && <div style={styles.chip}>{moveFilter}</div>}
-              {moveFilter && moveLevelOnly && <div style={styles.chip}>Level-up only</div>}
-              {itemFilter && <div style={styles.chip}>{itemFilter}</div>}
+              {typeFilter && (
+                <div style={styles.chip}>
+                  <span>{titleCase(typeFilter)}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Type Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setTypeFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {typeFilter2 && (
+                <div style={styles.chip}>
+                  <span>{titleCase(typeFilter2)}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Secondary Type Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setTypeFilter2(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {eggFilter && (
+                <div style={styles.chip}>
+                  <span>{titleCase(eggFilter)}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Egg Group Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setEggFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {abilityFilter && (
+                <div style={styles.chip}>
+                  <span>{abilityFilter}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Ability Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setAbilityFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {regionFilter && (
+                <div style={styles.chip}>
+                  <span>{regionFilter}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Region Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setRegionFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {moveFilter && (
+                <div style={styles.chip}>
+                  <span>{moveFilter}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Move Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setMoveFilter(''); setMoveLevelOnly(false); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {moveFilter && moveLevelOnly && (
+                <div style={styles.chip}>
+                  <span>Level-up only</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Level-up Only Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setMoveLevelOnly(false); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {itemFilter && (
+                <div style={styles.chip}>
+                  <span>{itemFilter}</span>
+                  <button
+                    type="button"
+                    aria-label="Clear Item Filter"
+                    title="Clear"
+                    style={styles.chipX}
+                    className="chip-x"
+                    onClick={(e)=>{ e.stopPropagation(); setItemFilter(''); }}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -4798,7 +4928,19 @@ const marketResults = React.useMemo(() => {
                       : 'Search by item name'}
                   </span>
                   {mode==='areas' && areaRegion !== 'All' && (
-                    <span style={{ ...styles.chip, marginLeft:4 }}>{areaRegion}</span>
+                    <div style={{ ...styles.chip, marginLeft:4 }}>
+                      <span>{areaRegion}</span>
+                      <button
+                        type="button"
+                        aria-label="Clear Region Filter"
+                        title="Clear"
+                        style={styles.chipX}
+                        className="chip-x"
+                        onClick={(e)=>{ e.stopPropagation(); setAreaRegion('All'); }}
+                      >
+                        ×
+                      </button>
+                    </div>
                   )}
                 </div>
                 {mode==='pokemon' && moveFilter && (
@@ -5887,4 +6029,3 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
-

@@ -709,3 +709,23 @@ select.input option {
 .encounter-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* Small inline close button for filter chips */
+.chip-x {
+  appearance: none;
+  outline: none;
+  transition: background .12s ease, border-color .12s ease, transform .12s ease, opacity .12s ease;
+}
+.chip-x:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.85);
+  transform: scale(1.05);
+}
+.chip-x:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+.chip-x:focus-visible {
+  border-color: var(--focus-border);
+  box-shadow: var(--focus-ring);
+}

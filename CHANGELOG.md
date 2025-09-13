@@ -5,9 +5,11 @@
 ### Changed
 - Pokemon Search
   - Filters that are selected now appear inline at the top, just like the Horde Search Tab
+  - Small 'x' to clear active filter
 
 - Area Search
   - If the Region filter is active, it will display inline at the top, just like the Horde Search Tab
+  - Small 'x' to clear active filter
 
 
 ### Fixed

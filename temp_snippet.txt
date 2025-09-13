@@ -1,21 +1,168 @@
-function StatBox({ label, value }){
-  return (
-    <div style={{
-      display:'flex', flexDirection:'column', alignItems:'center',
-      padding:'8px 10px', border:'1px solid var(--divider)', borderRadius:8,
-      background:'var(--surface)', minWidth:70
-    }}>
-      <div className="label-muted" style={{ fontSize:12 }}>{label}</div>
-      <div style={{ fontWeight:900, fontSize:18 }}>{value ?? '-'}</div>
-    </div>
-  );
-}
-
-function StatsRow({ mon }){
-  const s = mon?.stats || {};
-  const map = {
-    HP: s.hp ?? s.HP ?? s.base_hp,
-    Att: s.attack ?? s.att ?? s.base_attack,
-    Def: s.defense ?? s.def ?? s.base_defense,
-    'S.Att': s.special_attack ?? s.s_att ?? s.sp_attack ?? s.base_special_attack,
-    'S.Def': s.special_defense ?? s.s_def ?? s.sp_defense ?? s.base_special_
+                      checked={moveLevelOnly}
+                      onChange={e=>setMoveLevelOnly(e.target.checked)}
+                    />
+                    Level-up only
+                  </label>
+                )}
+                {mode==='areas' && (
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <div ref={infoRef} style={{ position:'relative' }}>
+                      <button
+                        className="region-btn"
+                        onClick={() => setShowInfoMenu(v => !v)}
+                      >
+                        Encounter Info ?
+                      </button>
+                      {showInfoMenu && (
+                        <div
+                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                        >
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCaught}
+                              onChange={e=>setShowCaught(e.target.checked)}
+                            />
+                            Toggle Caught
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showEvYield}
+                              onChange={e=>setShowEvYield(e.target.checked)}
+                            />
+                            EV Yield
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCatchRate}
+                              onChange={e=>setShowCatchRate(e.target.checked)}
+                            />
+                            Catch Rate
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showCatchPercent}
+                              onChange={e=>setShowCatchPercent(e.target.checked)}
+                            />
+                            Catch %
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showHeldItem}
+                              onChange={e=>setShowHeldItem(e.target.checked)}
+                            />
+                            Held Item
+                          </label>
+                          <label className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                            <input
+                              type="checkbox"
+                              checked={showLevel}
+                              onChange={e=>setShowLevel(e.target.checked)}
+                            />
+                            Level
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                    <div ref={methodFilterRef} style={{ position:'relative' }}>
+                      <button
+                        className="region-btn"
+                        style={{ display:'flex', alignItems:'center', gap:4 }}
+                        onClick={() => setShowMethodMenu(v => !v)}
+                      >
+                        Encounter Type ?
+                      </button>
+                      {showMethodMenu && (
+                        <div
+                          style={{ position:'absolute', right:0, top:'100%', marginTop:4, padding:8, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, zIndex:20, display:'flex', flexDirection:'column', gap:4 }}
+                        >
+                          {ENCOUNTER_TYPES.map(t => (
+                            <label key={t} className="label-muted" style={{ display:'flex', alignItems:'center', gap:4 }}>
+                              <input
+                                type="checkbox"
+                                checked={methodFilters.has(t)}
+                                onChange={() => toggleMethodFilter(t)}
+                              />
+                              {t}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ position:'relative' }}>
+                      <button
+                        type="button"
+                        onClick={()=> setShowRegionMenu(v => !v)}
+                        className="region-btn"
+                      >
+                        {areaRegion === 'All' ? 'Region' : areaRegion}
+                      </button>
+                      {showRegionMenu && (
+                        <div className="region-menu">
+                          {regionOptions.map(r => (
+                            <button
+                              type="button"
+                              key={r}
+                              onClick={()=> { setAreaRegion(r); setShowRegionMenu(false); }}
+                              className={r===areaRegion ? 'active' : undefined}
+                            >
+                              {r}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Region chip now shown inline with label on the left; no separate row here */}
+                {mode==='tm' && (
+                  <div style={{ position:'relative' }}>
+                    <button
+                      type="button"
+                      onClick={()=> setShowRegionMenu(v => !v)}
+                      className="region-btn"
+                    >
+                      {areaRegion === 'All' ? 'Region' : areaRegion}
+                    </button>
+                    {showRegionMenu && (
+                      <div className="region-menu">
+                        {regionOptions.map(r => (
+                          <button
+                            type="button"
+                            key={r}
+                            onClick={()=> { setAreaRegion(r); setShowRegionMenu(false); }}
+                            className={r===areaRegion ? 'active' : undefined}
+                          >
+                            {r}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              <input
+                value={mode==='areas' ? areaQuery : query}
+                onChange={(e)=> {
+                  if (mode==='areas') setAreaQuery(e.target.value);
+                  else setQuery(e.target.value);
+                }}
+                onFocus={() => {
+                  if (mode==='areas') setAreaQuery('');
+                  else setQuery('');
+                }}
+                placeholder={mode==='pokemon'
+                  ? 'e.g. Garchomp or 445'
+                  : mode==='areas'
+                  ? 'e.g. Victory Road, Viridian Forest, Route 10'
+                  : mode==='tm'
+                  ? 'e.g. Giga Drain, Payback'
+                  : 'e.g. Master Ball, Shiny Charm'}
+                className="input"
+                style={{ height:44, borderRadius:10, fontSize:16 }}
+              />
+            </>
