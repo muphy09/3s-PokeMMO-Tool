@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [3.0.0] - 2025-09
+## [3.0.1] - 2025-09
 ### Added
 - Alpha Dex | *A few requests*
   - View all Alpha Pokemon and mark the ones you've caught

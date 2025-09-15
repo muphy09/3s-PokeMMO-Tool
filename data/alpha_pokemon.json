@@ -415,7 +415,7 @@
         ]
     ],
     "event_alpha": {
-        "Anniversary Part 2 exclusive Alphas": [
+        "Anniversary Part 2 Exclusive Alphas": [
             [
                 "Bulbasaur",
                 "Ivysaur",
@@ -432,7 +432,7 @@
                 "Blastoise"
             ]
         ],
-        "Halloween exclusive Alphas": [
+        "Halloween Exclusive Alphas": [
             [
                 "Gastly",
                 "Haunter",
@@ -464,7 +464,7 @@
                 "Chandelure"
             ]
         ],
-        "Christmas exclusive Alphas (Avaible on Mistery Premier Ball)": [
+        "Christmas Exclusive Alphas (Available in Mysterious Premier Ball)": [
             [
                 "Voltorb",
                 "Electrode"
@@ -509,7 +509,7 @@
                 "Vanilluxe"
             ]
         ],
-        "Chinese New Year exclusive Alphas (Avaible to capture after get 10 tablets)": [
+        "Chinese New Year Exclusive Alphas (Available to capture after 10 tablets)": [
             [
                 "Mareep",
                 "Flaaffy",
@@ -561,7 +561,7 @@
                 "Tauros"
             ]
         ],
-        "Exclusive Alpha after completing all regions": [
+        "Exclusive Alpha for Completing All Regions": [
             [
                 "Larvitar",
                 "Pupitar",
