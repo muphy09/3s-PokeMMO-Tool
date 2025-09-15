@@ -8,12 +8,16 @@ import OptionsMenu from './components/OptionsMenu.jsx';
 import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.jsx';
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
+import AlphaDexButton from './components/AlphaDexButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import HomeScreen from './components/HomeScreen.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
+import { AlphaCaughtContext } from './alphaCaughtContext.js';
+import alphaData from '../data/alpha_pokemon.json';
+import alphaIconUrl from '../data/alpha.ico';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
@@ -52,6 +56,8 @@ const HORDE_SIZE_MAP = (() => {
   }
   return map;
 })();
+
+// Alpha species membership set by Dex ID (defined after DEX indices)
 
 function normalizeAreaName(area = "") {
   return String(area)
@@ -265,6 +271,23 @@ const DEX_BY_NAME = (() => {
 })();
 const getMon = (s) => DEX_BY_NAME.get(normalizeKey(s)) || null;
 
+// Alpha species membership set by Dex ID (use DEX index resolution for robustness)
+const ALPHA_ID_SET = (() => {
+  const ids = new Set();
+  try {
+    const lookup = (name) => {
+      try { return getMon(name); } catch { return null; }
+    };
+    for (const group of (alphaData?.normal_alpha || [])) {
+      for (const n of group || []) { const m = lookup(n); if (m?.id != null) ids.add(m.id); }
+    }
+    for (const groups of Object.values(alphaData?.event_alpha || {})) {
+      for (const g of groups || []) for (const n of g || []) { const m = lookup(n); if (m?.id != null) ids.add(m.id); }
+    }
+  } catch {}
+  return ids;
+})();
+
 // Precompile regular expressions that can locate Pokemon names inside a block
 // of text.  One regex matches names with spaces/hyphens preserved, while the
 // other works against a "compacted" string with all non-alphanumeric
@@ -372,19 +395,33 @@ function localSpriteCandidates(mon){
   for (const b of bases){ for (const e of exts){ if (id) out.push(`${b}${id}${e}`); if (key) out.push(`${b}${key}${e}`); } }
   return [...new Set(out)];
 }
-  function spriteSources(mon){
+  function spriteSources(mon, opts = {}){
+  const shiny = !!opts.shiny;
   if (!mon) return [];
   const arr = [];
 
   // Prefer higher-resolution PokeAPI sprites first when we have a canonical dex number
-  if (mon.dex != null) {
+  // Our dex id lives on `mon.id` (not `mon.dex`).
+  if (mon?.id != null) {
+    if (shiny) {
+      // Shiny front_default (static path)
+      arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${mon.id}.png`);
+    }
+    // Non-shiny default + official artwork
     arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${mon.id}.png`);
     arr.push(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${mon.id}.png`);
     }
 
   // Fallbacks to any provided or local sprites
-  if (mon.sprite) arr.push(mon.sprite);
-  if (mon.sprites?.front_default) arr.push(mon.sprites.front_default);
+  if (!shiny) {
+    if (mon.sprite) arr.push(mon.sprite);
+    if (mon.sprites?.front_default) arr.push(mon.sprites.front_default);
+  } else {
+    if (mon.sprites?.front_shiny) arr.push(mon.sprites.front_shiny);
+    // Some species expose shiny official artwork
+    const shinyArt = mon.sprites?.other?.["official-artwork"]?.front_shiny;
+    if (shinyArt) arr.push(shinyArt);
+  }
   if (mon.image) arr.push(mon.image);
   if (mon.icon) arr.push(mon.icon);
   arr.push(...localSpriteCandidates(mon));
@@ -465,9 +502,41 @@ function localSpriteCandidates(mon){
     }
     return null;
   }
-
-  function Sprite({ mon, size=42, alt='' }){
-    const srcs = React.useMemo(()=> spriteSources(mon), [mon]);
+  async function resolvePokeapiSpriteShiny(mon){
+    const candidates = buildPokeApiSlugCandidates(mon);
+    // Try pokemon endpoint first
+    for (const slug of candidates){
+      try {
+        const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
+        if (!r.ok) continue;
+        const d = await r.json();
+        const s = d?.sprites?.front_shiny || d?.sprites?.other?.["official-artwork"]?.front_shiny;
+        if (s) return s;
+      } catch {}
+    }
+    // Try pokemon-form endpoint
+    for (const slug of candidates){
+      try {
+        const r = await fetch(`https://pokeapi.co/api/v2/pokemon-form/${slug}`);
+        if (!r.ok) continue;
+        const d = await r.json();
+        const s = d?.sprites?.front_shiny;
+        if (s) return s;
+      } catch {}
+    }
+    return null;
+  }
+  function Sprite({ mon, size=42, alt='', forceShiny=false }){
+    const [shinyGlobal, setShinyGlobal] = useState(() => {
+      try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); } catch { return false; }
+    });
+    useEffect(() => {
+      const onChange = (e) => setShinyGlobal(!!e?.detail?.enabled);
+      window.addEventListener('shiny-global-changed', onChange);
+      return () => window.removeEventListener('shiny-global-changed', onChange);
+    }, []);
+    const useShiny = !!(shinyGlobal || forceShiny);
+    const srcs = React.useMemo(()=> spriteSources(mon, { shiny: useShiny }), [mon, useShiny]);
     const [idx, setIdx] = useState(0);
     const [pokeSrc, setPokeSrc] = useState(null);
     const [triedPokeApi, setTriedPokeApi] = useState(false);
@@ -477,9 +546,10 @@ function localSpriteCandidates(mon){
       const noDex = mon && (mon.dex == null && mon.id == null);
       if (noDex) {
         setTriedPokeApi(true);
-        resolvePokeapiSprite(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
+        const resolver = useShiny ? resolvePokeapiSpriteShiny : resolvePokeapiSprite;
+        resolver(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
       }
-    }, [mon]);
+    }, [mon, useShiny]);
     const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
 
     const handleError = () => {
@@ -487,7 +557,8 @@ function localSpriteCandidates(mon){
         setIdx(idx + 1);
       } else if (!triedPokeApi && mon) {
         setTriedPokeApi(true);
-        resolvePokeapiSprite(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
+        const resolver = useShiny ? resolvePokeapiSpriteShiny : resolvePokeapiSprite;
+        resolver(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
       }
     };
 
@@ -3836,6 +3907,17 @@ function App(){
   const isWindows = platform === 'win32';
   const isLinux = platform === 'linux';
 
+  // Global shiny sprites toggle (mirrors Options menu)
+  const [shinyGlobal, setShinyGlobal] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); } catch { return false; }
+  });
+  useEffect(() => {
+    const onChange = (e) => setShinyGlobal(!!e?.detail?.enabled);
+    window.addEventListener('shiny-global-changed', onChange);
+    return () => window.removeEventListener('shiny-global-changed', onChange);
+  }, []);
+  const [profileShiny, setProfileShiny] = useState(false);
+
   const [caught, setCaught] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('caughtPokemon') || '[]');
@@ -3849,6 +3931,24 @@ function App(){
       const next = new Set(prev);
       if (next.has(id)) next.delete(id); else next.add(id);
       try { localStorage.setItem('caughtPokemon', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  };
+
+  // Alpha caught state
+  const [alphaCaught, setAlphaCaught] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('alphaCaughtPokemon') || '[]');
+      return new Set(Array.isArray(saved) ? saved : []);
+    } catch {
+      return new Set();
+    }
+  });
+  const toggleAlphaCaught = (id) => {
+    setAlphaCaught(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { localStorage.setItem('alphaCaughtPokemon', JSON.stringify([...next])); } catch {}
       return next;
     });
   };
@@ -4129,19 +4229,20 @@ function App(){
 
   const hasFilters = Boolean(typeFilter || typeFilter2 || eggFilter || abilityFilter || regionFilter || moveFilter || itemFilter);
 
-const headerSprite = useMemo(() => {
-    if (theme === 'red') return spriteSources(getMon('Charizard'))[0] || null;
-    if (theme === 'blue') return spriteSources(getMon('Blastoise'))[0] || null;
-    if (theme === 'gold') return spriteSources(getMon('Ho-Oh'))[0] || null;
-    if (theme === 'silver') return spriteSources(getMon('Lugia'))[0] || null;
-    if (theme === 'emerald') return spriteSources(getMon('Rayquaza'))[0] || null;
-    if (theme === 'black') return spriteSources(getMon('Reshiram'))[0] || null;
-    if (theme === 'white') return spriteSources(getMon('Zekrom'))[0] || null;
-    if (theme === 'diamond') return spriteSources(getMon('Dialga'))[0] || null;
-    if (theme === 'pearl') return spriteSources(getMon('Palkia'))[0] || null;
-    const withSprite = DEX_LIST.filter(d => spriteSources(d).length > 0);
-    return withSprite.length ? spriteSources(withSprite[Math.floor(Math.random()*withSprite.length)])[0] : null;
-  }, [theme]);
+  const headerSprite = useMemo(() => {
+    const opt = { shiny: !!shinyGlobal };
+    if (theme === 'red') return spriteSources(getMon('Charizard'), opt)[0] || null;
+    if (theme === 'blue') return spriteSources(getMon('Blastoise'), opt)[0] || null;
+    if (theme === 'gold') return spriteSources(getMon('Ho-Oh'), opt)[0] || null;
+    if (theme === 'silver') return spriteSources(getMon('Lugia'), opt)[0] || null;
+    if (theme === 'emerald') return spriteSources(getMon('Rayquaza'), opt)[0] || null;
+    if (theme === 'black') return spriteSources(getMon('Reshiram'), opt)[0] || null;
+    if (theme === 'white') return spriteSources(getMon('Zekrom'), opt)[0] || null;
+    if (theme === 'diamond') return spriteSources(getMon('Dialga'), opt)[0] || null;
+    if (theme === 'pearl') return spriteSources(getMon('Palkia'), opt)[0] || null;
+    const withSprite = DEX_LIST.filter(d => spriteSources(d, opt).length > 0);
+    return withSprite.length ? spriteSources(withSprite[Math.floor(Math.random()*withSprite.length)], opt)[0] : null;
+  }, [theme, shinyGlobal]);
   useEffect(() => { document.title = APP_TITLE; }, []);
   const headerSrc = headerSprite || TRANSPARENT_PNG;
 
@@ -4568,6 +4669,7 @@ const marketResults = React.useMemo(() => {
   };
   useEffect(() => { setSingleBuild(mkInitialBuild()); }, [resolved]);
   useEffect(() => { setShowAllHeld(false); }, [resolved]);
+  useEffect(() => { setProfileShiny(false); }, [resolved]);
 
   const getLatestLiveBattleMon = () => {
     const fromPayload = (payload) => {
@@ -4628,14 +4730,22 @@ const marketResults = React.useMemo(() => {
 
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught }}>
+    <AlphaCaughtContext.Provider value={{ alphaCaught, toggleAlphaCaught }}>
     <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
       <>
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
         <PatchNotesButton />
-        <CaughtListButton />
-        <ColorPickerButton />
         <OptionsMenu isWindows={isWindows} />
+      </div>
+      {/* Mount the color picker without a visible trigger so Options menu can open it */}
+      <ColorPickerButton renderTrigger={false} />
+      {/* Top-center actions (full-width container ignores pointer events; inner wrapper handles clicks) */}
+      <div style={{ position:'fixed', top:10, left:0, right:0, zIndex:9999, display:'flex', justifyContent:'center', pointerEvents:'none' }}>
+        <div style={{ display:'inline-flex', gap:8, pointerEvents:'auto' }}>
+          <CaughtListButton />
+          <AlphaDexButton />
+        </div>
       </div>
 
 {showUpToDate && (
@@ -5481,18 +5591,71 @@ const marketResults = React.useMemo(() => {
             {/* Left: Pokemon card */}
             <div style={{ ...styles.card, position:'relative' }}>
               <div style={{ position:'relative' }}>
-                <button
-                  type="button"
-                  onClick={() => toggleCaught(resolved.id)}
-                  title={(caught.has(resolved.id) ? 'Mark as uncaught' : 'Mark as caught')}
-                  style={{ position:'absolute', top:8, right:8, background:'transparent', border:'none', cursor:'pointer', padding:0 }}
-                >
-                  <PokeballIcon filled={caught.has(resolved.id)} />
-                </button>
+                <div style={{ position:'absolute', top:8, right:8, display:'flex', gap:8 }}>
+                  {ALPHA_ID_SET.has(resolved.id) && (
+                    <button
+                      type="button"
+                      onClick={() => toggleAlphaCaught(resolved.id)}
+                      title={(alphaCaught.has(resolved.id) ? 'Mark Alpha as uncaught' : 'Mark Alpha as caught')}
+                      style={{ background:'transparent', border:'none', cursor:'pointer', padding:0 }}
+                    >
+                      <img src={alphaIconUrl} alt="Alpha Caught" style={{ width:20, height:20, opacity: alphaCaught.has(resolved.id) ? 1 : 0.35 }} />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => toggleCaught(resolved.id)}
+                    title={(caught.has(resolved.id) ? 'Mark as uncaught' : 'Mark as caught')}
+                    style={{ background:'transparent', border:'none', cursor:'pointer', padding:0 }}
+                  >
+                    <PokeballIcon filled={caught.has(resolved.id)} />
+                  </button>
+                </div>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:12, alignItems:'start' }}>
                 <div>
-                  <Sprite mon={selected} size={120} alt={resolved.name} />
+                  <div style={{ position:'relative', display:'inline-block' }}>
+                    <Sprite mon={selected} size={120} alt={resolved.name} forceShiny={profileShiny} />
+                    <button
+                      type="button"
+                      onClick={() => setProfileShiny(v => !v)}
+                      title="Shiny"
+                      style={{
+                        position:'absolute', top:2, right:2,
+                        background:'transparent',
+                        border:'none',
+                        outline:'none',
+                        boxShadow:'none',
+                        padding:0,
+                        margin:0,
+                        appearance:'none',
+                        WebkitAppearance:'none',
+                        MozAppearance:'none',
+                        cursor:'pointer'
+                      }}
+                    >
+                      {(() => {
+                        const active = !!(shinyGlobal || profileShiny);
+                        const fill = active ? '#d4af37' : '#fff';
+                        const stroke = active ? '#9b7d22' : '#888';
+                        return (
+                          <svg
+                            width="18" height="18" viewBox="0 0 24 24"
+                            role="img" aria-label="Shiny"
+                            style={{ display:'block' }}
+                          >
+                            <polygon
+                              points="12,2 14.9,8.1 22,9 16.8,13.4 18.3,20.4 12,16.9 5.7,20.4 7.2,13.4 2,9 9.1,8.1"
+                              fill={fill}
+                              stroke={stroke}
+                              strokeWidth="1.2"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        );
+                      })()}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <div style={{ fontSize:22, fontWeight:900 }}>
@@ -6057,6 +6220,7 @@ const marketResults = React.useMemo(() => {
       <VersionBadge />
     </>
     </ColorContext.Provider>
+    </AlphaCaughtContext.Provider>
     </CaughtContext.Provider>
   );
 }

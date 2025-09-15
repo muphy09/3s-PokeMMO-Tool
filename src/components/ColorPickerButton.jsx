@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from '../colorConfig.js';
 
-export default function ColorPickerButton(){
+export default function ColorPickerButton({ renderTrigger = true }){
   const { methodColors, rarityColors, setMethodColors, setRarityColors } = useContext(ColorContext);
   const [open, setOpen] = useState(false);
   const [mColors, setMColors] = useState(methodColors);
@@ -9,6 +9,13 @@ export default function ColorPickerButton(){
 
   useEffect(()=>{ setMColors(methodColors); }, [methodColors]);
   useEffect(()=>{ setRColors(rarityColors); }, [rarityColors]);
+
+  // Allow opening from Options menu or other triggers
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener('open-color-picker', handler);
+    return () => window.removeEventListener('open-color-picker', handler);
+  }, []);
 
   const btnStyle = {
     padding:'6px 10px', borderRadius:10, border:'1px solid var(--divider)',
@@ -18,7 +25,7 @@ export default function ColorPickerButton(){
   const overlayStyle = {
     position:'fixed', top:0, left:0, width:'100vw', height:'100vh',
     background:'rgba(0,0,0,0.7)', display:'flex', alignItems:'center',
-    justifyContent:'center', zIndex:1000
+    justifyContent:'center', zIndex:10000
   };
   const modalStyle = {
     background:'var(--surface)', color:'var(--text)', padding:20,
@@ -60,7 +67,9 @@ export default function ColorPickerButton(){
 
   return (
     <>
-      <button style={btnStyle} onClick={()=>setOpen(true)} title="Choose Colors">Choose Colors</button>
+      {renderTrigger && (
+        <button style={btnStyle} onClick={()=>setOpen(true)} title="Choose Colors">Choose Colors</button>
+      )}
       {open && (
         <div style={overlayStyle} onClick={onSave}>
           <div style={modalStyle} onClick={e=>e.stopPropagation()}>

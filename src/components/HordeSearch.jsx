@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import dexData from '../../UpdatedDex.json';
 import hordeData from '../../horderegiondata.json';
 import SearchFilter from './SearchFilter';
@@ -124,6 +124,14 @@ export default function HordeSearch(){
   const [method,setMethod] = useState('');
   const [size,setSize] = useState('');
   const [open,setOpen] = useState(null);
+  const [shinyGlobal, setShinyGlobal] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); } catch { return false; }
+  });
+  useEffect(() => {
+    const onChange = (e) => setShinyGlobal(!!e?.detail?.enabled);
+    window.addEventListener('shiny-global-changed', onChange);
+    return () => window.removeEventListener('shiny-global-changed', onChange);
+  }, []);
 
   const filtered = useMemo(()=>{
     const q = normalizeName(term);
@@ -270,7 +278,9 @@ export default function HordeSearch(){
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(260px,1fr))',gap:10}}>
         {filtered.map(p => {
           const evText = formatEvYield(p.mon.yields);
-          const img = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.mon.id}.png`;
+          const img = shinyGlobal
+            ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${p.mon.id}.png`
+            : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.mon.id}.png`;
           const isOpen = open===p.name;
           return (
               <div key={p.name} style={{position:'relative',display:'flex',flexDirection:'column',alignItems:'center',gap:8,border:'1px solid var(--divider)',borderRadius:10,padding:10,background:'var(--surface)',textAlign:'center',...(isOpen?selectedStyle:{})}}>

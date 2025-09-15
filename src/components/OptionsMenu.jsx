@@ -11,6 +11,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
   const clamp = (v) => Math.max(0, Math.min(100, v));
+  const [shinyEnabled, setShinyEnabled] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); }
+    catch { return false; }
+  });
   const [scale, setScale] = useState(() => {
     const saved = parseInt(localStorage.getItem("uiScaleV2"), 10);
     if (Number.isFinite(saved)) return clamp(saved);
@@ -113,6 +117,15 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       console.error("[OptionsMenu] reloadOCR error:", err);
     } finally {
       setOpen(false);
+    }
+  }
+  function onToggleShiny(next){
+    try {
+      setShinyEnabled(next);
+      try { localStorage.setItem('shinySprites', JSON.stringify(next)); } catch {}
+      try { window.dispatchEvent(new CustomEvent('shiny-global-changed', { detail: { enabled: next } })); } catch {}
+    } finally {
+      // keep menu open
     }
   }
   function broadcastOcrEnabledChange(next) {
@@ -226,6 +239,16 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
           </div>
           <Divider />
           <MenuItem label="Check for updates" onClick={onCheckUpdates} />
+          <Divider />
+          <MenuItem label="Choose Colors" onClick={() => { try { window.dispatchEvent(new Event('open-color-picker')); } catch {} setOpen(false); }} />
+          <Divider />
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px' }}>
+            <span style={{ color:'var(--text)', fontWeight:600 }}>Shiny Sprites</span>
+            <label style={{ display:'inline-flex', alignItems:'center', gap:8 }}>
+              <input type="checkbox" checked={!!shinyEnabled} onChange={(e)=> onToggleShiny(e.target.checked)} />
+              <span className="label-muted" style={{ fontSize:12 }}>{shinyEnabled ? 'On' : 'Off'}</span>
+            </label>
+          </div>
           {isWindows && (
             <>
               <Divider />

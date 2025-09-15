@@ -139,6 +139,14 @@ function bucketsFromMultipliers(mult = {}) {
 }
 
 export default function TeamBuilder({ onViewMon }) {
+  const [shinyGlobal, setShinyGlobal] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); } catch { return false; }
+  });
+  React.useEffect(() => {
+    const onChange = (e) => setShinyGlobal(!!e?.detail?.enabled);
+    window.addEventListener('shiny-global-changed', onChange);
+    return () => window.removeEventListener('shiny-global-changed', onChange);
+  }, []);
   const [team, setTeam] = React.useState(() => {
     try {
       const saved = JSON.parse(sessionStorage.getItem('teamBuilderCurrent') || '[]');
@@ -401,7 +409,11 @@ export default function TeamBuilder({ onViewMon }) {
             {team.map((_, idx) => {
               const mon = mons[idx];
               const dex = mon?.dex ?? mon?.id;
-              const img = dex != null ? `${SPRITES_BASE}${dex}${SPRITES_EXT}` : null;
+              const img = dex != null
+                ? (shinyGlobal
+                  ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${dex}.png`
+                  : `${SPRITES_BASE}${dex}${SPRITES_EXT}`)
+                : null;
               const itemName = heldItems[idx] || '';
               const itemObj = ITEM_INDEX.byName.get(normalizeKey(itemName));
               const itemIcon = itemObj?.id != null ? `${ITEM_ICON_BASE}${itemObj.id}.png` : (itemName ? ITEM_PLACEHOLDER : null);
