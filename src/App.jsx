@@ -2378,6 +2378,24 @@ function normalizeMapForGrouping(region, mapName){
   const r = String(region).toLowerCase().trim();
   let m = String(mapName).trim();
 
+  // Additional normalization for mis-encoded "Pokémon" variants
+  // e.g., "POK\u00C3\u00A9MON" (POKÃ©MON), "Pok\u00C3\u00A9mon" (PokÃ©mon)
+  m = m
+    .replace(/POK\u00C3\u00A9MON/gi, 'Pokemon')
+    .replace(/Pok\u00C3\u00A9mon/gi, 'Pokemon');
+
+  // Standardize casing for common maps
+  m = m
+    .replace(/^Pokemon\s+Mansion\b/i, 'Pokemon Mansion')
+    .replace(/^Pokemon\s+Tower\b/i, 'Pokemon Tower');
+
+  // Normalize mis-encoded/diacritic variants of "Pokemon"
+  // Examples: "Pokémon", "POKÃ©MON" → "Pokemon"
+  m = m
+    .replace(/Pok(?:e|\u00e9|\u00c9)mon/gi, 'Pokemon')
+    .replace(/POKÃ©MON/gi, 'Pokemon')
+    .replace(/PokÃ©mon/gi, 'Pokemon');
+
   // Merge halves like "Route 212 (North)" / "(South)" -> "Route 212"
   if (/^route\s*\d+\b/i.test(m)) {
     m = m.replace(/\s*\((north|south|east|west)\)\s*/i, '').trim();
@@ -2406,24 +2424,31 @@ function stripTimeTag(name=''){
 // - Bare "Route" queries (with or without trailing spaces) never match anything
 // - Otherwise fall back to a simple substring check (case-insensitive)
 function mapNameMatches(candidate, needle){
-  const cand   = stripTimeTag(candidate).toLowerCase();
-  const search = stripTimeTag(needle).toLowerCase();
+  const candRaw   = stripTimeTag(candidate).toLowerCase();
+  const searchRaw = stripTimeTag(needle).toLowerCase();
 
   // If the search is a prefix of "route", do not match yet
-  if ('route'.startsWith(search)) return false;
+  if ('route'.startsWith(searchRaw)) return false;
 
   // If the query starts with "<number>" or "route <number>", require that exact
   // route number regardless of any trailing OCR noise.
-  const routeMatch = search.match(/^(?:route\s*)?(\d+)\b/);
+  const routeMatch = searchRaw.match(/^(?:route\s*)?(\d+)\b/);
   if (routeMatch) {
-    const candRoute = cand.match(/^route\s*(\d+)\b/);
+    const candRoute = candRaw.match(/^route\s*(\d+)\b/);
     return !!candRoute && Number(candRoute[1]) === Number(routeMatch[1]);
   }
-// Avoid extremely short non-route queries from matching multiple maps
-  if (search.length < 3) return false;
+  // Avoid extremely short non-route queries from matching multiple maps
+  if (searchRaw.length < 3) return false;
 
-  if (search.startsWith('route')) return false;
-  return cand.includes(search);
+  if (searchRaw.startsWith('route')) return false;
+
+  // Alias/diacritic-insensitive comparison using simplify/alias keys
+  const candKey   = aliasKey(candRaw);
+  const searchKey = aliasKey(searchRaw);
+  if (candKey.includes(searchKey)) return true;
+
+  // Fallback to raw substring match
+  return candRaw.includes(searchRaw);
 }
 
 function lookupRarity(monName, region, map, locIndex){
@@ -2450,6 +2475,14 @@ const LIVE_ALIASES = {
   "mtcoronet": "mountcoronet",
   "mtcoronet4f": "mountcoronet",
   "victoryroad": "victoryroad",
+  // Handle accented/mis-encoded forms of Pokeathlon Dome from OCR
+  // simplifyName("Pokéathlon Dome") -> "pokathlondome"
+  // simplifyName("PokÃ©athlon Dome") -> "pokathlondome"
+  // simplifyName("Pokeathlon Dome") -> "pokeathlondome"
+  "pokathlondome": "pokeathlondome",
+  // Handle mis-encoded 'Pokémon' dropping the 'e' in certain names
+  "pokmonmansion": "pokemonmansion",
+  "pokmontower": "pokemontower",
 };
 
 /** Turn a name into a minimal comparable key */
@@ -4434,7 +4467,7 @@ const marketResults = React.useMemo(() => {
       }
       return {
         region: titleCase(l.region_name || 'Unknown'),
-        map: stripSeason(l.location),
+        map: normalizeMapForGrouping(l.region_name || 'Unknown', stripSeason(l.location)),
         method: [method].filter(Boolean),
         rarity: [rarity].filter(Boolean),
         min: l.min_level,

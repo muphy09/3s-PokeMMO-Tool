@@ -1,6 +1,19 @@
 # Changelog
 ---
 
+## [2.9.4] - 2025-09
+### Added
+- Shiny Sprites | *Quite a few requests*
+  - View a Pokemons' Shiny Sprite by clicking the Shiny button in the top right of their sprite
+  - 'Shiny Only' toggle included in the Options Menu
+
+### Fixed
+- General
+  - The incorrect string 'POKÃ©MON' has been fixed to say 'Pokemon'
+    - Pokemon Mansion, Pokemon Tower, and Pokeathlon Dome have been corrected
+
+---
+
 ## [2.9.3] - 2025-09
 ### Changed
 - Pokemon Search
