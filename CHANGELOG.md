@@ -1,11 +1,26 @@
 # Changelog
 ---
 
-## [2.9.4] - 2025-09
+## [3.0.0] - 2025-09
 ### Added
-- Shiny Sprites | *Quite a few requests*
-  - View a Pokemons' Shiny Sprite by clicking the Shiny button in the top right of their sprite
+- Alpha Dex | *A few requests*
+  - View all Alpha Pokemon and mark the ones you've caught
+  - Event Specific Alphas & Normal Spawn Alphas
+  - Updated affected Pokemon with an Alpha Icon to mark caught
+
+- Shiny Sprites
+  - View a Pokemons' Shiny Sprite by clicking the Shiny star in the top right of their sprite
   - 'Shiny Only' toggle included in the Options Menu
+
+### Changed
+- Top Menu Bar
+  - Moved Choose Colors to the Options Menu
+  - Relocated and renamed 'Caught List' to 'Pokedex' in the top center of the screen
+  - Introduced the Alpha Dex inline with the Pokedex
+  - Added a Shiny Sprite toggle to the Pokemon Profile
+
+- Pokedex (Formally Caught List)
+  - Updated UI to match Alpha Dex look
 
 ### Fixed
 - General
