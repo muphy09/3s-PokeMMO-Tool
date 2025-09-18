@@ -8,6 +8,7 @@
   - Import this data to Compare when pulled from 'Replace from Active Team'
 - OCR adjustment panel
   - Tune OCR capture to be zoomed out/in more
+- Spirte size in the Live Route is too small
 
 ## Known Issues
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
