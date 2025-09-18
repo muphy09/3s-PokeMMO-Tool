@@ -22,6 +22,7 @@ import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
 import hordeRegions from '../horderegiondata.json';
+import typeChartImg from '../data/Pokemon_Type_Chart.png';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -3961,6 +3962,8 @@ function App(){
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'horde' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
   const [toolsOpen, setToolsOpen] = useState(false);
 
+  const [showTypeChart, setShowTypeChart] = useState(false);
+
   // Compare mode state for Pokemon Search
   const [compareMode, setCompareMode] = useState(false);
   const [compareA, setCompareA] = useState(null);
@@ -4792,10 +4795,19 @@ const marketResults = React.useMemo(() => {
               <div style={{ position:'relative' }}>
                 <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ▾</button>
                 {toolsOpen && (
-                  <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10 }}>
+                  <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10, overflow:'hidden' }}>
                     <button style={{ ...styles.segBtn(mode==='items'), width:'100%', borderRadius:0 }} onClick={()=>setMode('items')}>Items</button>
+                    <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
                     <button style={{ ...styles.segBtn(mode==='breeding'), width:'100%', borderRadius:0 }} onClick={()=>setMode('breeding')}>Breeding</button>
+                    <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
                     <button style={{ ...styles.segBtn(mode==='market'), width:'100%', borderRadius:0 }} onClick={()=>setMode('market')}>Market</button>
+                    <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
+                    <button
+                      style={{ ...styles.segBtn(false), width:'100%', borderRadius:0 }}
+                      onClick={()=>{ setShowTypeChart(true); setToolsOpen(false); }}
+                    >
+                      Type Chart
+                    </button>
                   </div>
                 )}
               </div>
@@ -6161,6 +6173,47 @@ const marketResults = React.useMemo(() => {
       </div>
       )}
       
+      {showTypeChart && (
+        <div
+          onClick={() => {
+            setShowTypeChart(false);
+            setMode('pokemon');
+          }}
+          style={{
+            position:'fixed',
+            top:0,
+            left:0,
+            width:'100%',
+            height:'100%',
+            background:'rgba(0,0,0,0.75)',
+            display:'flex',
+            alignItems:'center',
+            justifyContent:'center',
+            zIndex:1100
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ maxWidth:'85vw', maxHeight:'85vh', padding:8 }}
+          >
+            <img
+              src={typeChartImg}
+              alt="Pokemon type chart"
+              style={{
+                maxWidth:'85vw',
+                maxHeight:'85vh',
+                width:'auto',
+                height:'auto',
+                display:'block',
+                borderRadius:12,
+                boxShadow:'0 12px 32px rgba(0,0,0,0.6)',
+                objectFit:'contain'
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {marketSelected && (
         <div
           onClick={() => setMarketSelected(null)}

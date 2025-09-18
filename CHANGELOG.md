@@ -1,6 +1,14 @@
 # Changelog
 ---
 
+## [3.0.2] - 2025-09
+### Added
+- Type Chart
+  - Image of a Type Chart for quick reference
+  - Located inside of the 'Tools' dropdown
+
+---
+
 ## [3.0.1] - 2025-09
 ### Added
 - Alpha Dex | *A few requests*
