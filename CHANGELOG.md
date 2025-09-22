@@ -3,22 +3,35 @@
 
 ## [3.1.0] - 2025-09
 ### Added
-- Pokedex
-  - Added a Smogon "Recommended Movesets (Gen 5)" dropdown with tier selector, cached data, and an Other Options section
-  - Includes move/item/ability tooltips and Smogon Checks & Counters details.
+- Recommended Movesets | *Sourced from Smogon*
+  - Each Pokemon now has Recommended Movesets based on the Format selected
+    - Located inside of each Pokemons' Profile as 'Recommended Movesets'
+  - Change Format (if available) with the options at the top
+
+- Tooltips
+  - Move Tooltips
+    - Hover to see a description of the Move
+  - Nature Tooltips
+    - Hover to see a description of affected Nature changes
+  - Abilities Tooltip now matches theme of other tooltips
+  - Held Items Tooltip formatted to fit better
 
 ### Changed
 - Pokedex | *Thanks Winsom!*
-  - Selecting a Pokemon now opens their location list
+  - Selecting a Pokemon now opens a location list
+  - Included option to 'hide' caught Pokemon completely
   - Included option to filter by Region
-    - If a Pokemon cannot be obtained from a location, the previous evolutions' Region is used
-  - Included option to 'hide' caught Pokemon completely
+    - If a Pokemon cannot be obtained from any location, the previous evolutions' Region is used
+      - Ex: Venusaur cannot be obtained, but will display if Kanto is selected since Ivysaur can be obtained there
+      - Referenced as "No Location - Evolve from ___"
+      - Pokemon that do not have a previous evolution & cannot be obtained in any location are not displayed when a region is filtered
 
-- Area Search
-  - Included option to 'hide' caught Pokemon completely
-
-- Live Route Search
-  - Included option to 'hide' caught Pokemon completely
+- Movesets Dropdown (located inside Pokemon Profile)
+  - "Movesets" has been renamed to "Moves" to avoid confusion with Recommended Movesets
+  
+- Evolution Chain  
+  - Clicking the Sprite of a Pokemon in the Evolution chain now goes to that Pokemon
+    - *Previously you had to click the text beneath it*
 
 ---
 
@@ -53,7 +66,7 @@
 
 ### Fixed
 - General
-  - The incorrect string 'POKÃƒÂ©MON' has been fixed to say 'Pokemon'
+  - The incorrect string 'POKÃ©MON' has been fixed to say 'Pokemon'
     - Pokemon Mansion, Pokemon Tower, and Pokeathlon Dome have been corrected
 
 ---
@@ -360,9 +373,9 @@
 
 ### Fixed
 - Complete OCR Rework (Capature tool for Route and Battle Tabs)
-  - Finalized window detection by returning immediately on title matches and retrieving the windowâ€™s process ID inline for fallback checks
-  - Improved window discovery by enumerating visible windows for a PokeMMO match, ensuring the correct handle is found even when the game isnâ€™t focused
-  - Streamlined PokeMMO window check with fast title/class heuristics (GLFW + â€œjavaw.exeâ€) and a fallback process check for reliability
+  - Finalized window detection by returning immediately on title matches and retrieving the window’s process ID inline for fallback checks
+  - Improved window discovery by enumerating visible windows for a PokeMMO match, ensuring the correct handle is found even when the game isn’t focused
+  - Streamlined PokeMMO window check with fast title/class heuristics (GLFW + “javaw.exe”) and a fallback process check for reliability
   - Added process-based fallback that treats both pokemmo and javaw executables as valid, ensuring the OCR attaches to Java-hosted clients
   - Introduced a RemoveDiacritics helper to normalize titles before comparison, avoiding false negatives from accented characters
   - OCR now caches last recieved data and persists this data even between tab switches, ensuring no refresh is needed when tabbing back
@@ -445,7 +458,7 @@
 
 ## [2.5.3]- 2025-08
 ### Fixed
-- Clicking a PokÃ©mon in the Live and Areas tabs now opens its profile directly, removing the separate "View" button.
+- Clicking a Pokémon in the Live and Areas tabs now opens its profile directly, removing the separate "View" button.
 
 - Area Search now persists after switching tabs and clears by clicking the search bar
 
@@ -708,13 +721,13 @@
 
 ## [1.6.8] - 2025-08
 ### Fixed
-  - Liveroute OCR not starting â€“ LiveRoute now properly starts as intended.
+  - Liveroute OCR not starting – LiveRoute now properly starts as intended.
 
 ---
 
 ## [1.6.0] - 2025-08
 ### Added
-  - **Auto-Updater** â€“ users can check for updates directly from the app.  
+  - **Auto-Updater** – users can check for updates directly from the app.  
   - **Check for Updates** button added to settings.  
 
 ### Fixed
@@ -736,13 +749,13 @@
 
 ## [1.4.0] - 2025-08
 ### Added
-- **Region Buttons** â€“ switch between Kanto, Hoenn, Sinnoh, and Unova instantly.  
+- **Region Buttons** – switch between Kanto, Hoenn, Sinnoh, and Unova instantly.  
 - Performance upgrades for faster data handling.  
 - Stability improvements when switching between tabs.  
 
 ### Fixed
 - Tabbing out of the app no longer causes disconnections.  
-- Missing PokÃ©mon location data restored.  
+- Missing Pokémon location data restored.  
 - Parenthesis display issue resolved.  
 
 ---
@@ -762,7 +775,7 @@
   - Enhanced filtering logic for encounter data, ensuring more consistent and accurate results.
 
 - Location Data Handling
-  - Improved logic so PokÃ©mon missing from the PokÃ©dex now correctly pull location data when it exists (e.g., Machop in Fiery Path).
+  - Improved logic so Pokémon missing from the Pokédex now correctly pull location data when it exists (e.g., Machop in Fiery Path).
 
 - Encounter Rarity Display
   - Cleaned up formatting to fix parenthesis/spacing issues when showing encounter methods and rates.
@@ -777,8 +790,8 @@ Hardened Location Capture
 - Parenthesis Issue
   - Fixed formatting bug where extra or missing parentheses appeared in encounter text.
 
-- Missing PokÃ©mon Locations
-  - Fixed bug where some PokÃ©mon with valid data showed no location entries.
+- Missing Pokémon Locations
+  - Fixed bug where some Pokémon with valid data showed no location entries.
 
 ---
 
@@ -789,7 +802,7 @@ Hardened Location Capture
 
 ### Fixed
 - Better stability when changing windows or tabbing out.  
-- Fixed PokÃ©mon with missing location data.  
+- Fixed Pokémon with missing location data.  
 - Fixed parenthesis formatting issue.  
 
 ---
@@ -809,9 +822,9 @@ Hardened Location Capture
   - Optional logging with last screenshot and OCR text to help diagnose mismatches.
 
 ### Improvements
-- UI: New tab switcher (PokÃ©mon / Areas / Live) with a status chip (Connected/Disconnected) and live location line.
+- UI: New tab switcher (Pokémon / Areas / Live) with a status chip (Connected/Disconnected) and live location line.
 
-- Resilience: Helper start/stop is sandboxedâ€”failure to launch no longer crashes the app; the app continues to run and youâ€™ll just see â€œStart LiveRouteOCRâ€¦â€.
+- Resilience: Helper start/stop is sandboxed—failure to launch no longer crashes the app; the app continues to run and you’ll just see “Start LiveRouteOCR…”.
 
 - Performance: Smarter capture region and pre-processing for sharper OCR, plus throttled updates to avoid flicker.
 
@@ -831,13 +844,13 @@ Hardened Location Capture
 ## [1.2.7] - 2025-08
 ### Added
 - **Color-coded encounter rarities**:  
-  - Very Common â†’ Brown  
-  - Common â†’ White  
-  - Uncommon â†’ Green  
-  - Rare â†’ Blue  
-  - Very Rare â†’ Purple  
-  - Horde â†’ Red  
-- Grouped together PokÃ©mon with multiple encounter methods (e.g., Golbat in cave + grass now shows in one box).  
+  - Very Common → Brown  
+  - Common → White  
+  - Uncommon → Green  
+  - Rare → Blue  
+  - Very Rare → Purple  
+  - Horde → Red  
+- Grouped together Pokémon with multiple encounter methods (e.g., Golbat in cave + grass now shows in one box).  
 - All **Victory Road entrances in Sinnoh** are combined into a single entry.  
 
 ### Fixed
@@ -848,17 +861,17 @@ Hardened Location Capture
 ## [1.2.6] - 2025-08
 ### Added
 - New Area Search Mode
-  - Added a toggle to switch between PokÃ©mon search and Route/Area search.
-  - Searching by route or location (e.g., Viridian Forest, Route 10) now shows all PokÃ©mon that appear there.
-  - Each PokÃ©mon entry includes encounter method (Grass, Water, Fishing, etc.) and rarity/odds.
+  - Added a toggle to switch between Pokémon search and Route/Area search.
+  - Searching by route or location (e.g., Viridian Forest, Route 10) now shows all Pokémon that appear there.
+  - Each Pokémon entry includes encounter method (Grass, Water, Fishing, etc.) and rarity/odds.
 
 - Improved Encounter Display
   - Distinct colors for encounter methods (Grass, Water, Cave, Fishing rods, Horde, etc.).
-  - Distinct colors for rarities (Very Common â†’ Very Rare, plus % odds).
+  - Distinct colors for rarities (Very Common → Very Rare, plus % odds).
   - Makes it easier to tell apart different spawn types and probabilities at a glance.
 
 - Search Results Polished
-  - PokÃ©mon search tiles consistently show colored type pills.
+  - Pokémon search tiles consistently show colored type pills.
   - Clearer visual identity while browsing search results.
 
 ---
@@ -866,15 +879,15 @@ Hardened Location Capture
 ## [1.2.5] - 2025-08
 ### Changed
 - Structural Updates
-  - Restored full PokÃ©dex integration after initial data wipe issues
+  - Restored full Pokédex integration after initial data wipe issues
   - Refactored App.jsx and main.jsx to ensure proper references to pokedex.json and pokemmo_locations.json
   - Added a legacy shape adapter to preserve compatibility with old UI expectations
 
-- PokÃ©dex Data
-  - Trimmed PokÃ©dex to Generations 1â€“5 only
-  - Removed PokÃ©mon from Generations 6â€“9
+- Pokédex Data
+  - Trimmed Pokédex to Generations 1–5 only
+  - Removed Pokémon from Generations 6–9
   - Removed the Fairy type and all Gen 6+ move/type chart impacts.
-  - Ensured all search and type matchups now follow Gen 1â€“5 rules only.
+  - Ensured all search and type matchups now follow Gen 1–5 rules only.
 
 - Sprites
   - Implemented a sprite resolver system with fallback chain:
@@ -888,44 +901,44 @@ Hardened Location Capture
   - Integrated forum-sourced region files (Kanto, Johto, Hoenn, Sinnoh, Unova) with a parsing key.
   - Built a reverse-mapped pokemmo_locations.json for direct lookup in-app.
   - Fixed parsing issues where:
-  - Lines with asterisks (*Horde can only occurâ€¦) were previously skipped â€” now normalized to simply â€œHordeâ€.
+  - Lines with asterisks (*Horde can only occur…) were previously skipped — now normalized to simply “Horde”.
   - Viridian Forest and similar entries were defaulted as Grass encounters to avoid missing data.
-  - Improved coverage: drastically reduced the number of PokÃ©mon with missing location data.
+  - Improved coverage: drastically reduced the number of Pokémon with missing location data.
 
 - Missing Data Handling
-  - Added a reporting mechanism to check which PokÃ©mon are still missing location data.
-  - Normalization fixes for names with special characters (â™€, â™‚, hyphens, etc.).
+  - Added a reporting mechanism to check which Pokémon are still missing location data.
+  - Normalization fixes for names with special characters (♀, ♂, hyphens, etc.).
 
 ---
 
 ## [1.2.1] - 2025-08
 ### Changed
-- Removed support for **Generations 6â€“9**, focusing exclusively on **Generations 1â€“5** to match PokÃ©MMO.  
+- Removed support for **Generations 6–9**, focusing exclusively on **Generations 1–5** to match PokéMMO.  
 - Removed Fairy type to prevent type conflicts.  
 
 ---
 
 ## [1.2.0] - 2025-08
 ### Added
-- PokÃ©mon Location Data Integration
+- Pokémon Location Data Integration
   - Added full support for per-region location data (Kanto, Johto, Hoenn, Sinnoh, Unova). some pokemon data not available yet
-  - Locations are grouped by region with dedicated blocksâ€”regions without data are hidden.
+  - Locations are grouped by region with dedicated blocks—regions without data are hidden.
   - Each map entry now displays Method, Rarity, Environment, and Level (when available).
   - JSON location database cleaned up to remove duplicates, filler text.
 
 - Weakness Grid Enhancements
-  - Added clear labels: â€œ4Ã— Weak Toâ€, â€œ2Ã— Weak Toâ€, â€œNormal Damageâ€, â€œResists (Â½Ã—)â€, and â€œImmune (0Ã—)â€.
-  - Weakness chart now uses type-colored chips matching official PokÃ©mon type palettes for instant readability.
+  - Added clear labels: “4× Weak To”, “2× Weak To”, “Normal Damage”, “Resists (½×)”, and “Immune (0×)”.
+  - Weakness chart now uses type-colored chips matching official Pokémon type palettes for instant readability.
 
 - UI/UX Improvements
   - Header & Branding
-  - App title changed to â€œ3â€™s PokeMMO Toolâ€ (previously â€œ3s Weakness Finderâ€).
-  - A random PokÃ©mon sprite now displays next to the title on launch instead of the same static sprite.
+  - App title changed to “3’s PokeMMO Tool” (previously “3s Weakness Finder”).
+  - A random Pokémon sprite now displays next to the title on launch instead of the same static sprite.
   - Updated window title bar and .exe name for consistency.
 
-- PokÃ©mon Display
-  - PokÃ©mon names, types, and details are now properly capitalized across the app.
-  - Dex number shown as â€œNational Dex #â€ for clarity.
+- Pokémon Display
+  - Pokémon names, types, and details are now properly capitalized across the app.
+  - Dex number shown as “National Dex #” for clarity.
   - Autocomplete results redesigned with brighter text for better contrast on the dark theme.
 
 - General Styling
