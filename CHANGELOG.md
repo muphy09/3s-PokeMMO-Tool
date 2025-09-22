@@ -1,6 +1,22 @@
 # Changelog
 ---
 
+## [3.1.0] - 2025-09
+### Changed
+- Pokedex | *Thanks Winsom!*
+  - Selecting a Pokemon now opens their location list
+  - Included option to filter by Region
+    - If a Pokemon cannot be obtained from a location, the previous evolutions' Region is used
+  - Included option to 'hide' caught Pokemon completely
+
+- Area Search
+  - Included option to 'hide' caught Pokemon completely
+
+- Live Route Search
+  - Included option to 'hide' caught Pokemon completely
+
+---
+
 ## [3.0.2] - 2025-09
 ### Added
 - Type Chart

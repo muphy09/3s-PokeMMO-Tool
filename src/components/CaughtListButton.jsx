@@ -82,6 +82,16 @@ for (const mon of dexRaw) {
   }
 }
 
+const EVOLUTION_PARENTS = new Map();
+for (const mon of dexRaw) {
+  if (!Array.isArray(mon.evolutions)) continue;
+  for (const evo of mon.evolutions) {
+    if (!evo || typeof evo.id !== 'number') continue;
+    if (!EVOLUTION_PARENTS.has(evo.id)) EVOLUTION_PARENTS.set(evo.id, []);
+    EVOLUTION_PARENTS.get(evo.id).push(mon.id);
+  }
+}
+
 const DEX_LIST = dexRaw
   .filter(m => !FORM_IDS.has(m.id))
   .map(m => ({
@@ -91,9 +101,99 @@ const DEX_LIST = dexRaw
     sprites: m.sprites,
     image: m.image,
     icon: m.icon,
-    slug: m.slug
+    slug: m.slug,
+    locations: Array.isArray(m.locations) ? m.locations : [],
+    preEvolutionIds: EVOLUTION_PARENTS.get(m.id) || []
   }))
   .sort((a, b) => a.id - b.id);
+
+const DEX_BY_ID = new Map(DEX_LIST.map(mon => [mon.id, mon]));
+
+function hasRegionLocation(mon, region) {
+  if (!mon) return false;
+  return (mon.locations || []).some(loc => loc?.region_name === region);
+}
+
+const REGION_CHAIN_CACHE = new Map();
+function monMatchesRegionFilter(mon, region) {
+  if (region === 'All') return true;
+  if (!mon) return false;
+  const key = `${mon.id}|${region}`;
+  if (REGION_CHAIN_CACHE.has(key)) return REGION_CHAIN_CACHE.get(key);
+  const result = hasRegionInChain(mon, region, new Set());
+  REGION_CHAIN_CACHE.set(key, result);
+  return result;
+}
+
+function hasRegionInChain(mon, region, visited) {
+  if (!mon || visited.has(mon.id)) return false;
+  visited.add(mon.id);
+  if (hasRegionLocation(mon, region)) return true;
+  for (const prevId of mon.preEvolutionIds || []) {
+    const prev = DEX_BY_ID.get(prevId);
+    if (hasRegionInChain(prev, region, visited)) return true;
+  }
+  return false;
+}
+
+function collectEvolutionSources(mon, region, visited = new Set(), sources = new Map()) {
+  if (!mon || visited.has(mon.id)) return sources;
+  visited.add(mon.id);
+  for (const prevId of mon.preEvolutionIds || []) {
+    const prev = DEX_BY_ID.get(prevId);
+    if (!prev) continue;
+    if (hasRegionLocation(prev, region)) {
+      if (!sources.has(prev.id)) sources.set(prev.id, prev.name);
+    } else {
+      collectEvolutionSources(prev, region, visited, sources);
+    }
+  }
+  return sources;
+}
+
+function getEvolutionHint(mon, region) {
+  if (!mon || region === 'All') return '';
+  if (!monMatchesRegionFilter(mon, region)) return '';
+  const entries = Array.from(collectEvolutionSources(mon, region).entries()).sort((a, b) => a[0] - b[0]);
+  if (!entries.length) return '';
+  const names = entries.map(([, name]) => name);
+  if (names.length === 1) return 'No Location - Evolve from ' + names[0];
+  const last = names.pop();
+  return 'No Location - Evolve from ' + names.join(', ') + ' or ' + last;
+}
+
+const REGION_OPTIONS = Object.freeze([
+  { value: 'All', label: 'Region (All)' },
+  { value: 'Kanto', label: 'Kanto' },
+  { value: 'Johto', label: 'Johto' },
+  { value: 'Hoenn', label: 'Hoenn' },
+  { value: 'Sinnoh', label: 'Sinnoh' },
+  { value: 'Unova', label: 'Unova' }
+]);
+const REGION_SORT_INDEX = REGION_OPTIONS.reduce((map, option, idx) => {
+  if (option.value !== 'All') map[option.value] = idx;
+  return map;
+}, {});
+
+function groupLocationsByRegion(locations = []) {
+  const buckets = new Map();
+  for (const loc of locations || []) {
+    const region = loc?.region_name || 'Unknown';
+    if (!buckets.has(region)) buckets.set(region, []);
+    buckets.get(region).push(loc);
+  }
+  return Array.from(buckets.entries())
+    .sort((a, b) => {
+      const aIdx = REGION_SORT_INDEX[a[0]] ?? Number.MAX_SAFE_INTEGER;
+      const bIdx = REGION_SORT_INDEX[b[0]] ?? Number.MAX_SAFE_INTEGER;
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      return a[0].localeCompare(b[0]);
+    })
+    .map(([region, entries]) => ({
+      region,
+      locations: entries.slice().sort((a, b) => (a.location || '').localeCompare(b.location || ''))
+    }));
+}
 
 function titleCase(s = "") {
   return String(s)
@@ -105,6 +205,17 @@ export default function CaughtListButton(){
   const { caught, toggleCaught } = useContext(CaughtContext);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [regionFilter, setRegionFilter] = useState('All');
+  const [hideCaught, setHideCaught] = useState(false);
+  const [expandedId, setExpandedId] = useState(null);
+
+  useEffect(() => {
+    if (!open) setExpandedId(null);
+  }, [open]);
+
+  useEffect(() => {
+    setExpandedId(null);
+  }, [regionFilter, hideCaught]);
 
   const btnStyle = {
     padding:'6px 10px', borderRadius:10, border:'1px solid var(--divider)',
@@ -122,14 +233,38 @@ export default function CaughtListButton(){
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)', display:'flex', flexDirection:'column'
   };
   const headerStyle = {
-    display:'grid', gridTemplateColumns:'1fr auto 1fr', alignItems:'center', gap:8, marginBottom:14, position:'relative'
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'space-between',
+    gap:12,
+    marginBottom:14,
+    position:'relative',
+    flexWrap:'wrap'
   };
+  const controlsRowStyle = { display:'flex', alignItems:'center', gap:12, flexWrap:'nowrap', flex:'1 1 auto', minWidth:0 };
+  const hideCaughtLabelStyle = { display:'inline-flex', alignItems:'center', gap:6, fontWeight:700, cursor:'pointer', flex:'0 0 auto' };
+  const hideCaughtCheckboxStyle = { width:16, height:16, accentColor:'var(--accent)' };
+  const regionBadgeStyle = { padding:'4px 12px', borderRadius:999, border:'1px solid var(--accent)', color:'var(--accent)', fontWeight:800, fontSize:13, background:'rgba(255,255,255,0.04)', flex:'0 0 auto' };
   const gridStyle = { display:'grid', gridTemplateColumns:'repeat(4, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
-  const chipStyle = (filled) => ({
-    display:'grid', gridTemplateColumns:'auto 1fr auto', alignItems:'center', gap:10,
-    border:`${filled ? 2 : 1}px solid ${filled ? '#22c55e' : '#ffffff'}`,
-    borderRadius:10, padding:10, background:'var(--surface)', cursor:'pointer', overflow:'hidden'
+  const chipStyle = (filled, expanded) => ({
+    display:'flex',
+    flexDirection:'column',
+    gap:8,
+    border: (expanded ? 2 : filled ? 2 : 1) + 'px solid ' + (expanded ? 'var(--accent)' : filled ? '#22c55e' : '#ffffff'),
+    borderRadius:10,
+    padding:10,
+    background:'var(--surface)',
+    cursor:'pointer',
+    overflow:'hidden',
+    boxShadow: expanded ? '0 0 0 1px var(--accent)' : 'none'
   });
+  const chipHeaderStyle = { display:'grid', gridTemplateColumns:'auto 1fr auto', alignItems:'center', gap:10 };
+  const chipNameStyle = { textAlign:'center', minWidth:0 };
+  const locationContainerStyle = { display:'flex', flexDirection:'column', gap:6, background:'var(--card)', padding:10, borderRadius:8, border:'1px solid var(--divider)' };
+  const regionGroupStyle = { display:'flex', flexDirection:'column', gap:6 };
+  const regionTitleStyle = { fontWeight:800, fontSize:13, color:'var(--accent)' };
+  const locationEntryStyle = { fontSize:13, lineHeight:1.45, background:'rgba(0,0,0,0.15)', padding:'6px 8px', borderRadius:6, border:'1px solid var(--divider)' };
+  const catchButtonStyle = { border:'none', background:'transparent', padding:0, cursor:'pointer', display:'inline-flex', alignItems:'center', justifyContent:'center' };
 
   function PokeballIcon({ filled=false, size=30 }){
     const stroke = filled ? '#000' : '#bbb';
@@ -145,9 +280,13 @@ export default function CaughtListButton(){
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return DEX_LIST;
-    return DEX_LIST.filter(m => String(m.id).includes(q) || m.name.toLowerCase().includes(q));
-  }, [query]);
+    return DEX_LIST.filter(mon => {
+      if (hideCaught && caught.has(mon.id)) return false;
+      if (!monMatchesRegionFilter(mon, regionFilter)) return false;
+      if (!q) return true;
+      return String(mon.id).includes(q) || mon.name.toLowerCase().includes(q);
+    });
+  }, [query, regionFilter, hideCaught, caught]);
 
   return (
     <>
@@ -173,17 +312,40 @@ export default function CaughtListButton(){
               <span style={{ pointerEvents:'none' }}>X</span>
             </button>
 
-            {/* Header with centered search */}
+            {/* Header controls */}
             <div style={headerStyle}>
-              <div />
-              <input
-                className="input"
-                placeholder="Search"
-                value={query}
-                onChange={e=>setQuery(e.target.value)}
-                style={{ width:280, borderRadius:8, padding:'6px 10px', justifySelf:'center' }}
-              />
-              <div />
+              <div style={controlsRowStyle}>
+                <input
+                  className="input"
+                  placeholder="Search"
+                  value={query}
+                  onChange={e=>setQuery(e.target.value)}
+                  style={{ width:220, flex:'0 0 220px', borderRadius:8, padding:'6px 10px' }}
+                />
+                <select
+                  className="input"
+                  value={regionFilter}
+                  onChange={e=>setRegionFilter(e.target.value)}
+                  style={{ width:220, borderRadius:8, padding:'6px 10px', flex:'0 0 220px' }}
+                >
+                  {REGION_OPTIONS.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <label style={hideCaughtLabelStyle}>
+                  <input
+                    type="checkbox"
+                    checked={hideCaught}
+                    onChange={e=>setHideCaught(e.target.checked)}
+                    style={hideCaughtCheckboxStyle}
+                  />
+                  Hide Caught
+                </label>
+                {regionFilter !== 'All' && (
+                  <div style={regionBadgeStyle}>{regionFilter}</div>
+                )}
+              </div>
+
             </div>
 
             {/* Grid of chips */}
@@ -191,21 +353,77 @@ export default function CaughtListButton(){
               <div style={gridStyle}>
                 {list.map(mon => {
                   const filled = caught.has(mon.id);
+                  const isExpanded = expandedId === mon.id;
+                  const locationPool = regionFilter === 'All'
+                    ? (mon.locations || [])
+                    : (mon.locations || []).filter(loc => loc?.region_name === regionFilter);
+                  const groupedLocations = isExpanded ? groupLocationsByRegion(locationPool) : [];
+                  const evolutionHint = regionFilter === 'All' ? '' : getEvolutionHint(mon, regionFilter);
+                  const emptyLocationsMessage = evolutionHint || (regionFilter === 'All' ? 'No known locations available.' : 'No known locations in ' + regionFilter + '.');
                   return (
                     <div
                       key={mon.id}
-                      style={chipStyle(filled)}
-                      onClick={()=>toggleCaught(mon.id)}
-                      title={filled ? 'Mark as uncaught' : 'Mark as caught'}
+                      style={chipStyle(filled, isExpanded)}
+                      onClick={() => setExpandedId(isExpanded ? null : mon.id)}
+                      title={isExpanded ? 'Hide locations' : 'Show locations'}
                     >
-                      <Sprite mon={mon} alt={mon.name} style={{ opacity: filled ? 0.6 : 1 }} />
-                      <div style={{ textAlign:'center', minWidth:0, opacity: filled ? 0.6 : 1 }}>
-                        <div style={{ fontWeight:800, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{titleCase(mon.name)}</div>
-                        <div className="label-muted" style={{ fontSize:12 }}>#{mon.id}</div>
+                      <div style={chipHeaderStyle}>
+                        <Sprite mon={mon} alt={mon.name} style={{ opacity: filled ? 0.6 : 1 }} />
+                        <div style={{ ...chipNameStyle, opacity: filled ? 0.6 : 1 }}>
+                          <div style={{ fontWeight:800, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{titleCase(mon.name)}</div>
+                          <div className="label-muted" style={{ fontSize:12 }}>#{mon.id}</div>
+                        </div>
+                        <button
+                          type='button'
+                          onClick={e => { e.stopPropagation(); toggleCaught(mon.id); }}
+                          style={catchButtonStyle}
+                          aria-pressed={filled}
+                          title={filled ? 'Mark as uncaught' : 'Mark as caught'}
+                        >
+                          <PokeballIcon filled={filled} />
+                        </button>
                       </div>
-                      <div style={{ pointerEvents:'none', justifySelf:'end' }}>
-                        <PokeballIcon filled={filled} />
-                      </div>
+                      {isExpanded && (
+                        <div
+                          style={locationContainerStyle}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          {groupedLocations.length ? (
+                            groupedLocations.map(({ region, locations }) => (
+                              <div key={region} style={regionGroupStyle}>
+                                <div style={regionTitleStyle}>{region}</div>
+                                {locations.map((loc, idx) => {
+                                  const details = [];
+                                  if (loc.type) details.push(titleCase(loc.type));
+                                  if (loc.rarity) details.push(loc.rarity);
+                                  if (loc.min_level != null || loc.max_level != null) {
+                                    if (loc.min_level != null && loc.max_level != null) {
+                                      details.push(loc.min_level === loc.max_level ? 'Lv. ' + loc.min_level : 'Lv. ' + loc.min_level + '-' + loc.max_level);
+                                    } else if (loc.min_level != null) {
+                                      details.push('Lv. ' + loc.min_level + '+');
+                                    } else if (loc.max_level != null) {
+                                      details.push('Lv. up to ' + loc.max_level);
+                                    }
+                                  }
+                                  const detailText = details.join(' - ');
+                                  return (
+                                    <div key={`${region}-${idx}`} style={locationEntryStyle}>
+                                      <div style={{ fontWeight:700 }}>{titleCase(loc.location || 'Unknown')}</div>
+                                      {detailText && (
+                                        <div className="label-muted" style={{ fontSize:12 }}>{detailText}</div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ))
+                          ) : (
+                            <div style={{ fontStyle:'italic', color:'var(--muted)', fontSize:13 }}>
+                              {emptyLocationsMessage}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
