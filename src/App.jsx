@@ -21,6 +21,7 @@ import alphaIconUrl from '../data/alpha.ico';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
+import RecommendedMovesets from './components/RecommendedMovesets.jsx';
 import hordeRegions from '../horderegiondata.json';
 import typeChartImg from '../data/Pokemon_Type_Chart.png';
 
@@ -652,6 +653,8 @@ function useAbilityDesc(name){
 function AbilityPill({ label, name, compact = false }){
   if (!name) return null;
   const desc = useAbilityDesc(name);
+  const trimmedDesc = desc?.trim() || '';
+  const tooltipContent = trimmedDesc || titleCase(name);
   // Unified ability text size; overflow handled with ellipsis
   const fontPx = 13;
   return (
@@ -664,20 +667,23 @@ function AbilityPill({ label, name, compact = false }){
       minWidth: 0
     }}>
       <span className="label-muted" style={{ fontSize: compact ? 11 : 12 }}>{label}</span>
-      <span
-        style={{
-          fontWeight:600,
-          color:'var(--accent)',
-          whiteSpace:'nowrap',
-          overflow:'hidden',
-          textOverflow:'ellipsis',
-          display:'inline-block',
-          minWidth: 0,
-          maxWidth: '100%',
-          fontSize: fontPx
-        }}
-        title={desc || titleCase(name)}
-      >{titleCase(name)}</span>
+      <DelayedTooltip content={tooltipContent} delay={400}>
+        <span
+          style={{
+            fontWeight:600,
+            color:'var(--accent)',
+            whiteSpace:'nowrap',
+            overflow:'hidden',
+            textOverflow:'ellipsis',
+            display:'inline-block',
+            minWidth: 0,
+            maxWidth: '100%',
+            fontSize: fontPx,
+            cursor: tooltipContent ? 'help' : 'default'
+          }}
+          aria-label={tooltipContent}
+        >{titleCase(name)}</span>
+      </DelayedTooltip>
     </div>
   );
 }
@@ -929,9 +935,11 @@ function LabeledPillBox({ label, value, title }){
 }
 
 // Delayed tooltip wrapper for hover content (e.g., item descriptions)
-function DelayedTooltip({ content, delay = 1000, children }){
+function DelayedTooltip({ content, delay = 1000, maxWidth = 360, children }){
   const [visible, setVisible] = React.useState(false);
   const timerRef = React.useRef(null);
+  const resolvedMaxWidth = typeof maxWidth === 'number' ? maxWidth : 360;
+  const resolvedMinWidth = Math.min(resolvedMaxWidth, 260);
   const onEnter = () => {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => setVisible(true), delay);
@@ -948,11 +956,12 @@ function DelayedTooltip({ content, delay = 1000, children }){
           style={{
             position:'absolute',
             bottom:'calc(100% + 8px)', left:'50%', transform:'translateX(-50%)',
-            maxWidth:280,
+            maxWidth: resolvedMaxWidth,
+            minWidth: resolvedMinWidth,
             background:'var(--surface)', color:'var(--text)',
             border:'1px solid var(--divider)', borderRadius:8,
-            padding:'8px 10px', fontSize:12, boxShadow:'0 6px 20px rgba(0,0,0,.35)',
-            zIndex:50, whiteSpace:'normal'
+            padding:'8px 12px', fontSize:12, lineHeight:1.4, boxShadow:'0 6px 20px rgba(0,0,0,.35)',
+            zIndex:50, whiteSpace:'normal', textAlign:'left'
           }}
         >
           {content}
@@ -1125,11 +1134,17 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
 function AbilityInline({ idx, name }){
   const desc = useAbilityDesc(name);
   const label = idx === 2 ? 'H.' : `${idx + 1}.`;
+  const tooltipContent = desc?.trim() ? desc.trim() : null;
   return (
-    <span title={desc} style={{ marginRight:10 }}>
-      <span className="label-muted" style={{ fontWeight:700 }}>{label}</span>{' '}
-      <span style={{ fontWeight:700 }}>{titleCase(name)}</span>
-    </span>
+    <DelayedTooltip content={tooltipContent} delay={400}>
+      <span
+        style={{ marginRight:10, display:'inline-flex', alignItems:'center', gap:4, cursor: tooltipContent ? 'help' : 'default' }}
+        aria-label={tooltipContent || undefined}
+      >
+        <span className="label-muted" style={{ fontWeight:700 }}>{label}</span>
+        <span style={{ fontWeight:700 }}>{titleCase(name)}</span>
+      </span>
+    </DelayedTooltip>
   );
 }
 
@@ -1841,7 +1856,30 @@ function CategoryPill({ cat }){
 
 const MOVE_CACHE = new Map();
 function moveSlug(name=''){
-  return String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  const withDelimiters = String(name)
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2');
+  return withDelimiters.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+}
+
+function mapMoveResponse(json) {
+  if (!json || typeof json !== 'object') return null;
+  const entries = Array.isArray(json.effect_entries) ? json.effect_entries : [];
+  const english = entries.find(entry => entry?.language?.name === 'en') || entries[0];
+  let shortEffect = english?.short_effect || english?.effect || null;
+  if (shortEffect && typeof json.effect_chance === 'number') {
+    shortEffect = shortEffect.replace(/\$effect_chance/g, String(json.effect_chance));
+  }
+  if (shortEffect) {
+    shortEffect = shortEffect.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  return {
+    type: json?.type?.name,
+    category: json?.damage_class?.name,
+    power: json?.power,
+    accuracy: json?.accuracy,
+    shortEffect: shortEffect || null,
+  };
 }
 function useMoveData(name){
   const slug = moveSlug(name);
@@ -1858,15 +1896,11 @@ function useMoveData(name){
       try{
         const res = await fetch(`https://pokeapi.co/api/v2/move/${slug}`);
         const json = await res.json();
-        const info = {
-          type: json?.type?.name,
-          category: json?.damage_class?.name,
-          power: json?.power,
-          accuracy: json?.accuracy
-        };
+        const info = mapMoveResponse(json);
         MOVE_CACHE.set(slug, info);
         if(alive) setData(info);
       }catch(e){
+        MOVE_CACHE.set(slug, null);
         if(alive) setData(null);
       }
     })();
@@ -1877,16 +1911,39 @@ function useMoveData(name){
 
 const moveCell = { padding:'2px 4px', border:'1px solid var(--divider)' };
 
+function formatMoveLabel(name=''){
+  if (!name) return '';
+  return String(name)
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+    .trim();
+}
+
 function MoveRow({ mv, showLevel=false }){
   const name = typeof mv === 'string' ? mv : mv.move;
   const level = typeof mv === 'string' ? null : mv.level;
+  const slug = moveSlug(name);
   const data = useMoveData(name);
+  const shortEffect = data?.shortEffect;
+  const hasSlug = Boolean(slug);
+  const tooltipContent = shortEffect || (hasSlug ? (MOVE_CACHE.has(slug) ? 'No short effect available.' : 'Loading move info...') : null);
+  const displayName = formatMoveLabel(name);
+  const cursorStyle = hasSlug ? 'help' : 'default';
   return (
     <tr>
       {showLevel && (
         <td style={{ ...moveCell, textAlign:'center' }}>{level ?? '-'}</td>
       )}
-      <td style={{ ...moveCell, textAlign:'left' }}>{name}</td>
+      <td style={{ ...moveCell, textAlign:'left' }}>
+        <DelayedTooltip delay={500} content={tooltipContent}>
+          <span
+            style={{ cursor: cursorStyle, display:'inline-flex', alignItems:'center' }}
+            aria-label={tooltipContent || undefined}
+          >
+            {displayName}
+          </span>
+        </DelayedTooltip>
+      </td>
       <td style={{ ...moveCell, textAlign:'center' }}>
         {data?.type ? <TypePill t={data.type} compact /> : '\u2014'}
       </td>
@@ -1919,12 +1976,8 @@ function MovesTable({ title, moves = [], showLevel = false }) {
         try {
           const res = await fetch(`https://pokeapi.co/api/v2/move/${slug}`);
           const json = await res.json();
-          MOVE_CACHE.set(slug, {
-            type: json?.type?.name,
-            category: json?.damage_class?.name,
-            power: json?.power,
-            accuracy: json?.accuracy,
-          });
+          const info = mapMoveResponse(json);
+          MOVE_CACHE.set(slug, info);
         } catch (e) {}
       }
       if (alive) setRefresh(r => r + 1);
@@ -2086,10 +2139,31 @@ function EvolutionChain({ mon, onSelect }) {
   const renderMon = (m) => {
     if (!m) return null;
     const isSelected = !!(mon && m && m.id === mon.id);
+    const canSelect = !!(onSelect && !isSelected);
+    const handleSelect = () => {
+      if (onSelect) onSelect(m);
+    };
+    const handleKeyDown = (evt) => {
+      if (evt.key === 'Enter' || evt.key === ' ') {
+        evt.preventDefault();
+        handleSelect();
+      }
+    };
     return (
       <div style={{ display:'flex', alignItems:'center', gap:16 }}>
         <div style={{ textAlign:'center' }}>
-          <div style={{ display:'inline-block', padding:2, border: isSelected ? '2px solid var(--accent)' : '2px solid transparent' }}>
+          <div
+            style={{
+              display:'inline-block',
+              padding:2,
+              border: isSelected ? '2px solid var(--accent)' : '2px solid transparent',
+              cursor: canSelect ? 'pointer' : 'default',
+            }}
+            role={canSelect ? 'button' : undefined}
+            tabIndex={canSelect ? 0 : undefined}
+            onClick={canSelect ? handleSelect : undefined}
+            onKeyDown={canSelect ? handleKeyDown : undefined}
+          >
             <Sprite mon={m} size={72} alt={m.name} />
           </div>
           <div className="label-muted">#{String(m.id).padStart(3,'0')}</div>
@@ -2102,7 +2176,7 @@ function EvolutionChain({ mon, onSelect }) {
               type="button"
               className="link-btn"
               style={{ background:'none', border:0, padding:0, color:'var(--accent)', fontWeight:700, cursor:'pointer' }}
-              onClick={() => onSelect && onSelect(m)}
+              onClick={handleSelect}
             >
               {titleCase(m.name)}
             </button>
@@ -3990,6 +4064,7 @@ function App(){
     try { localStorage.setItem('theme', theme); } catch {}
   }, [theme]);
   const [showMoveset, setShowMoveset] = useState(false);
+  const [showSmogonSets, setShowSmogonSets] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
   const [isOneHp, setIsOneHp] = useState(false);
@@ -4267,6 +4342,7 @@ function App(){
   }, [typeFilter]);
   useEffect(() => {
     setShowMoveset(false);
+    setShowSmogonSets(false);
     setShowLocations(false);
     setIsAsleep(false);
     setIsOneHp(false);
@@ -6075,7 +6151,7 @@ const marketResults = React.useMemo(() => {
               </div>
 
 
-              <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowMoveset(false); }} />
+              <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowSmogonSets(false); setShowMoveset(false); }} />
 
               {/* Close button moved to bottom-right of the info block */}
               <div style={{ display:'flex', justifyContent:'flex-end', marginTop:12 }}>
@@ -6145,6 +6221,13 @@ const marketResults = React.useMemo(() => {
         </div>
           </div>
 
+          <div style={{ ...styles.card, marginTop:16 }}>
+            <RecommendedMovesets
+              speciesName={resolved?.name}
+              expanded={showSmogonSets}
+              onToggle={() => setShowSmogonSets(v => !v)}
+            />
+          </div>
           {MOVE_METHODS.some(m => (resolved.moves?.[m.key] || []).length) && (
             <div style={{ ...styles.card, marginTop:16 }}>
               <div
@@ -6152,7 +6235,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showMoveset ? 6 : 0 }}
                 onClick={() => setShowMoveset(v => !v)}
               >
-                {showMoveset ? '▾' : '▸'} Moveset
+                {showMoveset ? '▾' : '▸'} Moves
               </div>
               {showMoveset && (
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>

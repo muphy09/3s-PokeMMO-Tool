@@ -2351,7 +2351,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -2988,7 +2988,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -3448,7 +3448,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -4268,7 +4268,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -4713,7 +4713,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -7902,7 +7902,7 @@
                 "20": "Confuse Ray"
             },
             {
-                "23": "Faint Attack"
+                "23": "Feint Attack"
             },
             {
                 "24": "Will-O-Wisp"
@@ -7945,7 +7945,7 @@
             "Hypnosis",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Role Play",
             "Covet"
@@ -8159,7 +8159,7 @@
             "Hypnosis",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Role Play",
             "Covet"
@@ -8334,7 +8334,7 @@
             "Defense Curl",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Pain Split",
             "Uproar",
@@ -8602,7 +8602,7 @@
             "Defense Curl",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Pain Split",
             "Uproar",
@@ -8792,7 +8792,7 @@
             "Hypnosis",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar"
         ],
@@ -9454,7 +9454,7 @@
             "Hypnosis",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Ominous Wind"
@@ -11486,7 +11486,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Uproar",
             "Sucker Punch"
@@ -11650,7 +11650,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Uproar",
             "Sucker Punch"
@@ -11777,7 +11777,7 @@
                 "20": "Taunt"
             },
             {
-                "22": "Faint Attack"
+                "22": "Feint Attack"
             },
             {
                 "24": "Assurance"
@@ -11810,7 +11810,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Uproar",
             "Knock Off",
@@ -12115,7 +12115,7 @@
                 "20": "Taunt"
             },
             {
-                "22": "Faint Attack"
+                "22": "Feint Attack"
             },
             {
                 "24": "Assurance"
@@ -12157,7 +12157,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Uproar",
             "Knock Off",
@@ -24398,7 +24398,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Knock Off",
             "Endeavor"
@@ -24573,7 +24573,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Knock Off",
             "Endeavor"
@@ -31195,7 +31195,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Uproar",
             "Endeavor",
@@ -34860,7 +34860,7 @@
                 "8": "Smoke Screen"
             },
             {
-                "12": "Faint Attack"
+                "12": "Feint Attack"
             },
             {
                 "15": "Fire Spin"
@@ -34892,7 +34892,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Covet",
             "Dual Chop"
@@ -35068,7 +35068,7 @@
             "Bind",
             "String Shot",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Bug Bite"
         ],
@@ -40542,7 +40542,7 @@
             "Sky Attack",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Ominous Wind"
@@ -41502,7 +41502,7 @@
             "Defense Curl",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Pain Split",
             "Uproar",
@@ -41961,7 +41961,7 @@
             "Sky Attack",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Twister",
             "Magic Coat",
@@ -42139,7 +42139,7 @@
             "Sky Attack",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Twister",
             "Magic Coat",
@@ -43062,7 +43062,7 @@
                 "16": "Mimic"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "20": "Rock Tomb"
@@ -43095,7 +43095,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Role Play",
             "Block",
@@ -44608,7 +44608,7 @@
                 "20": "Confuse Ray"
             },
             {
-                "20": "Faint Attack"
+                "20": "Feint Attack"
             },
             {
                 "25": "Assurance"
@@ -44639,7 +44639,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Covet",
             "Last Resort",
@@ -44763,7 +44763,7 @@
                 "34": "Nasty Plot"
             },
             {
-                "35": "Faint Attack"
+                "35": "Feint Attack"
             },
             {
                 "41": "Mean Look"
@@ -44789,7 +44789,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Sucker Punch"
@@ -46230,7 +46230,7 @@
                 "18": "Mud Bomb"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "19": "Mud-Slap"
@@ -46263,7 +46263,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Aqua Tail",
             "Bug Bite"
@@ -46656,7 +46656,7 @@
             "Defense Curl",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Covet",
             "Last Resort"
@@ -46881,7 +46881,7 @@
             "Defense Curl",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Covet",
             "Last Resort"
@@ -47758,7 +47758,7 @@
                 "6": "Taunt"
             },
             {
-                "10": "Faint Attack"
+                "10": "Feint Attack"
             },
             {
                 "12": "Quick Attack"
@@ -47802,7 +47802,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off"
         ],
@@ -48205,7 +48205,7 @@
                 "8": "Fury Swipes"
             },
             {
-                "15": "Faint Attack"
+                "15": "Feint Attack"
             },
             {
                 "22": "Sweet Scent"
@@ -48232,7 +48232,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Covet",
             "Last Resort"
         ],
@@ -48384,7 +48384,7 @@
                 "8": "Fury Swipes"
             },
             {
-                "15": "Faint Attack"
+                "15": "Feint Attack"
             },
             {
                 "22": "Sweet Scent"
@@ -48411,7 +48411,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Covet",
             "Last Resort"
@@ -51064,7 +51064,7 @@
                 "28": "Fire Fang"
             },
             {
-                "32": "Faint Attack"
+                "32": "Feint Attack"
             },
             {
                 "37": "Embargo"
@@ -51090,7 +51090,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Role Play",
             "Sucker Punch"
@@ -51263,7 +51263,7 @@
                 "30": "Fire Fang"
             },
             {
-                "35": "Faint Attack"
+                "35": "Feint Attack"
             },
             {
                 "41": "Embargo"
@@ -51289,7 +51289,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Role Play",
             "Sucker Punch"
@@ -52946,7 +52946,7 @@
                 "8": "Smoke Screen"
             },
             {
-                "12": "Faint Attack"
+                "12": "Feint Attack"
             },
             {
                 "15": "Fire Spin"
@@ -52978,7 +52978,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Covet",
             "Dual Chop"
@@ -57111,7 +57111,7 @@
                 "20": "Razor Wind"
             },
             {
-                "24": "Faint Attack"
+                "24": "Feint Attack"
             },
             {
                 "24": "Payback"
@@ -57139,7 +57139,7 @@
             "Defense Curl",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Fake Out",
             "Air Cutter",
@@ -57242,7 +57242,7 @@
             "Nature Power",
             "Razor Leaf",
             "Harden",
-            "Faint Attack",
+            "Feint Attack",
             "Astonish",
             "Air Cutter",
             "Extrasensory",
@@ -57268,7 +57268,7 @@
             "Defense Curl",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Twister",
             "Fake Out",
@@ -61088,7 +61088,7 @@
                 "9": "Slack Off"
             },
             {
-                "14": "Faint Attack"
+                "14": "Feint Attack"
             },
             {
                 "17": "Amnesia"
@@ -61108,7 +61108,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Covet",
             "Sucker Punch",
             "After You"
@@ -61253,7 +61253,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Covet",
             "Sucker Punch",
@@ -61366,7 +61366,7 @@
                 "9": "Slack Off"
             },
             {
-                "14": "Faint Attack"
+                "14": "Feint Attack"
             },
             {
                 "17": "Amnesia"
@@ -61398,7 +61398,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Block",
             "Covet",
@@ -61543,7 +61543,7 @@
             "String Shot",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Bug Bite"
         ],
         "tm/hm": [
@@ -61662,7 +61662,7 @@
             "String Shot",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Bug Bite"
         ],
@@ -61779,7 +61779,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Sucker Punch",
             "Bug Bite"
         ],
@@ -62368,7 +62368,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Role Play",
             "Knock Off",
@@ -62525,7 +62525,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Role Play",
             "Knock Off",
@@ -62932,7 +62932,7 @@
                 "19": "Copycat"
             },
             {
-                "22": "Faint Attack"
+                "22": "Feint Attack"
             },
             {
                 "25": "Charm"
@@ -62959,7 +62959,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Fake Out",
             "Uproar",
@@ -63050,7 +63050,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Fake Out",
             "Uproar",
@@ -63156,7 +63156,7 @@
                 "18": "Detect"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "21": "Night Shade"
@@ -63196,7 +63196,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Fake Out",
             "Role Play",
@@ -63400,7 +63400,7 @@
                 "20": "Sucker Punch"
             },
             {
-                "21": "Faint Attack"
+                "21": "Feint Attack"
             },
             {
                 "24": "Iron Defense"
@@ -63424,7 +63424,7 @@
         "tutor": [
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Ancient Power",
             "Knock Off",
@@ -67489,7 +67489,7 @@
                 "5": "Copycat"
             },
             {
-                "10": "Faint Attack"
+                "10": "Feint Attack"
             },
             {
                 "14": "Psybeam"
@@ -67527,7 +67527,7 @@
             "Defense Curl",
             "Nightmare",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Uproar",
             "Role Play",
@@ -67647,7 +67647,7 @@
         "start": [
             "Bite",
             "Bide",
-            "Faint Attack",
+            "Feint Attack",
             "Astonish"
         ],
         "lv": [
@@ -67696,7 +67696,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Signal Beam",
             "Bug Bite"
         ],
@@ -67785,7 +67785,7 @@
             "Fissure",
             "Dig",
             "Bide",
-            "Faint Attack",
+            "Feint Attack",
             "Dragon Breath",
             "Crunch",
             "Superpower",
@@ -67844,7 +67844,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Signal Beam",
@@ -67927,7 +67927,7 @@
             "Fissure",
             "Dig",
             "Bide",
-            "Faint Attack",
+            "Feint Attack",
             "Dragon Breath",
             "Crunch",
             "Superpower",
@@ -67989,7 +67989,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Signal Beam",
@@ -68103,7 +68103,7 @@
                 "16": "Needle Arm"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "22": "Ingrain"
@@ -68136,7 +68136,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Role Play",
             "Block",
@@ -68273,7 +68273,7 @@
                 "16": "Needle Arm"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "22": "Ingrain"
@@ -68306,7 +68306,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Role Play",
             "Block",
@@ -71109,7 +71109,7 @@
                 "13": "Fury Swipes"
             },
             {
-                "16": "Faint Attack"
+                "16": "Feint Attack"
             },
             {
                 "18": "Psybeam"
@@ -71143,7 +71143,7 @@
             "Bind",
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Fake Out",
             "Role Play",
@@ -71290,7 +71290,7 @@
                 "16": "Will-O-Wisp"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "22": "hex"
@@ -71321,7 +71321,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Role Play",
             "Magic Coat",
@@ -71470,7 +71470,7 @@
                 "16": "Will-O-Wisp"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "22": "hex"
@@ -71501,7 +71501,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Role Play",
             "Magic Coat",
@@ -71884,7 +71884,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Gravity",
             "Sucker Punch",
@@ -72425,7 +72425,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Role Play",
             "Magic Coat",
             "Knock Off",
@@ -73549,7 +73549,7 @@
                 "9": "Scary Face"
             },
             {
-                "11": "Faint Attack"
+                "11": "Feint Attack"
             },
             {
                 "14": "Water Pulse"
@@ -73586,7 +73586,7 @@
             "Bind",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Bounce",
             "Sucker Punch",
             "Aqua Tail"
@@ -80795,7 +80795,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Twister",
             "Uproar",
             "Sucker Punch"
@@ -80922,7 +80922,7 @@
                 "13": "Hypnosis"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Fury Swipes"
@@ -80959,7 +80959,7 @@
             "Hypnosis",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off",
             "Covet",
@@ -81067,7 +81067,7 @@
                 "13": "Hypnosis"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Fury Swipes"
@@ -81107,7 +81107,7 @@
             "Hypnosis",
             "Super Fang",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off",
             "Covet",
@@ -81671,7 +81671,7 @@
                 "20": "Hypnosis"
             },
             {
-                "21": "Faint Attack"
+                "21": "Feint Attack"
             },
             {
                 "24": "Safeguard"
@@ -81698,7 +81698,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Signal Beam",
             "Gravity",
@@ -81841,7 +81841,7 @@
                 "20": "Hypnosis"
             },
             {
-                "21": "Faint Attack"
+                "21": "Feint Attack"
             },
             {
                 "24": "Safeguard"
@@ -81877,7 +81877,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Signal Beam",
             "Block",
@@ -82028,7 +82028,7 @@
                 "16": "Mimic"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "20": "Rock Tomb"
@@ -82061,7 +82061,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Role Play",
             "Block",
@@ -82596,7 +82596,7 @@
         ],
         "lv": [
             {
-                "7": "Faint Attack"
+                "7": "Feint Attack"
             },
             {
                 "13": "Hypnosis"
@@ -82622,7 +82622,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Uproar",
             "Sucker Punch",
@@ -83960,7 +83960,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Aqua Tail",
             "Bug Bite"
@@ -84074,7 +84074,7 @@
                 "16": "Revenge"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Venoshock"
@@ -84111,7 +84111,7 @@
             "Super Fang",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Role Play",
             "Knock Off",
@@ -85088,7 +85088,7 @@
                 "8": "Quick Attack"
             },
             {
-                "10": "Faint Attack"
+                "10": "Feint Attack"
             },
             {
                 "18": "Metal Claw"
@@ -85129,7 +85129,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off"
         ],
@@ -86106,7 +86106,7 @@
                 "8": "Smoke Screen"
             },
             {
-                "12": "Faint Attack"
+                "12": "Feint Attack"
             },
             {
                 "15": "Fire Spin"
@@ -86141,7 +86141,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Covet",
             "Dual Chop"
@@ -86448,7 +86448,7 @@
             "String Shot",
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Ancient Power",
             "Uproar",
             "Signal Beam",
@@ -86832,7 +86832,7 @@
                 "18": "Mud Bomb"
             },
             {
-                "19": "Faint Attack"
+                "19": "Feint Attack"
             },
             {
                 "20": "Pin Missile"
@@ -86866,7 +86866,7 @@
             "Hypnosis",
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Aqua Tail",
             "Bug Bite"
@@ -87771,7 +87771,7 @@
             "Nightmare",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Pain Split",
             "Gravity",
             "Sucker Punch",
@@ -90380,7 +90380,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Role Play",
             "Knock Off",
@@ -90543,7 +90543,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Role Play",
             "Knock Off",
@@ -97644,7 +97644,7 @@
                 "12": "Bug Bite"
             },
             {
-                "13": "Faint Attack"
+                "13": "Feint Attack"
             },
             {
                 "16": "Flail"
@@ -97676,7 +97676,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Block",
             "Bug Bite"
@@ -97784,7 +97784,7 @@
                 "12": "Bug Bite"
             },
             {
-                "13": "Faint Attack"
+                "13": "Feint Attack"
             },
             {
                 "16": "Flail"
@@ -97819,7 +97819,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Block",
             "Bug Bite"
@@ -97933,7 +97933,7 @@
                 "8": "Headbutt"
             },
             {
-                "9": "Faint Attack"
+                "9": "Feint Attack"
             },
             {
                 "12": "Sand-Attack"
@@ -97982,7 +97982,7 @@
             "Super Fang",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off",
             "Dual Chop"
@@ -98120,12 +98120,12 @@
             "Headbutt",
             "Leer",
             "Low Kick",
-            "Faint Attack",
+            "Feint Attack",
             "Payback"
         ],
         "lv": [
             {
-                "9": "Faint Attack"
+                "9": "Feint Attack"
             },
             {
                 "12": "Sand-Attack"
@@ -98177,7 +98177,7 @@
             "Super Fang",
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Fake Out",
             "Knock Off",
             "Dual Chop"
@@ -99605,7 +99605,7 @@
                 "16": "Scary Face"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Taunt"
@@ -99641,7 +99641,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Knock Off",
             "Bounce",
@@ -99749,7 +99749,7 @@
                 "16": "Scary Face"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Taunt"
@@ -99791,7 +99791,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Uproar",
             "Knock Off",
             "Bounce",
@@ -100253,7 +100253,7 @@
                 "24": "Hypnosis"
             },
             {
-                "24": "Faint Attack"
+                "24": "Feint Attack"
             },
             {
                 "28": "Fake Tears"
@@ -100283,7 +100283,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Fake Out",
             "Uproar",
@@ -100427,7 +100427,7 @@
                 "24": "Hypnosis"
             },
             {
-                "24": "Faint Attack"
+                "24": "Feint Attack"
             },
             {
                 "28": "Fake Tears"
@@ -100457,7 +100457,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Fake Out",
             "Uproar",
@@ -100583,7 +100583,7 @@
                 "24": "Hypnosis"
             },
             {
-                "24": "Faint Attack"
+                "24": "Feint Attack"
             },
             {
                 "28": "Fake Tears"
@@ -100613,7 +100613,7 @@
         "tutor": [
             "Hypnosis",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Heal Bell",
             "Fake Out",
             "Uproar",
@@ -101911,7 +101911,7 @@
                 "13": "Leech Seed"
             },
             {
-                "16": "Faint Attack"
+                "16": "Feint Attack"
             },
             {
                 "20": "Take Down"
@@ -101940,7 +101940,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Bounce",
             "Last Resort",
@@ -102063,7 +102063,7 @@
                 "13": "Leech Seed"
             },
             {
-                "16": "Faint Attack"
+                "16": "Feint Attack"
             },
             {
                 "20": "Take Down"
@@ -102095,7 +102095,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Bounce",
             "Last Resort",
@@ -102433,7 +102433,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Signal Beam",
             "Bug Bite"
@@ -102580,7 +102580,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Signal Beam",
             "Bug Bite"
@@ -102681,7 +102681,7 @@
                 "16": "Synthesis"
             },
             {
-                "20": "Faint Attack"
+                "20": "Feint Attack"
             },
             {
                 "20": "Clear Smog"
@@ -102711,7 +102711,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Gastro Acid",
             "Worry Seed",
@@ -102814,7 +102814,7 @@
                 "16": "Synthesis"
             },
             {
-                "20": "Faint Attack"
+                "20": "Feint Attack"
             },
             {
                 "20": "Clear Smog"
@@ -102844,7 +102844,7 @@
         "tutor": [
             "Defense Curl",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Synthesis",
             "Gastro Acid",
             "Worry Seed",
@@ -103479,7 +103479,7 @@
         "tutor": [
             "String Shot",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Signal Beam",
             "Bounce",
             "Gastro Acid",
@@ -103613,7 +103613,7 @@
         "tutor": [
             "String Shot",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Signal Beam",
             "Bounce",
             "Gastro Acid",
@@ -106911,7 +106911,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Sucker Punch",
             "Aqua Tail"
         ],
@@ -107332,7 +107332,7 @@
                 "15": "Torment"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Scary Face"
@@ -107368,7 +107368,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Role Play",
             "Knock Off",
             "Sucker Punch",
@@ -107484,7 +107484,7 @@
                 "15": "Torment"
             },
             {
-                "17": "Faint Attack"
+                "17": "Feint Attack"
             },
             {
                 "20": "Scary Face"
@@ -107523,7 +107523,7 @@
         "tutor": [
             "Snore",
             "Spite",
-            "Faint Attack",
+            "Feint Attack",
             "Role Play",
             "Knock Off",
             "Sucker Punch",
@@ -108103,7 +108103,7 @@
                 "18": "Tailwind"
             },
             {
-                "23": "Faint Attack"
+                "23": "Feint Attack"
             },
             {
                 "24": "Knock Off"
@@ -108144,7 +108144,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Block"
         ],
@@ -108319,7 +108319,7 @@
                 "19": "Flatter"
             },
             {
-                "23": "Faint Attack"
+                "23": "Feint Attack"
             },
             {
                 "24": "Knock Off"
@@ -108364,7 +108364,7 @@
         "tutor": [
             "Sky Attack",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Block"
         ],
@@ -108508,7 +108508,7 @@
         "tutor": [
             "Bind",
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Knock Off",
             "Gastro Acid",
             "Sucker Punch",
@@ -108642,7 +108642,7 @@
         ],
         "tutor": [
             "Snore",
-            "Faint Attack",
+            "Feint Attack",
             "Endeavor",
             "Bug Bite"
         ],
@@ -114071,3 +114071,4 @@
         "egg": []
     }
 }
+
