@@ -1,6 +1,16 @@
 # Changelog
 ---
 
+## [3.1.2] - 2025-09
+### Fixed
+- Horde Search
+  - Filtering Sp. Attack & Sp. Defense now works as intended
+
+- Pokemon Profile
+  - Dropdown Arrows now consistent with each other
+
+---
+
 ## [3.1.1] - 2025-09
 ### Changed
 - Pokedex

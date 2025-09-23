@@ -3422,7 +3422,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               className="region-btn"
               onClick={() => setShowFilterMenu(v => !v)}
             >
-              Encounter Type ?
+              Encounter Type {showFilterMenu ? '▴' : '▾'}
             </button>
             {showFilterMenu && (
               <div
@@ -6201,7 +6201,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showLocations ? 6 : 0 }}
                 onClick={() => setShowLocations(v => !v)}
               >
-                {showLocations ? '▴' : '▾'} Locations
+                {showLocations ? '▾' : '▸'} Locations
               </div>
               {showLocations && (
                 <>
@@ -6263,7 +6263,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showMoveset ? 6 : 0 }}
                 onClick={() => setShowMoveset(v => !v)}
               >
-                {showMoveset ? '▴' : '▾'} Moves
+                {showMoveset ? '▾' : '▸'} Moves
               </div>
               {showMoveset && (
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>

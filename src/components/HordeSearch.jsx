@@ -6,6 +6,14 @@ import { ColorContext } from '../colorConfig';
 
 const REGION_OPTIONS = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova'];
 const EV_OPTIONS = ['', 'HP', 'Attack', 'Defense', 'Sp. Attack', 'Sp. Defense', 'Speed'];
+const EV_OPTION_KEYS = {
+  HP: 'ev_hp',
+  Attack: 'ev_attack',
+  Defense: 'ev_defense',
+  'Sp. Attack': 'ev_sp_attack',
+  'Sp. Defense': 'ev_sp_defense',
+  Speed: 'ev_speed'
+};
 const METHOD_OPTIONS = ['', 'Grass', 'Cave', 'Water', 'Dark Grass'];
 const SIZE_OPTIONS = ['x3', 'x5'];
 
@@ -142,8 +150,8 @@ export default function HordeSearch(){
       const mon = getDexMon(name);
       if(!mon) continue;
       if(evFilter){
-        const key = 'ev_'+evFilter.toLowerCase().replace(/\s+/g,'_');
-        if(!(mon.yields && mon.yields[key] > 0)) continue;
+        const key = EV_OPTION_KEYS[evFilter];
+        if(!(key && mon.yields && mon.yields[key] > 0)) continue;
       }
       const locFiltered = locs.filter(l =>
         (!region || l.region===region) &&
