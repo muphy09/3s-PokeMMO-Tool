@@ -195,6 +195,18 @@ function groupLocationsByRegion(locations = []) {
     }));
 }
 
+function defaultCollapsedRegionsForMon(mon, regionFilter) {
+  if (!mon) return new Set();
+  if (regionFilter !== 'All') return new Set();
+  const sections = groupLocationsByRegion((mon.locations || []).filter(Boolean));
+  const next = new Set();
+  for (const section of sections) {
+    const key = section.region || 'Unknown';
+    next.add(key);
+  }
+  return next;
+}
+
 function titleCase(s = "") {
   return String(s)
     .toLowerCase()
@@ -207,14 +219,18 @@ export default function CaughtListButton(){
   const [query, setQuery] = useState('');
   const [regionFilter, setRegionFilter] = useState('All');
   const [hideCaught, setHideCaught] = useState(false);
-  const [expandedId, setExpandedId] = useState(null);
+  const [activeMon, setActiveMon] = useState(null);
+  const [collapsedRegions, setCollapsedRegions] = useState(() => new Set());
 
   useEffect(() => {
-    if (!open) setExpandedId(null);
+    if (!open) {
+      setActiveMon(null);
+      setCollapsedRegions(new Set());
+    }
   }, [open]);
 
   useEffect(() => {
-    setExpandedId(null);
+    setActiveMon(null);
   }, [regionFilter, hideCaught]);
 
   const btnStyle = {
@@ -246,24 +262,33 @@ export default function CaughtListButton(){
   const hideCaughtCheckboxStyle = { width:16, height:16, accentColor:'var(--accent)' };
   const regionBadgeStyle = { padding:'4px 12px', borderRadius:999, border:'1px solid var(--accent)', color:'var(--accent)', fontWeight:800, fontSize:13, background:'rgba(255,255,255,0.04)', flex:'0 0 auto' };
   const gridStyle = { display:'grid', gridTemplateColumns:'repeat(4, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
-  const chipStyle = (filled, expanded) => ({
+  const chipStyle = (filled, active) => ({
     display:'flex',
     flexDirection:'column',
     gap:8,
-    border: (expanded ? 2 : filled ? 2 : 1) + 'px solid ' + (expanded ? 'var(--accent)' : filled ? '#22c55e' : '#ffffff'),
+    border: (active ? 2 : filled ? 2 : 1) + 'px solid ' + (active ? 'var(--accent)' : filled ? '#22c55e' : '#ffffff'),
     borderRadius:10,
     padding:10,
     background:'var(--surface)',
     cursor:'pointer',
     overflow:'hidden',
-    boxShadow: expanded ? '0 0 0 1px var(--accent)' : 'none'
+    boxShadow: active ? '0 0 0 1px var(--accent)' : 'none',
+    transition:'border-color 120ms ease, box-shadow 120ms ease'
   });
   const chipHeaderStyle = { display:'grid', gridTemplateColumns:'auto 1fr auto', alignItems:'center', gap:10 };
   const chipNameStyle = { textAlign:'center', minWidth:0 };
-  const locationContainerStyle = { display:'flex', flexDirection:'column', gap:6, background:'var(--card)', padding:10, borderRadius:8, border:'1px solid var(--divider)' };
-  const regionGroupStyle = { display:'flex', flexDirection:'column', gap:6 };
-  const regionTitleStyle = { fontWeight:800, fontSize:13, color:'var(--accent)' };
-  const locationEntryStyle = { fontSize:13, lineHeight:1.45, background:'rgba(0,0,0,0.15)', padding:'6px 8px', borderRadius:6, border:'1px solid var(--divider)' };
+  const locationScrimStyle = { position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:20010, padding:'24px' };
+  const locationCardStyle = { background:'var(--card)', color:'var(--text)', borderRadius:12, padding:20, width:'min(440px, 90vw)', maxHeight:'80vh', boxShadow:'0 12px 32px rgba(0,0,0,0.45)', display:'flex', flexDirection:'column', gap:16 };
+  const locationHeaderStyle = { display:'flex', alignItems:'center', justifyContent:'space-between', gap:12 };
+  const locationHeaderInfoStyle = { display:'flex', alignItems:'center', gap:12, minWidth:0 };
+  const locationBodyStyle = { display:'flex', flexDirection:'column', gap:12, overflowY:'auto', paddingRight:4 };
+  const regionButtonStyle = { display:'flex', alignItems:'center', justifyContent:'space-between', width:'100%', background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, padding:'10px 12px', fontWeight:800, fontSize:15, cursor:'pointer', color:'inherit' };
+  const regionChevronStyle = { display:'inline-flex', alignItems:'center', justifyContent:'center', width:18, marginLeft:12, fontSize:16, lineHeight:1 };
+  const regionGroupStyle = { display:'flex', flexDirection:'column', gap:8, borderRadius:10, border:'1px solid var(--divider)', background:'rgba(0,0,0,0.25)', padding:'8px 10px' };
+  const locationListStyle = { listStyle:'none', margin:0, padding:0, display:'flex', flexDirection:'column', gap:8 };
+  const locationEntryStyle = { fontSize:13, lineHeight:1.45, background:'var(--surface)', padding:'8px 10px', borderRadius:6, border:'1px solid var(--divider)' };
+  const emptyLocationsStyle = { fontStyle:'italic', color:'var(--muted)', fontSize:13 };
+  const locationActionButtonStyle = { border:'1px solid var(--divider)', borderRadius:8, padding:'6px 12px', background:'var(--surface)', fontWeight:700, cursor:'pointer', color:'var(--text)' };
   const catchButtonStyle = { border:'none', background:'transparent', padding:0, cursor:'pointer', display:'inline-flex', alignItems:'center', justifyContent:'center' };
 
   function PokeballIcon({ filled=false, size=30 }){
@@ -287,6 +312,80 @@ export default function CaughtListButton(){
       return String(mon.id).includes(q) || mon.name.toLowerCase().includes(q);
     });
   }, [query, regionFilter, hideCaught, caught]);
+
+  const locationOverlayData = useMemo(() => {
+    if (!activeMon) return { sections: [], emptyMessage: '' };
+    const allLocations = (activeMon.locations || []).filter(Boolean);
+    const pool = regionFilter === 'All'
+      ? allLocations
+      : allLocations.filter(loc => loc?.region_name === regionFilter);
+    const sections = regionFilter === 'All'
+      ? groupLocationsByRegion(pool)
+      : (pool.length
+        ? [{
+            region: pool[0]?.region_name || regionFilter || 'Unknown',
+            locations: pool.slice().sort((a, b) => (a.location || '').localeCompare(b.location || ''))
+          }]
+        : []);
+    const evolutionHint = regionFilter === 'All' ? '' : getEvolutionHint(activeMon, regionFilter);
+    const emptyMessage = evolutionHint || (regionFilter === 'All'
+      ? 'No known locations available.'
+      : 'No known locations in ' + regionFilter + '.');
+    return { sections, emptyMessage };
+  }, [activeMon, regionFilter]);
+
+  useEffect(() => {
+    if (!activeMon) {
+      setCollapsedRegions(new Set());
+    }
+  }, [activeMon]);
+
+  useEffect(() => {
+    if (!activeMon) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setActiveMon(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [activeMon]);
+
+  const toggleRegionCollapsed = (region) => {
+    setCollapsedRegions(prev => {
+      const next = new Set(prev);
+      if (next.has(region)) next.delete(region);
+      else next.add(region);
+      return next;
+    });
+  };
+
+  const formatLocationDetails = (loc) => {
+    const details = [];
+    if (loc.type) details.push(titleCase(loc.type));
+    if (loc.rarity) details.push(loc.rarity);
+    if (loc.min_level != null || loc.max_level != null) {
+      if (loc.min_level != null && loc.max_level != null) {
+        details.push(loc.min_level === loc.max_level ? 'Lv. ' + loc.min_level : 'Lv. ' + loc.min_level + '-' + loc.max_level);
+      } else if (loc.min_level != null) {
+        details.push('Lv. ' + loc.min_level + '+');
+      } else if (loc.max_level != null) {
+        details.push('Lv. up to ' + loc.max_level);
+      }
+    }
+    return details.join(' - ');
+  };
+
+  const handleMonClick = (mon) => {
+    if (activeMon?.id === mon.id) {
+      setActiveMon(null);
+      setCollapsedRegions(new Set());
+      return;
+    }
+    setCollapsedRegions(defaultCollapsedRegionsForMon(mon, regionFilter));
+    setActiveMon(mon);
+  };
+
+  const activeMonCaught = activeMon ? caught.has(activeMon.id) : false;
+  const overlaySubtitle = regionFilter === 'All' ? 'Showing all regions' : 'Filtered to ' + titleCase(regionFilter);
 
   return (
     <>
@@ -353,19 +452,13 @@ export default function CaughtListButton(){
               <div style={gridStyle}>
                 {list.map(mon => {
                   const filled = caught.has(mon.id);
-                  const isExpanded = expandedId === mon.id;
-                  const locationPool = regionFilter === 'All'
-                    ? (mon.locations || [])
-                    : (mon.locations || []).filter(loc => loc?.region_name === regionFilter);
-                  const groupedLocations = isExpanded ? groupLocationsByRegion(locationPool) : [];
-                  const evolutionHint = regionFilter === 'All' ? '' : getEvolutionHint(mon, regionFilter);
-                  const emptyLocationsMessage = evolutionHint || (regionFilter === 'All' ? 'No known locations available.' : 'No known locations in ' + regionFilter + '.');
+                  const isActive = activeMon?.id === mon.id;
                   return (
                     <div
                       key={mon.id}
-                      style={chipStyle(filled, isExpanded)}
-                      onClick={() => setExpandedId(isExpanded ? null : mon.id)}
-                      title={isExpanded ? 'Hide locations' : 'Show locations'}
+                      style={chipStyle(filled, isActive)}
+                      onClick={() => handleMonClick(mon)}
+                      title={isActive ? 'Hide locations' : 'Show locations'}
                     >
                       <div style={chipHeaderStyle}>
                         <Sprite mon={mon} alt={mon.name} style={{ opacity: filled ? 0.6 : 1 }} />
@@ -383,47 +476,6 @@ export default function CaughtListButton(){
                           <PokeballIcon filled={filled} />
                         </button>
                       </div>
-                      {isExpanded && (
-                        <div
-                          style={locationContainerStyle}
-                          onClick={e => e.stopPropagation()}
-                        >
-                          {groupedLocations.length ? (
-                            groupedLocations.map(({ region, locations }) => (
-                              <div key={region} style={regionGroupStyle}>
-                                <div style={regionTitleStyle}>{region}</div>
-                                {locations.map((loc, idx) => {
-                                  const details = [];
-                                  if (loc.type) details.push(titleCase(loc.type));
-                                  if (loc.rarity) details.push(loc.rarity);
-                                  if (loc.min_level != null || loc.max_level != null) {
-                                    if (loc.min_level != null && loc.max_level != null) {
-                                      details.push(loc.min_level === loc.max_level ? 'Lv. ' + loc.min_level : 'Lv. ' + loc.min_level + '-' + loc.max_level);
-                                    } else if (loc.min_level != null) {
-                                      details.push('Lv. ' + loc.min_level + '+');
-                                    } else if (loc.max_level != null) {
-                                      details.push('Lv. up to ' + loc.max_level);
-                                    }
-                                  }
-                                  const detailText = details.join(' - ');
-                                  return (
-                                    <div key={`${region}-${idx}`} style={locationEntryStyle}>
-                                      <div style={{ fontWeight:700 }}>{titleCase(loc.location || 'Unknown')}</div>
-                                      {detailText && (
-                                        <div className="label-muted" style={{ fontSize:12 }}>{detailText}</div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ))
-                          ) : (
-                            <div style={{ fontStyle:'italic', color:'var(--muted)', fontSize:13 }}>
-                              {emptyLocationsMessage}
-                            </div>
-                          )}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
@@ -432,9 +484,88 @@ export default function CaughtListButton(){
             <div style={{ marginTop:14, textAlign:'center', fontWeight:800 }}>
               Total caught {caught.size}/{DEX_LIST.length}
             </div>
+            {activeMon && (
+              <div style={locationScrimStyle} onClick={() => setActiveMon(null)}>
+                <div style={locationCardStyle} onClick={e => e.stopPropagation()}>
+                  <div style={locationHeaderStyle}>
+                    <div style={locationHeaderInfoStyle}>
+                      <Sprite mon={activeMon} size={72} alt={activeMon.name} />
+                      <div style={{ minWidth:0 }}>
+                        <div style={{ fontWeight:900, fontSize:20, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+                          #{String(activeMon.id).padStart(3, '0')} {titleCase(activeMon.name)}
+                        </div>
+                        <div className="label-muted" style={{ fontSize:13, marginTop:4 }}>
+                          {overlaySubtitle}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'flex-end' }}>
+                      <button
+                        type="button"
+                        style={{
+                          ...locationActionButtonStyle,
+                          borderColor: activeMonCaught ? 'var(--accent)' : 'var(--divider)',
+                          color: activeMonCaught ? 'var(--accent)' : 'var(--text)'
+                        }}
+                        onClick={e => { e.stopPropagation(); toggleCaught(activeMon.id); }}
+                      >
+                        {activeMonCaught ? 'Caught' : 'Catch'}
+                      </button>
+                      <button
+                        type="button"
+                        style={locationActionButtonStyle}
+                        onClick={e => { e.stopPropagation(); setActiveMon(null); }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                  <div style={locationBodyStyle}>
+                    {locationOverlayData.sections.length ? (
+                      locationOverlayData.sections.map(({ region, locations }) => {
+                        const regionKey = region || 'Unknown';
+                        const collapsed = collapsedRegions.has(regionKey);
+                        return (
+                          <div key={regionKey} style={regionGroupStyle}>
+                            <button
+                              type="button"
+                              style={regionButtonStyle}
+                              onClick={e => { e.stopPropagation(); toggleRegionCollapsed(regionKey); }}
+                            >
+                              <span style={{ fontWeight:800 }}>{titleCase(regionKey)}</span>
+                              <span aria-hidden="true" style={regionChevronStyle}>
+                                {String.fromCharCode(collapsed ? 0x25B6 : 0x25BC)}
+                              </span>
+                            </button>
+                            {!collapsed && (
+                              <ul style={locationListStyle}>
+                                {locations.map((loc, idx) => {
+                                  const detailText = formatLocationDetails(loc);
+                                  return (
+                                    <li key={`${regionKey}-${idx}`} style={locationEntryStyle}>
+                                      <div style={{ fontWeight:700 }}>{titleCase(loc.location || 'Unknown')}</div>
+                                      {detailText && (
+                                        <div className="label-muted" style={{ fontSize:12 }}>{detailText}</div>
+                                      )}
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div style={emptyLocationsStyle}>{locationOverlayData.emptyMessage}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
     </>
   );
 }
+

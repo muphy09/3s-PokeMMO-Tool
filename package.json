@@ -4,16 +4,16 @@
   "private": true,
   "description": "3's PokeMMO Tool — For Blueberries",
   "author": "3",
-  "main": "electron/main.js",
+  "main": "electron/bootstrap.js",
   "scripts": {
     "dev": "vite",
     "preelectron:dev": "npm run build:helper -- -Dev",
-    "electron:dev": "concurrently -k -s first \"vite build --watch --emptyOutDir\" \"wait-on -v file:dist/index.html && cross-env ELECTRON_DIST_WATCH=1 electron .\"",
+    "electron:dev": "concurrently -k -s first \"vite build --watch --emptyOutDir\" \"wait-on -v file:dist/index.html && cross-env ELECTRON_RUN_AS_NODE= ELECTRON_DIST_WATCH=1 electron .\"",
     "dev:app": "npm run electron:dev",
-    "electron:dev:debug": "concurrently -k -s first \"vite build --watch --emptyOutDir\" \"wait-on -v file:dist/index.html && cross-env ELECTRON_DIST_WATCH=1 OPEN_DEVTOOLS=1 electron .\"",
-    "electron:dev:server": "concurrently -k -s first \"vite --strictPort\" \"wait-on -v http-get://localhost:5173/index.html http-get://localhost:5173/src/main.jsx && cross-env ELECTRON_START_URL=http://localhost:5173 OPEN_DEVTOOLS=1 electron .\"",
+    "electron:dev:debug": "concurrently -k -s first \"vite build --watch --emptyOutDir\" \"wait-on -v file:dist/index.html && cross-env ELECTRON_RUN_AS_NODE= ELECTRON_DIST_WATCH=1 OPEN_DEVTOOLS=1 electron .\"",
+    "electron:dev:server": "concurrently -k -s first \"vite --strictPort\" \"wait-on -v http-get://localhost:5173/index.html http-get://localhost:5173/src/main.jsx && cross-env ELECTRON_RUN_AS_NODE= ELECTRON_START_URL=http://localhost:5173 OPEN_DEVTOOLS=1 electron .\"",
     "build": "vite build",
-    "start": "electron .",
+    "start": "cross-env ELECTRON_RUN_AS_NODE= electron .",
     "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
     "clean": "rimraf release",
     "dist": "npm run clean && npm run build:helper && npm run build && electron-builder --publish never",
@@ -37,7 +37,7 @@
     },
     "asar": true,
     "extraMetadata": {
-      "main": "electron/main.js"
+      "main": "electron/bootstrap.js"
     },
     "files": [
       {
@@ -135,3 +135,5 @@
     "cross-env": "^7.0.3"
   }
 }
+
+

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState, useRef, useContext } from 'react';
+import React, { useEffect, useMemo, useState, useRef, useContext } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
@@ -10,6 +10,7 @@ import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
 import AlphaDexButton from './components/AlphaDexButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
+import SponsorButton from './components/SponsorButton.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import HomeScreen from './components/HomeScreen.jsx';
@@ -175,8 +176,8 @@ function normalizeKey(s=''){
   return String(s)
     .toLowerCase()
     .normalize('NFKD')
-    .replace(/♀/g,'-f')
-    .replace(/♂/g,'-m')
+    .replace(/\u2640/g,'-f')
+    .replace(/\u2642/g,'-m')
     .replace(/[^\w\s-]/g,'')
     .replace(/\s+/g,'-')
     .replace(/-+/g,'-')
@@ -574,7 +575,7 @@ function localSpriteCandidates(mon){
   );
   }
 
-/* ---------- Type colors (Gen 1â€“5) ---------- */
+/* ---------- Type colors (Gen 1–5) ---------- */
 const TYPE_COLORS = {
   normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
   grass:'#7AC74C', ice:'#96D9D6', fighting:'#C22E28', poison:'#A33EA1',
@@ -1080,7 +1081,7 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
         }}
       >
         <span className="label-muted" style={{ fontWeight:700 }}>Include IVs and EVs</span>
-        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>▶</span>
+        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>?</span>
       </div>
 
       {showExtras && (
@@ -1804,7 +1805,7 @@ function AreaMonCard({
             }}
             aria-label="Scroll left"
           >
-            ◀
+            ?
           </button>
         )}
         {showRightArrow && (
@@ -1829,7 +1830,7 @@ function AreaMonCard({
             }}
             aria-label="Scroll right"
           >
-            ▶
+            ?
           </button>
         )}
       </div>
@@ -2524,8 +2525,8 @@ function normalizeMapForGrouping(region, mapName){
   const r = String(region).toLowerCase().trim();
   let m = String(mapName).trim();
 
-  // Additional normalization for mis-encoded "Pokémon" variants
-  // e.g., "POK\u00C3\u00A9MON" (POKÃ©MON), "Pok\u00C3\u00A9mon" (PokÃ©mon)
+  // Additional normalization for mis-encoded "Pok�mon" variants
+  // e.g., "POK\u00C3\u00A9MON" (POKéMON), "Pok\u00C3\u00A9mon" (Pokémon)
   m = m
     .replace(/POK\u00C3\u00A9MON/gi, 'Pokemon')
     .replace(/Pok\u00C3\u00A9mon/gi, 'Pokemon');
@@ -2536,11 +2537,11 @@ function normalizeMapForGrouping(region, mapName){
     .replace(/^Pokemon\s+Tower\b/i, 'Pokemon Tower');
 
   // Normalize mis-encoded/diacritic variants of "Pokemon"
-  // Examples: "Pokémon", "POKÃ©MON" → "Pokemon"
+  // Examples: "Pok�mon", "POKéMON" ? "Pokemon"
   m = m
     .replace(/Pok(?:e|\u00e9|\u00c9)mon/gi, 'Pokemon')
-    .replace(/POKÃ©MON/gi, 'Pokemon')
-    .replace(/PokÃ©mon/gi, 'Pokemon');
+    .replace(/POKéMON/gi, 'Pokemon')
+    .replace(/Pokémon/gi, 'Pokemon');
 
   // Merge halves like "Route 212 (North)" / "(South)" -> "Route 212"
   if (/^route\s*\d+\b/i.test(m)) {
@@ -2614,7 +2615,7 @@ function lookupRarity(monName, region, map, locIndex){
 
 /* ======================= LIVE ROUTE MATCHING ======================= */
 
-/** Known alias fixes (expand as needed) â€” keys and values are compared after simplifyName(). */
+/** Known alias fixes (expand as needed) — keys and values are compared after simplifyName(). */
 const LIVE_ALIASES = {
   "oreburghcity": "oreburghcity",
   "jubilifecity": "jubilifecity",
@@ -2622,11 +2623,11 @@ const LIVE_ALIASES = {
   "mtcoronet4f": "mountcoronet",
   "victoryroad": "victoryroad",
   // Handle accented/mis-encoded forms of Pokeathlon Dome from OCR
+  // simplifyName("Pok�athlon Dome") -> "pokathlondome"
   // simplifyName("Pokéathlon Dome") -> "pokathlondome"
-  // simplifyName("PokÃ©athlon Dome") -> "pokathlondome"
   // simplifyName("Pokeathlon Dome") -> "pokeathlondome"
   "pokathlondome": "pokeathlondome",
-  // Handle mis-encoded 'Pokémon' dropping the 'e' in certain names
+  // Handle mis-encoded 'Pok�mon' dropping the 'e' in certain names
   "pokmonmansion": "pokemonmansion",
   "pokmontower": "pokemontower",
 };
@@ -3348,7 +3349,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
         <div className="label-muted">
-          Live Location: <span style={{ fontWeight:800 }}>{rawText || 'â€”'}</span>
+          Live Location: <span style={{ fontWeight:800 }}>{rawText || '—'}</span>
           {SHOW_CONFIDENCE && (confPct !== null) && (
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
@@ -3359,7 +3360,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               className="region-btn"
               onClick={() => setShowInfoMenu(v => !v)}
             >
-              Encounter Info ▾
+              Encounter Info ?
             </button>
             {showInfoMenu && (
               <div
@@ -3421,7 +3422,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               className="region-btn"
               onClick={() => setShowFilterMenu(v => !v)}
             >
-              Encounter Type ▾
+              Encounter Type ?
             </button>
             {showFilterMenu && (
               <div
@@ -3916,7 +3917,7 @@ function LiveBattlePanel({ onViewMon, onCompare }){
                         <div>
                           {mon.catchRate != null
                             ? `${mon.catchRate} | ${catchPercent}%`
-                            : 'â€”'}
+                            : '—'}
                         </div>
                       </div>
                       <div style={{ fontWeight: 600 }}>Base Stats:</div>
@@ -4031,6 +4032,7 @@ function App(){
   const [query, setQuery]       = useState('');
   const [areaQuery, setAreaQuery] = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
+  const searchClearIntentRef = useRef(false);
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
   const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'horde' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
@@ -4869,7 +4871,7 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
               <div style={{ position:'relative' }}>
-                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ▾</button>
+                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ?</button>
                 {toolsOpen && (
                   <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10, overflow:'hidden' }}>
                     <button style={{ ...styles.segBtn(mode==='items'), width:'100%', borderRadius:0 }} onClick={()=>setMode('items')}>Items</button>
@@ -5032,7 +5034,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setTypeFilter(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5047,7 +5049,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setTypeFilter2(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5062,7 +5064,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setEggFilter(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5077,7 +5079,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setAbilityFilter(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5092,7 +5094,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setRegionFilter(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5107,7 +5109,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setMoveFilter(''); setMoveLevelOnly(false); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5122,7 +5124,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setMoveLevelOnly(false); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5137,7 +5139,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setItemFilter(''); }}
                   >
-                    ×
+                    �
                   </button>
                 </div>
               )}
@@ -5169,7 +5171,7 @@ const marketResults = React.useMemo(() => {
                         className="chip-x"
                         onClick={(e)=>{ e.stopPropagation(); setAreaRegion('All'); }}
                       >
-                        ×
+                        �
                       </button>
                     </div>
                   )}
@@ -5191,7 +5193,7 @@ const marketResults = React.useMemo(() => {
                         className="region-btn"
                         onClick={() => setShowInfoMenu(v => !v)}
                       >
-                        Encounter Info ▾
+                        Encounter Info ?
                       </button>
                       {showInfoMenu && (
                         <div
@@ -5254,7 +5256,7 @@ const marketResults = React.useMemo(() => {
                         style={{ display:'flex', alignItems:'center', gap:4 }}
                         onClick={() => setShowMethodMenu(v => !v)}
                       >
-                        Encounter Type ▾
+                        Encounter Type ?
                       </button>
                       {showMethodMenu && (
                         <div
@@ -5331,10 +5333,20 @@ const marketResults = React.useMemo(() => {
                   if (mode==='areas') setAreaQuery(e.target.value);
                   else setQuery(e.target.value);
                 }}
+                onMouseDown={() => { searchClearIntentRef.current = true; }}
+                onTouchStart={() => { searchClearIntentRef.current = true; }}
                 onFocus={() => {
+                  const shouldClear = searchClearIntentRef.current;
+                  searchClearIntentRef.current = false;
+                  if (!shouldClear) return;
                   if (mode==='areas') setAreaQuery('');
                   else setQuery('');
                 }}
+                onBlur={() => { searchClearIntentRef.current = false; }}
+                onMouseUp={() => { searchClearIntentRef.current = false; }}
+                onMouseLeave={() => { searchClearIntentRef.current = false; }}
+                onTouchEnd={() => { searchClearIntentRef.current = false; }}
+                onTouchCancel={() => { searchClearIntentRef.current = false; }}
                 placeholder={mode==='pokemon'
                   ? 'e.g. Garchomp or 445'
                   : mode==='areas'
@@ -5628,7 +5640,7 @@ const marketResults = React.useMemo(() => {
           {mode==='market' && (
             <div style={{ marginTop:12 }}>
               {marketLoading && (
-                <div className="label-muted">Loading market dataâ€¦</div>
+                <div className="label-muted">Loading market data…</div>
               )}
               {marketError && (
                 <div className="label-error">{marketError}</div>
@@ -5658,7 +5670,7 @@ const marketResults = React.useMemo(() => {
                           </div>
                         </div>
                         {item.price != null ? (
-                          <div>â‚½ {Number(item.price).toLocaleString()}</div>
+                          <div>₽ {Number(item.price).toLocaleString()}</div>
                         ) : null}
                       </div>
                     </div>
@@ -5761,7 +5773,7 @@ const marketResults = React.useMemo(() => {
                         zIndex: 1
                       }}
                     >
-                    {/* Column 1: Type — 4 rows (label, type1, type2, blank) */}
+                    {/* Column 1: Type � 4 rows (label, type1, type2, blank) */}
                     <div style={{ gridColumn: '1', gridRow:'1', display:'flex', alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Type</span>
                     </div>
@@ -5797,7 +5809,7 @@ const marketResults = React.useMemo(() => {
                     </div>
                     <div style={{ gridColumn: '1', gridRow:'4' }} />
 
-                    {/* Column 2: Egg Group — 4 rows (label, group1, group2, blank) */}
+                    {/* Column 2: Egg Group � 4 rows (label, group1, group2, blank) */}
                     <div style={{ gridColumn: '2', gridRow:'1', display:'flex', alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Egg Group</span>
                     </div>
@@ -5831,7 +5843,7 @@ const marketResults = React.useMemo(() => {
                     </div>
                     <div style={{ gridColumn: '2', gridRow:'4' }} />
 
-                    {/* Column 3: Abilities — label + rows for 1,2,Hidden */}
+                    {/* Column 3: Abilities � label + rows for 1,2,Hidden */}
                     <div style={{ gridColumn: '3', gridRow:'1', display:'flex', alignItems:'center' }}>
                       <span className="label-muted" style={{ fontWeight:700 }}>Abilities</span>
                     </div>
@@ -5893,7 +5905,7 @@ const marketResults = React.useMemo(() => {
                                 onClick={() => setShowAllHeld(v => !v)}
                                 style={{ background:'none', border:'none', cursor:'pointer', color:'var(--muted)' }}
                               >
-                                {showAllHeld ? '▲' : '▼'}
+                                {showAllHeld ? '?' : '?'}
                               </button>
                             )}
                           </span>
@@ -6173,7 +6185,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showLocations ? 6 : 0 }}
                 onClick={() => setShowLocations(v => !v)}
               >
-                {showLocations ? '▾' : '▸'} Locations
+                {showLocations ? '?' : '?'} Locations
               </div>
               {showLocations && (
                 <>
@@ -6235,7 +6247,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showMoveset ? 6 : 0 }}
                 onClick={() => setShowMoveset(v => !v)}
               >
-                {showMoveset ? '▾' : '▸'} Moves
+                {showMoveset ? '?' : '?'} Moves
               </div>
               {showMoveset && (
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -6351,7 +6363,19 @@ const marketResults = React.useMemo(() => {
       )}
 
       {/* Fixed controls */}
-      <ThemeButton theme={theme} setTheme={setTheme} />
+      <div
+        style={{
+          position:'fixed',
+          left:12,
+          bottom:10,
+          display:'flex',
+          gap:8,
+          zIndex:10000
+        }}
+      >
+        <ThemeButton theme={theme} setTheme={setTheme} />
+        <SponsorButton />
+      </div>
       <FeedbackButton />
       <VersionBadge />
     </>
@@ -6362,3 +6386,7 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
+
+
+
+

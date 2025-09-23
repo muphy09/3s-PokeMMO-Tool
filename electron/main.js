@@ -4,7 +4,6 @@ const { app, BrowserWindow, ipcMain, Menu, shell, dialog, Notification } = requi
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
-const { autoUpdater } = require('electron-updater');
 
 
 // ===== App identity (Win) =====
@@ -170,6 +169,19 @@ function log(...args) {
   console.log('[main]', ...args);
 }
 
+let autoUpdaterInstance = null;
+let autoUpdaterLoadFailed = false;
+function ensureAutoUpdater() {
+  if (autoUpdaterInstance || autoUpdaterLoadFailed) return autoUpdaterInstance;
+  try {
+    autoUpdaterInstance = require('electron-updater').autoUpdater;
+  } catch (err) {
+    autoUpdaterLoadFailed = true;
+    log('autoUpdater load failed', err?.message || err);
+    autoUpdaterInstance = null;
+  }
+  return autoUpdaterInstance;
+}
 function rsrc(...p) {
   return path.join(process.resourcesPath || process.cwd(), ...p);
 }
@@ -220,41 +232,47 @@ async function relaunchApp({ ocrDisabledFlag = false } = {}) {
 
 // ===== Updater wiring =====
 function setupAutoUpdates() {
-  autoUpdater.autoDownload = true;
-  autoUpdater.autoInstallOnAppQuit = true;
+  const updater = ensureAutoUpdater();
+  if (!updater) {
+    log('autoUpdater unavailable; skipping update checks');
+    return;
+  }
 
-  autoUpdater.on('error', (err) => log('autoUpdater error:', err?.message || err));
-  autoUpdater.on('checking-for-update', () => {
+  updater.autoDownload = true;
+  updater.autoInstallOnAppQuit = true;
+
+  updater.on('error', (err) => log('autoUpdater error:', err?.message || err));
+  updater.on('checking-for-update', () => {
     log('checking-for-update');
-    notifyWin('Checking for updates…', '');
+    notifyWin('Checking for updates...', '');
     try { mainWindow?.webContents?.send('checking-for-update'); } catch {}
   });
-  autoUpdater.on('update-not-available', () => {
+  updater.on('update-not-available', () => {
     downloadingVersion = null;
     log('update-not-available');
     notifyWin('Up to date', 'You have the latest version.');
     try { mainWindow?.webContents?.send('update-not-available'); } catch {}
   });
-  autoUpdater.on('update-available', (info) => {
+  updater.on('update-available', (info) => {
     downloadingVersion = info?.version ? normalizeVersion(info.version) : downloadingVersion;
     log('update-available', downloadingVersion || '');
-    notifyWin('Update available', `Downloading update v${downloadingVersion}…`);
+    notifyWin('Update available', 'Downloading update v' + (downloadingVersion || '') + '...');
     try { mainWindow?.webContents?.send('update-available', downloadingVersion); } catch {}
   });
-  autoUpdater.on('update-downloaded', (info) => {
+  updater.on('update-downloaded', (info) => {
     downloadedUpdate = info?.version ? normalizeVersion(info.version) : downloadedUpdate;
     downloadingVersion = null;
     log('update-downloaded', info?.version || '');
-    notifyWin('Update ready', `Update v${downloadedUpdate} downloaded. Restart App to apply.`);
+    notifyWin('Update ready', 'Update v' + (downloadedUpdate || '') + ' downloaded. Restart App to apply.');
     try { mainWindow?.webContents?.send('update-downloaded', downloadedUpdate); } catch {}
   });
 
-   // Explicitly set the GitHub feed. In some earlier builds the generated
+  // Explicitly set the GitHub feed. In some earlier builds the generated
   // app-update.yml was missing, causing update checks to throw with a
-  // "Cannot find update info" error.  Setting the feed URL here ensures the
+  // "Cannot find update info" error. Setting the feed URL here ensures the
   // updater can always locate the repository even if that file is absent.
   try {
-    autoUpdater.setFeedURL({
+    updater.setFeedURL({
       provider: 'github',
       owner: 'muphy09',
       repo: '3s-PokeMMO-Tool',
@@ -262,9 +280,9 @@ function setupAutoUpdates() {
   } catch (e) {
     log('setFeedURL failed', e?.message || e);
   }
-  
+
   setTimeout(() => {
-    try { autoUpdater.checkForUpdates(); } catch (e) { log('checkForUpdates at boot failed', e); }
+    try { updater.checkForUpdates(); } catch (e) { log('checkForUpdates at boot failed', e); }
   }, 3000);
 }
 
@@ -505,6 +523,10 @@ ipcMain.handle('get-app-version', () => app.getVersion());
 
 ipcMain.handle('check-for-updates', async () => {
   try {
+    const updater = ensureAutoUpdater();
+    if (!updater) {
+      return { status: 'error', message: 'Updater unavailable' };
+    }
     const current = app.getVersion();
     if (downloadedUpdate && isNewerVersion(downloadedUpdate, current)) {
       return { status: 'downloaded', version: downloadedUpdate, current };
@@ -512,12 +534,12 @@ ipcMain.handle('check-for-updates', async () => {
     if (downloadingVersion && isNewerVersion(downloadingVersion, current)) {
       return { status: 'downloading', version: downloadingVersion, current };
     }
-    const result = await autoUpdater.checkForUpdates();
+    const result = await updater.checkForUpdates();
     const latest = normalizeVersion(result?.updateInfo?.version);
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
       downloadingVersion = latest;
-      try { await autoUpdater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
+      try { await updater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
       return { status: 'available', version: latest, current };
     }
     return { status: 'uptodate', current };
@@ -569,6 +591,10 @@ ipcMain.handle('app:getDebugImages', async () => readPreviewImages());
 ipcMain.handle('get-version', () => app.getVersion());
 ipcMain.handle('check-updates', async () => {
   try {
+    const updater = ensureAutoUpdater();
+    if (!updater) {
+      return { status: 'error', message: 'Updater unavailable' };
+    }
     const current = app.getVersion();
     if (downloadedUpdate && isNewerVersion(downloadedUpdate, current)) {
       return { status: 'downloaded', version: downloadedUpdate, current };
@@ -576,12 +602,12 @@ ipcMain.handle('check-updates', async () => {
     if (downloadingVersion && isNewerVersion(downloadingVersion, current)) {
       return { status: 'downloading', version: downloadingVersion, current };
     }
-    const result = await autoUpdater.checkForUpdates();
+    const result = await updater.checkForUpdates();
     const latest = normalizeVersion(result?.updateInfo?.version);
     if (!latest) return { status: 'uptodate', current };
     if (isNewerVersion(latest, current)) {
       downloadingVersion = latest;
-      try { await autoUpdater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
+      try { await updater.downloadUpdate(); } catch (e) { log('downloadUpdate failed', e); }
       return { status: 'downloading', version: latest, current };
     }
     return { status: 'uptodate', current };
@@ -698,3 +724,10 @@ ipcMain.handle('live:save-settings', async (_evt, payload) => {
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return { ok: true, path: file, saved: merged };
 });
+
+
+
+
+
+
+

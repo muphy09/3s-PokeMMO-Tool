@@ -26,10 +26,13 @@ export default function ThemeButton({ theme, setTheme }) {
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
 
+  const wrapperStyle = {
+    position: 'relative',
+    display: 'inline-block',
+    zIndex: 10000
+  };
+
   const btnStyle = {
-    position: 'fixed',
-    left: 12,
-    bottom: 10,
     padding: '6px 10px',
     borderRadius: 10,
     border: '1px solid var(--divider)',
@@ -37,21 +40,21 @@ export default function ThemeButton({ theme, setTheme }) {
     color: 'var(--text)',
     fontWeight: 700,
     cursor: 'pointer',
-    boxShadow: 'var(--shadow-1)',
-    zIndex: 10000
+    boxShadow: 'var(--shadow-1)'
   };
 
   const menuStyle = {
-    position: 'fixed',
-    left: 12,
-    bottom: 50,
+    position: 'absolute',
+    left: 0,
+    bottom: 'calc(100% + 8px)',
     display: 'flex',
     flexDirection: 'column',
     background: 'var(--surface)',
     border: '1px solid var(--divider)',
     borderRadius: 10,
     boxShadow: 'var(--shadow-2)',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    zIndex: 10001
   };
 
   const itemStyle = {
@@ -65,7 +68,7 @@ export default function ThemeButton({ theme, setTheme }) {
   };
 
   return (
-    <div ref={ref}>
+    <div ref={ref} style={wrapperStyle}>
       <button style={btnStyle} onClick={() => setOpen(v => !v)}>Theme</button>
       {open && (
         <div style={menuStyle} role="menu">

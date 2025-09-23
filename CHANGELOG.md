@@ -1,6 +1,22 @@
 # Changelog
 ---
 
+## [3.1.1] - 2025-09
+### Changed
+- Pokedex
+  - Locations inside the Pokedex now appear in an overlay
+  - Option to 'Mark all non-legendaries as Caught'
+    - *Includes a warning about previous Caught data being overwritten*
+
+### Fixed
+- Area Search
+  - Fixed an issue with the search resetting when tabbing back from another application
+
+### Added
+- Sponsor Button
+  - If this tool’s been helpful for you, consider donating if it's within your means! 
+---
+
 ## [3.1.0] - 2025-09
 ### Added
 - Recommended Movesets | *Sourced from Smogon*
