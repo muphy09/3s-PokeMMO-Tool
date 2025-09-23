@@ -1081,7 +1081,7 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
         }}
       >
         <span className="label-muted" style={{ fontWeight:700 }}>Include IVs and EVs</span>
-        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>?</span>
+        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>▸</span>
       </div>
 
       {showExtras && (
@@ -3360,7 +3360,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
               className="region-btn"
               onClick={() => setShowInfoMenu(v => !v)}
             >
-              Encounter Info ?
+              Encounter Info {showInfoMenu ? '▴' : '▾'}
             </button>
             {showInfoMenu && (
               <div
@@ -4871,7 +4871,9 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
               <div style={{ position:'relative' }}>
-                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>Tools ?</button>
+                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>
+                  Tools {toolsOpen ? '▴' : '▾'}
+                </button>
                 {toolsOpen && (
                   <div style={{ position:'absolute', top:'100%', right:0, background:'var(--surface)', border:'1px solid var(--divider)', borderRadius:8, display:'flex', flexDirection:'column', zIndex:10, overflow:'hidden' }}>
                     <button style={{ ...styles.segBtn(mode==='items'), width:'100%', borderRadius:0 }} onClick={()=>setMode('items')}>Items</button>
@@ -5193,7 +5195,7 @@ const marketResults = React.useMemo(() => {
                         className="region-btn"
                         onClick={() => setShowInfoMenu(v => !v)}
                       >
-                        Encounter Info ?
+                        Encounter Info {showInfoMenu ? '▴' : '▾'}
                       </button>
                       {showInfoMenu && (
                         <div
@@ -5256,7 +5258,7 @@ const marketResults = React.useMemo(() => {
                         style={{ display:'flex', alignItems:'center', gap:4 }}
                         onClick={() => setShowMethodMenu(v => !v)}
                       >
-                        Encounter Type ?
+                        Encounter Type {showMethodMenu ? '▴' : '▾'}
                       </button>
                       {showMethodMenu && (
                         <div
@@ -5905,7 +5907,7 @@ const marketResults = React.useMemo(() => {
                                 onClick={() => setShowAllHeld(v => !v)}
                                 style={{ background:'none', border:'none', cursor:'pointer', color:'var(--muted)' }}
                               >
-                                {showAllHeld ? '?' : '?'}
+                                {showAllHeld ? '▴' : '▾'}
                               </button>
                             )}
                           </span>
@@ -6185,7 +6187,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showLocations ? 6 : 0 }}
                 onClick={() => setShowLocations(v => !v)}
               >
-                {showLocations ? '?' : '?'} Locations
+                {showLocations ? '▴' : '▾'} Locations
               </div>
               {showLocations && (
                 <>
@@ -6247,7 +6249,7 @@ const marketResults = React.useMemo(() => {
                 style={{ fontWeight:700, cursor:'pointer', marginBottom: showMoveset ? 6 : 0 }}
                 onClick={() => setShowMoveset(v => !v)}
               >
-                {showMoveset ? '?' : '?'} Moves
+                {showMoveset ? '▴' : '▾'} Moves
               </div>
               {showMoveset && (
                 <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
