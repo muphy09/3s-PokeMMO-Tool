@@ -5,7 +5,7 @@
 ### Changed
 - Pokedex
   - Locations inside the Pokedex now appear in an overlay
-  - Option to 'Mark all non-legendaries as Caught'
+  - Option to 'Catch All (Non-Legendaries)'
     - *Includes a warning about previous Caught data being overwritten*
 
 ### Fixed
@@ -14,7 +14,8 @@
 
 ### Added
 - Sponsor Button
-  - If this tool’s been helpful for you, consider donating if it's within your means! 
+  - If this tool’s been helpful for you, consider donating if it's within your means!
+
 ---
 
 ## [3.1.0] - 2025-09

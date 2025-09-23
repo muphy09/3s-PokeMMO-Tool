@@ -1,5 +1,6 @@
 import React, { useContext, useMemo, useState, useEffect } from 'react';
 import { CaughtContext } from '../caughtContext.js';
+import nonLegendaryData from '../data/nonLegendaryIds.json';
 import dexRaw from '../../UpdatedDex.json';
 
 const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
@@ -214,13 +215,16 @@ function titleCase(s = "") {
 }
 
 export default function CaughtListButton(){
-  const { caught, toggleCaught } = useContext(CaughtContext);
+  const { caught, toggleCaught, replaceCaught } = useContext(CaughtContext);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [regionFilter, setRegionFilter] = useState('All');
   const [hideCaught, setHideCaught] = useState(false);
   const [activeMon, setActiveMon] = useState(null);
   const [collapsedRegions, setCollapsedRegions] = useState(() => new Set());
+  const [showCatchAllConfirm, setShowCatchAllConfirm] = useState(false);
+  const [isApplyingCatchAll, setIsApplyingCatchAll] = useState(false);
+  const [catchAllError, setCatchAllError] = useState('');
 
   useEffect(() => {
     if (!open) {
@@ -261,6 +265,56 @@ export default function CaughtListButton(){
   const hideCaughtLabelStyle = { display:'inline-flex', alignItems:'center', gap:6, fontWeight:700, cursor:'pointer', flex:'0 0 auto' };
   const hideCaughtCheckboxStyle = { width:16, height:16, accentColor:'var(--accent)' };
   const regionBadgeStyle = { padding:'4px 12px', borderRadius:999, border:'1px solid var(--accent)', color:'var(--accent)', fontWeight:800, fontSize:13, background:'rgba(255,255,255,0.04)', flex:'0 0 auto' };
+  const catchAllButtonStyle = {
+    border:'1px solid var(--accent)',
+    background:'var(--accent)',
+    color:'var(--surface)',
+    fontWeight:800,
+    padding:'6px 12px',
+    borderRadius:8,
+    cursor:'pointer',
+    flex:'0 0 auto',
+    marginLeft:8,
+    boxShadow:'0 6px 16px rgba(0,0,0,0.25)'
+  };
+  const confirmScrimStyle = {
+    position:'absolute',
+    inset:0,
+    background:'rgba(0,0,0,0.65)',
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    padding:20,
+    zIndex:15
+  };
+  const confirmCardStyle = {
+    background:'var(--card)',
+    color:'var(--text)',
+    borderRadius:12,
+    padding:'20px 24px',
+    width:'min(360px, 90%)',
+    display:'flex',
+    flexDirection:'column',
+    gap:16,
+    boxShadow:'0 12px 32px rgba(0,0,0,0.45)'
+  };
+  const confirmActionsStyle = { display:'flex', justifyContent:'flex-end', gap:12 };
+  const confirmButtonStyle = {
+    border:'1px solid var(--divider)',
+    borderRadius:8,
+    padding:'6px 16px',
+    fontWeight:700,
+    cursor:'pointer',
+    background:'var(--surface)',
+    color:'var(--text)'
+  };
+  const confirmPrimaryButtonStyle = {
+    ...confirmButtonStyle,
+    background:'var(--accent)',
+    color:'var(--surface)',
+    borderColor:'var(--accent)'
+  };
+  const confirmErrorStyle = { color:'#f87171', fontSize:13, fontWeight:600 };
   const gridStyle = { display:'grid', gridTemplateColumns:'repeat(4, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
   const chipStyle = (filled, active) => ({
     display:'flex',
@@ -302,6 +356,44 @@ export default function CaughtListButton(){
       </svg>
     );
   }
+
+  const catchAllIds = useMemo(() => {
+    const validIds = new Set(DEX_LIST.map(mon => mon.id));
+    return (nonLegendaryData?.ids || []).filter(id => validIds.has(id));
+  }, []);
+
+  const handleCatchAllClick = () => {
+    setCatchAllError('');
+    if (!catchAllIds.length) {
+      setCatchAllError('No Pokémon available to update.');
+    }
+    setShowCatchAllConfirm(true);
+  };
+
+  const handleCatchAllConfirm = () => {
+    if (isApplyingCatchAll) return;
+    setCatchAllError('');
+    if (!catchAllIds.length) {
+      setCatchAllError('No Pokémon available to update.');
+      return;
+    }
+    try {
+      setIsApplyingCatchAll(true);
+      replaceCaught(catchAllIds);
+      setShowCatchAllConfirm(false);
+    } catch (err) {
+      console.error(err);
+      setCatchAllError('Failed to overwrite caught data.');
+    } finally {
+      setIsApplyingCatchAll(false);
+    }
+  };
+
+  const handleCatchAllCancel = () => {
+    if (isApplyingCatchAll) return;
+    setCatchAllError('');
+    setShowCatchAllConfirm(false);
+  };
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -393,6 +485,44 @@ export default function CaughtListButton(){
       {open && (
         <div style={overlayStyle} onClick={()=>setOpen(false)}>
           <div style={modalStyle} onClick={e=>e.stopPropagation()}>
+            {showCatchAllConfirm && (
+              <div style={confirmScrimStyle}>
+                <div style={confirmCardStyle}>
+                  <div style={{ fontWeight:800, fontSize:16 }}>
+                    Are you sure? This will overwrite Catch data
+                  </div>
+                  {catchAllError && (
+                    <div style={confirmErrorStyle}>{catchAllError}</div>
+                  )}
+                  <div style={confirmActionsStyle}>
+                    <button
+                      type="button"
+                      onClick={handleCatchAllCancel}
+                      style={{
+                        ...confirmButtonStyle,
+                        opacity: isApplyingCatchAll ? 0.7 : 1,
+                        cursor: isApplyingCatchAll ? 'not-allowed' : 'pointer'
+                      }}
+                      disabled={isApplyingCatchAll}
+                    >
+                      No
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCatchAllConfirm}
+                      style={{
+                        ...confirmPrimaryButtonStyle,
+                        opacity: isApplyingCatchAll ? 0.7 : 1,
+                        cursor: isApplyingCatchAll ? 'not-allowed' : 'pointer'
+                      }}
+                      disabled={isApplyingCatchAll}
+                    >
+                      {isApplyingCatchAll ? 'Working…' : 'Yes'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Close X */}
             <button
               type="button"
@@ -440,6 +570,14 @@ export default function CaughtListButton(){
                   />
                   Hide Caught
                 </label>
+                <button
+                  type="button"
+                  onClick={handleCatchAllClick}
+                  style={catchAllButtonStyle}
+                  title="Mark all non-legendary Pokémon as caught"
+                >
+                  Catch All (Non-Legendary)
+                </button>
                 {regionFilter !== 'All' && (
                   <div style={regionBadgeStyle}>{regionFilter}</div>
                 )}

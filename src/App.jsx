@@ -4011,6 +4011,20 @@ function App(){
     });
   };
 
+  const replaceCaught = React.useCallback((ids) => {
+    setCaught(prev => {
+      let entries = [];
+      if (ids && typeof ids[Symbol.iterator] === 'function') {
+        entries = [...ids].filter(id => typeof id === 'number');
+      } else {
+        entries = [...prev];
+      }
+      const next = new Set(entries);
+      try { localStorage.setItem('caughtPokemon', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  }, []);
+
   // Alpha caught state
   const [alphaCaught, setAlphaCaught] = useState(() => {
     try {
@@ -4810,7 +4824,7 @@ const marketResults = React.useMemo(() => {
   };
 
   return (
-    <CaughtContext.Provider value={{ caught, toggleCaught }}>
+    <CaughtContext.Provider value={{ caught, toggleCaught, replaceCaught }}>
     <AlphaCaughtContext.Provider value={{ alphaCaught, toggleAlphaCaught }}>
     <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
       <>
