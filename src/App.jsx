@@ -2052,8 +2052,16 @@ function CategoryPill({ cat }){
 }
 
 const MOVE_CACHE = new Map();
+const MOVE_SLUG_EXCEPTIONS = new Map([
+  ['smokescreen', 'smokescreen']
+]);
 function moveSlug(name=''){
-  const withDelimiters = String(name)
+  const trimmed = String(name || '').trim();
+  if(!trimmed) return '';
+  const normalized = trimmed.toLowerCase().replace(/[^a-z0-9]+/g,'');
+  const exception = MOVE_SLUG_EXCEPTIONS.get(normalized);
+  if(exception) return exception;
+  const withDelimiters = trimmed
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2');
   return withDelimiters.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
