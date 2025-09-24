@@ -6,11 +6,16 @@
 - Move Data | *Thanks Ace!*
   - "Special" learned moves (BP Tutor) now properly appear in the Move dropdown
 
+- Pokedex
+  - Searching & filtering no longer reduce the window size of the Pokedex overlay
+    - Fixes the location overlay not appearing properly when a filter is used
+
 ### Changed
 - Catch Rate UI | *Thanks Win!*
-  - Updated Status effects to reflect all status changes
-  - Included a Ball Selector for Catch Rate %
-
+  - Included all Status Effects into the dataset for Catch Rate %
+    - Asleep, Frozen, Burn, Paralysis, & Poison now selectable options
+  - Included a Ball Selector into the dataset for Catch Rate %
+    - Poke Ball (default), Great Ball, Ultra Ball, Quick Ball, Dusk Ball & Repeat Ball
 
 ---
 
