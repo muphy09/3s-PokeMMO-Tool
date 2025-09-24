@@ -215,14 +215,11 @@ function clampCaptureZoom(value, fallback = 0.5) {
   const clamped = Math.max(0.1, Math.min(0.9, normalized));
   return Math.round(clamped * 10) / 10;
 }
-function captureZoomToScale(value) {
-  const num = Number(value);
-  if (!Number.isFinite(num)) return null;
-  if (num > 1) {
-    return Math.max(1.1, Math.min(1.9, Math.round(num * 10) / 10));
-  }
-  const normalized = clampCaptureZoom(num, 0.5);
-  return Math.max(1.1, Math.min(1.9, Math.round((normalized + 1) * 10) / 10));
+function captureZoomToEnv(value) {
+  if (value === null || value === undefined) return null;
+  const normalized = clampCaptureZoom(value, 0.5);
+  if (!Number.isFinite(normalized)) return null;
+  return Math.max(0.1, Math.min(0.9, normalized));
 }
 function normalizeOcrAgg(value, version = 0) {
   const v = (typeof value === 'string' ? value : '').trim().toLowerCase();
@@ -396,6 +393,12 @@ async function startLiveRouteOCR() {
     if (ocrProc) { try { ocrProc.kill(); } catch {} ocrProc = null; }
     if (process.platform !== 'win32') { log('LiveRouteOCR supported on Windows only; skipping'); return; }
 
+    const settings = readOcrSettings();
+    if (settings?.ocrEnabled === false) {
+      log('LiveRouteOCR start skipped (disabled in settings)');
+      return;
+    }
+
     const exe = await ensureOCRExeExists();
     if (!exe) {
       const msg = `LiveRouteOCR not found.\nSearched:\n - ${ocrDevExe()}\n - ${ocrResourcesExe()}\n - ${ocrUserExe()}\nZip:\n - ${ocrZipPath()}`;
@@ -405,12 +408,12 @@ async function startLiveRouteOCR() {
     }
 
     const cwd = path.dirname(exe);
-    const s = readOcrSettings();
-    const zoomScale = captureZoomToScale(s?.captureZoom);
+    const s = settings || {};
+    const captureZoomEnv = captureZoomToEnv(s?.captureZoom);
     const env = {
       ...process.env,
       TARGET_PID: s?.targetPid ? String(s.targetPid) : '',
-      CAPTURE_ZOOM: zoomScale ? String(zoomScale) : '',
+      CAPTURE_ZOOM: captureZoomEnv != null ? String(captureZoomEnv) : '',
       OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
       // hint for tessdata (helper also auto-detects)
       POKEMMO_TESSDATA_DIR: path.join(cwd, 'tessdata'),
@@ -422,7 +425,12 @@ async function startLiveRouteOCR() {
       env,
     });
 
-    log('LiveRouteOCR env', { TARGET_PID: env.TARGET_PID, CAPTURE_ZOOM: env.CAPTURE_ZOOM, OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS });
+    log('LiveRouteOCR env', {
+      TARGET_PID: env.TARGET_PID,
+      CAPTURE_ZOOM: env.CAPTURE_ZOOM,
+      CAPTURE_ZOOM_SCALE: captureZoomEnv != null ? Math.round((1 + captureZoomEnv) * 10) / 10 : null,
+      OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS,
+    });
 
     ocrProc.on('exit', (code, sig) => { log('LiveRouteOCR exited', code, sig); ocrProc = null; });
     ocrProc.on('error', (err) => { log('LiveRouteOCR spawn error:', err?.message || err); ocrProc = null; });

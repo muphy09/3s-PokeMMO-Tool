@@ -549,10 +549,15 @@ class LiveRouteOCR
                     }
                 }
 
-                int delay = 600;
-                if (mode == "fast") delay = 700;
-                else if (mode == "max") delay = 450;
-                else if (mode == "auto") delay = (autoDepth == 0 ? 700 : autoDepth == 1 ? 550 : 450);
+                int delay = mode switch
+                {
+                    "fast" => 450,
+                    "normal" => 600,
+                    "efficient" => 750,
+                    "auto" => (autoDepth == 0 ? 700 : autoDepth == 1 ? 550 : 450),
+                    "max" => 500,
+                    _ => 600
+                };
 
                 await Task.Delay(delay, ct);
             }
@@ -570,8 +575,16 @@ class LiveRouteOCR
 
         // Battle OCR runs every frame; limit to a small pass plan for speed
         // and push thresholds higher to avoid picking up bright background noise.
-        var plan = BuildPassPlan(mode, 1)
-            .Take(4)
+        var battlePlan = BuildPassPlan(mode, 1);
+        int battlePassCount = mode switch
+        {
+            "fast" => 3,
+            "efficient" => 7,
+            "normal" => 5,
+            _ => 4
+        };
+        var plan = battlePlan
+            .Take(Math.Max(2, battlePassCount))
             .Select(p => { p.Threshold = Math.Min(p.Threshold + 30, 250); return p; })
             .ToList();
 
@@ -781,18 +794,12 @@ class LiveRouteOCR
     {
         var plan = new List<OcrPass>();
 
-        if (mode == "efficient")
+        int targetDepth = mode switch
         {
-            plan.Add(new OcrPass { Threshold = 185, Upsample = 2, Psm = PageSegMode.SingleLine });
-            plan.Add(new OcrPass { Threshold = 185, Upsample = 2, Psm = PageSegMode.SingleBlock });
-            return plan;
-        }
-
-        int depth = mode switch
-        {
-            "fast" => Math.Clamp(autoDepth, 1, 2),
-            "normal" => 0,
-            _ => 1
+            "fast" => 0,
+            "normal" => 1,
+            "efficient" => 2,
+            _ => Math.Clamp(autoDepth, 1, 2)
         };
 
         int[][] thresholds = new[]
@@ -816,15 +823,28 @@ class LiveRouteOCR
             new[] { PageSegMode.SingleBlock, PageSegMode.SingleLine, PageSegMode.SparseText }
         };
 
-        foreach (var up in upsets[depth])
-            foreach (var th in thresholds[depth])
-                foreach (var p in psms[depth])
-                    plan.Add(new OcrPass
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        int maxDepth = Math.Min(targetDepth, thresholds.Length - 1);
+        for (int depth = 0; depth <= maxDepth; depth++)
+        {
+            var thList = thresholds[Math.Min(depth, thresholds.Length - 1)];
+            var upList = upsets[Math.Min(depth, upsets.Length - 1)];
+            var psmList = psms[Math.Min(depth, psms.Length - 1)];
+
+            foreach (var up in upList)
+                foreach (var th in thList)
+                    foreach (var p in psmList)
                     {
-                        Threshold = th,
-                        Upsample = up,
-                        Psm = p
-                    });
+                        var key = $"{th}:{up}:{(int)p}";
+                        if (!seen.Add(key)) continue;
+                        plan.Add(new OcrPass
+                        {
+                            Threshold = th,
+                            Upsample = up,
+                            Psm = p
+                        });
+                    }
+        }
 
         return plan;
     }
