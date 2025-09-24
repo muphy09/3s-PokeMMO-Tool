@@ -5252,7 +5252,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setTypeFilter(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5267,7 +5267,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setTypeFilter2(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5282,7 +5282,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setEggFilter(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5297,7 +5297,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setAbilityFilter(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5312,7 +5312,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setRegionFilter(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5327,7 +5327,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setMoveFilter(''); setMoveLevelOnly(false); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5342,7 +5342,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setMoveLevelOnly(false); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5357,7 +5357,7 @@ const marketResults = React.useMemo(() => {
                     className="chip-x"
                     onClick={(e)=>{ e.stopPropagation(); setItemFilter(''); }}
                   >
-                    �
+                    ×
                   </button>
                 </div>
               )}
@@ -5389,7 +5389,7 @@ const marketResults = React.useMemo(() => {
                         className="chip-x"
                         onClick={(e)=>{ e.stopPropagation(); setAreaRegion('All'); }}
                       >
-                        �
+                        ×
                       </button>
                     </div>
                   )}
