@@ -569,7 +569,14 @@ function localSpriteCandidates(mon){
     <img
       src={src}
       alt={alt || mon?.name || ''}
-      style={{ width:size, height:size, objectFit:'contain', imageRendering:'pixelated' }}
+      style={{
+        width: size,
+        height: size,
+        maxWidth: '100%',
+        maxHeight: '100%',
+        objectFit: 'contain',
+        imageRendering: 'pixelated'
+      }}
       onError={handleError}
     />
   );
@@ -990,34 +997,12 @@ function InfoPill({ label, value, large=false }){
 }
 
 /* ---------- Compare View ---------- */
-function StatBox({ label, value, diff, underline=false }){
+function StatInputBox({ label, value, min, max, onChange }) {
   return (
-    <div style={{
-      display:'flex', flexDirection:'column', alignItems:'center',
-      padding:'6px 8px', border:'1px solid var(--divider)', borderRadius:8,
-      background:'var(--surface)', minWidth:0
-    }}>
-      <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
-      <div style={{ fontWeight:900, fontSize:16, textDecoration: underline ? 'underline' : 'none' }}>{value ?? '-'}</div>
-      {typeof diff === 'number' && diff !== 0 && (
-        <div style={{ fontSize:15, fontWeight:800, marginTop:2, color: diff > 0 ? '#22c55e' : '#ef4444' }}>
-          {diff > 0 ? `+${diff}` : `${diff}`}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function StatInputBox({ label, value, min, max, onChange }){
-  return (
-    <div style={{
-      display:'flex', flexDirection:'column', alignItems:'center',
-      padding:'4px 6px', border:'1px solid var(--divider)', borderRadius:8,
-      background:'var(--surface)', minWidth:0
-    }}>
-      <div className="label-muted" style={{ fontSize:11 }}>{label}</div>
+    <div className="profile-stat-input">
+      <div className="profile-stat-input-label">{label}</div>
       <input
-        className="input"
+        className="input profile-stat-input-field"
         type="number"
         inputMode="numeric"
         pattern="[0-9]*"
@@ -1025,113 +1010,156 @@ function StatInputBox({ label, value, min, max, onChange }){
         max={max}
         value={value}
         onChange={onChange}
-        style={{ width:'100%', textAlign:'center', marginTop:2, padding:'4px 6px', fontSize:'14px' }}
       />
     </div>
   );
 }
 
-function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel }){
-  // Use base stats for display
+function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel }) {
   const baseStats = getBaseStatsFrom(mon || {});
   const otherBaseStats = other ? getBaseStatsFrom(other) : null;
-  const keys = [
-    ['HP','hp'], ['Att','attack'], ['Def','defense'], ['Sp. Atk','special_attack'], ['Sp. Def','special_defense'], ['Spd','speed']
+  const keyMeta = [
+    { label: 'HP', key: 'hp', color: '#f87171' },
+    { label: 'Att', key: 'attack', color: '#fb923c' },
+    { label: 'Def', key: 'defense', color: '#facc15' },
+    { label: 'Sp. Atk', key: 'special_attack', color: '#60a5fa' },
+    { label: 'Sp. Def', key: 'special_defense', color: '#34d399' },
+    { label: 'Spd', key: 'speed', color: '#f472b6' },
   ];
-  const map = Object.fromEntries(keys.map(([L,k]) => [L, (override && override[k] != null) ? override[k] : (Number(baseStats[k]) || 0)]));
-  const otherMap = other ? Object.fromEntries(keys.map(([L,k]) => [L, (otherOverride && otherOverride[k] != null) ? otherOverride[k] : (Number(otherBaseStats?.[k]) || 0)])) : null;
-  const total = keys.reduce((sum, [L]) => sum + (Number(map[L]) || 0), 0);
-  const totalOther = other ? keys.reduce((sum, [L]) => sum + (Number(otherMap[L]) || 0), 0) : null;
 
-  // Compute EV total for display in the 7th slot
+  const map = Object.fromEntries(keyMeta.map(({ label, key }) => {
+    const raw = override && override[key] != null ? override[key] : (Number(baseStats[key]) || 0);
+    return [label, raw];
+  }));
+  const otherMap = other ? Object.fromEntries(keyMeta.map(({ label, key }) => {
+    const raw = otherOverride && otherOverride[key] != null ? otherOverride[key] : (Number(otherBaseStats?.[key]) || 0);
+    return [label, raw];
+  })) : null;
+  const total = keyMeta.reduce((sum, { label }) => sum + (Number(map[label]) || 0), 0);
+  const totalOther = other ? keyMeta.reduce((sum, { label }) => sum + (Number(otherMap?.[label]) || 0), 0) : null;
+
   const evTotal = ['hp','attack','defense','special_attack','special_defense','speed']
     .reduce((s,k)=> s + (Number(build?.ev?.[k] || 0) || 0), 0);
 
   const [showExtras, setShowExtras] = useState(false);
+
+  const maxStatValue = Math.max(
+    180,
+    ...keyMeta.map(({ label }) => Number(map[label]) || 0),
+    ...(other ? keyMeta.map(({ label }) => Number(otherMap?.[label]) || 0) : [])
+  );
+
+  const valueToPercent = (value) => {
+    const pct = Math.max(6, Math.round((Number(value) || 0) / maxStatValue * 100));
+    return pct + '%';
+  };
+
   const toggleExtras = () => {
     if (showExtras) {
-      // Clearing values when collapsing
-      for (const [,k] of keys) {
-        onSetEV && onSetEV(k, '');
-        onSetIV && onSetIV(k, '');
+      for (const { key } of keyMeta) {
+        onSetEV && onSetEV(key, '');
+        onSetIV && onSetIV(key, '');
       }
       onSetLevel && onSetLevel('');
     }
-    setShowExtras(prev => !prev);
+    setShowExtras((prev) => !prev);
   };
 
+  const underlineTotal = underlineKeys?.has('total');
+
   return (
-    <div style={{ display:'flex', flexDirection:'column' }}>
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
-        {keys.map(([kLabel, kKey]) => (
-          <StatBox key={kLabel} label={kLabel} value={map[kLabel]} diff={other ? ((Number(map[kLabel])||0) - (Number(otherMap?.[kLabel])||0)) : undefined} underline={underlineKeys?.has(kKey)} />
-        ))}
-        <StatBox label="Total" value={total || '-'} diff={other && totalOther!=null ? (total - totalOther) : undefined} underline={underlineKeys?.has('total')} />
-      </div>
+    <div className="profile-stats">
+      <div className="profile-stats-lines">
+        {keyMeta.map(({ label, key, color }) => {
+          const value = map[label] ?? '-';
+          const numericValue = Number(value) || 0;
+          const underline = underlineKeys?.has(key);
+          const diff = other ? ((Number(map[label]) || 0) - (Number(otherMap?.[label]) || 0)) : null;
 
-      <div
-        onClick={toggleExtras}
-        style={{
-          marginTop:6,
-          display:'flex',
-          alignItems:'center',
-          justifyContent:'center',
-          gap:6,
-          cursor:'pointer'
-        }}
-      >
-        <span className="label-muted" style={{ fontWeight:700 }}>Include IVs and EVs</span>
-        <span style={{ display:'inline-block', transform: showExtras ? 'rotate(90deg)' : 'rotate(0deg)', transition:'transform 0.2s' }}>▸</span>
+          return (
+            <div key={label} className="profile-stat-line">
+              <span className="profile-stat-label">{label}</span>
+              <div className="profile-stat-bar">
+                <div className="profile-stat-bar-fill" style={{ width: valueToPercent(numericValue), background: color }} />
+              </div>
+              <span className={'profile-stat-value' + (underline ? ' is-underlined' : '')}>{value ?? '-'}</span>
+              {diff != null && diff !== 0 && (
+                <span className={'profile-stat-diff ' + (diff > 0 ? 'is-positive' : 'is-negative')}>
+                  {diff > 0 ? '+' + diff : diff}
+                </span>
+              )}
+            </div>
+          );
+        })}
       </div>
-
+      <div className="profile-stat-total">
+        <span className="profile-stat-label">Total</span>
+        <div className="profile-stat-total-value">
+          <span className={'profile-stat-value' + (underlineTotal ? ' is-underlined' : '')}>{total || '-'}</span>
+          {totalOther != null && totalOther !== undefined && (total - totalOther) !== 0 && (
+            <span className={'profile-stat-diff ' + ((total - totalOther) > 0 ? 'is-positive' : 'is-negative')}>
+              {(total - totalOther) > 0 ? '+' + (total - totalOther) : (total - totalOther)}
+            </span>
+          )}
+        </div>
+      </div>
+      <button type="button" className="profile-stats-toggle" onClick={toggleExtras}>
+        Include IVs and EVs
+        <span className="profile-stats-toggle-icon">{showExtras ? 'v' : '>'}</span>
+      </button>
       {showExtras && (
-        <div style={{ marginTop:6, display:'grid', gridTemplateColumns:'repeat(7, 1fr)', gap:6 }}>
-          {keys.map(([kLabel, kKey]) => (
+        <div className="profile-stats-extra">
+          <div className="profile-stats-extra-grid">
+            {keyMeta.map(({ label, key }) => (
+              <StatInputBox
+                key={'iv-' + key}
+                label={label + ' IV'}
+                value={build?.iv?.[key] ?? ''}
+                min={0}
+                max={31}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  const val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
+                  onSetIV && onSetIV(key, val);
+                }}
+              />
+            ))}
             <StatInputBox
-              key={`ev-${kKey}`}
-              label={`${kLabel} EV`}
-              value={build?.ev?.[kKey] ?? ''}
-              min={0}
-              max={252}
+              label="Level"
+              value={build?.level ?? ''}
+              min={1}
+              max={100}
               onChange={(e) => {
                 const raw = e.target.value;
-                let val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
-                onSetEV && onSetEV(kKey, val);
+                const val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 1, 100);
+                onSetLevel && onSetLevel(val);
               }}
             />
-          ))}
-          <StatBox label="EV Total" value={evTotal || 0} />
-
-          {keys.map(([kLabel, kKey]) => (
-            <StatInputBox
-              key={`iv-${kKey}`}
-              label={`${kLabel} IV`}
-              value={build?.iv?.[kKey] ?? ''}
-              min={0}
-              max={31}
-              onChange={(e) => {
-                const raw = e.target.value;
-                const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 31);
-                onSetIV && onSetIV(kKey, v);
-              }}
-            />
-          ))}
-          <StatInputBox
-            label="Level"
-            value={build?.level ?? ''}
-            min={1}
-            max={100}
-            onChange={(e) => {
-              const raw = e.target.value;
-              const v = raw === '' ? '' : clamp(parseInt(raw, 10) || 1, 1, 100);
-              onSetLevel && onSetLevel(v);
-            }}
-          />
+            {keyMeta.map(({ label, key }) => (
+              <StatInputBox
+                key={'ev-' + key}
+                label={label + ' EV'}
+                value={build?.ev?.[key] ?? ''}
+                min={0}
+                max={252}
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  const val = raw === '' ? '' : clamp(parseInt(raw, 10) || 0, 0, 252);
+                  onSetEV && onSetEV(key, val);
+                }}
+              />
+            ))}
+            <div className="profile-stat-total-card">
+              <div className="profile-stat-input-label">EV Total</div>
+              <div className="profile-stat-total-value"><span>{evTotal || 0}</span></div>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
+
 function AbilityInline({ idx, name }){
   const desc = useAbilityDesc(name);
   const label = idx === 2 ? 'H.' : `${idx + 1}.`;
@@ -5705,495 +5733,306 @@ const marketResults = React.useMemo(() => {
              <>
             <div ref={detailRef} className="grid">
             {/* Left: Pokemon card */}
-            <div style={{ ...styles.card, position:'relative' }}>
-              <div style={{ position:'relative' }}>
-                <div style={{ position:'absolute', top:8, right:8, display:'flex', gap:8 }}>
-                  {ALPHA_ID_SET.has(resolved.id) && (
-                    <button
-                      type="button"
-                      onClick={() => toggleAlphaCaught(resolved.id)}
-                      title={(alphaCaught.has(resolved.id) ? 'Mark Alpha as uncaught' : 'Mark Alpha as caught')}
-                      style={{ background:'transparent', border:'none', cursor:'pointer', padding:0 }}
-                    >
-                      <img src={alphaIconUrl} alt="Alpha Caught" style={{ width:20, height:20, opacity: alphaCaught.has(resolved.id) ? 1 : 0.35 }} />
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => toggleCaught(resolved.id)}
-                    title={(caught.has(resolved.id) ? 'Mark as uncaught' : 'Mark as caught')}
-                    style={{ background:'transparent', border:'none', cursor:'pointer', padding:0 }}
-                  >
-                    <PokeballIcon filled={caught.has(resolved.id)} />
-                  </button>
-                </div>
-              </div>
-              <div style={{ display:'grid', gridTemplateColumns:'auto 1fr', gap:12, alignItems:'start' }}>
-                <div>
-                  <div style={{ position:'relative', display:'inline-block' }}>
-                    <Sprite mon={selected} size={120} alt={resolved.name} forceShiny={profileShiny} />
-                    <button
-                      type="button"
-                      onClick={() => setProfileShiny(v => !v)}
-                      title="Shiny"
-                      style={{
-                        position:'absolute', top:2, right:2,
-                        background:'transparent',
-                        border:'none',
-                        outline:'none',
-                        boxShadow:'none',
-                        padding:0,
-                        margin:0,
-                        appearance:'none',
-                        WebkitAppearance:'none',
-                        MozAppearance:'none',
-                        cursor:'pointer'
+            {(() => {
+              const evMap = {
+                ev_hp: 'HP',
+                ev_attack: 'Atk',
+                ev_defense: 'Def',
+                ev_sp_attack: 'Sp. Atk',
+                ev_sp_defense: 'Sp. Def',
+                ev_speed: 'Spd'
+              };
+              const yields = resolved.yields || {};
+              const evParts = Object.entries(evMap)
+                .filter(([key]) => (yields[key] || 0) > 0)
+                .map(([key, label]) => `${yields[key]} ${label}`);
+              const evText = evParts.length ? evParts.join(', ') : 'None';
+              const heldItems = resolved.heldItems || [];
+              const hasMoreHeld = heldItems.length > 1;
+              const abilityNames = (resolved.abilities || []).map(a => a?.name).filter(Boolean);
+              const useCompactAbilities = abilityNames.some(a => (a || '').length > 12) || abilityNames.join('').length > 28;
+              const renderHeldItem = (h, idx) => {
+                const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
+                return (
+                  <span key={h.id || h.name || idx} className="profile-held-item">
+                    <img
+                      src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
+                      alt={h.name || h}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = ITEM_PLACEHOLDER;
+                        e.currentTarget.style.imageRendering = 'auto';
                       }}
-                    >
-                      {(() => {
-                        const active = !!(shinyGlobal || profileShiny);
-                        const fill = active ? '#d4af37' : '#fff';
-                        const stroke = active ? '#9b7d22' : '#888';
-                        return (
-                          <svg
-                            width="18" height="18" viewBox="0 0 24 24"
-                            role="img" aria-label="Shiny"
-                            style={{ display:'block' }}
+                    />
+                    <DelayedTooltip content={item?.description || ''}>
+                      <span className="profile-held-name">{h.name || h}</span>
+                    </DelayedTooltip>
+                  </span>
+                );
+              };
+
+              return (
+                <div style={{ ...styles.card, position:'relative', padding:0, overflow:'hidden' }} className="pokemon-profile-card">
+                  <div className="profile-hero">
+                    <div className="profile-hero-top">
+                      <div className="profile-hero-actions-left">
+                        <button
+                          type="button"
+                          className={`profile-compare-btn${compareMode ? ' is-active' : ''}`}
+                          aria-pressed={compareMode}
+                          onClick={() => {
+                            setCompareMode(true);
+                            setCompareA(resolved);
+                            setCompareB(null);
+                            setSelected(null);
+                            setQuery('');
+                          }}
+                          title="Compare"
+                        >
+                          Compare
+                        </button>
+                      </div>
+                      <div className="profile-hero-actions-right">
+                        {ALPHA_ID_SET.has(resolved.id) && (
+                          <button
+                            type="button"
+                            className="profile-icon-button"
+                            onClick={() => toggleAlphaCaught(resolved.id)}
+                            title={alphaCaught.has(resolved.id) ? 'Mark Alpha as uncaught' : 'Mark Alpha as caught'}
                           >
+                            <img src={alphaIconUrl} alt="Alpha Caught" style={{ width:20, height:20, opacity: alphaCaught.has(resolved.id) ? 1 : 0.35 }} />
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="profile-icon-button"
+                          onClick={() => toggleCaught(resolved.id)}
+                          title={caught.has(resolved.id) ? 'Mark as uncaught' : 'Mark as caught'}
+                        >
+                          <PokeballIcon filled={caught.has(resolved.id)} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="profile-hero-main">
+                      <div className="profile-sprite-wrap">
+                        <Sprite mon={selected} size={140} alt={resolved.name} forceShiny={profileShiny} />
+                        <button
+                          type="button"
+                          className={`profile-shiny-toggle${profileShiny || shinyGlobal ? ' is-active' : ''}`}
+                          onClick={() => setProfileShiny(v => !v)}
+                          title="Toggle shiny sprite"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" role="img" aria-label="Shiny">
                             <polygon
                               points="12,2 14.9,8.1 22,9 16.8,13.4 18.3,20.4 12,16.9 5.7,20.4 7.2,13.4 2,9 9.1,8.1"
-                              fill={fill}
-                              stroke={stroke}
+                              fill={profileShiny || shinyGlobal ? '#d4af37' : '#ffffff'}
+                              stroke={profileShiny || shinyGlobal ? '#9b7d22' : '#888888'}
                               strokeWidth="1.2"
                               strokeLinejoin="round"
                             />
                           </svg>
-                        );
-                      })()}
-                    </button>
+                        </button>
+                      </div>
+                      <div className="profile-hero-info">
+                        <div className="profile-name-row">
+                          <span className="profile-name">{titleCase(resolved.name)}</span>
+                          <span className="profile-dex">#{String(resolved.id).padStart(3,'0')}</span>
+                        </div>
+                        <div className="profile-type-row">
+                          {(resolved.types || []).map((tp, idx) => (
+                            <TypePill
+                              key={`${tp}-${idx}`}
+                              t={tp}
+                              onClick={() => {
+                                setMode('pokemon');
+                                setSelected(null);
+                                setQuery('');
+                                setTypeFilter(normalizeType(tp));
+                                setTypeFilter2('');
+                              }}
+                            />
+                          ))}
+                          {!resolved.types?.length && <span className="label-muted">Unknown</span>}
+                        </div>
+                        <div className="profile-hero-meta-grid">
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Exp</span>
+                            <span className="profile-meta-value">{titleCase((resolved.expType || '').replace(/_/g, ' ')) || '—'}</span>
+                          </div>
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Growth</span>
+                            <span className="profile-meta-value">{resolved.baseExp ?? '—'}</span>
+                          </div>
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Height</span>
+                            <span className="profile-meta-value">{formatHeight(resolved.height)}</span>
+                          </div>
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Weight</span>
+                            <span className="profile-meta-value">{formatWeight(resolved.weight)}</span>
+                          </div>
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Gender</span>
+                            <span className="profile-meta-value">{formatGenderRatio(resolved.genderRatio)}</span>
+                          </div>
+                          <div className="profile-meta-item">
+                            <span className="profile-meta-label">Obtainable</span>
+                            <span className="profile-meta-value">{resolved.obtainable ? 'Yes' : 'No'}</span>
+                          </div>
+                        </div>
+                        {resolved.forms?.length > 1 && (
+                          <div className="profile-forms-row">
+                            <span className="profile-forms-label">Forms</span>
+                            <div className="profile-forms-list">
+                              {resolved.forms.map(f => (
+                                <span key={f.form_id || f.id} className="profile-form-pill">{f.name}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div style={{ fontSize:22, fontWeight:900 }}>
-                    {titleCase(resolved.name)} <span className="label-muted" style={{ fontSize:'50%' }}>#{resolved.id}</span>
-                  </div>
-                  <div style={{ position:'relative', marginTop:6 }}>
-                    <div
-                      style={{
-                        display: 'grid',
-                        gap: 12,
-                        alignItems: 'start',
-                        gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
-                        gridAutoRows: 'min-content',
-                        position: 'relative',
-                        zIndex: 1
-                      }}
-                    >
-                    {/* Column 1: Type � 4 rows (label, type1, type2, blank) */}
-                    <div style={{ gridColumn: '1', gridRow:'1', display:'flex', alignItems:'center' }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Type</span>
-                    </div>
-                    <div style={{ gridColumn: '1', gridRow:'2' }}>
-                      {resolved.types?.[0] ? (
-                        <TypePill
-                          t={resolved.types[0]}
-                          onClick={() => {
-                            setMode('pokemon');
-                            setSelected(null);
-                            setQuery('');
-                            setTypeFilter(normalizeType(resolved.types[0]));
-                            setTypeFilter2('');
-                          }}
-                        />
-                      ) : (
-                        <span className="label-muted">N/A</span>
-                      )}
-                    </div>
-                    <div style={{ gridColumn: '1', gridRow:'3' }}>
-                      {resolved.types?.[1] ? (
-                        <TypePill
-                          t={resolved.types[1]}
-                          onClick={() => {
-                            setMode('pokemon');
-                            setSelected(null);
-                            setQuery('');
-                            setTypeFilter(normalizeType(resolved.types[1]));
-                            setTypeFilter2('');
-                          }}
-                        />
-                      ) : null}
-                    </div>
-                    <div style={{ gridColumn: '1', gridRow:'4' }} />
-
-                    {/* Column 2: Egg Group � 4 rows (label, group1, group2, blank) */}
-                    <div style={{ gridColumn: '2', gridRow:'1', display:'flex', alignItems:'center' }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Egg Group</span>
-                    </div>
-                    <div style={{ gridColumn: '2', gridRow:'2' }}>
-                      {resolved.eggGroups?.[0] ? (
-                        <EggGroupPill
-                          group={resolved.eggGroups[0]}
-                          onClick={() => {
-                            setMode('pokemon');
-                            setSelected(null);
-                            setQuery('');
-                            setEggFilter(normalizeEggGroup(resolved.eggGroups[0]));
-                          }}
-                        />
-                      ) : (
-                        <span className="label-muted">N/A</span>
-                      )}
-                    </div>
-                    <div style={{ gridColumn: '2', gridRow:'3' }}>
-                      {resolved.eggGroups?.[1] ? (
-                        <EggGroupPill
-                          group={resolved.eggGroups[1]}
-                          onClick={() => {
-                            setMode('pokemon');
-                            setSelected(null);
-                            setQuery('');
-                            setEggFilter(normalizeEggGroup(resolved.eggGroups[1]));
-                          }}
-                        />
-                      ) : null}
-                    </div>
-                    <div style={{ gridColumn: '2', gridRow:'4' }} />
-
-                    {/* Column 3: Abilities � label + rows for 1,2,Hidden */}
-                    <div style={{ gridColumn: '3', gridRow:'1', display:'flex', alignItems:'center' }}>
-                      <span className="label-muted" style={{ fontWeight:700 }}>Abilities</span>
-                    </div>
-                    {([0,1,2]).map(i => (
-                      <div key={`ab-row-${i}`} style={{ gridColumn: '3', gridRow: String(i+2), display:'flex', gap:6, alignItems:'center' }}>
-                        <AbilityPill
-                          label={i === 2 ? 'Hidden' : `${i + 1}`}
-                          name={resolved.abilities?.[i]?.name}
+                  <div className="profile-body">
+                    <div className="profile-column-left">
+                      <div className="profile-section-card">
+                        <div className="profile-section-header">
+                          <span className="profile-section-title">Base Stats</span>
+                          <NatureSelect natureList={natureList} value={singleBuild.nature} onChange={(v)=> setSingleBuild(prev=> ({...prev, nature:v}))} />
+                        </div>
+                        <StatsRow
+                          mon={resolved}
+                          override={singleOverride}
+                          underlineKeys={singleUnderline}
+                          build={singleBuild}
+                          onSetIV={singleSetters.onSetIV}
+                          onSetEV={singleSetters.onSetEV}
+                          onSetLevel={singleSetters.onSetLevel}
                         />
                       </div>
-                    ))}
-
-                    {/* Column 4: Held Items, EV Yield, Catch Rate, Catch % (+ toggles) */}
-                    {(() => {
-                      const evMap = {
-                        ev_hp: 'HP',
-                        ev_attack: 'Atk',
-                        ev_defense: 'Def',
-                        ev_sp_attack: 'SpA',
-                        ev_sp_defense: 'SpD',
-                        ev_speed: 'Spe'
-                      };
-                      const yields = resolved.yields || {};
-                      const evParts = Object.entries(evMap)
-                        .filter(([k]) => (yields[k] || 0) > 0)
-                        .map(([k, label]) => `${yields[k]} ${label}`);
-                      const evText = evParts.length ? evParts.join(', ') : 'None';
-
-                      
-                        const heldItems = resolved.heldItems || [];
-                        const firstHeld = heldItems[0];
-                        const hasMoreHeld = heldItems.length > 1;
-                        const renderItem = (h, i) => {
-                          const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Type Matchups</div>
+                        {(() => {
+                          const blocks = [
+                            { title: '4x Weak', list: resolved.weakness.x4 || [] },
+                            { title: '2x Weak', list: resolved.weakness.x2 || [] },
+                            { title: '0.5x Resist', list: resolved.weakness.x0_5 || [] },
+                            { title: '0.25x Resist', list: resolved.weakness.x0_25 || [] },
+                            { title: '0x Immune', list: resolved.weakness.x0 || [] },
+                          ].filter(b => (b.list?.length || 0) > 0);
+                          if (!blocks.length) {
+                            return <div className="label-muted">No notable matchups.</div>;
+                          }
+                          const compact = blocks.length === 5;
                           return (
-                            <span key={h.id || h.name || i} style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
-                              <img
-                                src={h.id ? `${ITEM_ICON_BASE}${h.id}.png` : ITEM_PLACEHOLDER}
-                                alt={h.name || h}
-                                style={{ width:24, height:24, imageRendering:'pixelated' }}
-                                onError={e => {
-                                  e.currentTarget.onerror = null;
-                                  e.currentTarget.src = ITEM_PLACEHOLDER;
-                                  e.currentTarget.style.imageRendering = 'auto';
-                                }}
-                              />
-                              <DelayedTooltip content={item?.description || ''}>
-                                <span style={{ fontWeight:600, color:'var(--accent)', cursor:'help' }}>{h.name || h}</span>
-                              </DelayedTooltip>
-                            </span>
-                          );
-                        };
-                        const heldContent = heldItems.length > 0 ? (
-                          <span style={{ display:'inline-flex', alignItems:'center', gap:6 }}>
-                            {renderItem(firstHeld, 0)}
-                            {hasMoreHeld && (
-                              <button
-                                type="button"
-                                onClick={() => setShowAllHeld(v => !v)}
-                                style={{ background:'none', border:'none', cursor:'pointer', color:'var(--muted)' }}
-                              >
-                                {showAllHeld ? '▴' : '▾'}
-                              </button>
-                            )}
-                          </span>
-                        ) : 'None';
-
-                        return (
-                          <>
-                            <div style={{ gridColumn:'4', gridRow:'1', position:'relative' }}>
-                              <div
-                                style={{
-                                  display:'flex',
-                                  alignItems:'center',
-                                  gap:6,
-                                  padding:'4px 8px',
-                                  borderRadius:8,
-                                  background:'var(--surface)',
-                                  border:'1px solid var(--divider)'
-                                }}
-                              >
-                                <span className="label-muted" style={{ fontSize:12 }}>Held Items</span>
-                                {heldContent}
-                              </div>
-                              {hasMoreHeld && showAllHeld && (
-                                <div
-                                  style={{
-                                    position:'absolute',
-                                    top:'100%',
-                                    left:0,
-                                    marginTop:4,
-                                    background:'var(--surface)',
-                                    border:'1px solid var(--divider)',
-                                    borderRadius:8,
-                                    padding:'4px 8px',
-                                    zIndex:10,
-                                    display:'flex',
-                                    flexDirection:'column',
-                                    gap:4
-                                  }}
-                                >
-                                {heldItems.slice(1).map((h,i) => (
-                                  renderItem(h, i+1)
-                                ))}
+                            <div className={`profile-matchups-grid${compact ? ' is-compact' : ''}`}>
+                              {blocks.map((b, i) => (
+                                <div key={`${b.title}-${i}`} className="profile-matchup-card">
+                                  <span className="profile-matchup-title">{b.title}</span>
+                                  <div className="profile-matchup-types">
+                                    {b.list.map((t) => (
+                                      <TypePill key={`${b.title}-${t}`} t={t} compact={compact} />
+                                    ))}
+                                  </div>
                                 </div>
-                              )}
+                              ))}
                             </div>
-                          <div style={{ gridColumn:'4', gridRow:'2' }}>
-                            <LabeledPillBox label="EV Yield" value={evText} />
-                          </div>
-                          <div style={{ gridColumn:'4', gridRow:'3' }}>
-                            <LabeledPillBox label="Catch Rate" value={resolved.catchRate ?? 'N/A'} />
-                          </div>
-                          <div style={{ gridColumn:'4', gridRow:'4', display:'flex', alignItems:'center', gap:6 }}>
-                            <LabeledPillBox label="Catch %" value={catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'} />
-                            <span style={{ display:'inline-flex', alignItems:'center', gap:6, marginLeft:'auto' }}>
-                              <button
-                                type="button"
-                                onClick={() => setIsAsleep(v => !v)}
-                                title="Toggle Sleep"
-                                style={{
-                                  opacity: isAsleep ? 1 : 0.5,
-                                  background: isAsleep ? 'var(--accent)' : 'var(--chip-bg)',
-                                  border: `1px solid ${isAsleep ? 'var(--accent)' : 'var(--chip-br)'}`,
-                                  color: isAsleep ? '#111' : 'var(--text)',
-                                  borderRadius: 6,
-                                  padding: '3px 8px',
-                                  cursor: 'pointer',
-                                  fontWeight: 700,
-                                  fontSize: 13
-                                }}
-                              >
-                                zZz
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setIsOneHp(v => !v)}
-                                title="Toggle 1 HP"
-                                style={{
-                                  opacity: isOneHp ? 1 : 0.5,
-                                  background: isOneHp ? '#f87171' : 'var(--chip-bg)',
-                                  border: `1px solid ${isOneHp ? '#f87171' : 'var(--chip-br)'}`,
-                                  color: isOneHp ? '#111' : 'var(--text)',
-                                  borderRadius: 6,
-                                  padding: '3px 8px',
-                                  cursor: 'pointer',
-                                  fontWeight: 700,
-                                  fontSize: 13
-                                }}
-                              >
-                                1HP
-                              </button>
-                            </span>
-                          </div>
-                        </>
-                      );
-                    })()}
+                          );
+                        })()}
+                      </div>
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Evolution</div>
+                        <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowSmogonSets(false); setShowMoveset(false); }} showTitle={false} />
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        position:'absolute',
-                        inset:0,
-                        pointerEvents:'none',
-                        display:'grid',
-                        gridTemplateColumns:'repeat(4, minmax(0, 1fr))',
-                        gap:12,
-                        zIndex:0
-                      }}
-                    >
-                      {[0,1,2,3].map(i => (
-                        <div
-                          key={`colbox-${i}`}
-                          style={{
-                            border: '1px solid var(--divider)',
-                            borderRadius: 8,
-                            height: '105%',
-                            margin: '0 -6px'
-                          }}
-                        />
-                      ))}
+                    <div className="profile-column-right">
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Abilities</div>
+                        <div className="profile-ability-list">
+                          {[0,1,2].map((i) => (
+                            <AbilityPill key={`ability-${i}`} label={i === 2 ? 'Hidden' : `${i + 1}`} name={abilityNames[i]} compact={useCompactAbilities} />
+                          ))}
+                          {!abilityNames.length && <span className="label-muted">None</span>}
+                        </div>
+                      </div>
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Egg Group</div>
+                        <div className="profile-pill-row">
+                          {(resolved.eggGroups || []).map((g) => (
+                            <span key={g} className="profile-pill">{titleCase(g)}</span>
+                          ))}
+                          {!(resolved.eggGroups || []).length && <span className="label-muted">None</span>}
+                        </div>
+                      </div>
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Held Items</div>
+                        <div className="profile-held-list">
+                          {heldItems.length ? (
+                            <>
+                              {heldItems.slice(0, showAllHeld ? heldItems.length : 1).map(renderHeldItem)}
+                              {hasMoreHeld && !showAllHeld && (
+                                <button type="button" className="profile-more-button" onClick={() => setShowAllHeld(true)}>More</button>
+                              )}
+                            </>
+                          ) : (
+                            <span className="label-muted">None</span>
+                          )}
+                        </div>
+                        {hasMoreHeld && showAllHeld && (
+                          <div className="profile-held-expanded">
+                            {heldItems.slice(1).map(renderHeldItem)}
+                            <button type="button" className="profile-more-button" onClick={() => setShowAllHeld(false)}>Show Less</button>
+                          </div>
+                        )}
+                      </div>
+                      <div className="profile-section-card">
+                        <div className="profile-section-title">Misc</div>
+                        <div className="profile-metric-grid">
+                          <div className="profile-metric-item">
+                            <span className="profile-metric-label">EV Yield</span>
+                            <span className="profile-metric-value">{evText}</span>
+                          </div>
+                          <div className="profile-metric-item">
+                            <span className="profile-metric-label">Catch Rate</span>
+                            <span className="profile-metric-value">{resolved.catchRate ?? 'N/A'}</span>
+                          </div>
+                          <div className="profile-metric-item">
+                            <span className="profile-metric-label">Catch %</span>
+                            <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
+                          </div>
+                        </div>
+                        <div className="profile-metric-actions">
+                          <button
+                            type="button"
+                            className={`profile-chip-button${isAsleep ? ' is-active' : ''}`}
+                            onClick={() => setIsAsleep(v => !v)}
+                          >
+                            Asleep
+                          </button>
+                          <button
+                            type="button"
+                            className={`profile-chip-button${isOneHp ? ' is-active danger' : ''}`}
+                            onClick={() => setIsOneHp(v => !v)}
+                          >
+                            1 HP
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                </div>
-
-                {/* Row 2, Column 1: Compare button centered under sprite */}
-                <div style={{ gridColumn:'1', display:'flex', justifyContent:'center', alignItems:'center', gap:8, marginTop:8 }}>
-                  <button
-                    type="button"
-                    className={`region-btn${compareMode ? ' compare-active' : ''}`}
-                    aria-pressed={compareMode}
-                    onClick={() => {
-                      // Always enter compare mode with this mon as slot A,
-                      // close the profile, and prep for selecting the next.
-                      setCompareMode(true);
-                      setCompareA(resolved);
-                      setCompareB(null);
-                      setSelected(null);
-                      setQuery('');
-                    }}
-                    title="Compare"
-                  >
-                    Compare
-                  </button>
-                  {false && (
+                  <div className="profile-footer">
                     <button
                       type="button"
                       className="region-btn"
-                      onClick={() => {}}
-                      title="Clear Filters"
+                      onClick={() => { setSelected(null); setQuery(''); }}
+                      title="Close"
                     >
-                      Clear Filters
+                      Close
                     </button>
-                  )}
+                  </div>
                 </div>
-
-                {/* Row 2, Column 2: Info pills */}
-                <div
-                  style={{
-                    gridColumn:'2',
-                    display: 'grid',
-                    gap: 6,
-                    marginTop: 8,
-                    gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-                    alignItems: 'stretch'
-                  }}
-                >
-                  <InfoPill label="Exp" value={titleCase((resolved.expType || '').replace(/_/g, ' '))} />
-                  <InfoPill label="Gender" value={formatGenderRatio(resolved.genderRatio)} />
-                  <InfoPill label="Height" value={formatHeight(resolved.height)} />
-                  <InfoPill label="Weight" value={formatWeight(resolved.weight)} />
-                  <InfoPill label="Obtainable" value={resolved.obtainable ? 'Yes' : 'No'} />
-                </div>
-
-                {/* Row 3, Column 2: Forms (if multiple) */}
-                {resolved.forms?.length > 1 && (
-                  <div style={{ gridColumn:'2', display:'flex', gap:6, flexWrap:'wrap', marginTop:8 }}>
-                    <span className="label-muted" style={{ fontWeight:700 }}>Forms:</span>
-                    {resolved.forms.map(f => <span key={f.form_id || f.id}>{f.name}</span>)}
-                  </div>
-                )}
-              </div>
-              {Object.keys(resolved.stats || {}).length > 0 && (
-                <>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', alignItems:'end', margin:'16px 0 6px' }}>
-                    <div className="label-muted" style={{ fontWeight:700, gridColumn:'1 / 7' }}>Base Stats</div>
-                    <div style={{ gridColumn:'7 / 8', justifySelf:'end' }}>
-                      <NatureSelect natureList={natureList} value={singleBuild.nature} onChange={(v)=> setSingleBuild(prev=> ({...prev, nature:v}))} />
-                    </div>
-                  </div>
-                  <div style={{ display:'flex', justifyContent:'center' }}>
-                    <div style={{ width:'100%' }}>
-                      <StatsRow
-                        mon={resolved}
-                        override={singleOverride}
-                        underlineKeys={singleUnderline}
-                        build={singleBuild}
-                        onSetIV={singleSetters.onSetIV}
-                        onSetEV={singleSetters.onSetEV}
-                        onSetLevel={singleSetters.onSetLevel}
-                      />
-                    </div>
-                  </div>
-                </>
-              )}
-              {/* Weakness table (dynamic/centered) */}
-              <div style={{ marginTop:16 }}>
-                <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Type Matchups</div>
-                {(() => {
-                  const blocks = [
-                    { title: '4x Weak',     list: resolved.weakness.x4 || [] },
-                    { title: '2x Weak',     list: resolved.weakness.x2 || [] },
-                    { title: '1/2x Resist', list: resolved.weakness.x0_5 || [] },
-                    { title: '1/4x Resist', list: resolved.weakness.x0_25 || [] },
-                    { title: '0x Immune',   list: resolved.weakness.x0 || [] },
-                  ].filter(b => (b.list?.length || 0) > 0);
-
-                  if (!blocks.length) {
-                    return <div className="label-muted">No notable matchups.</div>;
-                  }
-
-                  const isCompact = blocks.length === 5;
-                  const cols = isCompact ? 5 : 4;
-                  const cardPad = isCompact ? '8px 10px' : '12px 14px';
-                  const gap = isCompact ? 6 : 10;
-
-                  return (
-                    <div style={{
-                      display:'grid',
-                      gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-                      gap,
-                      alignItems:'stretch'
-                    }}>
-                      {blocks.map((b, i) => (
-                        <div
-                          key={`${b.title}-${i}`}
-                          style={{
-                            border:'1px solid var(--divider)',
-                            borderRadius:8,
-                            padding: cardPad,
-                            background:'var(--surface)'
-                          }}
-                        >
-                          <div style={{ fontWeight:800, marginBottom:isCompact ? 6 : 8, fontSize: isCompact ? 13 : 14 }}>{b.title}</div>
-                          <div style={{ display:'flex', gap:isCompact ? 6 : 8, flexWrap:'wrap' }}>
-                            {b.list.map(t => (
-                              isCompact
-                                ? <TypePill key={`${b.title}-${t}`} t={t} compact />
-                                : <TypePill key={`${b.title}-${t}`} t={t} large />
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  );
-                })()}
-              </div>
-
-
-              <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowSmogonSets(false); setShowMoveset(false); }} />
-
-              {/* Close button moved to bottom-right of the info block */}
-              <div style={{ display:'flex', justifyContent:'flex-end', marginTop:12 }}>
-                <button
-                  type="button"
-                  className="region-btn"
-                  onClick={() => { setSelected(null); setQuery(''); }}
-                  title="Close"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-
+              );
+            })()}
             {/* Right: Locations */}
             <div style={{ ...styles.card, marginTop:16 }}>
              <div

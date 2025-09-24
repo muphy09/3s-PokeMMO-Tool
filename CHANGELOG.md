@@ -1,6 +1,16 @@
 # Changelog
 ---
 
+## [3.1.3] - 2025-09
+### Changed
+- Pokemon Profile
+  - Complete UI redesign of the Pokemon Profile screen
+    - Modernized look and feel of the profile screen
+    - Included Base Stat bars to visually see the data
+    - New Compare symbol
+
+---
+
 ## [3.1.2] - 2025-09
 ### Fixed
 - Horde Search
