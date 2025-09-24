@@ -7,7 +7,7 @@
   - "Special" learned moves (BP Tutor) now properly appear in the Move dropdown
 
 - Pokedex
-  - Searching & filtering no longer reduce the window size of the Pokedex overlay
+  - Searching & filtering no longer reduces the window size of the Pokedex overlay
     - Fixes the location overlay not appearing properly when a filter is used
 
 ### Changed
