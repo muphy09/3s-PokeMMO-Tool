@@ -15,7 +15,7 @@
   - Included all Status Effects into the dataset for Catch Rate %
     - Asleep, Frozen, Burn, Paralysis, & Poison now selectable options
   - Included a Ball Selector into the dataset for Catch Rate %
-    - Poke Ball (default), Great Ball, Ultra Ball, Quick Ball, Dusk Ball & Repeat Ball
+    - Poke Ball (default), Great Ball, Ultra Ball, Quick Ball, Dusk Ball, Repeat Ball & Safari Ball
 
 ---
 
