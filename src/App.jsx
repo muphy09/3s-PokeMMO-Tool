@@ -197,6 +197,22 @@ function calcCatchChance(rate, hpRatio = 1, statusMult = 1) {
   return Math.pow(b / 65535, 4);
 }
 
+const STATUS_EFFECT_BUTTONS = [
+  { key: 'slp', label: 'SLP' },
+  { key: 'frz', label: 'FRZ' },
+  { key: 'par', label: 'PAR' },
+  { key: 'brn', label: 'BRN' },
+  { key: 'psn', label: 'PSN' },
+];
+
+const STATUS_MULTIPLIERS = {
+  slp: 2,
+  frz: 2,
+  par: 1.5,
+  brn: 1.5,
+  psn: 1.5,
+};
+
 /* ---------- pokedex adapter ---------- */
 // Build lookups to help resolve form data and skip standalone form entries
 const RAW_DEX_BY_ID = new Map(dexRaw.map(m => [m.id, m]));
@@ -4291,8 +4307,11 @@ function App(){
   const [showMoveset, setShowMoveset] = useState(false);
   const [showSmogonSets, setShowSmogonSets] = useState(false);
   const [showLocations, setShowLocations] = useState(false);
-  const [isAsleep, setIsAsleep] = useState(false);
+  const [statusEffect, setStatusEffect] = useState(null);
   const [isOneHp, setIsOneHp] = useState(false);
+  const toggleStatusEffect = (effect) => {
+    setStatusEffect((prev) => (prev === effect ? null : effect));
+  };
   // Session-based recent Pokemon selections for quick history in Pokemon Search
   const [recentMons, setRecentMons] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('recentMons') || '[]'); }
@@ -4568,7 +4587,7 @@ function App(){
     setShowMoveset(false);
     setShowSmogonSets(false);
     setShowLocations(false);
-    setIsAsleep(false);
+    setStatusEffect(null);
     setIsOneHp(false);
   }, [selected]);
   useEffect(() => {
@@ -4937,13 +4956,14 @@ const marketResults = React.useMemo(() => {
 
   const catchPercent = React.useMemo(() => {
     if (!resolved?.catchRate) return null;
+    const statusMult = STATUS_MULTIPLIERS[statusEffect] || 1;
     const chance = calcCatchChance(
       resolved.catchRate,
       isOneHp ? 0.01 : 1,
-      isAsleep ? 2 : 1
+      statusMult
     );
     return chance * 100;
-  }, [resolved, isAsleep, isOneHp]);
+  }, [resolved, statusEffect, isOneHp]);
 
   const [singleBuild, setSingleBuild] = useState(() => mkInitialBuild());
   const singleDirty = isDirty(singleBuild);
@@ -6162,27 +6182,21 @@ const marketResults = React.useMemo(() => {
                       <div className="profile-section-card">
                         <div className="profile-section-title">Misc</div>
                         <div className="profile-metric-grid">
-                          <div className="profile-metric-item">
+                          <div className="profile-metric-item profile-metric-item--ev">
                             <span className="profile-metric-label">EV Yield</span>
                             <span className="profile-metric-value">{evText}</span>
                           </div>
-                          <div className="profile-metric-item">
+                          <div className="profile-metric-item profile-metric-item--catch-rate">
                             <span className="profile-metric-label">Catch Rate</span>
                             <span className="profile-metric-value">{resolved.catchRate ?? 'N/A'}</span>
                           </div>
                           <div className="profile-metric-item profile-metric-item--catch">
-                            <div className="profile-metric-line">
-                              <span className="profile-metric-label">Catch %</span>
-                              <button
-                                type="button"
-                                className={`profile-chip-button${isAsleep ? ' is-active' : ''}`}
-                                onClick={() => setIsAsleep(v => !v)}
-                              >
-                                Status
-                              </button>
-                            </div>
-                            <div className="profile-metric-line">
-                              <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
+                            <span className="profile-metric-label">Catch %</span>
+                            <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
+                          </div>
+                          <div className="profile-metric-item profile-metric-item--status">
+                            <span className="profile-metric-label">Catch Mods</span>
+                            <div className="profile-status-grid">
                               <button
                                 type="button"
                                 className={`profile-chip-button${isOneHp ? ' is-active danger' : ''}`}
@@ -6190,6 +6204,16 @@ const marketResults = React.useMemo(() => {
                               >
                                 1 HP
                               </button>
+                              {STATUS_EFFECT_BUTTONS.map(({ key, label }) => (
+                                <button
+                                  key={key}
+                                  type="button"
+                                  className={`profile-chip-button${statusEffect === key ? ' is-active' : ''}`}
+                                  onClick={() => toggleStatusEffect(key)}
+                                >
+                                  {label}
+                                </button>
+                              ))}
                             </div>
                           </div>
                         </div>

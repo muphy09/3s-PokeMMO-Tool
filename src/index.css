@@ -1047,7 +1047,32 @@ select.input option {
 .profile-metric-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 620px) {
+  .profile-metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "ev rate"
+      "catch mods";
+  }
+
+  .profile-metric-item--ev {
+    grid-area: ev;
+  }
+
+  .profile-metric-item--catch-rate {
+    grid-area: rate;
+  }
+
+  .profile-metric-item--catch {
+    grid-area: catch;
+  }
+
+  .profile-metric-item--status {
+    grid-area: mods;
+  }
 }
 
 .profile-metric-item {
@@ -1073,25 +1098,26 @@ select.input option {
 }
 
 .profile-metric-item--catch {
-  gap: 10px;
+  gap: 4px;
 }
 
-.profile-metric-item--catch .profile-metric-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.profile-metric-item--status {
+  gap: 8px;
 }
 
-.profile-metric-item--catch .profile-metric-label,
-.profile-metric-item--catch .profile-metric-value {
-  flex: 1;
+.profile-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
 
-.profile-metric-item--catch .profile-chip-button {
-  flex-shrink: 0;
-  padding: 4px 12px;
+.profile-status-grid .profile-chip-button {
+  width: 100%;
+  padding: 6px 0;
   min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile-chip-button {
