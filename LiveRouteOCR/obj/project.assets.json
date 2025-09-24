@@ -299,19 +299,19 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\bkumm\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj",
+      "projectUniqueName": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
       "projectName": "LiveRouteOCR",
-      "projectPath": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/obj/",
+      "projectPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+      "packagesPath": "C:\\Users\\bkumm\\.nuget\\packages\\",
+      "outputPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\bkumm\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0-windows"
@@ -361,11 +361,11 @@
             "version": "[6.0.36, 6.0.36]"
           },
           {
-            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "name": "Microsoft.NETCore.App.Runtime.win-x64",
             "version": "[6.0.36, 6.0.36]"
           },
           {
-            "name": "Microsoft.NETCore.App.Runtime.win-x64",
+            "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
             "version": "[6.0.36, 6.0.36]"
           }
         ],
@@ -374,7 +374,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/root/.dotnet/sdk/6.0.428/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {
