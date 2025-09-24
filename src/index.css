@@ -932,23 +932,6 @@ select.input option {
   font-size: 15px;
 }
 
-.profile-meta-pill-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.profile-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  font-weight: 700;
-  font-size: 13px;
-}
-
 .profile-forms-row {
   display: flex;
   flex-direction: column;
@@ -1025,12 +1008,6 @@ select.input option {
   gap: 10px;
 }
 
-.profile-pill-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 .profile-held-list {
   display: flex;
   align-items: center;
@@ -1059,22 +1036,6 @@ select.input option {
 .profile-held-name {
   font-weight: 600;
   color: var(--accent);
-}
-
-.profile-more-button {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px dashed var(--divider);
-  background: transparent;
-  color: var(--accent);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.profile-held-expanded {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 .profile-section-divider {

@@ -4280,7 +4280,6 @@ function App(){
   const [showLocations, setShowLocations] = useState(false);
   const [isAsleep, setIsAsleep] = useState(false);
   const [isOneHp, setIsOneHp] = useState(false);
-  const [showAllHeld, setShowAllHeld] = useState(false);
   // Session-based recent Pokemon selections for quick history in Pokemon Search
   const [recentMons, setRecentMons] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('recentMons') || '[]'); }
@@ -4959,7 +4958,6 @@ const marketResults = React.useMemo(() => {
     onSetLevel: (val) => setSingleBuild((prev) => ({ ...prev, level: val }))
   };
   useEffect(() => { setSingleBuild(mkInitialBuild()); }, [resolved]);
-  useEffect(() => { setShowAllHeld(false); }, [resolved]);
   useEffect(() => { setProfileShiny(false); }, [resolved]);
 
   const getLatestLiveBattleMon = () => {
@@ -5915,8 +5913,17 @@ const marketResults = React.useMemo(() => {
                 .filter(([key]) => (yields[key] || 0) > 0)
                 .map(([key, label]) => `${yields[key]} ${label}`);
               const evText = evParts.length ? evParts.join(', ') : 'None';
-              const heldItems = resolved.heldItems || [];
-              const hasMoreHeld = heldItems.length > 1;
+              const rawHeldItems = resolved.heldItems || [];
+              const heldItems = [];
+              const seenHeld = new Set();
+              for (const h of rawHeldItems) {
+                if (!h) continue;
+                const normName = normalizeKey(typeof h === 'string' ? h : h.name || '');
+                const dedupeKey = h.id != null ? `id-${h.id}` : `name-${normName}`;
+                if (seenHeld.has(dedupeKey)) continue;
+                seenHeld.add(dedupeKey);
+                heldItems.push(h);
+              }
               const abilityNames = (resolved.abilities || []).map(a => a?.name).filter(Boolean);
               const useCompactAbilities = abilityNames.some(a => (a || '').length > 12) || abilityNames.join('').length > 28;
               const renderHeldItem = (h, idx) => {
@@ -6029,15 +6036,15 @@ const marketResults = React.useMemo(() => {
                           </div>
                           <div className="profile-meta-item">
                             <span className="profile-meta-label">Egg Group</span>
-                            {(resolved.eggGroups || []).length ? (
-                              <div className="profile-meta-pill-row">
-                                {(resolved.eggGroups || []).map((g) => (
-                                  <span key={g} className="profile-pill">{titleCase(g)}</span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="profile-meta-value label-muted">None</span>
-                            )}
+                            {(() => {
+                              const eggGroups = (resolved.eggGroups || []).filter(Boolean);
+                              const eggGroupText = eggGroups.map(titleCase).join(' / ');
+                              return (
+                                <span className={`profile-meta-value${eggGroupText ? '' : ' label-muted'}`}>
+                                  {eggGroupText || 'None'}
+                                </span>
+                              );
+                            })()}
                           </div>
                           <div className="profile-meta-item">
                             <span className="profile-meta-label">Height</span>
@@ -6134,23 +6141,10 @@ const marketResults = React.useMemo(() => {
                       <div className="profile-section-card">
                         <div className="profile-section-title">Held Items</div>
                         <div className="profile-held-list">
-                          {heldItems.length ? (
-                            <>
-                              {heldItems.slice(0, showAllHeld ? heldItems.length : 1).map(renderHeldItem)}
-                              {hasMoreHeld && !showAllHeld && (
-                                <button type="button" className="profile-more-button" onClick={() => setShowAllHeld(true)}>More</button>
-                              )}
-                            </>
-                          ) : (
+                          {heldItems.length ? heldItems.map(renderHeldItem) : (
                             <span className="label-muted">None</span>
                           )}
                         </div>
-                        {hasMoreHeld && showAllHeld && (
-                          <div className="profile-held-expanded">
-                            {heldItems.slice(1).map(renderHeldItem)}
-                            <button type="button" className="profile-more-button" onClick={() => setShowAllHeld(false)}>Show Less</button>
-                          </div>
-                        )}
                       </div>
                       <div className="profile-section-card">
                         <div className="profile-section-title">Misc</div>
