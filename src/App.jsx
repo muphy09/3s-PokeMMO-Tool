@@ -6165,12 +6165,9 @@ const marketResults = React.useMemo(() => {
                             <span className="profile-metric-label">Catch Rate</span>
                             <span className="profile-metric-value">{resolved.catchRate ?? 'N/A'}</span>
                           </div>
-                          <div className="profile-metric-item">
-                            <span className="profile-metric-label">Catch %</span>
-                            <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
-                          </div>
-                          <div className="profile-metric-item profile-metric-item--actions">
-                            <div className="profile-metric-actions">
+                          <div className="profile-metric-item profile-metric-item--catch">
+                            <div className="profile-metric-line">
+                              <span className="profile-metric-label">Catch %</span>
                               <button
                                 type="button"
                                 className={`profile-chip-button${isAsleep ? ' is-active' : ''}`}
@@ -6178,6 +6175,9 @@ const marketResults = React.useMemo(() => {
                               >
                                 Status
                               </button>
+                            </div>
+                            <div className="profile-metric-line">
+                              <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
                               <button
                                 type="button"
                                 className={`profile-chip-button${isOneHp ? ' is-active danger' : ''}`}

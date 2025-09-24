@@ -6,12 +6,16 @@
 - Pokemon Profile UI
   - Replaced the 'Growth' box with 'Egg Group' and removed Egg Group from the side panel
   - Moved the Nature dropdown to sit below the Base Stat Total box
-  - Held Items now all display instead of 'more'
+  - Held Items now all display instead of needing the 'more' dropdown
     - Adjusted duplicate Held Item entries
+  - Changed "Asleep" to "Status" in the Catch % box
 
 ### Fixed
 - Moves
-  - 'SmokeScreen' typo fixed from 'Smoke Screen' and can now be properly referenced
+  - 'Smoke Screen' typo fixed to 'SmokeScreen' and can now be properly referenced
+
+- Pokemon Search & Area Searcg
+  - The filter 'x' button now properly appears again
 
 ---
 

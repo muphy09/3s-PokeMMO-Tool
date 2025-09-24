@@ -1060,23 +1060,38 @@ select.input option {
   background: var(--card);
 }
 
-.profile-metric-item span:first-child {
+.profile-metric-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
 }
 
-.profile-metric-item span:last-child {
+.profile-metric-value {
   font-weight: 700;
   font-size: 16px;
 }
 
-.profile-metric-actions {
+.profile-metric-item--catch {
+  gap: 10px;
+}
+
+.profile-metric-item--catch .profile-metric-line {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+}
+
+.profile-metric-item--catch .profile-metric-label,
+.profile-metric-item--catch .profile-metric-value {
+  flex: 1;
+}
+
+.profile-metric-item--catch .profile-chip-button {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  min-height: 28px;
 }
 
 .profile-chip-button {
