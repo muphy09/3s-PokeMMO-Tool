@@ -304,6 +304,21 @@ const BALL_OPTIONS = [
         <circle cx='16' cy='16' r='2.5' fill='#d9d9d9'/>
       </svg>
     `)
+  },
+  {
+    key: 'safari-ball',
+    label: 'Safari Ball',
+    multiplier: 1.5,
+    icon: createBallIcon(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'>
+        <circle cx='16' cy='16' r='15' fill='#ffffff'/>
+        <path d='M16 1a15 15 0 0 1 15 15H1A15 15 0 0 1 16 1z' fill='#1d4d3b'/>
+        <path d='M6 9c2.4-3.5 5.6-5.3 10-5.3S23.6 5.5 26 9l-3 6H9z' fill='#9ec85b'/>
+        <path d='M1 16h30' stroke='#1c332a' stroke-width='4' stroke-linecap='round'/>
+        <circle cx='16' cy='16' r='5' fill='#ffffff' stroke='#1c332a' stroke-width='2'/>
+        <circle cx='16' cy='16' r='2.5' fill='#d9d9d9'/>
+      </svg>
+    `)
   }
 ];
 
@@ -338,15 +353,13 @@ function BallSelect({ value, onChange }) {
         aria-expanded={open}
         title={`Selected ball: ${selected.label}`}
       >
-        <span
+        <img
           className="profile-ball-icon"
-          style={{ backgroundImage: `url(${selected.icon})` }}
+          src={selected.icon}
+          alt=""
           aria-hidden="true"
         />
         <span className="profile-ball-select-label">Ball</span>
-        <svg className="profile-ball-select-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true">
-          <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
       </button>
       {open && (
         <div className="profile-ball-select-menu" role="listbox">
@@ -362,9 +375,10 @@ function BallSelect({ value, onChange }) {
               role="option"
               aria-selected={opt.key === selected.key}
             >
-              <span
+              <img
                 className="profile-ball-icon"
-                style={{ backgroundImage: `url(${opt.icon})` }}
+                src={opt.icon}
+                alt=""
                 aria-hidden="true"
               />
               <span>{opt.label}</span>

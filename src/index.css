@@ -1128,13 +1128,13 @@ select.input option {
 .profile-ball-select-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 4px;
+  padding: 3px 8px;
   border-radius: 999px;
   border: 1px solid var(--divider);
   background: var(--surface);
   color: var(--text);
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   font-weight: 600;
@@ -1151,10 +1151,6 @@ select.input option {
   outline: none;
   border-color: var(--focus-border);
   box-shadow: var(--focus-ring);
-}
-
-.profile-ball-select-caret {
-  opacity: 0.7;
 }
 
 .profile-ball-select-menu {
@@ -1195,12 +1191,11 @@ select.input option {
 }
 
 .profile-ball-icon {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  object-fit: cover;
+  display: block;
   flex-shrink: 0;
 }
 
