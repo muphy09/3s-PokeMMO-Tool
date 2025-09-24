@@ -7,7 +7,7 @@
   - Complete UI redesign of the Pokemon Profile screen
     - Modernized look and feel of the profile screen
     - Included Base Stat bars to visually see the data
-    - New Compare symbol
+    - New animated Sprite when hovering on the Sprite (B&W animation currently)
 
 ---
 

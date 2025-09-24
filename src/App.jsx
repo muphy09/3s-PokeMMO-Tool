@@ -529,7 +529,79 @@ function localSpriteCandidates(mon){
     }
     return null;
   }
-  function Sprite({ mon, size=42, alt='', forceShiny=false }){
+  const SPRITE_ANIMATION_CACHE = new Map();
+
+  function animationSources(mon, opts = {}){
+    const shiny = !!opts.shiny;
+    if (!mon) return [];
+    const showdownBase = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/';
+    const bwBase = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/';
+    const suffix = shiny ? 'shiny/' : '';
+    const arr = [];
+
+    if (mon?.id != null) {
+      arr.push(`${showdownBase}${suffix}${mon.id}.gif`);
+      arr.push(`${bwBase}${suffix}${mon.id}.gif`);
+    }
+
+    const showdown = mon?.sprites?.other?.showdown;
+    if (showdown) {
+      const key = shiny ? 'front_shiny' : 'front_default';
+      if (showdown[key]) arr.push(showdown[key]);
+    }
+
+    const animated = mon?.sprites?.versions?.['generation-v']?.['black-white']?.animated;
+    if (animated) {
+      const key = shiny ? 'front_shiny' : 'front_default';
+      if (animated[key]) arr.push(animated[key]);
+    }
+
+    const slugCandidates = buildPokeApiSlugCandidates(mon);
+    for (const slug of slugCandidates) {
+      arr.push(`${showdownBase}${suffix}${slug}.gif`);
+    }
+
+    return [...new Set(arr)].filter(Boolean);
+  }
+
+  async function resolvePokeapiAnimation(mon, opts = {}){
+    if (!mon) return null;
+    const shiny = !!opts.shiny;
+    const candidates = buildPokeApiSlugCandidates(mon);
+    for (const slug of candidates){
+      try {
+        const r = await fetch(`https://pokeapi.co/api/v2/pokemon/${slug}`);
+        if (!r.ok) continue;
+        const d = await r.json();
+        const showdown = d?.sprites?.other?.showdown?.[shiny ? 'front_shiny' : 'front_default'];
+        if (showdown) return showdown;
+        const animated = d?.sprites?.versions?.['generation-v']?.['black-white']?.animated?.[shiny ? 'front_shiny' : 'front_default'];
+        if (animated) return animated;
+      } catch {}
+    }
+    return null;
+  }
+
+  function preloadImage(url){
+    if (!url) return Promise.reject(new Error('No image URL'));
+    if (typeof Image !== 'undefined'){
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(url);
+        img.onerror = () => reject(new Error('Failed to load image'));
+        img.src = url;
+      });
+    }
+    if (typeof fetch === 'function'){
+      return fetch(url, { method:'GET' }).then(resp => {
+        if (!resp.ok) throw new Error('Failed to load image');
+        return url;
+      });
+    }
+    return Promise.resolve(url);
+  }
+
+  function Sprite({ mon, size=42, alt='', forceShiny=false, playOnHover=false }) {
     const [shinyGlobal, setShinyGlobal] = useState(() => {
       try { return JSON.parse(localStorage.getItem('shinySprites') ?? 'false'); } catch { return false; }
     });
@@ -545,7 +617,6 @@ function localSpriteCandidates(mon){
     const [triedPokeApi, setTriedPokeApi] = useState(false);
     useEffect(()=>{
       setIdx(0); setPokeSrc(null); setTriedPokeApi(false);
-      // Proactively resolve sprites for entries without a canonical dex/id (alt forms)
       const noDex = mon && (mon.dex == null && mon.id == null);
       if (noDex) {
         setTriedPokeApi(true);
@@ -553,9 +624,104 @@ function localSpriteCandidates(mon){
         resolver(mon).then((s) => { if (s) setPokeSrc(s); }).catch(()=>{});
       }
     }, [mon, useShiny]);
-    const src = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+    const staticSrc = pokeSrc || srcs[idx] || TRANSPARENT_PNG;
+
+    const enableAnimation = !!playOnHover;
+    const [wantsAnimation, setWantsAnimation] = useState(false);
+    const [animationSrc, setAnimationSrc] = useState(null);
+    const animationApiTriedRef = useRef(false);
+    const monSignature = React.useMemo(() => {
+      if (!mon) return 'null';
+      const parts = [];
+      if (mon.id != null) parts.push(`id:${mon.id}`);
+      if (mon.slug) parts.push(`slug:${mon.slug}`);
+      if (mon.name) parts.push(`name:${mon.name}`);
+      return parts.join('|') || 'anon';
+    }, [mon]);
+    useEffect(() => {
+      if (!enableAnimation) return;
+      animationApiTriedRef.current = false;
+      setAnimationSrc(prev => (prev !== null ? null : prev));
+    }, [enableAnimation, monSignature, useShiny]);
+    useEffect(() => {
+      if (!enableAnimation && wantsAnimation) {
+        setWantsAnimation(false);
+      }
+    }, [enableAnimation, wantsAnimation]);
+    const animationSrcs = React.useMemo(() => (
+      enableAnimation ? animationSources(mon, { shiny: useShiny }) : []
+    ), [enableAnimation, mon, useShiny]);
+    const animationCacheKey = React.useMemo(() => {
+      if (!enableAnimation || !mon) return '';
+      const parts = [useShiny ? 'shiny' : 'normal'];
+      if (mon.id != null) parts.push(`id:${mon.id}`);
+      if (mon.slug) parts.push(`slug:${mon.slug}`);
+      if (!mon.slug && mon.formSlug) parts.push(`slug:${mon.formSlug}`);
+      if (mon.name) parts.push(`name:${mon.name}`);
+      return parts.join('|');
+    }, [enableAnimation, mon, useShiny]);
+    useEffect(() => {
+      if (!enableAnimation) return;
+      if (!wantsAnimation) return;
+      if (!mon) return;
+      if (animationSrc) return;
+
+      let cancelled = false;
+      const cacheKey = animationCacheKey;
+
+      if (cacheKey && SPRITE_ANIMATION_CACHE.has(cacheKey)) {
+        const cached = SPRITE_ANIMATION_CACHE.get(cacheKey);
+        if (cached) setAnimationSrc(cached);
+        return;
+      }
+
+      const load = async () => {
+        for (const candidate of animationSrcs) {
+          if (!candidate) continue;
+          try {
+            await preloadImage(candidate);
+            if (cancelled) return;
+            if (cacheKey) SPRITE_ANIMATION_CACHE.set(cacheKey, candidate);
+            setAnimationSrc(candidate);
+            return;
+          } catch {}
+        }
+
+        if (!animationApiTriedRef.current) {
+          animationApiTriedRef.current = true;
+          try {
+            const resolved = await resolvePokeapiAnimation(mon, { shiny: useShiny });
+            if (cancelled) return;
+            if (resolved) {
+              try {
+                await preloadImage(resolved);
+                if (cancelled) return;
+                if (cacheKey) SPRITE_ANIMATION_CACHE.set(cacheKey, resolved);
+                setAnimationSrc(resolved);
+                return;
+              } catch {}
+            }
+          } catch {}
+        }
+
+        if (!cancelled && cacheKey && !SPRITE_ANIMATION_CACHE.has(cacheKey)) {
+          SPRITE_ANIMATION_CACHE.set(cacheKey, null);
+        }
+      };
+
+      load();
+
+      return () => { cancelled = true; };
+    }, [enableAnimation, wantsAnimation, mon, useShiny, animationSrc, animationSrcs, animationCacheKey]);
+    const displayedSrc = enableAnimation && wantsAnimation && animationSrc ? animationSrc : staticSrc;
 
     const handleError = () => {
+      if (enableAnimation && wantsAnimation && animationSrc) {
+        if (animationCacheKey) SPRITE_ANIMATION_CACHE.set(animationCacheKey, null);
+        animationApiTriedRef.current = false;
+        setAnimationSrc(null);
+        return;
+      }
       if (idx < srcs.length - 1) {
         setIdx(idx + 1);
       } else if (!triedPokeApi && mon) {
@@ -565,23 +731,24 @@ function localSpriteCandidates(mon){
       }
     };
 
-  return (
-    <img
-      src={src}
-      alt={alt || mon?.name || ''}
-      style={{
-        width: size,
-        height: size,
-        maxWidth: '100%',
-        maxHeight: '100%',
-        objectFit: 'contain',
-        imageRendering: 'pixelated'
-      }}
-      onError={handleError}
-    />
-  );
+    return (
+      <img
+        src={displayedSrc}
+        alt={alt || mon?.name || ''}
+        style={{
+          width: size,
+          height: size,
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain',
+          imageRendering: 'pixelated'
+        }}
+        onError={handleError}
+        onMouseEnter={enableAnimation ? () => setWantsAnimation(true) : undefined}
+        onMouseLeave={enableAnimation ? () => setWantsAnimation(false) : undefined}
+      />
+    );
   }
-
 /* ---------- Type colors (Gen 1–5) ---------- */
 const TYPE_COLORS = {
   normal:'#A8A77A', fire:'#EE8130', water:'#6390F0', electric:'#F7D02C',
@@ -5815,7 +5982,7 @@ const marketResults = React.useMemo(() => {
                     </div>
                     <div className="profile-hero-main">
                       <div className="profile-sprite-wrap">
-                        <Sprite mon={selected} size={140} alt={resolved.name} forceShiny={profileShiny} />
+                        <Sprite mon={selected} size={140} alt={resolved.name} forceShiny={profileShiny} playOnHover />
                         <button
                           type="button"
                           className={`profile-shiny-toggle${profileShiny || shinyGlobal ? ' is-active' : ''}`}
@@ -6241,6 +6408,7 @@ const marketResults = React.useMemo(() => {
 }
 
 export default App;
+
 
 
 
