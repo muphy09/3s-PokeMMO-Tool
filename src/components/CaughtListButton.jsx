@@ -244,12 +244,14 @@ export default function CaughtListButton(){
   };
   const overlayStyle = {
     position:'fixed', top:0, left:0, width:'100vw', height:'100vh',
-    background:'rgba(0,0,0,0.7)', zIndex:20000
+    background:'rgba(0,0,0,0.7)', zIndex:20000,
+    display:'flex', alignItems:'center', justifyContent:'center', padding:'24px'
   };
   const modalStyle = {
-    position:'absolute', top:'50%', left:'50%', transform:'translate(-50%, -50%)',
+    position:'relative',
     background:'var(--surface)', color:'var(--text)', padding:16,
-    width:'85%', maxWidth:1100, maxHeight:'85%', overflow:'hidden',
+    width:'85%', maxWidth:1100,
+    maxHeight:'85vh', height:'min(85vh, 920px)', minHeight:'min(620px, 85vh)', overflow:'hidden',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)', display:'flex', flexDirection:'column'
   };
   const headerStyle = {
@@ -586,7 +588,7 @@ export default function CaughtListButton(){
             </div>
 
             {/* Grid of chips */}
-            <div style={{ flex:1, overflow:'auto' }}>
+            <div style={{ flex:1, overflow:'auto', minHeight:0 }}>
               <div style={gridStyle}>
                 {list.map(mon => {
                   const filled = caught.has(mon.id);
