@@ -1,6 +1,20 @@
 # Changelog
 ---
 
+## [3.1.4] - 2025-09
+### Changed
+- Pokemon Profile UI
+  - Replaced the 'Growth' box with 'Egg Group' and removed Egg Group from the side panel
+  - Moved the Nature dropdown to sit below the Base Stat Total box
+  - Held Items now all display instead of 'more'
+    - Adjusted duplicate Held Item entries
+
+### Fixed
+- Moves
+  - 'SmokeScreen' typo fixed from 'Smoke Screen' and can now be properly referenced
+
+---
+
 ## [3.1.3] - 2025-09
 ### Changed
 - Pokemon Profile

@@ -918,16 +918,35 @@ select.input option {
   gap: 6px;
 }
 
-.profile-meta-item span:first-child {
+.profile-meta-item span:first-child,
+.profile-meta-label {
   text-transform: uppercase;
   font-size: 11px;
   letter-spacing: 0.08em;
   opacity: 0.7;
 }
 
-.profile-meta-item span:last-child {
+.profile-meta-item span:last-child,
+.profile-meta-value {
   font-weight: 700;
   font-size: 15px;
+}
+
+.profile-meta-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  font-size: 13px;
 }
 
 .profile-forms-row {
@@ -961,7 +980,7 @@ select.input option {
   padding: 22px;
   display: grid;
   gap: 22px;
-  grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
 }
 
 @media (max-width: 1100px) {
@@ -1142,6 +1161,11 @@ select.input option {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.profile-nature-row {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .profile-stats-lines {

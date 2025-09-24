@@ -426,7 +426,7 @@
                 "4": "Ember"
             },
             {
-                "8": "Smoke Screen"
+                "8": "SmokeScreen"
             },
             {
                 "12": "Dragon Breath"
@@ -575,14 +575,14 @@
         "start": [
             "Growl",
             "Ember",
-            "Smoke Screen"
+            "SmokeScreen"
         ],
         "lv": [
             {
                 "7": "Ember"
             },
             {
-                "10": "Smoke Screen"
+                "10": "SmokeScreen"
             },
             {
                 "12": "Dragon Breath"
@@ -729,7 +729,7 @@
             "Leer",
             "Growl",
             "Ember",
-            "Smoke Screen",
+            "SmokeScreen",
             "Metal Claw",
             "Heat Wave",
             "Dragon Claw",
@@ -742,7 +742,7 @@
                 "7": "Ember"
             },
             {
-                "10": "Smoke Screen"
+                "10": "SmokeScreen"
             },
             {
                 "12": "Dragon Breath"
@@ -30099,7 +30099,7 @@
                 "4": "Smog"
             },
             {
-                "8": "Smoke Screen"
+                "8": "SmokeScreen"
             },
             {
                 "12": "Clear Smog"
@@ -30252,7 +30252,7 @@
     },
     "110  Weezing (Chaos)": {
         "start": [
-            "Smoke Screen",
+            "SmokeScreen",
             "Smog",
             "Poison Gas",
             "Heat Wave",
@@ -30263,7 +30263,7 @@
                 "4": "Smog"
             },
             {
-                "7": "Smoke Screen"
+                "7": "SmokeScreen"
             },
             {
                 "12": "Clear Smog"
@@ -31336,7 +31336,7 @@
         ],
         "lv": [
             {
-                "5": "Smoke Screen"
+                "5": "SmokeScreen"
             },
             {
                 "9": "Leer"
@@ -31943,13 +31943,13 @@
         "start": [
             "Water Gun",
             "Hydro Pump",
-            "Smoke Screen",
+            "SmokeScreen",
             "Bubble",
             "Twister"
         ],
         "lv": [
             {
-                "5": "Smoke Screen"
+                "5": "SmokeScreen"
             },
             {
                 "9": "Leer"
@@ -34857,7 +34857,7 @@
                 "5": "Ember"
             },
             {
-                "8": "Smoke Screen"
+                "8": "SmokeScreen"
             },
             {
                 "12": "Feint Attack"
@@ -38550,7 +38550,7 @@
         ],
         "lv": [
             {
-                "6": "Smoke Screen"
+                "6": "SmokeScreen"
             },
             {
                 "10": "Ember"
@@ -38664,11 +38664,11 @@
     "156  Quilava (Field)": {
         "start": [
             "Leer",
-            "Smoke Screen"
+            "SmokeScreen"
         ],
         "lv": [
             {
-                "6": "Smoke Screen"
+                "6": "SmokeScreen"
             },
             {
                 "10": "Ember"
@@ -38781,13 +38781,13 @@
             "Double-Edge",
             "Leer",
             "Ember",
-            "Smoke Screen",
+            "SmokeScreen",
             "Eruption",
             "Gyro Ball"
         ],
         "lv": [
             {
-                "6": "Smoke Screen"
+                "6": "SmokeScreen"
             },
             {
                 "10": "Ember"
@@ -48761,7 +48761,7 @@
             "Earth Power"
         ],
         "egg": [
-            "Smoke Screen",
+            "SmokeScreen",
             "Stockpile",
             "Spit Up",
             "Swallow",
@@ -51372,7 +51372,7 @@
         "start": [
             "Water Gun",
             "Hydro Pump",
-            "Smoke Screen",
+            "SmokeScreen",
             "Bubble",
             "Twister",
             "Whirlpool",
@@ -51380,7 +51380,7 @@
         ],
         "lv": [
             {
-                "5": "Smoke Screen"
+                "5": "SmokeScreen"
             },
             {
                 "9": "Leer"
@@ -52943,7 +52943,7 @@
                 "5": "Ember"
             },
             {
-                "8": "Smoke Screen"
+                "8": "SmokeScreen"
             },
             {
                 "12": "Feint Attack"
@@ -61975,7 +61975,7 @@
             "zen headbutt"
         ],
         "egg": [
-            "Smoke Screen",
+            "SmokeScreen",
             "Smelling Salt",
             "Extrasensory",
             "Hammer Arm",
@@ -67031,7 +67031,7 @@
                 "8": "Rapid Spin"
             },
             {
-                "12": "Smoke Screen"
+                "12": "SmokeScreen"
             },
             {
                 "13": "Fire Spin"
@@ -81344,7 +81344,7 @@
                 "3": "Feint"
             },
             {
-                "6": "Smoke Screen"
+                "6": "SmokeScreen"
             },
             {
                 "9": "Acid Spray"
@@ -81505,7 +81505,7 @@
         "start": [
             "Flamethrower",
             "Screech",
-            "Smoke Screen",
+            "SmokeScreen",
             "Focus Energy",
             "Poison Gas",
             "Feint"
@@ -81521,7 +81521,7 @@
                 "12": "Fury Swipes"
             },
             {
-                "13": "Smoke Screen"
+                "13": "SmokeScreen"
             },
             {
                 "15": "Focus Energy"
@@ -82687,7 +82687,7 @@
         ],
         "egg": [
             "Disable",
-            "Smoke Screen",
+            "SmokeScreen",
             "Destiny Bond",
             "Grudge"
         ],
@@ -86095,7 +86095,7 @@
         "start": [
             "Leer",
             "Ember",
-            "Smoke Screen",
+            "SmokeScreen",
             "Smog"
         ],
         "lv": [
@@ -86103,7 +86103,7 @@
                 "5": "Ember"
             },
             {
-                "8": "Smoke Screen"
+                "8": "SmokeScreen"
             },
             {
                 "12": "Feint Attack"

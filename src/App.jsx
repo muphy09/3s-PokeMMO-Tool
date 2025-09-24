@@ -1182,7 +1182,7 @@ function StatInputBox({ label, value, min, max, onChange }) {
   );
 }
 
-function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel }) {
+function StatsRow({ mon, other=null, override=null, otherOverride=null, underlineKeys=new Set(), build, onSetIV, onSetEV, onSetLevel, natureEl=null }) {
   const baseStats = getBaseStatsFrom(mon || {});
   const otherBaseStats = other ? getBaseStatsFrom(other) : null;
   const keyMeta = [
@@ -1270,6 +1270,11 @@ function StatsRow({ mon, other=null, override=null, otherOverride=null, underlin
           )}
         </div>
       </div>
+      {natureEl && (
+        <div className="profile-nature-row">
+          {natureEl}
+        </div>
+      )}
       <button type="button" className="profile-stats-toggle" onClick={toggleExtras}>
         Include IVs and EVs
         <span className="profile-stats-toggle-icon">{showExtras ? 'v' : '>'}</span>
@@ -1582,12 +1587,7 @@ function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build
 
         {(mon.stats && Object.keys(mon.stats).length > 0) && (
           <div style={rowWrapStyle}>
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(7, 1fr)', alignItems:'end', marginBottom:6 }}>
-              <div className="label-muted" style={{ fontWeight:700, gridColumn:'1 / 7' }}>Base Stats</div>
-              <div style={{ gridColumn:'7 / 8', justifySelf:'end' }}>
-                {natureEl}
-              </div>
-            </div>
+            <div className="label-muted" style={{ fontWeight:700, marginBottom:6 }}>Base Stats</div>
             <StatsRow
               mon={mon}
               other={other}
@@ -1598,6 +1598,7 @@ function CompareBlock({ mon, other, onClear, onReplace, onReplaceFromTeam, build
               onSetIV={onSetIV}
               onSetEV={onSetEV}
               onSetLevel={onSetLevel}
+              natureEl={natureEl}
             />
           </div>
         )}
@@ -6027,8 +6028,16 @@ const marketResults = React.useMemo(() => {
                             <span className="profile-meta-value">{titleCase((resolved.expType || '').replace(/_/g, ' ')) || '—'}</span>
                           </div>
                           <div className="profile-meta-item">
-                            <span className="profile-meta-label">Growth</span>
-                            <span className="profile-meta-value">{resolved.baseExp ?? '—'}</span>
+                            <span className="profile-meta-label">Egg Group</span>
+                            {(resolved.eggGroups || []).length ? (
+                              <div className="profile-meta-pill-row">
+                                {(resolved.eggGroups || []).map((g) => (
+                                  <span key={g} className="profile-pill">{titleCase(g)}</span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="profile-meta-value label-muted">None</span>
+                            )}
                           </div>
                           <div className="profile-meta-item">
                             <span className="profile-meta-label">Height</span>
@@ -6065,7 +6074,6 @@ const marketResults = React.useMemo(() => {
                       <div className="profile-section-card">
                         <div className="profile-section-header">
                           <span className="profile-section-title">Base Stats</span>
-                          <NatureSelect natureList={natureList} value={singleBuild.nature} onChange={(v)=> setSingleBuild(prev=> ({...prev, nature:v}))} />
                         </div>
                         <StatsRow
                           mon={resolved}
@@ -6075,6 +6083,7 @@ const marketResults = React.useMemo(() => {
                           onSetIV={singleSetters.onSetIV}
                           onSetEV={singleSetters.onSetEV}
                           onSetLevel={singleSetters.onSetLevel}
+                          natureEl={<NatureSelect natureList={natureList} value={singleBuild.nature} onChange={(v)=> setSingleBuild(prev=> ({...prev, nature:v}))} />}
                         />
                       </div>
                       <div className="profile-section-card">
@@ -6120,15 +6129,6 @@ const marketResults = React.useMemo(() => {
                             <AbilityPill key={`ability-${i}`} label={i === 2 ? 'Hidden' : `${i + 1}`} name={abilityNames[i]} compact={useCompactAbilities} />
                           ))}
                           {!abilityNames.length && <span className="label-muted">None</span>}
-                        </div>
-                      </div>
-                      <div className="profile-section-card">
-                        <div className="profile-section-title">Egg Group</div>
-                        <div className="profile-pill-row">
-                          {(resolved.eggGroups || []).map((g) => (
-                            <span key={g} className="profile-pill">{titleCase(g)}</span>
-                          ))}
-                          {!(resolved.eggGroups || []).length && <span className="label-muted">None</span>}
                         </div>
                       </div>
                       <div className="profile-section-card">
