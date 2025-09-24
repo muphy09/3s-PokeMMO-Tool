@@ -6169,22 +6169,24 @@ const marketResults = React.useMemo(() => {
                             <span className="profile-metric-label">Catch %</span>
                             <span className="profile-metric-value">{catchPercent != null ? `${catchPercent.toFixed(1)}%` : 'N/A'}</span>
                           </div>
-                        </div>
-                        <div className="profile-metric-actions">
-                          <button
-                            type="button"
-                            className={`profile-chip-button${isAsleep ? ' is-active' : ''}`}
-                            onClick={() => setIsAsleep(v => !v)}
-                          >
-                            Asleep
-                          </button>
-                          <button
-                            type="button"
-                            className={`profile-chip-button${isOneHp ? ' is-active danger' : ''}`}
-                            onClick={() => setIsOneHp(v => !v)}
-                          >
-                            1 HP
-                          </button>
+                          <div className="profile-metric-item profile-metric-item--actions">
+                            <div className="profile-metric-actions">
+                              <button
+                                type="button"
+                                className={`profile-chip-button${isAsleep ? ' is-active' : ''}`}
+                                onClick={() => setIsAsleep(v => !v)}
+                              >
+                                Status
+                              </button>
+                              <button
+                                type="button"
+                                className={`profile-chip-button${isOneHp ? ' is-active danger' : ''}`}
+                                onClick={() => setIsOneHp(v => !v)}
+                              >
+                                1 HP
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
