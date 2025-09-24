@@ -15,6 +15,9 @@
 - Live Route occasionally loses confidence of the current area
 - Live Battle can be inconsistent, especially within double battles
 - Element Scale is wonkey
-- Eevee evolution flow is a disaster
 - Basculin Horde Data not included
 
+
+
+Tp - 
+Pokedex search when filter

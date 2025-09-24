@@ -360,11 +360,12 @@ const MOVE_METHODS = [
   { key:'lv', label:'Level' },
   { key:'tutor', label:'Tutor' },
   { key:'tmhm', label:'TM/HM' },
-  { key:'egg', label:'Egg' }
+  { key:'egg', label:'Egg' },
+  { key:'special', label:'Special' }
 ];
 
 function groupMoves(list = []){
-  const out = { start: [], lv: [], tutor: [], tmhm: [], egg: [] };
+  const out = { start: [], lv: [], tutor: [], tmhm: [], egg: [], special: [] };
   for (const mv of list){
     switch(mv.type){
       case 'level':
@@ -379,6 +380,10 @@ function groupMoves(list = []){
         break;
       case 'egg_moves':
         out.egg.push(mv.name);
+        break;
+      case 'special_moves':
+      case 'special_egg':
+        out.special.push(mv.name);
         break;
       default:
         break;

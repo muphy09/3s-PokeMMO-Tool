@@ -1,6 +1,19 @@
 # Changelog
 ---
 
+## [3.1.5] - 2025-09
+### Fixed
+- Move Data | *Thanks Ace!*
+  - "Special" learned moves (BP Tutor) now properly appear in the Move dropdown
+
+### Changed
+- Catch Rate UI | *Thanks Win!*
+  - Updated Status effects to reflect all status changes
+  - Included a Ball Selector for Catch Rate %
+
+
+---
+
 ## [3.1.4] - 2025-09
 ### Changed
 - Pokemon Profile UI
