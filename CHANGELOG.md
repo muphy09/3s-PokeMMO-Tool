@@ -3,14 +3,18 @@
 
 ## [3.2.0] - 2025-09
 ### Changed
-- OCR Settings Rework | *Highly Requested!*
-  - OCR Aggressiveness
-    - Tune how aggressive or efficient the OCR is at determining the route (helps reduce CPU load)
-  - OCR Capture Size
-    - Tune the Window Size of the OCR Capture to adjust for smaller & larger UI scales / resolutions
-  - OCR On/Off
-    - Toggling this option now *properly* turns the OCR On and Off
-    - Removed 'Refresh OCR' as it can be done with this switch
+- OCR Rework | *Highly Requested!*
+  - OCR Process
+    - 
+  - New Settings for OCR
+    - OCR Aggressiveness
+      - Tune how aggressive or efficient the OCR is at determining the route
+      - Helps to reduce CPU load at the cost of speed and accuracy
+    - OCR Capture Size
+      - Tune the Window Size of the OCR Capture to adjust for smaller & larger UI scales / resolutions
+    - OCR On/Off
+      - Toggling this option now *properly* kills the OCR process
+      - Removed 'Refresh OCR' as it can be done with this switch
 
 ### Fixed
 - Ball Selector

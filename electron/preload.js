@@ -99,7 +99,8 @@ async function getOcrSetupCompat() {
     ocrAggressiveness: defaults.ocrAggressiveness,
   };
 }
-async function saveOcrSetupCompat(setup = {}) {
+async function saveOcrSetupCompat(setup = {}, options = {}) {
+  const { restart = true } = options ?? {};
   const payload = (setup && typeof setup === 'object') ? { ...setup } : {};
   const tryChannels = [
     { name: 'app:saveOcrSetup', ok: (res) => res !== false && res !== null && res !== undefined },
@@ -125,7 +126,17 @@ async function saveOcrSetupCompat(setup = {}) {
   }
   next.ocrAggressivenessVersion = 2;
   const ok = writeJSON(settingsPath, next);
-  return ok ? { ok: true, saved: next } : false;
+  if (!ok) return false;
+
+  if (restart) {
+    if (next?.ocrEnabled === false) {
+      await invokeSafe('stop-ocr', undefined, true);
+    } else {
+      await invokeSafe('reload-ocr', undefined, true);
+    }
+  }
+
+  return { ok: true, saved: next };
 }
 function getLocalSetupDefaults() {
   return {
@@ -231,11 +242,25 @@ contextBridge.exposeInMainWorld('app', {
   // OCR control
   startOCR:      (cfg) => invokeSafe('start-ocr', cfg, { ok: false, message: 'IPC unavailable' }),
   stopOCR:       () => invokeSafe('stop-ocr', undefined, true),
-  setOcrEnabled: (enabled) => invokeSafe('ocr:set-enabled', { enabled: !!enabled }, false),
+  setOcrEnabled: async (enabled) => {
+    const res = await invokeSafe('ocr:set-enabled', { enabled: !!enabled }, undefined);
+    if (res !== false && res !== null && res !== undefined && (typeof res !== 'object' || res.ok !== false)) {
+      return res ?? { ok: true };
+    }
+
+    const saved = await saveOcrSetupCompat({ ocrEnabled: !!enabled }, { restart: false });
+    if (enabled) {
+      await invokeSafe('stop-ocr', undefined, true);
+      await invokeSafe('start-ocr', undefined, true);
+    } else {
+      await invokeSafe('stop-ocr', undefined, true);
+    }
+    return saved || { ok: true };
+  },
 
   // Persisted setup + debug
   getOcrSetup:    () => getOcrSetupCompat(),
-  saveOcrSetup:   (setup) => saveOcrSetupCompat(setup),
+  saveOcrSetup:   (setup, opts) => saveOcrSetupCompat(setup, opts),
   getDebugImages: () => invokeSafe('live:get-debug-images', undefined, []),
   listWindows:    () => invokeSafe('app:list-windows', undefined, []),
 

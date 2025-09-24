@@ -145,12 +145,95 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     }
   }
 
+  const getAppBridge = () => (typeof window !== 'undefined' && window.app ? window.app : null);
+  const getLegacySetup = () => (typeof window !== 'undefined' && window.liveSetup ? window.liveSetup : null);
+
+  async function stopOcrCompat({ required = false } = {}) {
+    const appBridge = getAppBridge();
+    const stopFn = appBridge && (appBridge.stopOCR || appBridge.stopOcr);
+    if (typeof stopFn !== 'function') {
+      if (required) throw new Error('stopOCR bridge unavailable');
+      return false;
+    }
+    const res = await stopFn();
+    if (res === false || (res && res.ok === false)) {
+      if (required) throw new Error('stopOCR bridge rejected');
+      return false;
+    }
+    return true;
+  }
+
+  async function startOcrCompat({ required = false } = {}) {
+    const appBridge = getAppBridge();
+    const startFn = appBridge && (appBridge.startOCR || appBridge.startOcr);
+    if (typeof startFn !== 'function') {
+      if (required) throw new Error('startOCR bridge unavailable');
+      return false;
+    }
+    const res = await startFn();
+    if (res === false || (res && res.ok === false)) {
+      if (required) throw new Error('startOCR bridge rejected');
+      return false;
+    }
+    return true;
+  }
+
+  async function restartOcrCompat() {
+    const appBridge = getAppBridge();
+    if (appBridge && typeof appBridge.reloadOCR === 'function') {
+      const res = await appBridge.reloadOCR();
+      if (res === false || (res && res.ok === false)) throw new Error('reloadOCR bridge rejected');
+      try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail: { reset: true } })); } catch {}
+      return;
+    }
+    const stopped = await stopOcrCompat({ required: false });
+    const started = await startOcrCompat({ required: false });
+    if (!stopped && !started) throw new Error('reloadOCR bridge unavailable');
+    try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail: { reset: true } })); } catch {}
+  }
+
+  async function legacySaveOcrSetup(patch, { restart = true } = {}) {
+    const legacy = getLegacySetup();
+    const saveLegacy = legacy && (legacy.saveSettings || legacy.saveSetup);
+    if (typeof saveLegacy !== 'function') throw new Error('legacy OCR setup bridge unavailable');
+    const res = await saveLegacy({ ...patch });
+    if (res === false || (res && res.ok === false)) throw new Error('legacy OCR setup rejected');
+    if (restart) await restartOcrCompat();
+    return res;
+  }
+
+  async function saveOcrSetupStrict(patch, { restart = true } = {}) {
+    const appBridge = getAppBridge();
+    if (appBridge && typeof appBridge.saveOcrSetup === 'function') {
+      const res = await appBridge.saveOcrSetup(patch);
+      if (res === false || (res && res.ok === false)) throw new Error('saveOcrSetup bridge rejected');
+      return res;
+    }
+    return legacySaveOcrSetup(patch, { restart });
+  }
+
+  async function setOcrEnabledStrict(nextEnabled) {
+    const appBridge = getAppBridge();
+    if (appBridge && typeof appBridge.setOcrEnabled === 'function') {
+      const res = await appBridge.setOcrEnabled(nextEnabled);
+      if (res === false || (res && res.ok === false)) throw new Error('setOcrEnabled bridge rejected');
+      return res;
+    }
+    await legacySaveOcrSetup({ ocrEnabled: nextEnabled }, { restart: false });
+    if (nextEnabled) {
+      await stopOcrCompat({ required: false });
+      await startOcrCompat({ required: true });
+    } else {
+      await stopOcrCompat({ required: true });
+    }
+    try { window.dispatchEvent(new CustomEvent('force-live-reconnect', { detail: { reset: true } })); } catch {}
+    return { ok: true };
+  }
+
   async function onReloadOCR() {
     try {
       show("Restarting OCR…", "info");
-      await window.app?.reloadOCR?.();
-      // ask Live tab to reconnect & clear current state
-      window.dispatchEvent(new CustomEvent("force-live-reconnect", { detail: { reset: true } }));
+      await restartOcrCompat();
       show("OCR restarted.", "success");
     } catch (err) {
       show("Failed to restart OCR.", "error");
@@ -165,8 +248,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     if (normalized === prev) return;
     setOcrAggressiveness(normalized);
     try {
-      const res = await window.app?.saveOcrSetup?.({ ocrAggressiveness: normalized });
-      if (res === false || (res && res.ok === false)) throw new Error('saveOcrSetup unavailable');
+      await saveOcrSetupStrict({ ocrAggressiveness: normalized }, { restart: ocrEnabled });
       show('OCR aggressiveness updated.', 'success');
     } catch (err) {
       setOcrAggressiveness(prev);
@@ -180,8 +262,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     if (normalized === prev) return;
     setOcrCaptureZoom(normalized);
     try {
-      const res = await window.app?.saveOcrSetup?.({ captureZoom: normalized });
-      if (res === false || (res && res.ok === false)) throw new Error('saveOcrSetup unavailable');
+      await saveOcrSetupStrict({ captureZoom: normalized }, { restart: ocrEnabled });
       show('OCR capture zoom updated.', 'success');
     } catch (err) {
       setOcrCaptureZoom(prev);
@@ -207,8 +288,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       setOcrEnabled(next);
       try { localStorage.setItem('ocrEnabled', JSON.stringify(next)); } catch {}
       show(next ? 'Enabling OCR…' : 'Disabling OCR…', 'info');
-      const res = await window.app?.setOcrEnabled?.(next);
-      if (res === false || (res && res.ok === false)) throw new Error('setOcrEnabled unavailable');
+      await setOcrEnabledStrict(next);
       broadcastOcrEnabledChange(next);
       show(next ? 'OCR enabled.' : 'OCR disabled.', 'success');
     } catch (err) {
