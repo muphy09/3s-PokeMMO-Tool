@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tesseract;
+using System.Net.Mail;
 
 class LiveRouteOCR
 {
@@ -93,6 +94,7 @@ class LiveRouteOCR
         public int? targetPid { get; set; }
         public double? captureZoom { get; set; }
         public string? ocrAggressiveness { get; set; } // fast | balanced | max | auto
+        public int? ocrAggressivenessVersion { get; set; }
     }
 
     static HelperSettings LoadSettings()
@@ -137,13 +139,13 @@ class LiveRouteOCR
         // Settings & env
         var cfg = LoadSettings();
         int? TargetPid = ParseIntEnv("TARGET_PID") ?? cfg.targetPid;
-        double CaptureZoom = ParseDoubleEnv("CAPTURE_ZOOM") ?? cfg.captureZoom ?? 1.5;
-        CaptureZoom = Math.Clamp(CaptureZoom, 1.0, 2.0);
+        double rawZoom = ParseDoubleEnv("CAPTURE_ZOOM") ?? cfg.captureZoom ?? 0.5;
+        double CaptureZoom = NormalizeCaptureZoom(rawZoom, 0.5);
+        double CaptureZoomScale = 1.0 + CaptureZoom;
 
-        string mode = (Environment.GetEnvironmentVariable("OCR_AGGRESSIVENESS") ?? cfg.ocrAggressiveness ?? "balanced")
-                        .Trim().ToLowerInvariant();
-        if (mode != "fast" && mode != "balanced" && mode != "max" && mode != "auto") mode = "balanced";
-        Log($"Settings: TARGET_PID={(TargetPid?.ToString() ?? "auto")} CAPTURE_ZOOM={CaptureZoom:0.##} OCR_AGGRESSIVENESS={mode}");
+        var envAgg = Environment.GetEnvironmentVariable("OCR_AGGRESSIVENESS");
+        string mode = NormalizeAggressiveness(envAgg ?? cfg.ocrAggressiveness, cfg.ocrAggressivenessVersion ?? 0, envAgg != null);
+        Log($"Settings: TARGET_PID={(TargetPid?.ToString() ?? "auto")} CAPTURE_ZOOM={CaptureZoom:0.##} ({CaptureZoomScale:0.##}x) OCR_AGGRESSIVENESS={mode}");
 
         // WS listeners
         StartServers(ParsePorts(args));
@@ -734,15 +736,62 @@ class LiveRouteOCR
         public PageSegMode Psm;
     }
 
+    static double NormalizeCaptureZoom(double raw, double fallback = 0.5)
+    {
+        double value = double.IsNaN(raw) || double.IsInfinity(raw) ? fallback : raw;
+        if (value > 1.0 && value <= 2.5) value -= 1.0;
+        value = Math.Clamp(value, 0.1, 0.9);
+        return Math.Round(value * 10) / 10.0;
+    }
+
+    static string NormalizeAggressiveness(string? raw, int version, bool envOverride)
+    {
+        var value = (raw ?? string.Empty).Trim().ToLowerInvariant();
+        if (envOverride)
+        {
+            return value switch
+            {
+                "normal" => "normal",
+                "efficient" => "efficient",
+                _ => "fast",
+            };
+        }
+        if (version >= 2)
+        {
+            return value switch
+            {
+                "normal" => "normal",
+                "efficient" => "efficient",
+                _ => "fast",
+            };
+        }
+        return value switch
+        {
+            "fast" => "efficient",
+            "balanced" => "fast",
+            "max" => "fast",
+            "auto" => "fast",
+            "normal" => "normal",
+            "efficient" => "efficient",
+            _ => "fast",
+        };
+    }
+
     static List<OcrPass> BuildPassPlan(string mode, int autoDepth)
     {
         var plan = new List<OcrPass>();
 
+        if (mode == "efficient")
+        {
+            plan.Add(new OcrPass { Threshold = 185, Upsample = 2, Psm = PageSegMode.SingleLine });
+            plan.Add(new OcrPass { Threshold = 185, Upsample = 2, Psm = PageSegMode.SingleBlock });
+            return plan;
+        }
+
         int depth = mode switch
         {
-            "fast" => 0,
-            "max" => 2,
-            "auto" => autoDepth,
+            "fast" => Math.Clamp(autoDepth, 1, 2),
+            "normal" => 0,
             _ => 1
         };
 
@@ -1104,12 +1153,13 @@ static string RemoveDiacritics(string text)
 
     static Rectangle ZoomRectangle(Rectangle baseRect, int cw, int ch, double zoom)
     {
-        zoom = Math.Clamp(zoom, 1.0, 2.0);
+        double normalized = Math.Clamp(zoom, 0.1, 0.9);
+        double scale = 1.0 + normalized;
         double cx = baseRect.Left + baseRect.Width / 2.0;
         double cy = baseRect.Top + baseRect.Height / 2.0;
 
-        int newW = (int)Math.Round(baseRect.Width * zoom);
-        int newH = (int)Math.Round(baseRect.Height * zoom);
+        int newW = Math.Max(1, (int)Math.Round(baseRect.Width * scale));
+        int newH = Math.Max(1, (int)Math.Round(baseRect.Height * scale));
 
         newW = Math.Min(newW, cw);
         newH = Math.Min(newH, ch);

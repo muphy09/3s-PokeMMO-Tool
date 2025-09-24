@@ -58,10 +58,74 @@ async function invokeSafe(channel, payload, fallback) {
   try { return await ipcRenderer.invoke(channel, payload); }
   catch { return (typeof fallback === 'function') ? fallback() : fallback; }
 }
-function clampZoom(v, def = 1.5) {
+function clampZoom(v, def = 0.5) {
   const n = Number(v);
   if (!Number.isFinite(n)) return def;
-  return Math.max(1.0, Math.min(2.0, n));
+  const normalized = (n > 1 && n <= 2.5) ? (n - 1) : n;
+  return Math.max(0.1, Math.min(0.9, Math.round(normalized * 10) / 10));
+}
+function normalizeAggLocal(value) {
+  const allowed = ['fast', 'normal', 'efficient'];
+  const raw = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (allowed.includes(raw)) return raw;
+  if (raw === 'balanced' || raw === 'max' || raw === 'auto') return 'fast';
+  return 'fast';
+}
+async function getOcrSetupCompat() {
+  const tryChannels = ['app:getOcrSetup', 'live:get-setup', 'live:getSetup'];
+  for (const channel of tryChannels) {
+    // eslint-disable-next-line no-await-in-loop
+    const res = await invokeSafe(channel, undefined, undefined);
+    if (res && typeof res === 'object') {
+      return {
+        targetPid: res?.targetPid ?? null,
+        captureZoom: clampZoom(res?.captureZoom, 0.5),
+        ocrAggressiveness: normalizeAggLocal(res?.ocrAggressiveness),
+      };
+    }
+  }
+  const local = readJSON(settingsPath, null);
+  if (local && typeof local === 'object') {
+    return {
+      targetPid: local?.targetPid ?? null,
+      captureZoom: clampZoom(local?.captureZoom, 0.5),
+      ocrAggressiveness: normalizeAggLocal(local?.ocrAggressiveness),
+    };
+  }
+  const defaults = getLocalSetupDefaults();
+  return {
+    targetPid: defaults.targetPid,
+    captureZoom: defaults.captureZoom,
+    ocrAggressiveness: defaults.ocrAggressiveness,
+  };
+}
+async function saveOcrSetupCompat(setup = {}) {
+  const payload = (setup && typeof setup === 'object') ? { ...setup } : {};
+  const tryChannels = [
+    { name: 'app:saveOcrSetup', ok: (res) => res !== false && res !== null && res !== undefined },
+    { name: 'live:save-settings', ok: (res) => res && res.ok !== false },
+    { name: 'live:save-setup', ok: (res) => res && res.ok !== false },
+  ];
+  for (const { name, ok } of tryChannels) {
+    // eslint-disable-next-line no-await-in-loop
+    const res = await invokeSafe(name, payload, undefined);
+    if (ok(res)) return res;
+  }
+
+  const current = readJSON(settingsPath, {});
+  const next = {
+    ...(current && typeof current === 'object' ? current : {}),
+    ...payload,
+  };
+  if (Object.prototype.hasOwnProperty.call(payload, 'captureZoom')) {
+    next.captureZoom = clampZoom(payload.captureZoom, clampZoom(current?.captureZoom, 0.5));
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
+    next.ocrAggressiveness = normalizeAggLocal(payload.ocrAggressiveness);
+  }
+  next.ocrAggressivenessVersion = 2;
+  const ok = writeJSON(settingsPath, next);
+  return ok ? { ok: true, saved: next } : false;
 }
 function getLocalSetupDefaults() {
   return {
@@ -69,8 +133,9 @@ function getLocalSetupDefaults() {
     targetPid: null,
     targetId: null,
     targetTitle: '',
-    captureZoom: 1.5,
-    ocrAggressiveness: 'auto', // 'fast' | 'balanced' | 'max' | 'auto'
+    captureZoom: 0.5,
+    ocrAggressiveness: 'fast', // 'fast' | 'normal' | 'efficient'
+    ocrAggressivenessVersion: 2,
   };
 }
 
@@ -169,8 +234,8 @@ contextBridge.exposeInMainWorld('app', {
   setOcrEnabled: (enabled) => invokeSafe('ocr:set-enabled', { enabled: !!enabled }, false),
 
   // Persisted setup + debug
-  getOcrSetup:    () => invokeSafe('live:get-setup', undefined, null),
-  saveOcrSetup:   (setup) => invokeSafe('live:save-setup', setup, false),
+  getOcrSetup:    () => getOcrSetupCompat(),
+  saveOcrSetup:   (setup) => saveOcrSetupCompat(setup),
   getDebugImages: () => invokeSafe('live:get-debug-images', undefined, []),
   listWindows:    () => invokeSafe('app:list-windows', undefined, []),
 

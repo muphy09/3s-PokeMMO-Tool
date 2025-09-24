@@ -1,6 +1,24 @@
 # Changelog
 ---
 
+## [3.2.0] - 2025-09
+### Changed
+- OCR Settings Rework | *Highly Requested!*
+  - OCR Aggressiveness
+    - Tune how aggressive or efficient the OCR is at determining the route (helps reduce CPU load)
+  - OCR Capture Size
+    - Tune the Window Size of the OCR Capture to adjust for smaller & larger UI scales / resolutions
+  - OCR On/Off
+    - Toggling this option now *properly* turns the OCR On and Off
+    - Removed 'Refresh OCR' as it can be done with this switch
+
+### Fixed
+- Ball Selector
+  - UI overlay that appears will no longer be cut off in rare situations
+
+
+---
+
 ## [3.1.5] - 2025-09
 ### Fixed
 - Move Data | *Thanks Ace!*

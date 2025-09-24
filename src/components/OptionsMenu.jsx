@@ -1,5 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const OCR_AGGRESSIVENESS_OPTIONS = [
+  { value: 'fast', label: 'Fast' },
+  { value: 'normal', label: 'Normal' },
+  { value: 'efficient', label: 'Efficient' },
+];
+const OCR_ZOOM_CHOICES = Array.from({ length: 9 }, (_, i) => Number((0.1 * (i + 1)).toFixed(1)));
+function normalizeAggValue(value) {
+  if (typeof value !== 'string') return 'fast';
+  const v = value.trim().toLowerCase();
+  return OCR_AGGRESSIVENESS_OPTIONS.some((opt) => opt.value === v) ? v : 'fast';
+}
+function clampOcrZoomValue(value, fallback = 0.5) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  const normalized = (num > 1 && num <= 2.5) ? (num - 1) : num;
+  const clamped = Math.max(0.1, Math.min(0.9, normalized));
+  return Math.round(clamped * 10) / 10;
+}
+
 /**
  * Options dropdown with toasts:
  *  - Check for updates → "Checking…", "Up to date (vX)!", "Downloading update vY…", or "Update vY downloaded — restart to apply."
@@ -28,6 +47,9 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     try { return JSON.parse(localStorage.getItem('ocrEnabled') ?? 'true'); }
     catch { return true; }
   });
+  const [ocrAggressiveness, setOcrAggressiveness] = useState('fast');
+  const [ocrCaptureZoom, setOcrCaptureZoom] = useState(0.5);
+  const [ocrSetupLoaded, setOcrSetupLoaded] = useState(() => !isWindows);
 
   const scaleWrapRef = useRef(null);
   const startScaleRef = useRef(0);
@@ -74,6 +96,24 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isWindows) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const setup = await window.app?.getOcrSetup?.();
+        if (!setup || cancelled) return;
+        setOcrAggressiveness(normalizeAggValue(setup.ocrAggressiveness));
+        setOcrCaptureZoom(clampOcrZoomValue(setup.captureZoom, 0.5));
+      } catch (err) {
+        console.error('[OptionsMenu] load OCR setup error:', err);
+      } finally {
+        if (!cancelled) setOcrSetupLoaded(true);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isWindows]);
+
   const show = (text, kind = "info") => setToast({ text, kind });
 
   const fmtVer = (v) => (v ? `v${v}` : "");
@@ -119,6 +159,36 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       setOpen(false);
     }
   }
+  async function onAggressivenessChange(nextValue) {
+    const normalized = normalizeAggValue(nextValue);
+    const prev = ocrAggressiveness;
+    if (normalized === prev) return;
+    setOcrAggressiveness(normalized);
+    try {
+      const res = await window.app?.saveOcrSetup?.({ ocrAggressiveness: normalized });
+      if (res === false || (res && res.ok === false)) throw new Error('saveOcrSetup unavailable');
+      show('OCR aggressiveness updated.', 'success');
+    } catch (err) {
+      setOcrAggressiveness(prev);
+      console.error('[OptionsMenu] set OCR aggressiveness error:', err);
+      show('Failed to update OCR aggressiveness', 'error');
+    }
+  }
+  async function onCaptureZoomChange(nextValue) {
+    const normalized = clampOcrZoomValue(nextValue, ocrCaptureZoom);
+    const prev = ocrCaptureZoom;
+    if (normalized === prev) return;
+    setOcrCaptureZoom(normalized);
+    try {
+      const res = await window.app?.saveOcrSetup?.({ captureZoom: normalized });
+      if (res === false || (res && res.ok === false)) throw new Error('saveOcrSetup unavailable');
+      show('OCR capture zoom updated.', 'success');
+    } catch (err) {
+      setOcrCaptureZoom(prev);
+      console.error('[OptionsMenu] set OCR zoom error:', err);
+      show('Failed to update OCR capture zoom', 'error');
+    }
+  }
   function onToggleShiny(next){
     try {
       setShinyEnabled(next);
@@ -132,16 +202,20 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     try { window.dispatchEvent(new CustomEvent('ocr-enabled-changed', { detail: { enabled: next } })); } catch {}
   }
   async function onToggleOCR(next) {
+    const prev = ocrEnabled;
     try {
       setOcrEnabled(next);
       try { localStorage.setItem('ocrEnabled', JSON.stringify(next)); } catch {}
-      // Persist in main settings and relaunch app to apply
-      show(next ? 'Enabling OCR… restarting' : 'Disabling OCR… restarting', 'info');
-      await window.app?.setOcrEnabled?.(next);
-      // App will relaunch; close menu immediately
+      show(next ? 'Enabling OCR…' : 'Disabling OCR…', 'info');
+      const res = await window.app?.setOcrEnabled?.(next);
+      if (res === false || (res && res.ok === false)) throw new Error('setOcrEnabled unavailable');
+      broadcastOcrEnabledChange(next);
+      show(next ? 'OCR enabled.' : 'OCR disabled.', 'success');
     } catch (err) {
       console.error('[OptionsMenu] toggle OCR error:', err);
       show('Failed to apply OCR setting', 'error');
+      setOcrEnabled(prev);
+      try { localStorage.setItem('ocrEnabled', JSON.stringify(prev)); } catch {}
     } finally {
       setOpen(false);
     }
@@ -168,6 +242,15 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     borderRadius: 12,
     boxShadow: "var(--shadow-2)",
     overflow: "hidden",
+  };
+  const selectStyle = {
+    background: 'transparent',
+    color: 'var(--text)',
+    border: '1px solid var(--divider)',
+    borderRadius: 6,
+    padding: '6px 8px',
+    fontWeight: 600,
+    cursor: 'pointer',
   };
 
   return (
@@ -252,6 +335,33 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
           {isWindows && (
             <>
               <Divider />
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', gap:12 }}>
+                <span style={{ color:'var(--text)', fontWeight:600 }}>OCR Aggressiveness</span>
+                <select
+                  value={ocrAggressiveness}
+                  onChange={(e) => onAggressivenessChange(e.target.value)}
+                  disabled={!ocrSetupLoaded}
+                  style={{ ...selectStyle, minWidth: 120 }}
+                >
+                  {OCR_AGGRESSIVENESS_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px', gap:12 }}>
+                <span style={{ color:'var(--text)', fontWeight:600 }}>OCR Capture Zoom</span>
+                <select
+                  value={ocrCaptureZoom.toFixed(1)}
+                  onChange={(e) => onCaptureZoomChange(e.target.value)}
+                  disabled={!ocrSetupLoaded}
+                  style={{ ...selectStyle, minWidth: 120 }}
+                >
+                  {OCR_ZOOM_CHOICES.map((z) => {
+                    const text = z.toFixed(1);
+                    return <option key={text} value={text}>{`${text}x`}</option>;
+                  })}
+                </select>
+              </div>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 12px' }}>
                 <span style={{ color:'var(--text)', fontWeight:600 }}>OCR On/Off</span>
                 <label style={{ display:'inline-flex', alignItems:'center', gap:8 }}>

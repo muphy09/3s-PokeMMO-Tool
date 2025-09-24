@@ -203,16 +203,70 @@ const LOCAL_APPDATA = (() => {
 const POKELIVE_DIR = path.join(LOCAL_APPDATA, 'PokemmoLive');
 try { fs.mkdirSync(POKELIVE_DIR, { recursive: true }); } catch {}
 const SETTINGS_PATH = path.join(POKELIVE_DIR, 'settings.json');
+const OCR_SETTINGS_VERSION = 2;
 
-function readOcrSettings() {
+function readOcrSettingsRaw() {
   try { return JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')); } catch { return {}; }
 }
-function writeOcrSettings(obj) {
+function clampCaptureZoom(value, fallback = 0.5) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  const normalized = (num > 1 && num <= 2.5) ? (num - 1) : num;
+  const clamped = Math.max(0.1, Math.min(0.9, normalized));
+  return Math.round(clamped * 10) / 10;
+}
+function captureZoomToScale(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return null;
+  if (num > 1) {
+    return Math.max(1.1, Math.min(1.9, Math.round(num * 10) / 10));
+  }
+  const normalized = clampCaptureZoom(num, 0.5);
+  return Math.max(1.1, Math.min(1.9, Math.round((normalized + 1) * 10) / 10));
+}
+function normalizeOcrAgg(value, version = 0) {
+  const v = (typeof value === 'string' ? value : '').trim().toLowerCase();
+  const allowed = ['fast', 'normal', 'efficient'];
+  if (version >= OCR_SETTINGS_VERSION) {
+    return allowed.includes(v) ? v : 'fast';
+  }
+  if (v === 'normal' || v === 'efficient') return v;
+  if (v === 'fast') return 'efficient';
+  if (v === 'balanced' || v === 'max' || v === 'auto') return 'fast';
+  return allowed.includes(v) ? v : 'fast';
+}
+function normalizeOcrSettings(raw = {}) {
+  const version = Number(raw?.ocrAggressivenessVersion) || 0;
+  const ocrAggressiveness = normalizeOcrAgg(raw?.ocrAggressiveness, version);
+  const captureZoom = clampCaptureZoom(raw?.captureZoom ?? 0.5, 0.5);
+  const normalized = {
+    ...raw,
+    captureZoom,
+    ocrAggressiveness,
+    ocrAggressivenessVersion: Math.max(version, OCR_SETTINGS_VERSION),
+  };
+  return normalized;
+}
+function readOcrSettings() {
+  return normalizeOcrSettings(readOcrSettingsRaw());
+}
+function writeOcrSettingsRaw(obj) {
   try {
     fs.mkdirSync(path.dirname(SETTINGS_PATH), { recursive: true });
     fs.writeFileSync(SETTINGS_PATH, JSON.stringify(obj || {}, null, 2), 'utf8');
     return true;
   } catch (e) { log('writeOcrSettings error', e?.message || e); return false; }
+}
+function writeOcrSettings(obj) {
+  const normalized = normalizeOcrSettings(obj || {});
+  return writeOcrSettingsRaw(normalized);
+}
+function applyOcrSettingsPatch(patch = {}) {
+  const current = readOcrSettingsRaw();
+  const merged = { ...current, ...(patch || {}) };
+  const normalized = normalizeOcrSettings(merged);
+  writeOcrSettingsRaw(normalized);
+  return normalized;
 }
 
 async function relaunchApp({ ocrDisabledFlag = false } = {}) {
@@ -352,11 +406,12 @@ async function startLiveRouteOCR() {
 
     const cwd = path.dirname(exe);
     const s = readOcrSettings();
+    const zoomScale = captureZoomToScale(s?.captureZoom);
     const env = {
       ...process.env,
       TARGET_PID: s?.targetPid ? String(s.targetPid) : '',
-      CAPTURE_ZOOM: s?.captureZoom ? String(s.captureZoom) : '',
-      OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'balanced',
+      CAPTURE_ZOOM: zoomScale ? String(zoomScale) : '',
+      OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
       // hint for tessdata (helper also auto-detects)
       POKEMMO_TESSDATA_DIR: path.join(cwd, 'tessdata'),
     };
@@ -552,11 +607,15 @@ ipcMain.handle('check-for-updates', async () => {
 ipcMain.handle('reload-ocr', async () => { await stopLiveRouteOCR(); await startLiveRouteOCR(); return true; });
 ipcMain.handle('ocr:set-enabled', async (_evt, payload = {}) => {
   const enabled = !!payload?.enabled;
-  const s = readOcrSettings();
-  const next = { ...s, ocrEnabled: enabled };
-  writeOcrSettings(next);
-  await relaunchApp({ ocrDisabledFlag: !enabled });
-  return true;
+  const next = applyOcrSettingsPatch({ ocrEnabled: enabled });
+  if (!enabled) {
+    await stopLiveRouteOCR();
+  } else {
+    await stopLiveRouteOCR();
+    await startLiveRouteOCR();
+  }
+  try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
+  return { ok: true, settings: next };
 });
 ipcMain.handle('stop-ocr', async () => { await stopLiveRouteOCR(); return true; });
 ipcMain.handle('refresh-app', async () => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.reloadIgnoringCache(); return true; });
@@ -568,18 +627,23 @@ ipcMain.handle('app:listWindows', async () => {
 
 ipcMain.handle('app:getOcrSetup', async () => {
   const s = readOcrSettings();
-  return { targetPid: s?.targetPid ?? null, captureZoom: s?.captureZoom ?? 1.5, ocrAggressiveness: s?.ocrAggressiveness ?? 'balanced' };
+  return { targetPid: s?.targetPid ?? null, captureZoom: s?.captureZoom ?? 0.5, ocrAggressiveness: s?.ocrAggressiveness ?? 'fast' };
 });
 
 ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
-  const s = readOcrSettings();
-  const next = {
-    ...s,
-    targetPid: payload?.targetPid ? Number(payload.targetPid) : null,
-    captureZoom: payload?.captureZoom ? Number(payload.captureZoom) : 1.5,
-    ocrAggressiveness: payload?.ocrAggressiveness || s?.ocrAggressiveness || 'balanced',
-  };
-  writeOcrSettings(next);
+  const current = readOcrSettings();
+  const patch = {};
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'targetPid')) {
+    patch.targetPid = payload?.targetPid ? Number(payload.targetPid) : null;
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'captureZoom')) {
+    patch.captureZoom = clampCaptureZoom(payload.captureZoom, current?.captureZoom ?? 0.5);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
+    patch.ocrAggressiveness = normalizeOcrAgg(payload.ocrAggressiveness, OCR_SETTINGS_VERSION);
+  }
+  patch.ocrAggressivenessVersion = OCR_SETTINGS_VERSION;
+  const next = applyOcrSettingsPatch(patch);
   if (next?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); }
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return true;
@@ -707,22 +771,19 @@ ipcMain.handle('live:read-preview', async () => readPreviewImages());
 ipcMain.handle('live:get-debug-images', async () => readPreviewImages());
 
 ipcMain.handle('live:save-settings', async (_evt, payload) => {
-  const dir = liveAppDataDir();
-  fs.mkdirSync(dir, { recursive: true });
-  const file = settingsPath();
-
-  // Merge existing values to avoid nuking anything user already has
-  let prev = {};
-  try { prev = JSON.parse(fs.readFileSync(file, 'utf8')); } catch {}
-  const merged = {
-    ...prev,
-    ...(payload && typeof payload === 'object' ? payload : {})
-  };
-  fs.writeFileSync(file, JSON.stringify(merged, null, 2), 'utf8');
-   // restart OCR helper so new settings take effect (only if enabled)
-  try { const s = readOcrSettings(); if (s?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); } } catch {}
+  const patch = (payload && typeof payload === 'object') ? { ...payload } : {};
+  const current = readOcrSettings();
+  if (Object.prototype.hasOwnProperty.call(patch, 'captureZoom')) {
+    patch.captureZoom = clampCaptureZoom(patch.captureZoom, current?.captureZoom ?? 0.5);
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'ocrAggressiveness')) {
+    patch.ocrAggressiveness = normalizeOcrAgg(patch.ocrAggressiveness, OCR_SETTINGS_VERSION);
+  }
+  patch.ocrAggressivenessVersion = OCR_SETTINGS_VERSION;
+  const saved = applyOcrSettingsPatch(patch);
+  try { if (saved?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); } } catch {}
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
-  return { ok: true, path: file, saved: merged };
+  return { ok: true, path: SETTINGS_PATH, saved };
 });
 
 

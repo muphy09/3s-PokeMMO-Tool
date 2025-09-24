@@ -8,7 +8,8 @@
   - Import this data to Compare when pulled from 'Replace from Active Team'
 - OCR adjustment panel
   - Tune OCR capture to be zoomed out/in more
-- Spirte size in the Live Route is too small
+- If Live Route location is a Safari Zone, overwrite catch % to be with a Safari Ball always
+- About section
 
 ## Known Issues
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab
@@ -16,8 +17,4 @@
 - Live Battle can be inconsistent, especially within double battles
 - Element Scale is wonkey
 - Basculin Horde Data not included
-
-
-
-Tp - 
-Pokedex search when filter
+- Johto Department Store TM location
