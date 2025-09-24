@@ -515,6 +515,7 @@ function createMainWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       webviewTag: true,
+      sandbox: false, // required so preload can require('fs')/'path' to expose window.app bridge
     },
   });
 

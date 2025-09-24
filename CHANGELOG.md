@@ -5,7 +5,9 @@
 ### Changed
 - OCR Rework | *Highly Requested!*
   - OCR Process
-    - 
+    - Removed the debug log & screenshots that were generated automatically by the OCR
+      - Added an option to re-enable these for debugging (will use more resources)
+    -
   - New Settings for OCR
     - OCR Aggressiveness
       - Tune how aggressive or efficient the OCR is at determining the route
