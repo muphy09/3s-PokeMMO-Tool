@@ -32,7 +32,7 @@ jobs:
 
       - name: Publish LiveRouteOCR
         shell: pwsh
-        run: dotnet publish .\LiveRouteOCR\LiveRouteOCR.csproj -c Release -r win-x64 -p:PublishSingleFile=false -p:SelfContained=true -o LiveRouteOCR/publish
+        run: dotnet publish .\LiveRouteOCR\LiveRouteOCR.csproj -c Release -r win-x64 -f net6.0-windows -p:PublishSingleFile=false -p:SelfContained=true -o LiveRouteOCR/publish
 
       - name: Zip LiveRouteOCR for packaging
         shell: pwsh
