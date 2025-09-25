@@ -14,7 +14,7 @@
     "electron:dev:server": "concurrently -k -s first \"vite --strictPort\" \"wait-on -v http-get://localhost:5173/index.html http-get://localhost:5173/src/main.jsx && cross-env ELECTRON_RUN_AS_NODE= ELECTRON_START_URL=http://localhost:5173 OPEN_DEVTOOLS=1 electron .\"",
     "build": "vite build",
     "start": "cross-env ELECTRON_RUN_AS_NODE= electron .",
-    "build:helper": "powershell -ExecutionPolicy Bypass -File ./scripts/build-live-helper.ps1",
+    "build:helper": "node ./scripts/run-build-helper.js",
     "clean": "rimraf release",
     "dist": "npm run clean && npm run build:helper && npm run build && electron-builder --publish never",
     "pack": "npm run clean && npm run build:helper && npm run build && electron-builder --win nsis,zip",

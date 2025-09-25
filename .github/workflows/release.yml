@@ -93,14 +93,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "6.0.x"
 
       - name: Ensure app-builder is executable
         run: chmod +x node_modules/app-builder-bin/linux/x64/app-builder
