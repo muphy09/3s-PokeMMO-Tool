@@ -566,8 +566,8 @@ class LiveRouteOCR
                 int delay = mode switch
                 {
                     "fast" => 450,
-                    "normal" => 600,
-                    "efficient" => 750,
+                    "normal" => 1000,
+                    "efficient" => 1500,
                     "auto" => (autoDepth == 0 ? 700 : autoDepth == 1 ? 550 : 450),
                     "max" => 500,
                     _ => 600

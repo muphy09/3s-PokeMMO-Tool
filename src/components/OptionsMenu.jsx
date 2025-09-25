@@ -483,6 +483,16 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     gap: 16,
     alignItems: 'stretch',
   };
+  const ocrToggleRowStyle = {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: 16,
+  };
+  const ocrTopToggleStyle = {
+    flex: '0 1 260px',
+    minWidth: 200,
+    maxWidth: 260,
+  };
   const previewContainerStyle = {
     display: 'grid',
     gridTemplateColumns: '1fr 8px 1fr',
@@ -660,16 +670,25 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       });
       const zoomSelectStyle = { ...selectStyle, padding: '8px 10px' };
       const zoomFieldStyle = { flex: '1 1 160px', minWidth: 150 };
-      const toggleFieldStyle = { flex: '1 1 200px', minWidth: 180 };
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <ToggleButton
-            label="OCR Process"
-            value={!!ocrEnabled}
-            onToggle={onToggleOCR}
-            disabled={!ocrSetupLoaded}
-            style={{ alignSelf: 'flex-start', maxWidth: 260 }}
-          />
+          <div style={ocrToggleRowStyle}>
+            <ToggleButton
+              label="OCR Process"
+              value={!!ocrEnabled}
+              onToggle={onToggleOCR}
+              disabled={!ocrSetupLoaded}
+              style={ocrTopToggleStyle}
+            />
+            <ToggleButton
+              label="OCR Image Debug"
+              value={ocrImageDebug}
+              onToggle={onToggleOcrImageDebug}
+              disabled={settingImageDebug}
+              busy={settingImageDebug}
+              style={ocrTopToggleStyle}
+            />
+          </div>
           <div style={ocrRowStyle}>
             <SelectField
               label="OCR Aggressiveness"
@@ -697,14 +716,6 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
               options={zoomOptions}
               selectStyle={zoomSelectStyle}
               style={zoomFieldStyle}
-            />
-            <ToggleButton
-              label="OCR Image Debug"
-              value={ocrImageDebug}
-              onToggle={onToggleOcrImageDebug}
-              disabled={settingImageDebug}
-              busy={settingImageDebug}
-              style={toggleFieldStyle}
             />
           </div>
           <Divider style={{ margin: '4px 0' }} />

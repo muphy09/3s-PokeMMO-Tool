@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef, useContext } from 'react';
+﻿import React, { useEffect, useMemo, useState, useRef, useContext } from 'react';
 import './index.css';
 import dexRaw from '../UpdatedDex.json';
 import itemsRaw from '../itemdata.json';
@@ -3849,12 +3849,12 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
 
       {!rawText && (
         <div className="label-muted">
-          <b>LiveRouteOCR</b> is attempting to find Route Data... be patient. Ensure you are in a place with Pokemon available. Move around a bit if it still can't find the route.
+          <b>LiveRouteOCR</b> is attempting to find Route Data... Adjust the OCR settings in Options if it is having trouble.
         </div>
       )}
 
       {rawText && !displayMap && (
-        <div className="label-muted">No usable route information found. Move around a bit or make sure the route is displayed on screen.</div>
+        <div className="label-muted">No Route Found. Adjust OCR settings in Options or ensure you are on a valid route.</div>
       )}
 
       {displayMap && (
@@ -4084,7 +4084,7 @@ function LiveBattlePanel({ onViewMon, onCompare }){
   })();
 
   const confPct = formatConfidence(confidence);
-  const nameText = mons.length > 0 ? mons.map(m => m.name).join(' | ') : 'No Pokemon';
+  const nameText = mons.length > 0 ? mons.map(m => m.name).join(' | ') : 'No Pokemon Detected';
   useEffect(() => {
     try { window.liveBattleLastMons = mons; } catch {}
   }, [mons]);
@@ -4143,7 +4143,7 @@ function LiveBattlePanel({ onViewMon, onCompare }){
 
       {!rawText && mons.length === 0 && (
         <div className="label-muted">
-          <b>LiveBattleOCR</b> is attempting to find Battle Data... be patient. Ensure you are in a battle
+          <b>LiveBattleOCR</b> is attempting to find Pokemon... Ensure you are in a battle or adjust the OCR settings in Options.
         </div>
       )}
 
