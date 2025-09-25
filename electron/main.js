@@ -237,9 +237,14 @@ function normalizeOcrSettings(raw = {}) {
   const version = Number(raw?.ocrAggressivenessVersion) || 0;
   const ocrAggressiveness = normalizeOcrAgg(raw?.ocrAggressiveness, version);
   const captureZoom = clampCaptureZoom(raw?.captureZoom ?? 0.5, 0.5);
+  const battleCaptureZoom = clampCaptureZoom(
+    raw?.battleCaptureZoom ?? raw?.captureZoom ?? 0.5,
+    captureZoom,
+  );
   const normalized = {
     ...raw,
     captureZoom,
+    battleCaptureZoom,
     ocrAggressiveness,
     ocrAggressivenessVersion: Math.max(version, OCR_SETTINGS_VERSION),
   };
@@ -411,10 +416,12 @@ async function startLiveRouteOCR() {
     const cwd = path.dirname(exe);
     const s = settings || {};
     const captureZoomEnv = captureZoomToEnv(s?.captureZoom);
+    const battleCaptureZoomEnv = captureZoomToEnv(s?.battleCaptureZoom ?? s?.captureZoom);
     const env = {
       ...process.env,
       TARGET_PID: s?.targetPid ? String(s.targetPid) : '',
       CAPTURE_ZOOM: captureZoomEnv != null ? String(captureZoomEnv) : '',
+      BATTLE_CAPTURE_ZOOM: battleCaptureZoomEnv != null ? String(battleCaptureZoomEnv) : '',
       OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
       OCR_IMAGE_DEBUG: ocrImageDebugEnabled ? '1' : '0',
       // hint for tessdata (helper also auto-detects)
@@ -431,6 +438,8 @@ async function startLiveRouteOCR() {
       TARGET_PID: env.TARGET_PID,
       CAPTURE_ZOOM: env.CAPTURE_ZOOM,
       CAPTURE_ZOOM_SCALE: captureZoomEnv != null ? Math.round((1 + captureZoomEnv) * 10) / 10 : null,
+      BATTLE_CAPTURE_ZOOM: env.BATTLE_CAPTURE_ZOOM,
+      BATTLE_CAPTURE_ZOOM_SCALE: battleCaptureZoomEnv != null ? Math.round((1 + battleCaptureZoomEnv) * 10) / 10 : null,
       OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS,
       OCR_IMAGE_DEBUG: env.OCR_IMAGE_DEBUG,
     });
@@ -662,7 +671,12 @@ ipcMain.handle('app:listWindows', async () => {
 
 ipcMain.handle('app:getOcrSetup', async () => {
   const s = readOcrSettings();
-  return { targetPid: s?.targetPid ?? null, captureZoom: s?.captureZoom ?? 0.5, ocrAggressiveness: s?.ocrAggressiveness ?? 'fast' };
+  return {
+    targetPid: s?.targetPid ?? null,
+    captureZoom: s?.captureZoom ?? 0.5,
+    battleCaptureZoom: s?.battleCaptureZoom ?? s?.captureZoom ?? 0.5,
+    ocrAggressiveness: s?.ocrAggressiveness ?? 'fast',
+  };
 });
 
 ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
@@ -673,6 +687,10 @@ ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
   }
   if (payload && Object.prototype.hasOwnProperty.call(payload, 'captureZoom')) {
     patch.captureZoom = clampCaptureZoom(payload.captureZoom, current?.captureZoom ?? 0.5);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'battleCaptureZoom')) {
+    const fallback = clampCaptureZoom(current?.battleCaptureZoom ?? current?.captureZoom ?? 0.5, current?.captureZoom ?? 0.5);
+    patch.battleCaptureZoom = clampCaptureZoom(payload.battleCaptureZoom, fallback);
   }
   if (payload && Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
     patch.ocrAggressiveness = normalizeOcrAgg(payload.ocrAggressiveness, OCR_SETTINGS_VERSION);
@@ -777,11 +795,48 @@ function readPreviewImages() {
     return { data: null, dir: null };
   }
 
+  function readText(names, folders = ['']) {
+    const nameArr = Array.isArray(names) ? names : [names];
+    for (const d of dirs) {
+      for (const folder of folders) {
+        for (const n of nameArr) {
+          const p = path.join(d, folder, n);
+          try {
+            const txt = fs.readFileSync(p, 'utf8');
+            return { text: txt, dir: d };
+          } catch {}
+        }
+      }
+    }
+    return { text: null, dir: null };
+  }
+
+  function parseDetected(text, { kind, noneLabel }) {
+    if (!text || typeof text !== 'string') return noneLabel;
+    const lines = text.split(/\r?\n/);
+    for (let i = lines.length - 1; i >= 0; i -= 1) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      if (kind === 'route') {
+        if (line.includes('SENT NO_ROUTE')) return 'No Route';
+        const m = line.match(/SENT ROUTE:\s*(.+?)(?:\s*\([^)]*\))?$/i);
+        if (m && m[1]) return m[1].trim();
+      } else if (kind === 'battle') {
+        if (line.includes('SENT NO_MON')) return 'No Pokemon';
+        const m = line.match(/SENT BATTLE:\s*(.+?)(?:\s*\([^)]*\))?$/i);
+        if (m && m[1]) return m[1].trim();
+      }
+    }
+    return noneLabel;
+  }
+
   const folders = ['', 'debug'];
   const routeCap = readFirst(['last-route-capture.png', 'last-route-capture.jpg', 'last-route-capture.bmp'], folders);
   const routePre = readFirst(['last-route-pre.png', 'last-route-pre.jpg', 'last-route-pre.bmp', 'last-route-preprocessed.png', 'last-route-preview.png'], folders);
   const battleCap = readFirst(['last-battle-capture.png', 'last-battle-capture.jpg', 'last-battle-capture.bmp'], folders);
   const battlePre = readFirst(['last-battle-pre.png', 'last-battle-pre.jpg', 'last-battle-pre.bmp', 'last-battle-preprocessed.png', 'last-battle-preview.png'], folders);
+  const routeLog = readText(['ocr-route.log']);
+  const battleLog = readText(['ocr-battle.log']);
 
   const res = {
     capture: routeCap.data,
@@ -791,6 +846,8 @@ function readPreviewImages() {
     battleCapture: battleCap.data,
     battlePreprocessed: battlePre.data,
     dir: routeCap.dir || routePre.dir || battleCap.dir || battlePre.dir || localDir,
+    routeDetected: parseDetected(routeLog.text, { kind: 'route', noneLabel: 'No Route' }),
+    battleDetected: parseDetected(battleLog.text, { kind: 'battle', noneLabel: 'No Pokemon' }),
 
   };
   if (!routeCap.data || !routePre.data || !battleCap.data || !battlePre.data) {
@@ -810,6 +867,10 @@ ipcMain.handle('live:save-settings', async (_evt, payload) => {
   const current = readOcrSettings();
   if (Object.prototype.hasOwnProperty.call(patch, 'captureZoom')) {
     patch.captureZoom = clampCaptureZoom(patch.captureZoom, current?.captureZoom ?? 0.5);
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, 'battleCaptureZoom')) {
+    const fallback = clampCaptureZoom(current?.battleCaptureZoom ?? current?.captureZoom ?? 0.5, current?.captureZoom ?? 0.5);
+    patch.battleCaptureZoom = clampCaptureZoom(patch.battleCaptureZoom, fallback);
   }
   if (Object.prototype.hasOwnProperty.call(patch, 'ocrAggressiveness')) {
     patch.ocrAggressiveness = normalizeOcrAgg(patch.ocrAggressiveness, OCR_SETTINGS_VERSION);

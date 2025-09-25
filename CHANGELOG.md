@@ -7,26 +7,33 @@
   - OCR Process
     - Removed the debug log & screenshots that were generated automatically by the OCR
       - Added an option to re-enable these for debugging (will use more resources)
+    - Changed the polling interval for each aggression level (Fast, Normal, Efficient)
+  - OCR Options (seen below)
 
 - Options Menu
   - Switched to an overlay instead of dropdown for a cleaner UI look
   - New OCR Settings
     - OCR Aggressiveness
-      - Tune how aggressive or efficient the OCR is at determining the route
+      - Tune how demanding or efficient the OCR is when processing the route
       - Helps to reduce CPU load at the cost of speed and accuracy
-    - OCR Capture Size
+    - OCR Zoom (Route & Battle)
       - Tune the Window Size of the OCR Capture to adjust for smaller & larger UI scales / resolutions
     - OCR On/Off
       - Toggling this option now *properly* kills the OCR process
       - Removed 'Refresh OCR' as it can be done with this switch
-    - OCR Image Preview
+    - OCR Image Preview (Route & Battle)
       - Enable OCR Image Debug to view an image just like the OCR sees
       - Adjust settings and see in real-time how they affect the OCR
+      - Debug text from Route and Battle displayed below
+
+### Added
+- Route Location Images
+  - Clicking locations from the Pokemon Profile or Pokedex will display an overlay of the Route Location
+  - Sourced from *Bulbapedia*
 
 ### Fixed
 - Ball Selector
   - UI overlay that appears will no longer be cut off in rare situations
-
 
 ---
 

@@ -53,12 +53,18 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     catch { return true; }
   });
   const [ocrAggressiveness, setOcrAggressiveness] = useState('fast');
-  const [ocrCaptureZoom, setOcrCaptureZoom] = useState(0.5);
+  const [ocrRouteZoom, setOcrRouteZoom] = useState(0.5);
+  const [ocrBattleZoom, setOcrBattleZoom] = useState(0.5);
   const [ocrSetupLoaded, setOcrSetupLoaded] = useState(() => !isWindows);
   const [activeCategory, setActiveCategory] = useState('general');
   const [ocrImageDebug, setOcrImageDebug] = useState(false);
   const [settingImageDebug, setSettingImageDebug] = useState(false);
-  const [previewImages, setPreviewImages] = useState({ routeCapture: null, battleCapture: null });
+  const [previewData, setPreviewData] = useState({
+    routeCapture: null,
+    battleCapture: null,
+    routeDetected: 'No Route',
+    battleDetected: 'No Pokemon',
+  });
 
   const scaleWrapRef = useRef(null);
   const startScaleRef = useRef(0);
@@ -104,7 +110,15 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
         const setup = await window.app?.getOcrSetup?.();
         if (!setup || cancelled) return;
         setOcrAggressiveness(normalizeAggValue(setup.ocrAggressiveness));
-        setOcrCaptureZoom(clampOcrZoomValue(setup.captureZoom, 0.5));
+        const routeZoom = clampOcrZoomValue(setup.captureZoom, 0.5);
+        const battleZoom = clampOcrZoomValue(
+          Object.prototype.hasOwnProperty.call(setup, 'battleCaptureZoom')
+            ? setup.battleCaptureZoom
+            : setup.captureZoom,
+          routeZoom,
+        );
+        setOcrRouteZoom(routeZoom);
+        setOcrBattleZoom(battleZoom);
       } catch (err) {
         console.error('[OptionsMenu] load OCR setup error:', err);
       } finally {
@@ -155,9 +169,11 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       try {
         const res = await window.app?.getDebugImages?.();
         if (!cancelled && res && typeof res === 'object') {
-          setPreviewImages({
+          setPreviewData({
             routeCapture: res.routeCapture || res.capture || null,
             battleCapture: res.battleCapture || null,
+            routeDetected: res.routeDetected || 'No Route',
+            battleDetected: res.battleDetected || 'No Pokemon',
           });
         }
       } catch (err) {
@@ -174,7 +190,12 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
 
   useEffect(() => {
     if (!ocrImageDebug) {
-      setPreviewImages({ routeCapture: null, battleCapture: null });
+      setPreviewData({
+        routeCapture: null,
+        battleCapture: null,
+        routeDetected: 'No Route',
+        battleDetected: 'No Pokemon',
+      });
     }
   }, [ocrImageDebug]);
 
@@ -306,18 +327,32 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       show('Failed to update OCR aggressiveness', 'error');
     }
   }
-  async function onCaptureZoomChange(nextValue) {
-    const normalized = clampOcrZoomValue(nextValue, ocrCaptureZoom);
-    const prev = ocrCaptureZoom;
+  async function onRouteZoomChange(nextValue) {
+    const normalized = clampOcrZoomValue(nextValue, ocrRouteZoom);
+    const prev = ocrRouteZoom;
     if (normalized === prev) return;
-    setOcrCaptureZoom(normalized);
+    setOcrRouteZoom(normalized);
     try {
       await saveOcrSetupStrict({ captureZoom: normalized }, { restart: ocrEnabled });
-      show('OCR capture zoom updated.', 'success');
+      show('Route OCR zoom updated.', 'success');
     } catch (err) {
-      setOcrCaptureZoom(prev);
-      console.error('[OptionsMenu] set OCR zoom error:', err);
-      show('Failed to update OCR capture zoom', 'error');
+      setOcrRouteZoom(prev);
+      console.error('[OptionsMenu] set Route OCR zoom error:', err);
+      show('Failed to update Route OCR zoom', 'error');
+    }
+  }
+  async function onBattleZoomChange(nextValue) {
+    const normalized = clampOcrZoomValue(nextValue, ocrBattleZoom);
+    const prev = ocrBattleZoom;
+    if (normalized === prev) return;
+    setOcrBattleZoom(normalized);
+    try {
+      await saveOcrSetupStrict({ battleCaptureZoom: normalized }, { restart: ocrEnabled });
+      show('Battle OCR zoom updated.', 'success');
+    } catch (err) {
+      setOcrBattleZoom(prev);
+      console.error('[OptionsMenu] set Battle OCR zoom error:', err);
+      show('Failed to update Battle OCR zoom', 'error');
     }
   }
   function onToggleShiny(next){
@@ -492,6 +527,16 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     textAlign: 'center',
     lineHeight: 1.4,
   };
+  const previewDetailStyle = {
+    marginTop: 6,
+    fontSize: 13,
+    fontWeight: 600,
+    color: 'var(--muted)',
+  };
+  const previewDetailLabel = {
+    fontWeight: 800,
+    color: 'var(--text)',
+  };
   const closeButtonStyle = {
     position: 'absolute',
     top: 16,
@@ -613,15 +658,19 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
         const display = (1 - z).toFixed(1);
         return { value, label: `${display}x` };
       });
+      const zoomSelectStyle = { ...selectStyle, padding: '8px 10px' };
+      const zoomFieldStyle = { flex: '1 1 160px', minWidth: 150 };
+      const toggleFieldStyle = { flex: '1 1 200px', minWidth: 180 };
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <ToggleButton
+            label="OCR Process"
+            value={!!ocrEnabled}
+            onToggle={onToggleOCR}
+            disabled={!ocrSetupLoaded}
+            style={{ alignSelf: 'flex-start', maxWidth: 260 }}
+          />
           <div style={ocrRowStyle}>
-            <ToggleButton
-              label="OCR Process"
-              value={!!ocrEnabled}
-              onToggle={onToggleOCR}
-              disabled={!ocrSetupLoaded}
-            />
             <SelectField
               label="OCR Aggressiveness"
               value={ocrAggressiveness}
@@ -629,14 +678,25 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
               disabled={!ocrSetupLoaded}
               options={OCR_AGGRESSIVENESS_OPTIONS}
               selectStyle={selectStyle}
+              style={{ flex: '1 1 220px', minWidth: 200 }}
             />
             <SelectField
               label="Route OCR Zoom"
-              value={ocrCaptureZoom.toFixed(1)}
-              onChange={(e) => onCaptureZoomChange(e.target.value)}
+              value={ocrRouteZoom.toFixed(1)}
+              onChange={(e) => onRouteZoomChange(e.target.value)}
               disabled={!ocrSetupLoaded}
               options={zoomOptions}
-              selectStyle={selectStyle}
+              selectStyle={zoomSelectStyle}
+              style={zoomFieldStyle}
+            />
+            <SelectField
+              label="Battle OCR Zoom"
+              value={ocrBattleZoom.toFixed(1)}
+              onChange={(e) => onBattleZoomChange(e.target.value)}
+              disabled={!ocrSetupLoaded}
+              options={zoomOptions}
+              selectStyle={zoomSelectStyle}
+              style={zoomFieldStyle}
             />
             <ToggleButton
               label="OCR Image Debug"
@@ -644,6 +704,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
               onToggle={onToggleOcrImageDebug}
               disabled={settingImageDebug}
               busy={settingImageDebug}
+              style={toggleFieldStyle}
             />
           </div>
           <Divider style={{ margin: '4px 0' }} />
@@ -652,8 +713,8 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
               <span style={previewTitleStyle}>Live Route Preview</span>
               <div style={previewFrameStyle}>
                 {ocrImageDebug ? (
-                  previewImages.routeCapture ? (
-                    <img src={previewImages.routeCapture} alt="Route capture preview" style={previewImageStyle} />
+                  previewData.routeCapture ? (
+                    <img src={previewData.routeCapture} alt="Route capture preview" style={previewImageStyle} />
                   ) : (
                     <span style={previewPlaceholderStyle}>Waiting for capture…</span>
                   )
@@ -661,14 +722,18 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
                   <span style={previewPlaceholderStyle}>Enable OCR Image Debug for Preview</span>
                 )}
               </div>
+              <span style={previewDetailStyle}>
+                <span style={previewDetailLabel}>Detected Route:</span>{' '}
+                {ocrImageDebug ? (previewData.routeDetected || 'No Route') : 'Enable OCR Image Debug for details'}
+              </span>
             </div>
             <div style={{ width: 2, background: 'var(--divider)', borderRadius: 999 }} />
             <div style={previewPanelStyle}>
               <span style={previewTitleStyle}>Live Battle Preview</span>
               <div style={previewFrameStyle}>
                 {ocrImageDebug ? (
-                  previewImages.battleCapture ? (
-                    <img src={previewImages.battleCapture} alt="Battle capture preview" style={previewImageStyle} />
+                  previewData.battleCapture ? (
+                    <img src={previewData.battleCapture} alt="Battle capture preview" style={previewImageStyle} />
                   ) : (
                     <span style={previewPlaceholderStyle}>Waiting for capture…</span>
                   )
@@ -676,6 +741,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
                   <span style={previewPlaceholderStyle}>Enable OCR Image Debug for Preview</span>
                 )}
               </div>
+              <span style={previewDetailStyle}>
+                <span style={previewDetailLabel}>Detected Pokemon:</span>{' '}
+                {ocrImageDebug ? (previewData.battleDetected || 'No Pokemon') : 'Enable OCR Image Debug for details'}
+              </span>
             </div>
           </div>
         </div>
@@ -843,7 +912,7 @@ function ActionButton({ label, onClick, disabled = false }) {
   );
 }
 
-function ToggleButton({ label, value, onToggle, disabled = false, busy = false }) {
+function ToggleButton({ label, value, onToggle, disabled = false, busy = false, style = {} }) {
   const active = !!value;
   const handleClick = () => {
     if (disabled || busy) return;
@@ -883,6 +952,7 @@ function ToggleButton({ label, value, onToggle, disabled = false, busy = false }
       role="switch"
       ariaChecked={active}
       ariaPressed={active}
+      style={style}
     >
       <span>{label}</span>
       <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>

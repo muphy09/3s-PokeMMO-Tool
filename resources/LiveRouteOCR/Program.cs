@@ -94,6 +94,7 @@ class LiveRouteOCR
     {
         public int? targetPid { get; set; }
         public double? captureZoom { get; set; }
+        public double? battleCaptureZoom { get; set; }
         public string? ocrAggressiveness { get; set; } // fast | balanced | max | auto
         public int? ocrAggressivenessVersion { get; set; }
     }
@@ -142,11 +143,14 @@ class LiveRouteOCR
         int? TargetPid = ParseIntEnv("TARGET_PID") ?? cfg.targetPid;
         double rawZoom = ParseDoubleEnv("CAPTURE_ZOOM") ?? cfg.captureZoom ?? 0.5;
         double CaptureZoom = NormalizeCaptureZoom(rawZoom, 0.5);
+        double rawBattleZoom = ParseDoubleEnv("BATTLE_CAPTURE_ZOOM") ?? cfg.battleCaptureZoom ?? rawZoom;
+        double BattleCaptureZoom = NormalizeCaptureZoom(rawBattleZoom, CaptureZoom);
         double CaptureZoomScale = 1.0 + CaptureZoom;
+        double BattleCaptureZoomScale = 1.0 + BattleCaptureZoom;
 
         var envAgg = Environment.GetEnvironmentVariable("OCR_AGGRESSIVENESS");
         string mode = NormalizeAggressiveness(envAgg ?? cfg.ocrAggressiveness, cfg.ocrAggressivenessVersion ?? 0, envAgg != null);
-        Log($"Settings: TARGET_PID={(TargetPid?.ToString() ?? "auto")} CAPTURE_ZOOM={CaptureZoom:0.##} ({CaptureZoomScale:0.##}x) OCR_AGGRESSIVENESS={mode}");
+        Log($"Settings: TARGET_PID={(TargetPid?.ToString() ?? "auto")} CAPTURE_ZOOM={CaptureZoom:0.##} ({CaptureZoomScale:0.##}x) BATTLE_CAPTURE_ZOOM={BattleCaptureZoom:0.##} ({BattleCaptureZoomScale:0.##}x) OCR_AGGRESSIVENESS={mode}");
 
         // WS listeners
         StartServers(ParsePorts(args));
@@ -196,7 +200,7 @@ class LiveRouteOCR
         _ = Task.Run(() => PeriodicRebroadcastLoop(BattleChan, cts.Token));
 
         var tRoute = OcrLoop(routeEngine, roi, mode, TargetPid, CaptureZoom, cts.Token);
-        var tBattle = BattleLoop(battleEngine, battleRoi, mode, TargetPid, CaptureZoom, cts.Token);
+        var tBattle = BattleLoop(battleEngine, battleRoi, mode, TargetPid, BattleCaptureZoom, cts.Token);
         await Task.WhenAll(tRoute, tBattle);
 
         routeEngine?.Dispose();
@@ -571,7 +575,7 @@ class LiveRouteOCR
         }
     }
 
-    static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int? TargetPid, double CaptureZoom, CancellationToken ct)
+    static async Task BattleLoop(TesseractEngine? engine, Roi roi, string mode, int? TargetPid, double BattleCaptureZoom, CancellationToken ct)
     {
         int missStreak = 0;
         string lastEmitLocal = "";
@@ -621,7 +625,7 @@ class LiveRouteOCR
                 var pt = new POINT { X = 0, Y = 0 }; ClientToScreen(hWnd, ref pt);
                 int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
                 var rBase = roi.ToRectangle(cw, ch);
-                var r = ZoomRectangle(rBase, cw, ch, CaptureZoom);
+                var r = ZoomRectangle(rBase, cw, ch, BattleCaptureZoom);
                 int sx = pt.X + r.Left, sy = pt.Y + r.Top;
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);

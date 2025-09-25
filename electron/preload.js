@@ -80,6 +80,7 @@ async function getOcrSetupCompat() {
       return {
         targetPid: res?.targetPid ?? null,
         captureZoom: clampZoom(res?.captureZoom, 0.5),
+        battleCaptureZoom: clampZoom(res?.battleCaptureZoom ?? res?.captureZoom, clampZoom(res?.captureZoom, 0.5)),
         ocrAggressiveness: normalizeAggLocal(res?.ocrAggressiveness),
       };
     }
@@ -89,6 +90,7 @@ async function getOcrSetupCompat() {
     return {
       targetPid: local?.targetPid ?? null,
       captureZoom: clampZoom(local?.captureZoom, 0.5),
+      battleCaptureZoom: clampZoom(local?.battleCaptureZoom ?? local?.captureZoom, clampZoom(local?.captureZoom, 0.5)),
       ocrAggressiveness: normalizeAggLocal(local?.ocrAggressiveness),
     };
   }
@@ -96,6 +98,7 @@ async function getOcrSetupCompat() {
   return {
     targetPid: defaults.targetPid,
     captureZoom: defaults.captureZoom,
+    battleCaptureZoom: defaults.battleCaptureZoom,
     ocrAggressiveness: defaults.ocrAggressiveness,
   };
 }
@@ -121,6 +124,12 @@ async function saveOcrSetupCompat(setup = {}, options = {}) {
   if (Object.prototype.hasOwnProperty.call(payload, 'captureZoom')) {
     next.captureZoom = clampZoom(payload.captureZoom, clampZoom(current?.captureZoom, 0.5));
   }
+  if (Object.prototype.hasOwnProperty.call(payload, 'battleCaptureZoom')) {
+    next.battleCaptureZoom = clampZoom(
+      payload.battleCaptureZoom,
+      clampZoom(current?.battleCaptureZoom ?? current?.captureZoom, clampZoom(current?.captureZoom, 0.5)),
+    );
+  }
   if (Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
     next.ocrAggressiveness = normalizeAggLocal(payload.ocrAggressiveness);
   }
@@ -145,6 +154,7 @@ function getLocalSetupDefaults() {
     targetId: null,
     targetTitle: '',
     captureZoom: 0.5,
+    battleCaptureZoom: 0.5,
     ocrAggressiveness: 'fast', // 'fast' | 'normal' | 'efficient'
     ocrAggressivenessVersion: 2,
   };
