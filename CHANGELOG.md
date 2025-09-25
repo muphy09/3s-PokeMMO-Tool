@@ -5,7 +5,7 @@
 ### Changed
 - Linux
   - Converted OCR to be used in Linux builds of the Tool
-    - OCR now enabled (feedback appreciated!)
+    - OCR now enabled *beta* (feedback appreciated!)
 
 ### Added
 - Daycare Manager
