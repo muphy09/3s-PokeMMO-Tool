@@ -71,9 +71,9 @@ $linuxNative = Join-Path $linuxOut 'native'
 Ensure-LinuxNativeLibraries -Destination $linuxNative
 
 $tessSourceCandidates = @(
-  Join-Path $linuxOut 'tessdata/eng.traineddata',
-  Join-Path $winOut 'tessdata/eng.traineddata',
-  Join-Path $resourcesRoot 'tessdata/eng.traineddata'
+  (Join-Path $linuxOut 'tessdata/eng.traineddata')
+  (Join-Path $winOut 'tessdata/eng.traineddata')
+  (Join-Path $resourcesRoot 'tessdata/eng.traineddata')
 ) | Where-Object { Test-Path $_ }
 if ($tessSourceCandidates.Count -gt 0) {
   $linuxTess = Join-Path $linuxOut 'tessdata'

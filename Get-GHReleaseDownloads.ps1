@@ -29,7 +29,7 @@ $report = $allReleases | ForEach-Object {
     ReleaseURL     = $_.html_url
     TotalDownloads = ($_.assets | Measure-Object -Property download_count -Sum).Sum
   }
-} | Sort-Object PublishedDate -Descending
+} | Sort-Object PublishedDate
 
 Write-Host "`nPer-release download totals:`n"
 $report | Format-Table -AutoSize

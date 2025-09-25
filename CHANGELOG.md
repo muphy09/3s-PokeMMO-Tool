@@ -29,6 +29,8 @@
 ### Fixed
 - Ball Selector
   - UI overlay that appears will no longer be cut off in rare situations
+- Live Route OCR
+  - Linux builds now bundle tessdata and native Tesseract libraries, restoring OCR feature parity with Windows.
 
 ---
 
