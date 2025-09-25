@@ -324,8 +324,27 @@ const BALL_OPTIONS = [
 
 function BallSelect({ value, onChange }) {
   const [open, setOpen] = React.useState(false);
+  const [menuMaxHeight, setMenuMaxHeight] = React.useState(null);
   const ref = React.useRef(null);
   const selected = BALL_OPTIONS.find(opt => opt.key === value) || BALL_OPTIONS[0];
+
+  const updateMenuMaxHeight = React.useCallback(() => {
+    if (!ref.current) return;
+    const wrap = ref.current;
+    const container = wrap.closest('.pokemon-profile-card');
+    const button = wrap.querySelector('.profile-ball-select-button');
+    const menu = wrap.querySelector('.profile-ball-select-menu');
+    if (!container || !button || !menu) {
+      setMenuMaxHeight(null);
+      return;
+    }
+    const containerRect = container.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+    // Account for the 6px gap defined in CSS plus a little breathing room.
+    const gap = 10;
+    const available = containerRect.bottom - buttonRect.bottom - gap;
+    setMenuMaxHeight(Number.isFinite(available) && available > 0 ? available : null);
+  }, []);
 
   React.useEffect(() => {
     function handleClick(e) {
@@ -342,6 +361,22 @@ function BallSelect({ value, onChange }) {
       document.removeEventListener('keydown', handleKey);
     };
   }, []);
+
+  React.useLayoutEffect(() => {
+    if (!open) return;
+    updateMenuMaxHeight();
+    const handleResize = () => updateMenuMaxHeight();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [open, updateMenuMaxHeight]);
+
+  React.useEffect(() => {
+    if (!open) {
+      setMenuMaxHeight(null);
+    }
+  }, [open]);
 
   return (
     <div className={`profile-ball-select${open ? ' is-open' : ''}`} ref={ref}>
@@ -362,7 +397,11 @@ function BallSelect({ value, onChange }) {
         <span className="profile-ball-select-label">Ball</span>
       </button>
       {open && (
-        <div className="profile-ball-select-menu" role="listbox">
+        <div
+          className="profile-ball-select-menu"
+          role="listbox"
+          style={menuMaxHeight ? { maxHeight: menuMaxHeight } : undefined}
+        >
           {BALL_OPTIONS.map(opt => (
             <button
               type="button"
@@ -6166,6 +6205,15 @@ const marketResults = React.useMemo(() => {
 
               return (
                 <div style={{ ...styles.card, position:'relative', padding:0, overflow:'hidden' }} className="pokemon-profile-card">
+                  <button
+                    type="button"
+                    className="profile-close-button"
+                    onClick={() => { setSelected(null); setQuery(''); }}
+                    title="Close profile"
+                    aria-label="Close profile"
+                  >
+                    ×
+                  </button>
                   <div className="profile-hero">
                     <div className="profile-hero-top">
                       <div className="profile-hero-actions-left">
@@ -6411,16 +6459,6 @@ const marketResults = React.useMemo(() => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="profile-footer">
-                    <button
-                      type="button"
-                      className="region-btn"
-                      onClick={() => { setSelected(null); setQuery(''); }}
-                      title="Close"
-                    >
-                      Close
-                    </button>
                   </div>
                 </div>
               );

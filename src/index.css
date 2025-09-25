@@ -760,6 +760,43 @@ select.input option {
   overflow: hidden;
 }
 
+.profile-close-button {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(12, 16, 48, 0.6);
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, opacity 0.2s ease;
+  z-index: 5;
+}
+
+.profile-close-button:hover {
+  background: rgba(34, 46, 122, 0.75);
+  transform: translateY(-1px);
+}
+
+.profile-close-button:active {
+  transform: scale(0.96);
+}
+
+.profile-close-button:focus-visible {
+  outline: none;
+  border-color: var(--focus-border);
+  box-shadow: var(--focus-ring);
+}
+
 .profile-hero {
   background:
     linear-gradient(135deg, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.65) 100%),
@@ -1166,6 +1203,8 @@ select.input option {
   box-shadow: var(--shadow-2);
   padding: 6px 0;
   z-index: 20;
+  max-height: 320px;
+  overflow-y: auto;
 }
 
 .profile-ball-select-option {
@@ -1248,13 +1287,6 @@ select.input option {
   background: #f87171;
   border-color: #f87171;
   color: #111;
-}
-
-.profile-footer {
-  padding: 16px 20px;
-  border-top: 1px solid var(--divider);
-  display: flex;
-  justify-content: flex-end;
 }
 
 .profile-stats {
