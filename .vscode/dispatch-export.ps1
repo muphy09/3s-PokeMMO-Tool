@@ -1,6 +1,6 @@
 param(
   [Parameter(Mandatory = $true)]
-  [ValidateSet(''linux'',''windows'',''mac'')]
+  [ValidateSet('linux','windows','mac')]
   [string]$Target
 )
 
