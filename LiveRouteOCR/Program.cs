@@ -262,24 +262,46 @@ partial class LiveRouteOCR
 
     static string FindTessdataSource()
     {
+        static bool HasEng(string? dir)
+        {
+            if (string.IsNullOrWhiteSpace(dir)) return false;
+            try { return File.Exists(Path.Combine(dir, "eng.traineddata")); }
+            catch { return false; }
+        }
+
         var envDir = Environment.GetEnvironmentVariable("POKEMMO_TESSDATA_DIR");
-        if (!string.IsNullOrWhiteSpace(envDir) && File.Exists(Path.Combine(envDir, "eng.traineddata"))) return envDir;
+        if (HasEng(envDir)) return envDir!;
 
         var exeDir = AppContext.BaseDirectory;
         var direct = Path.Combine(exeDir, "tessdata");
-        if (File.Exists(Path.Combine(direct, "eng.traineddata"))) return direct;
+        if (HasEng(direct)) return direct;
 
         var exeParent = Directory.GetParent(exeDir)?.FullName ?? exeDir;
-        foreach (var sub in new[] { "resources\\tessdata", "resources\\LiveRouteOCR\\tessdata", "resources\\app\\tessdata" })
+        static string? Check(params string[] segments)
         {
-            string p = Path.Combine(exeParent, sub);
-            if (File.Exists(Path.Combine(p, "eng.traineddata"))) return p;
+            var candidate = Path.Combine(segments);
+            return HasEng(candidate) ? candidate : null;
+        }
+
+        foreach (var candidate in new[]
+        {
+            Check(exeParent, "resources", "tessdata"),
+            Check(exeParent, "resources", "LiveRouteOCR", "tessdata"),
+            Check(exeParent, "resources", "LiveRouteOCR", "linux-x64", "tessdata"),
+            Check(exeParent, "resources", "LiveRouteOCR", "win-x64", "tessdata"),
+            Check(exeParent, "resources", "app", "tessdata"),
+            Check(exeParent, "resources", "app.asar.unpacked", "tessdata"),
+            Check(exeParent, "resources", "app.asar.unpacked", "LiveRouteOCR", "tessdata"),
+            Check(exeParent, "resources", "app.asar.unpacked", "LiveRouteOCR", "linux-x64", "tessdata")
+        })
+        {
+            if (!string.IsNullOrEmpty(candidate)) return candidate;
         }
 
         var cwd = Path.Combine(Environment.CurrentDirectory, "tessdata");
-        if (File.Exists(Path.Combine(cwd, "eng.traineddata"))) return cwd;
+        if (HasEng(cwd)) return cwd;
 
-        if (File.Exists(Path.Combine(StableTessDir, "eng.traineddata"))) return StableTessDir;
+        if (HasEng(StableTessDir)) return StableTessDir;
 
         return "";
     }

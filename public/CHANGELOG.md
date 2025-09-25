@@ -15,6 +15,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.9.8] - 2025-09
+### Fixed
+- Live Route OCR now bundles tessdata and native Tesseract libraries on Linux builds, enabling Live Route & Live Battle in the AppImage.
+
+---
+
 ## [1.9.6] - 2025-08
 ### Fixed
   - Auto Update now properly displays when it is receiving, downloading, and applying an update.

@@ -27,7 +27,7 @@ function clampOcrZoomValue(value, fallback = 0.5) {
 /**
  * Options dropdown with toasts:
  *  - Check for updates → "Checking…", "Up to date (vX)!", "Downloading update vY…", or "Update vY downloaded — restart to apply."
- *  - Reload OCR (Windows only) → restarts helper AND signals Live tab to reconnect/clear
+ *  - Reload OCR (Windows & Linux) → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
 export default function OptionsMenu({ style = {}, ocrSupported = false }) {
