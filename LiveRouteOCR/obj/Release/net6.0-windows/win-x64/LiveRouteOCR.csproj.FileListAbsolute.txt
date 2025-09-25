@@ -488,3 +488,5 @@ C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\refint\LiveR
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.pdb
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.genruntimeconfig.cache
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\ref\LiveRouteOCR.dll
+C:\dev\pokemmo-tool\LiveRouteOCR\bin\Release\net6.0-windows\win-x64\tessdata\eng.traineddata
+C:\dev\pokemmo-tool\LiveRouteOCR\bin\Release\net6.0-windows\win-x64\tessdata\README.txt

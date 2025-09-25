@@ -1,3 +1,5 @@
+C:\dev\pokemmo-tool\LiveRouteOCR\win-x64\tessdata\eng.traineddata
+C:\dev\pokemmo-tool\LiveRouteOCR\win-x64\tessdata\README.txt
 C:\dev\pokemmo-tool\LiveRouteOCR\win-x64\LiveRouteOCR.exe
 C:\dev\pokemmo-tool\LiveRouteOCR\win-x64\x86\leptonica-1.82.0.dll
 C:\dev\pokemmo-tool\LiveRouteOCR\win-x64\x86\tesseract50.dll
