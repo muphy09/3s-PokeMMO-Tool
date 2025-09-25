@@ -10,17 +10,11 @@
 - Team Builder should include EVs IVs Nature and Lv to display proper stats
   - Import this data to Compare when pulled from 'Replace from Active Team'
 
-- OCR adjustment panel
-  - Tune OCR capture to be zoomed out/in more
-
 - If Live Route location is a Safari Zone, overwrite catch % to be with a Safari Ball always
 
 - About section
 
 - Include default pokeball option for catch % in Live route
-
-*- Day Care tab (per region)
-  - 2 slots to put Pokemon into so you can keep track of which daycare has your pokemon
 
 ---
 ## Known Issues

@@ -1,6 +1,14 @@
 # Changelog
 ---
 
+## [3.2.4] - 2025-09
+### Fixed
+- Windows
+  - Fixed missing Tessdata that was stripped in the Linux OCR Update
+  - Users who fresh installed 3.2.3 (no app installs before) should now see their OCR working
+
+---
+
 ## [3.2.3] - 2025-09
 ### Changed
 - Linux
