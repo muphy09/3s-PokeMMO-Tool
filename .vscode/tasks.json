@@ -1,41 +1,119 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Release Patch- x.x.0",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "release:patch"],
-      "problemMatcher": []
-    },
-    {
-      "label": "Release Minor - x.0.x",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "release:minor"],
-      "problemMatcher": []
-    },
-    {
-      "label": "Release Major - 0.x.x",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "release:major"],
-      "problemMatcher": []
-    },
-    {
-      "label": "Check Total Downloads",
-      "type": "shell",
-      "command": "powershell",
-      "args": [
-        "-ExecutionPolicy", "Bypass",
-        "-NoProfile",
-        "-File",
-        "./Get-GHReleaseDownloads.ps1"
-    ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-     },
-      "problemMatcher": []
-    }
-  ]
+    "version":  "2.0.0",
+    "tasks":  [
+                  {
+                      "label":  "Release Patch- x.x.0",
+                      "type":  "shell",
+                      "command":  "npm",
+                      "args":  [
+                                   "run",
+                                   "release:patch"
+                               ],
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Release Minor - x.0.x",
+                      "type":  "shell",
+                      "command":  "npm",
+                      "args":  [
+                                   "run",
+                                   "release:minor"
+                               ],
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Release Major - 0.x.x",
+                      "type":  "shell",
+                      "command":  "npm",
+                      "args":  [
+                                   "run",
+                                   "release:major"
+                               ],
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Check Total Downloads",
+                      "type":  "shell",
+                      "command":  "powershell",
+                      "args":  [
+                                   "-ExecutionPolicy",
+                                   "Bypass",
+                                   "-NoProfile",
+                                   "-File",
+                                   "./Get-GHReleaseDownloads.ps1"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Linux Export",
+                      "type":  "shell",
+                      "command":  "powershell",
+                      "args":  [
+                                   "-ExecutionPolicy",
+                                   "Bypass",
+                                   "-NoProfile",
+                                   "-File",
+                                   ".vscode/dispatch-export.ps1",
+                                   "-Target",
+                                   "linux"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Windows Export",
+                      "type":  "shell",
+                      "command":  "powershell",
+                      "args":  [
+                                   "-ExecutionPolicy",
+                                   "Bypass",
+                                   "-NoProfile",
+                                   "-File",
+                                   ".vscode/dispatch-export.ps1",
+                                   "-Target",
+                                   "windows"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
+                      "label":  "Mac Export",
+                      "type":  "shell",
+                      "command":  "powershell",
+                      "args":  [
+                                   "-ExecutionPolicy",
+                                   "Bypass",
+                                   "-NoProfile",
+                                   "-File",
+                                   ".vscode/dispatch-export.ps1",
+                                   "-Target",
+                                   "mac"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  [
+
+                                         ]
+                  }
+              ]
 }

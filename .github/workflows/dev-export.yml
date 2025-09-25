@@ -1,0 +1,73 @@
+name: Dev Export
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Export target (linux|windows|mac)"
+        required: true
+        default: linux
+        type: choice
+        options:
+          - linux
+          - windows
+          - mac
+
+jobs:
+  export:
+    runs-on: ${{ matrix.os }}
+    if: matrix.target == github.event.inputs.target
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: linux
+            os: ubuntu-latest
+            builder_cmd: npx electron-builder --publish never --linux AppImage --config.directories.output=release/dev
+          - target: windows
+            os: windows-latest
+            builder_cmd: npx electron-builder --publish never --win nsis --config.directories.output=release/dev
+          - target: mac
+            os: macos-latest
+            builder_cmd: npx electron-builder --publish never --mac dmg --config.directories.output=release/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Install system dependencies
+        if: matrix.target == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y libfuse2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clean previous output
+        run: npm run clean
+
+      - name: Build LiveRouteOCR helper
+        run: pwsh -File ./scripts/build-live-helper.ps1
+
+      - name: Build renderer
+        run: npm run build
+
+      - name: Package application
+        run: ${{ matrix.builder_cmd }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}-export
+          path: release/dev/
+          if-no-files-found: error
