@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [3.2.1] - 2025-09
+## [3.2.3] - 2025-09
 ### Changed
 - Linux
   - Converted OCR to be used in Linux builds of the Tool
