@@ -257,6 +257,16 @@ contextBridge.exposeInMainWorld('app', {
     }
     return saved || { ok: true };
   },
+  getOcrImageDebug: async () => {
+    const res = await invokeSafe('ocr:get-image-debug', undefined, { ok: true, enabled: false });
+    if (res && typeof res === 'object') return { enabled: !!res.enabled };
+    return { enabled: false };
+  },
+  setOcrImageDebug: async (enabled) => {
+    const res = await invokeSafe('ocr:set-image-debug', { enabled: !!enabled }, { ok: false });
+    if (res && res.ok !== false) return { ok: true, enabled: !!res.enabled };
+    return { ok: false, error: res?.error || 'IPC unavailable' };
+  },
 
   // Persisted setup + debug
   getOcrSetup:    () => getOcrSetupCompat(),

@@ -53,6 +53,7 @@ class LiveRouteOCR
     static string BattlePrePath => Path.Combine(AppDataDir, "last-battle-pre.png");
     static string StableTessDir => Path.Combine(AppDataDir, "tessdata");
     static string SettingsPath => Path.Combine(AppDataDir, "settings.json");
+    static readonly bool ImageDebugEnabled = ParseBoolEnv("OCR_IMAGE_DEBUG");
 
     // ---------- WS ----------
     static readonly int[] DefaultPorts = { 8765, 8766, 8767, 8768, 8769, 8770, 8780 };
@@ -429,13 +430,16 @@ class LiveRouteOCR
 
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
-                try
+                if (ImageDebugEnabled)
                 {
-                    using var fs = new FileStream(RouteCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                    crop.Save(fs, ImgFormat.Png);
+                    try
+                    {
+                        using var fs = new FileStream(RouteCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        crop.Save(fs, ImgFormat.Png);
+                    }
+                    catch (Exception ex) { Log($"Capture save failed: {ex.Message}"); }
+                    Log($"Saved capture: {RouteCapPath}");
                 }
-                catch (Exception ex) { Log($"Capture save failed: {ex.Message}"); }
-                Log($"Saved capture: {RouteCapPath}");
 
                 // Build pass plan
                 var plan = BuildPassPlan(mode, autoDepth);
@@ -470,9 +474,12 @@ class LiveRouteOCR
                             rawUsed = raw;
 
                             // on hit, save THIS pre as last-pre
-                            using (var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
-                                pre.Save(fs, ImgFormat.Png);
-                            Log($"Saved preprocessed: {RoutePrePath}");
+                            if (ImageDebugEnabled)
+                            {
+                                using (var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                                    pre.Save(fs, ImgFormat.Png);
+                                Log($"Saved preprocessed: {RoutePrePath}");
+                            }
 
                             Log($"HIT: mode={mode}{(mode == "auto" ? $"/{autoDepth}" : "")} up={pass.Upsample}x th={pass.Threshold} psm={pass.Psm} conf={(int)(conf * 100)} raw='{OneLine(raw)}' loc='{location}'");
                             break;
@@ -483,13 +490,16 @@ class LiveRouteOCR
                 // If no hit, still save the last tried pre image for the UI preview
                 if (string.IsNullOrEmpty(location) && prePreview != null)
                 {
-                    try
+                    if (ImageDebugEnabled)
                     {
-                        using var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        prePreview.Save(fs, ImgFormat.Png);
-                        Log($"Saved preprocessed (miss): {RoutePrePath}");
+                        try
+                        {
+                            using var fs = new FileStream(RoutePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                            prePreview.Save(fs, ImgFormat.Png);
+                            Log($"Saved preprocessed (miss): {RoutePrePath}");
+                        }
+                        catch { }
                     }
-                    catch { }
                     prePreview.Dispose(); prePreview = null;
                 }
 
@@ -628,13 +638,16 @@ class LiveRouteOCR
                 int sx = pt.X + r.Left, sy = pt.Y + r.Top;
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
                 using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
-                try
+                if (ImageDebugEnabled)
                 {
-                    using var fs = new FileStream(BattleCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                    crop.Save(fs, ImgFormat.Png);
+                    try
+                    {
+                        using var fs = new FileStream(BattleCapPath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        crop.Save(fs, ImgFormat.Png);
+                    }
+                    catch (Exception ex) { LogBattle($"Capture save failed: {ex.Message}"); }
+                    LogBattle($"Saved capture: {BattleCapPath}");
                 }
-                catch (Exception ex) { LogBattle($"Capture save failed: {ex.Message}"); }
-                LogBattle($"Saved capture: {BattleCapPath}");
 
                 var nameList = new List<string>();
                 string rawUsed = "";
@@ -694,24 +707,30 @@ class LiveRouteOCR
                 }
                 if (nameList.Count == 0 && prePreview != null)
                 {
-                    try
+                    if (ImageDebugEnabled)
                     {
-                        using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        prePreview.Save(fs, ImgFormat.Png);
-                        LogBattle($"Saved preprocessed (miss): {BattlePrePath}");
+                        try
+                        {
+                            using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                            prePreview.Save(fs, ImgFormat.Png);
+                            LogBattle($"Saved preprocessed (miss): {BattlePrePath}");
+                        }
+                        catch { }
                     }
-                    catch { }
                     prePreview.Dispose(); prePreview = null;
                 }
                 else if (bestPre != null)
                 {
-                    try
+                    if (ImageDebugEnabled)
                     {
-                        using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        bestPre.Save(fs, ImgFormat.Png);
-                        LogBattle($"Saved preprocessed: {BattlePrePath}");
+                        try
+                        {
+                            using var fs = new FileStream(BattlePrePath, FileMode.Create, FileAccess.Write, FileShare.Read);
+                            bestPre.Save(fs, ImgFormat.Png);
+                            LogBattle($"Saved preprocessed: {BattlePrePath}");
+                        }
+                        catch { }
                     }
-                    catch { }
                     bestPre.Dispose();
                 }
 
@@ -1224,6 +1243,22 @@ static string RemoveDiacritics(string text)
         return null;
     }
 
+    static bool ParseBoolEnv(string key)
+    {
+        try
+        {
+            var s = Environment.GetEnvironmentVariable(key);
+            if (string.IsNullOrWhiteSpace(s)) return false;
+            s = s.Trim();
+            if (string.Equals(s, "1", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(s, "true", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(s, "yes", StringComparison.OrdinalIgnoreCase)) return true;
+            if (string.Equals(s, "on", StringComparison.OrdinalIgnoreCase)) return true;
+        }
+        catch { }
+        return false;
+    }
+
     static int? ParseIntEnv(string key)
     {
         try
@@ -1245,8 +1280,16 @@ static string RemoveDiacritics(string text)
         return def;
     }
 
-    static void Log(string s) => LogTo(RouteLogPath, s);
-    static void LogBattle(string s) => LogTo(BattleLogPath, s);
+    static void Log(string s)
+    {
+        if (!ImageDebugEnabled) return;
+        LogTo(RouteLogPath, s);
+    }
+    static void LogBattle(string s)
+    {
+        if (!ImageDebugEnabled) return;
+        LogTo(BattleLogPath, s);
+    }
 
     static void LogTo(string path, string s)
     {

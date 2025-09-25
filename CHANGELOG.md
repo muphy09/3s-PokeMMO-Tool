@@ -7,8 +7,10 @@
   - OCR Process
     - Removed the debug log & screenshots that were generated automatically by the OCR
       - Added an option to re-enable these for debugging (will use more resources)
-    -
-  - New Settings for OCR
+
+- Options Menu
+  - Switched to an overlay instead of dropdown for a cleaner UI look
+  - New OCR Settings
     - OCR Aggressiveness
       - Tune how aggressive or efficient the OCR is at determining the route
       - Helps to reduce CPU load at the cost of speed and accuracy
@@ -17,6 +19,9 @@
     - OCR On/Off
       - Toggling this option now *properly* kills the OCR process
       - Removed 'Refresh OCR' as it can be done with this switch
+    - OCR Image Preview
+      - Enable OCR Image Debug to view an image just like the OCR sees
+      - Adjust settings and see in real-time how they affect the OCR
 
 ### Fixed
 - Ball Selector

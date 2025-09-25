@@ -27,6 +27,7 @@ app.on('second-instance', () => {
 // ===== Globals =====
 let mainWindow = null;
 let ocrProc = null;
+let ocrImageDebugEnabled = false;
 let downloadedUpdate = null;
 let downloadingVersion = null;
 
@@ -415,6 +416,7 @@ async function startLiveRouteOCR() {
       TARGET_PID: s?.targetPid ? String(s.targetPid) : '',
       CAPTURE_ZOOM: captureZoomEnv != null ? String(captureZoomEnv) : '',
       OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
+      OCR_IMAGE_DEBUG: ocrImageDebugEnabled ? '1' : '0',
       // hint for tessdata (helper also auto-detects)
       POKEMMO_TESSDATA_DIR: path.join(cwd, 'tessdata'),
     };
@@ -430,6 +432,7 @@ async function startLiveRouteOCR() {
       CAPTURE_ZOOM: env.CAPTURE_ZOOM,
       CAPTURE_ZOOM_SCALE: captureZoomEnv != null ? Math.round((1 + captureZoomEnv) * 10) / 10 : null,
       OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS,
+      OCR_IMAGE_DEBUG: env.OCR_IMAGE_DEBUG,
     });
 
     ocrProc.on('exit', (code, sig) => { log('LiveRouteOCR exited', code, sig); ocrProc = null; });
@@ -625,6 +628,29 @@ ipcMain.handle('ocr:set-enabled', async (_evt, payload = {}) => {
   }
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return { ok: true, settings: next };
+});
+ipcMain.handle('ocr:get-image-debug', async () => ({ ok: true, enabled: ocrImageDebugEnabled }));
+ipcMain.handle('ocr:set-image-debug', async (_evt, payload = {}) => {
+  const enabled = !!payload?.enabled;
+  if (enabled === ocrImageDebugEnabled) {
+    return { ok: true, enabled };
+  }
+
+  ocrImageDebugEnabled = enabled;
+
+  const settings = readOcrSettings();
+  const shouldRun = settings?.ocrEnabled !== false;
+
+  try { await stopLiveRouteOCR(); } catch {}
+  if (shouldRun) {
+    try { await startLiveRouteOCR(); } catch (err) { return { ok: false, error: err?.message || String(err) }; }
+  }
+
+  if (shouldRun) {
+    try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
+  }
+
+  return { ok: true, enabled: ocrImageDebugEnabled };
 });
 ipcMain.handle('stop-ocr', async () => { await stopLiveRouteOCR(); return true; });
 ipcMain.handle('refresh-app', async () => { if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.reloadIgnoringCache(); return true; });
