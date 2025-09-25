@@ -16,7 +16,7 @@ on:
 jobs:
   export:
     runs-on: ${{ matrix.os }}
-    if: matrix.target == github.event.inputs.target
+    if: ${{ matrix.target == github.event.inputs.target }}
     strategy:
       fail-fast: false
       matrix:
@@ -47,7 +47,7 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Install system dependencies
-        if: matrix.target == 'linux'
+        if: ${{ matrix.target == 'linux' }}
         run: sudo apt-get update && sudo apt-get install -y libfuse2
 
       - name: Install dependencies
