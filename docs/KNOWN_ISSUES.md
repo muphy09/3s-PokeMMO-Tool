@@ -22,7 +22,6 @@
 *- Day Care tab (per region)
   - 2 slots to put Pokemon into so you can keep track of which daycare has your pokemon
 
-*- Location Map sourced from Bulbp
 ---
 ## Known Issues
 - Typing 'Mt.' without the '.' does not keyword the locations in the Area Search Tab

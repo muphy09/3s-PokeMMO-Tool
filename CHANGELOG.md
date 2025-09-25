@@ -26,11 +26,6 @@
       - Adjust settings and see in real-time how they affect the OCR
       - Debug text from Route and Battle displayed below
 
-### Added
-- Route Location Images
-  - Clicking locations from the Pokemon Profile or Pokedex will display an overlay of the Route Location
-  - Sourced from *Bulbapedia*
-
 ### Fixed
 - Ball Selector
   - UI overlay that appears will no longer be cut off in rare situations
