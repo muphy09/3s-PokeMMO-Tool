@@ -1,6 +1,20 @@
 # Changelog
 ---
 
+## [3.2.1] - 2025-09
+### Changed
+- Linux
+  - Converted OCR to be used in Linux builds of the Tool
+    - OCR now enabled (feedback appreciated!)
+
+### Added
+- Daycare Manager
+  - Located inside the Tools dropdown
+  - Input Pokemon that are inside a Daycare to help keep track of them
+  - Provides useful information about Daycares
+
+---
+
 ## [3.2.0] - 2025-09
 ### Changed
 - OCR Rework | *Highly Requested!*
@@ -29,8 +43,6 @@
 ### Fixed
 - Ball Selector
   - UI overlay that appears will no longer be cut off in rare situations
-- Live Route OCR
-  - Linux builds now bundle tessdata and native Tesseract libraries, restoring OCR feature parity with Windows.
 
 ---
 
