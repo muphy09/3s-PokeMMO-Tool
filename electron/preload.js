@@ -19,8 +19,8 @@ const os   = require('os');
 const isWin = process.platform === 'win32';
 const localAppData = (() => {
   if (isWin && process.env.LOCALAPPDATA) return process.env.LOCALAPPDATA;
-  // Cross‑platform fallback: ~/.config/PokemmoLive
-  return path.join(os.homedir(), '.config');
+  if (process.env.XDG_DATA_HOME) return process.env.XDG_DATA_HOME;
+  return path.join(os.homedir(), '.local', 'share');
 })();
 
 const pokeLiveDir    = path.join(localAppData, 'PokemmoLive');

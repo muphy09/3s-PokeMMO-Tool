@@ -4,48 +4,52 @@ param(
 
 Write-Host "Building LiveRouteOCR helper..."
 
-# In dev runs (electron:dev), avoid expensive packaging steps.
+$root = Split-Path -Parent $PSScriptRoot
+$helperProject = Join-Path $root 'LiveRouteOCR'
+$winOut = Join-Path $helperProject 'win-x64'
+$linuxOut = Join-Path $helperProject 'linux-x64'
+$resourcesRoot = Join-Path $root 'resources'
+$helperResources = Join-Path $resourcesRoot 'LiveRouteOCR'
+$winResources = Join-Path $helperResources 'win-x64'
+$linuxResources = Join-Path $helperResources 'linux-x64'
+
+function Publish-Helper {
+  param(
+    [string]$Runtime,
+    [string]$Output
+  )
+
+  $framework = if ($Runtime -eq 'win-x64') { 'net6.0-windows' } else { 'net6.0' }
+  dotnet publish ./LiveRouteOCR/LiveRouteOCR.csproj -c Release -r $Runtime -f $framework --self-contained true -p:PublishSingleFile=false -o $Output
+}
+
 if ($Dev) {
-  Write-Host "Dev mode detected: skipping packaging steps (zip/copy)."
-
-  $exePath = Join-Path $PSScriptRoot "..\LiveRouteOCR\LiveRouteOCR.exe"
-  $needBuild = $true
-  if (Test-Path $exePath) {
-    try {
-      $exeTime = (Get-Item $exePath).LastWriteTimeUtc
-      $srcFiles = Get-ChildItem (Join-Path $PSScriptRoot "..\LiveRouteOCR") -Recurse -Include *.cs,*.csproj -ErrorAction SilentlyContinue |
-        Where-Object { $_.FullName -notmatch "\\obj\\|\\bin\\" }
-      if ($srcFiles) {
-        $latestSrc = ($srcFiles | Sort-Object LastWriteTimeUtc -Descending | Select-Object -First 1)
-        if ($latestSrc.LastWriteTimeUtc -le $exeTime) { $needBuild = $false }
-      }
-    } catch { $needBuild = $true }
-  }
-
-  if (-not $needBuild) {
-    Write-Host "LiveRouteOCR up-to-date; no rebuild needed."
-    return
-  }
-
-  # Quick publish to the working folder for dev
-  dotnet publish ./LiveRouteOCR/LiveRouteOCR.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -o ./LiveRouteOCR
-  Write-Host "Dev build complete. Skipping zip and resource copy."
+  Write-Host "Dev mode detected: publishing Windows helper only."
+  Publish-Helper -Runtime 'win-x64' -Output $winOut
+  Copy-Item -Force (Join-Path $winOut 'LiveRouteOCR.exe') (Join-Path $helperProject 'LiveRouteOCR.exe')
   return
 }
 
-# Publish the helper directly into ./LiveRouteOCR
-dotnet publish ./LiveRouteOCR/LiveRouteOCR.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -o ./LiveRouteOCR
+Publish-Helper -Runtime 'win-x64' -Output $winOut
+Publish-Helper -Runtime 'linux-x64' -Output $linuxOut
 
-# Mirror to resources/LiveRouteOCR for electron-builder extraResources
-New-Item -ItemType Directory -Force -Path ./resources/LiveRouteOCR | Out-Null
-Copy-Item -Recurse -Force ./LiveRouteOCR/* ./resources/LiveRouteOCR/
+Copy-Item -Force (Join-Path $winOut 'LiveRouteOCR.exe') (Join-Path $helperProject 'LiveRouteOCR.exe')
 
-# Create a zip alongside the build for packaging (packaging only)
-if (Test-Path ./LiveRouteOCR/LiveRouteOCR.zip) { Remove-Item ./LiveRouteOCR/LiveRouteOCR.zip }
-Compress-Archive -Path ./LiveRouteOCR/* -DestinationPath ./LiveRouteOCR/LiveRouteOCR.zip
+New-Item -ItemType Directory -Force -Path $winResources | Out-Null
+New-Item -ItemType Directory -Force -Path $linuxResources | Out-Null
+Copy-Item -Recurse -Force (Join-Path $winOut '*') $winResources
+Copy-Item -Recurse -Force (Join-Path $linuxOut '*') $linuxResources
 
-# Ensure tessdata is in resources/tessdata
-New-Item -ItemType Directory -Force -Path ./resources/tessdata | Out-Null
-if (Test-Path ./LiveRouteOCR/tessdata/eng.traineddata) {
-    Copy-Item ./LiveRouteOCR/tessdata/eng.traineddata ./resources/tessdata/eng.traineddata -Force
+$winZip = Join-Path $helperProject 'LiveRouteOCR.zip'
+$linuxZip = Join-Path $helperProject 'LiveRouteOCR-linux.zip'
+if (Test-Path $winZip) { Remove-Item $winZip }
+if (Test-Path $linuxZip) { Remove-Item $linuxZip }
+Compress-Archive -Path (Join-Path $winOut '*') -DestinationPath $winZip
+Compress-Archive -Path (Join-Path $linuxOut '*') -DestinationPath $linuxZip
+
+$tessSource = Join-Path $winOut 'tessdata/eng.traineddata'
+if (Test-Path $tessSource) {
+  $tessTarget = Join-Path $resourcesRoot 'tessdata'
+  New-Item -ItemType Directory -Force -Path $tessTarget | Out-Null
+  Copy-Item $tessSource (Join-Path $tessTarget 'eng.traineddata') -Force
 }

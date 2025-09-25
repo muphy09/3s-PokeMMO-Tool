@@ -3,6 +3,7 @@
 const { app, BrowserWindow, ipcMain, Menu, shell, dialog, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { spawn } = require('child_process');
 
 
@@ -30,6 +31,9 @@ let ocrProc = null;
 let ocrImageDebugEnabled = false;
 let downloadedUpdate = null;
 let downloadingVersion = null;
+
+const isWin = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
 
 // ===== Helpers =====
 function normalizeVersion(ver) {
@@ -61,7 +65,85 @@ function settingsPath() {
 
 
 // Enumerate visible top-level windows with PIDs and titles
+function normalizeWindowList(list = []) {
+  const uniq = new Map();
+  for (const item of list) {
+    if (!item) continue;
+    const pidVal = Number.parseInt(String(item.pid ?? item.processId ?? ''), 10);
+    const pid = Number.isFinite(pidVal) ? pidVal : null;
+    const id = item.id ?? item.handle ?? item.handleHex ?? null;
+    const title = String(item.title || item.windowTitle || item.name || '').trim();
+    if (!title) continue;
+    const processNameRaw = String(item.processName || '').trim();
+    const normalized = {
+      pid,
+      processName: processNameRaw || (title.toLowerCase().includes('pokemmo') ? 'pokemmo' : ''),
+      title,
+    };
+    if (item.handle != null) normalized.handle = item.handle;
+    if (item.handleHex) normalized.handleHex = item.handleHex;
+    if (id != null) normalized.id = id;
+    const key = pid ? `p${pid}` : (id ? `i${id}` : null);
+    if (!key || uniq.has(key)) continue;
+    uniq.set(key, normalized);
+  }
+  return [...uniq.values()].sort((a, b) => {
+    const aName = `${a.processName || ''} ${a.title || ''}`.toLowerCase();
+    const bName = `${b.processName || ''} ${b.title || ''}`.toLowerCase();
+    const aScore = aName.includes('pokemmo') ? -1 : 0;
+    const bScore = bName.includes('pokemmo') ? -1 : 0;
+    if (aScore !== bScore) return aScore - bScore;
+    return (a.title || '').localeCompare(b.title || '');
+  });
+}
+
+async function enumerateWindowsLinux() {
+  const exe = await ensureOCRExeExists();
+  if (!exe) return [];
+  const cwd = path.dirname(exe);
+  const env = {
+    ...process.env,
+    POKEMMO_LIVE_DATA_DIR: defaultOcrDataDir(),
+  };
+  return new Promise((resolve) => {
+    const proc = spawn(exe, ['--list-windows'], {
+      cwd,
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+    const chunks = [];
+    proc.stdout.on('data', (d) => chunks.push(Buffer.from(d)));
+    proc.on('error', (err) => {
+      log('enumerateWindows helper error', err?.message || err);
+      resolve([]);
+    });
+    proc.on('close', () => {
+      const txt = Buffer.concat(chunks).toString('utf8').trim();
+      if (!txt) return resolve([]);
+      try {
+        const json = JSON.parse(txt);
+        const arr = Array.isArray(json) ? json : [json];
+        const mapped = arr.map((item) => ({
+          pid: item?.pid ?? item?.processId ?? null,
+          processName: item?.processName ?? '',
+          title: item?.title ?? item?.windowTitle ?? item?.name ?? '',
+          id: item?.handleHex ?? item?.handle ?? item?.id ?? null,
+          handle: item?.handle ?? null,
+          handleHex: item?.handleHex ?? null,
+        }));
+        resolve(normalizeWindowList(mapped));
+      } catch (err) {
+        log('enumerateWindows helper parse error', err?.message || err);
+        resolve([]);
+      }
+    });
+  });
+}
+
 async function enumerateWindows() {
+  if (isLinux) {
+    return await enumerateWindowsLinux();
+  }
   // Try simple PS: Get-Process with MainWindowTitle
   async function psSimple() {
     return new Promise((resolve) => {
@@ -70,7 +152,7 @@ async function enumerateWindows() {
         "Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle } | Select-Object Id,ProcessName,MainWindowTitle | ConvertTo-Json -Depth 2"
       ], { windowsHide: true });
       const chunks = [];
-      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
+      ps.stdout.on('data', (d) => chunks.push(Buffer.from(d)));
       ps.on('close', () => {
         try {
           const buf = Buffer.concat(chunks);
@@ -79,7 +161,7 @@ async function enumerateWindows() {
           if (!txt) return resolve([]);
           const json = JSON.parse(txt);
           const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
+          resolve(arr.map((x) => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
         } catch { resolve([]); }
       });
       ps.on('error', () => resolve([]));
@@ -126,7 +208,7 @@ public class WinEnum {
     return new Promise((resolve) => {
       const ps = spawn('powershell.exe', ['-NoProfile','-NonInteractive','-Command', code], { windowsHide: true });
       const chunks = [];
-      ps.stdout.on('data', d => chunks.push(Buffer.from(d)));
+      ps.stdout.on('data', (d) => chunks.push(Buffer.from(d)));
       ps.on('close', () => {
         try {
           const buf = Buffer.concat(chunks);
@@ -135,31 +217,19 @@ public class WinEnum {
           if (!txt) return resolve([]);
           const json = JSON.parse(txt);
           const arr = Array.isArray(json) ? json : [json];
-          resolve(arr.map(x => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
+          resolve(arr.map((x) => ({ pid: x.Id, processName: x.ProcessName || '', title: x.MainWindowTitle || '' })));
         } catch { resolve([]); }
       });
       ps.on('error', () => resolve([]));
     });
-    }
+  }
 
   let list = await psSimple();
   if (!list.length) list = await psEnumWin32();
 
-  // de-dup + prefer PokeMMO entries first
-  const uniq = new Map();
-  for (const w of list) {
-        if (!w) continue;
-    const key = w.pid ? `p${w.pid}` : (w.id ? `i${w.id}` : null);
-    if (!key || uniq.has(key)) continue;
-    uniq.set(key, w);
-  }
-  return [...uniq.values()].sort((a, b) => {
-    const aP = (a.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
-    const bP = (b.processName || '').toLowerCase().includes('pokemmo') ? -1 : 0;
-    if (aP !== bP) return aP - bP;
-    return (a.title || '').localeCompare(b.title || '');
-  });
+  return normalizeWindowList(list);
 }
+
 
 function log(...args) {
   try {
@@ -345,19 +415,85 @@ function setupAutoUpdates() {
 
 // ===== LiveRouteOCR paths/spawn =====
 const OCR_FOLDER_NAME = 'LiveRouteOCR';
-const OCR_EXE_NAME = 'LiveRouteOCR.exe';
+const OCR_EXE_NAME = isWin ? 'LiveRouteOCR.exe' : 'LiveRouteOCR';
+const OCR_PLATFORM_SUBDIR = isWin ? 'win-x64' : (isLinux ? 'linux-x64' : null);
+
+function firstExisting(paths = []) {
+  for (const candidate of paths) {
+    if (candidate && fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function ensureExecutable(file) {
+  if (!isLinux) return;
+  if (!file) return;
+  try { fs.chmodSync(file, 0o755); } catch {}
+}
 
 function ocrUserDir() { return path.join(app.getPath('userData'), OCR_FOLDER_NAME); }
-function ocrResourcesExe() { return path.join(rsrc(OCR_FOLDER_NAME), OCR_EXE_NAME); }
-function ocrUserExe() { return path.join(ocrUserDir(), OCR_EXE_NAME); }
-function ocrZipPath() { return path.join(process.resourcesPath || process.cwd(), `${OCR_FOLDER_NAME}.zip`); }
-function ocrDevExe() { return path.join(__dirname, '..', OCR_FOLDER_NAME, OCR_EXE_NAME); }
+function ocrResourcesExe() {
+  const candidates = [];
+  if (OCR_PLATFORM_SUBDIR) candidates.push(rsrc(OCR_FOLDER_NAME, OCR_PLATFORM_SUBDIR, OCR_EXE_NAME));
+  candidates.push(path.join(rsrc(OCR_FOLDER_NAME), OCR_EXE_NAME));
+  const exe = firstExisting(candidates);
+  if (exe) ensureExecutable(exe);
+  return exe;
+}
+function ocrUserExe() {
+  const exe = path.join(ocrUserDir(), OCR_EXE_NAME);
+  if (fs.existsSync(exe)) {
+    ensureExecutable(exe);
+    return exe;
+  }
+  return null;
+}
+function ocrZipPath() {
+  const base = process.resourcesPath || process.cwd();
+  const names = [];
+  if (isWin) names.push(OCR_FOLDER_NAME + '.zip');
+  if (isLinux) names.push(OCR_FOLDER_NAME + '-linux.zip', OCR_FOLDER_NAME + '.zip');
+  return firstExisting(names.map((name) => path.join(base, name)));
+}
+function ocrDevExe() {
+  const base = path.join(__dirname, '..', OCR_FOLDER_NAME);
+  const runtime = OCR_PLATFORM_SUBDIR;
+  const candidates = [
+    path.join(base, OCR_EXE_NAME),
+    runtime ? path.join(base, runtime, OCR_EXE_NAME) : null,
+    path.join(base, 'publish', runtime || '', OCR_EXE_NAME),
+  ].filter(Boolean);
+  const exe = firstExisting(candidates);
+  if (exe) ensureExecutable(exe);
+  return exe;
+}
+
+function defaultOcrDataDir() {
+  if (process.env.POKEMMO_LIVE_DATA_DIR) return process.env.POKEMMO_LIVE_DATA_DIR;
+  try {
+    if (isWin) {
+      const base = process.env.LOCALAPPDATA || app.getPath('localAppData');
+      if (base) return path.join(base, 'PokemmoLive');
+    }
+  } catch {}
+  if (isLinux) {
+    const base = process.env.XDG_DATA_HOME || path.join(os.homedir(), '.local', 'share');
+    return path.join(base, 'PokemmoLive');
+  }
+  try {
+    return path.join(app.getPath('userData'), 'PokemmoLive');
+  } catch {}
+  return path.join(os.homedir(), 'PokemmoLive');
+}
+
 
 async function extractZipToUserDir(zipFile, destDir) {
   try {
     const extract = require('extract-zip');
     await extract(zipFile, { dir: destDir });
-    return true;
+    const exe = path.join(destDir, OCR_EXE_NAME);
+    if (fs.existsSync(exe)) ensureExecutable(exe);
+    return fs.existsSync(exe);
   } catch (e) {
     log('extract-zip failed, trying PowerShell Expand-Archive…', e?.message || e);
   }
@@ -371,22 +507,34 @@ async function extractZipToUserDir(zipFile, destDir) {
       ps.on('exit', () => resolve());
       ps.on('error', () => resolve());
     });
-    return fs.existsSync(destDir) && fs.existsSync(path.join(destDir, OCR_EXE_NAME));
+    const exe = path.join(destDir, OCR_EXE_NAME);
+    if (fs.existsSync(exe)) ensureExecutable(exe);
+    return fs.existsSync(exe);
   }
   return false;
 }
 
 async function ensureOCRExeExists() {
-  if (!app.isPackaged && fs.existsSync(ocrDevExe())) return ocrDevExe();
-  if (fs.existsSync(ocrResourcesExe())) return ocrResourcesExe();
-  if (fs.existsSync(ocrUserExe())) return ocrUserExe();
+  if (!app.isPackaged) {
+    const dev = ocrDevExe();
+    if (dev) return dev;
+  }
+
+  const resourceExe = ocrResourcesExe();
+  if (resourceExe) return resourceExe;
+
+  const userExe = ocrUserExe();
+  if (userExe) return userExe;
 
   const zip = ocrZipPath();
-  if (fs.existsSync(zip)) {
+  if (zip) {
     try {
       fs.mkdirSync(ocrUserDir(), { recursive: true });
       const ok = await extractZipToUserDir(zip, ocrUserDir());
-      if (ok && fs.existsSync(ocrUserExe())) return ocrUserExe();
+      if (ok) {
+        const exe = ocrUserExe();
+        if (exe) return exe;
+      }
     } catch (e) {
       log('Failed to extract OCR zip', e);
     }
@@ -394,10 +542,11 @@ async function ensureOCRExeExists() {
   return null;
 }
 
+
 async function startLiveRouteOCR() {
   try {
     if (ocrProc) { try { ocrProc.kill(); } catch {} ocrProc = null; }
-    if (process.platform !== 'win32') { log('LiveRouteOCR supported on Windows only; skipping'); return; }
+    if (!isWin && !isLinux) { log('LiveRouteOCR supported on Windows/Linux only; skipping'); return; }
 
     const settings = readOcrSettings();
     if (settings?.ocrEnabled === false) {
@@ -407,13 +556,15 @@ async function startLiveRouteOCR() {
 
     const exe = await ensureOCRExeExists();
     if (!exe) {
-      const msg = `LiveRouteOCR not found.\nSearched:\n - ${ocrDevExe()}\n - ${ocrResourcesExe()}\n - ${ocrUserExe()}\nZip:\n - ${ocrZipPath()}`;
+      const msg = ['LiveRouteOCR not found.', 'Searched:', ' - ' + (ocrDevExe() || 'n/a'), ' - ' + (ocrResourcesExe() || 'n/a'), ' - ' + (ocrUserExe() || 'n/a'), 'Zip:', ' - ' + (ocrZipPath() || 'n/a')].join('\n');
       log(msg);
       dialog.showMessageBox({ type: 'warning', message: 'LiveRouteOCR Missing', detail: msg });
       return;
     }
 
     const cwd = path.dirname(exe);
+    const dataDir = defaultOcrDataDir();
+    try { fs.mkdirSync(dataDir, { recursive: true }); } catch {}
     const s = settings || {};
     const captureZoomEnv = captureZoomToEnv(s?.captureZoom);
     const battleCaptureZoomEnv = captureZoomToEnv(s?.battleCaptureZoom ?? s?.captureZoom);
@@ -424,15 +575,16 @@ async function startLiveRouteOCR() {
       BATTLE_CAPTURE_ZOOM: battleCaptureZoomEnv != null ? String(battleCaptureZoomEnv) : '',
       OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
       OCR_IMAGE_DEBUG: ocrImageDebugEnabled ? '1' : '0',
-      // hint for tessdata (helper also auto-detects)
       POKEMMO_TESSDATA_DIR: path.join(cwd, 'tessdata'),
+      POKEMMO_LIVE_DATA_DIR: dataDir,
     };
-    ocrProc = spawn(exe, [], {
+    const spawnOpts = {
       cwd,
-      windowsHide: true,
       stdio: 'ignore',
       env,
-    });
+    };
+    if (isWin) spawnOpts.windowsHide = true;
+    ocrProc = spawn(exe, [], spawnOpts);
 
     log('LiveRouteOCR env', {
       TARGET_PID: env.TARGET_PID,
@@ -442,6 +594,7 @@ async function startLiveRouteOCR() {
       BATTLE_CAPTURE_ZOOM_SCALE: battleCaptureZoomEnv != null ? Math.round((1 + battleCaptureZoomEnv) * 10) / 10 : null,
       OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS,
       OCR_IMAGE_DEBUG: env.OCR_IMAGE_DEBUG,
+      POKEMMO_LIVE_DATA_DIR: dataDir,
     });
 
     ocrProc.on('exit', (code, sig) => { log('LiveRouteOCR exited', code, sig); ocrProc = null; });
@@ -458,11 +611,11 @@ async function startLiveRouteOCR() {
     log('startLiveRouteOCR exception:', e?.message || e);
   }
 }
+
 async function stopLiveRouteOCR() {
   try {
     const pid = ocrProc?.pid || null;
-    if (process.platform === 'win32') {
-      // Attempt to kill by PID and entire tree; then also kill by image name to catch strays
+    if (isWin) {
       if (pid) {
         await new Promise((resolve) => {
           const k = spawn('taskkill', ['/PID', String(pid), '/T', '/F'], { windowsHide: true });
@@ -477,12 +630,11 @@ async function stopLiveRouteOCR() {
         k2.on('error', () => resolve());
         setTimeout(resolve, 1500);
       });
-      // Also attempt to stop any sibling processes and name variants via PowerShell as a fallback
       await new Promise((resolve) => {
-        const psCode = `
-          $ErrorActionPreference = 'SilentlyContinue';
-          Get-Process -Name 'LiveRouteOCR','LiveBattleOCR' | Stop-Process -Force;
-        `.Trim();
+        const psCode = [
+          "ErrorActionPreference = 'SilentlyContinue';",
+          "Get-Process -Name 'LiveRouteOCR','LiveBattleOCR' | Stop-Process -Force;"
+        ].join('\n');
         const ps = spawn('powershell.exe', ['-NoProfile','-NonInteractive','-Command', psCode], { windowsHide: true });
         ps.on('exit', () => resolve());
         ps.on('error', () => resolve());
@@ -490,7 +642,10 @@ async function stopLiveRouteOCR() {
       });
       log('LiveRouteOCR stop issued (taskkill + Stop-Process)');
     } else {
-      try { if (ocrProc && !ocrProc.killed) { ocrProc.kill('SIGTERM'); } } catch {}
+      const proc = ocrProc;
+      try { if (proc && !proc.killed) { proc.kill('SIGTERM'); } } catch {}
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      try { if (proc && !proc.killed) { proc.kill('SIGKILL'); } } catch {}
     }
   } catch (e) {
     log('stopLiveRouteOCR failed', e?.message || e);
@@ -498,7 +653,6 @@ async function stopLiveRouteOCR() {
     ocrProc = null;
   }
 }
-
 const preloadCandidates = [
   path.join(__dirname, 'preload.js'),
   ];
@@ -774,15 +928,29 @@ ipcMain.handle('app:list-windows', async () => {
 });
 
 function readPreviewImages() {
-  const localDir = path.join(process.env.LOCALAPPDATA || app.getPath('localAppData'), 'PokemmoLive');
-  const roamingDir = path.join(process.env.APPDATA || app.getPath('appData'), 'PokemmoLive');
-  const dirs = [localDir];
-  if (roamingDir !== localDir) dirs.push(roamingDir);
+  const dirs = [];
+  try {
+    const primary = defaultOcrDataDir();
+    if (primary) dirs.push(primary);
+  } catch {}
+  try {
+    const userDataDir = path.join(app.getPath('userData'), 'PokemmoLive');
+    if (userDataDir && !dirs.includes(userDataDir)) dirs.push(userDataDir);
+  } catch {}
+  try {
+    const appDataDir = path.join(app.getPath('appData'), 'PokemmoLive');
+    if (appDataDir && !dirs.includes(appDataDir)) dirs.push(appDataDir);
+  } catch {}
+  if (dirs.length === 0) {
+    try {
+      dirs.push(path.join(app.getPath('userData'), 'PokemmoLive'));
+    } catch {}
+  }
 
   function readFirst(names, folders = ['']) {
     const nameArr = Array.isArray(names) ? names : [names];
     for (const d of dirs) {
-       for (const folder of folders) {
+      for (const folder of folders) {
         for (const n of nameArr) {
           const p = path.join(d, folder, n);
           try {

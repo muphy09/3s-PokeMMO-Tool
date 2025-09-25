@@ -11,8 +11,8 @@ const CORE_FEATURES = [
   { key: 'team', label: 'Team Builder' }
 ];
 
-export default function HomeScreen({ setMode, isWindows }) {
-  const extras = isWindows ? [
+export default function HomeScreen({ setMode, supportsLive }) {
+  const extras = supportsLive ? [
     { key: 'live', label: 'Live Route' },
     { key: 'battle', label: 'Live Battle' }
   ] : [];

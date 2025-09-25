@@ -30,7 +30,7 @@ function clampOcrZoomValue(value, fallback = 0.5) {
  *  - Reload OCR (Windows only) → restarts helper AND signals Live tab to reconnect/clear
  *  - Refresh app       → full renderer refresh
  */
-export default function OptionsMenu({ style = {}, isWindows = false }) {
+export default function OptionsMenu({ style = {}, ocrSupported = false }) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState(null); // { text, kind } | null
   const menuRef = useRef(null);
@@ -55,7 +55,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   const [ocrAggressiveness, setOcrAggressiveness] = useState('fast');
   const [ocrRouteZoom, setOcrRouteZoom] = useState(0.5);
   const [ocrBattleZoom, setOcrBattleZoom] = useState(0.5);
-  const [ocrSetupLoaded, setOcrSetupLoaded] = useState(() => !isWindows);
+  const [ocrSetupLoaded, setOcrSetupLoaded] = useState(() => !ocrSupported);
   const [activeCategory, setActiveCategory] = useState('general');
   const [ocrImageDebug, setOcrImageDebug] = useState(false);
   const [settingImageDebug, setSettingImageDebug] = useState(false);
@@ -103,7 +103,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   }, []);
 
   useEffect(() => {
-    if (!isWindows) return;
+    if (!ocrSupported) return;
     let cancelled = false;
     (async () => {
       try {
@@ -126,7 +126,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [isWindows]);
+  }, [ocrSupported]);
 
   useEffect(() => {
     let cancelled = false;
@@ -150,10 +150,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
   }, [open]);
 
   useEffect(() => {
-    if (!isWindows && activeCategory === 'ocr') {
+    if (!ocrSupported && activeCategory === 'ocr') {
       setActiveCategory('general');
     }
-  }, [isWindows, activeCategory]);
+  }, [ocrSupported, activeCategory]);
 
   useEffect(() => {
     if (!open) return;
@@ -578,7 +578,7 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     maxWidth: 420,
   };
 
-  const categories = isWindows ? OPTION_CATEGORIES : OPTION_CATEGORIES.filter((cat) => cat.id !== 'ocr');
+  const categories = ocrSupported ? OPTION_CATEGORIES : OPTION_CATEGORIES.filter((cat) => cat.id !== 'ocr');
   const activeCategoryMeta = categories.find((cat) => cat.id === activeCategory) || categories[0] || OPTION_CATEGORIES[0];
 
   const renderCategoryContent = () => {
@@ -656,10 +656,10 @@ export default function OptionsMenu({ style = {}, isWindows = false }) {
     }
 
     if (activeCategory === 'ocr') {
-      if (!isWindows) {
+      if (!ocrSupported) {
         return (
           <div style={sectionStyle}>
-            <span style={{ color: 'var(--muted)' }}>Live OCR settings are available on Windows only.</span>
+            <span style={{ color: 'var(--muted)' }}>Live OCR settings are available on Windows and Linux.</span>
           </div>
         );
       }

@@ -4423,6 +4423,7 @@ function App(){
   }, []);
   const isWindows = platform === 'win32';
   const isLinux = platform === 'linux';
+  const ocrSupported = isWindows || isLinux;
 
   // Global shiny sprites toggle (mirrors Options menu)
   const [shinyGlobal, setShinyGlobal] = useState(() => {
@@ -4613,8 +4614,8 @@ function App(){
   const [showUpToDate, setShowUpToDate] = useState(false);
 
   useEffect(() => {
-    if (!isWindows && mode === 'live') setMode('pokemon');
-  }, [isWindows, mode]);
+    if (!ocrSupported && mode === 'live') setMode('pokemon');
+  }, [ocrSupported, mode]);
 
   useEffect(() => {
     liveBattleClient.connect();
@@ -5282,7 +5283,7 @@ const marketResults = React.useMemo(() => {
       {/* App-wide overlay controls (top-right) */}
       <div style={{ position:'fixed', top:10, right:12, zIndex:9999, display:'flex', gap:8 }}>
         <PatchNotesButton />
-        <OptionsMenu isWindows={isWindows} />
+        <OptionsMenu ocrSupported={ocrSupported} />
       </div>
       {/* Mount the color picker without a visible trigger so Options menu can open it */}
       <ColorPickerButton renderTrigger={false} />
@@ -5317,7 +5318,7 @@ const marketResults = React.useMemo(() => {
       )}
 
 {mode === 'home' ? (
-        <HomeScreen setMode={setMode} isWindows={isWindows} />
+        <HomeScreen setMode={setMode} supportsLive={ocrSupported} />
       ) : (
       <div className="container">
         {/* Header */}
@@ -5357,7 +5358,7 @@ const marketResults = React.useMemo(() => {
                 )}
               </div>
             </div>
-          {isWindows && (
+          {ocrSupported && (
             <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
               <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
               <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
@@ -5828,7 +5829,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Live route panel */}
-          {mode==='live' && isWindows && (
+          {mode==='live' && ocrSupported && (
             <div style={{ marginTop:4 }}>
               <LiveRoutePanel
                 areasIndex={areasClean}
@@ -5839,7 +5840,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Live battle panel */}
-          {mode==='battle' && isWindows && (
+          {mode==='battle' && ocrSupported && (
             <div style={{ marginTop:4 }}>
               <LiveBattlePanel
                 onViewMon={(mon) => { setSelected(mon); setMode('pokemon'); }}

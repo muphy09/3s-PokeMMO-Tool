@@ -22,8 +22,11 @@ using System.Threading.Tasks;
 using Tesseract;
 using System.Net.Mail;
 
-class LiveRouteOCR
+#pragma warning disable CA1416
+
+partial class LiveRouteOCR
 {
+#if WINDOWS
     // ---------- Win32 ----------
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll", SetLastError = true)] private static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
@@ -36,6 +39,7 @@ class LiveRouteOCR
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hWnd);
     [DllImport("user32.dll")] private static extern bool IsWindow(IntPtr hWnd);
     private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+#endif
 
     static IntPtr CachedHwnd = IntPtr.Zero;
     static int CachedPid = 0;
@@ -44,7 +48,31 @@ class LiveRouteOCR
     [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
 
     // ---------- Paths ----------
-    static string AppDataDir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PokemmoLive");
+    static string AppDataDir
+    {
+        get
+        {
+            var overrideDir = Environment.GetEnvironmentVariable("POKEMMO_LIVE_DATA_DIR");
+            if (!string.IsNullOrWhiteSpace(overrideDir))
+            {
+                try { Directory.CreateDirectory(overrideDir); } catch { }
+                return overrideDir;
+            }
+            var baseDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            if (string.IsNullOrWhiteSpace(baseDir))
+            {
+                baseDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            }
+            if (string.IsNullOrWhiteSpace(baseDir))
+            {
+                var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                baseDir = !string.IsNullOrWhiteSpace(home) ? Path.Combine(home, ".local", "share") : ".";
+            }
+            var dir = Path.Combine(baseDir, "PokemmoLive");
+            try { Directory.CreateDirectory(dir); } catch { }
+            return dir;
+        }
+    }
     static string RouteLogPath => Path.Combine(AppDataDir, "ocr-route.log");
     static string BattleLogPath => Path.Combine(AppDataDir, "ocr-battle.log");
     static string RouteCapPath => Path.Combine(AppDataDir, "last-route-capture.png");
@@ -89,6 +117,13 @@ class LiveRouteOCR
         }
     }
 
+    class WindowInfo
+    {
+        public IntPtr Handle { get; set; } = IntPtr.Zero;
+        public int Pid { get; set; } = 0;
+        public string Title { get; set; } = string.Empty;
+    }
+
     // ---------- Settings ----------
     class HelperSettings
     {
@@ -123,6 +158,24 @@ class LiveRouteOCR
 
     static async Task Main(string[] args)
     {
+#if !WINDOWS
+        AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);
+#endif
+        var listOnly = args.Any(a => string.Equals(a, "--list-windows", StringComparison.OrdinalIgnoreCase));
+        if (listOnly)
+        {
+            var windows = EnumerateTopLevelWindows()
+                .Select(w => new
+                {
+                    handle = w.Handle.ToInt64(),
+                    handleHex = $"0x{w.Handle.ToInt64():X}",
+                    pid = w.Pid,
+                    title = w.Title ?? string.Empty
+                })
+                .ToArray();
+            Console.WriteLine(JsonSerializer.Serialize(windows));
+            return;
+        }
         Directory.CreateDirectory(AppDataDir);
         Directory.CreateDirectory(StableTessDir);
         Log("=== LiveRouteOCR boot ===");
@@ -430,10 +483,13 @@ class LiveRouteOCR
 
                 var rBase = roi.ToRectangle(cw, ch);
                 var r = ZoomRectangle(rBase, cw, ch, CaptureZoom);
-                int sx = pt.X + r.Left, sy = pt.Y + r.Top;
-
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
-                using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
+                if (!CaptureRegionInto(crop, hWnd, pt, r))
+                {
+                    LogBattle("Capture failed; retrying.");
+                    await Task.Delay(200, ct);
+                    continue;
+                }
                 if (ImageDebugEnabled)
                 {
                     try
@@ -639,9 +695,13 @@ class LiveRouteOCR
                 int cw = Math.Max(1, rc.Right - rc.Left), ch = Math.Max(1, rc.Bottom - rc.Top);
                 var rBase = roi.ToRectangle(cw, ch);
                 var r = ZoomRectangle(rBase, cw, ch, BattleCaptureZoom);
-                int sx = pt.X + r.Left, sy = pt.Y + r.Top;
                 using var crop = new Bitmap(r.Width, r.Height, PixelFormat.Format24bppRgb);
-                using (var g = Graphics.FromImage(crop)) g.CopyFromScreen(sx, sy, 0, 0, crop.Size, CopyPixelOperation.SourceCopy);
+                if (!CaptureRegionInto(crop, hWnd, pt, r))
+                {
+                    LogBattle("Capture failed; retrying.");
+                    await Task.Delay(200, ct);
+                    continue;
+                }
                 if (ImageDebugEnabled)
                 {
                     try
@@ -674,6 +734,7 @@ class LiveRouteOCR
                         cleanedAll = Regex.Replace(cleanedAll, "\\bLv\\.?\\s*\\d+\\b", "", RegexOptions.IgnoreCase).Trim();
 
                         foreach (var line in cleanedAll.Split('\n'))
+
                         {
                             var n = TrimTrailingShortWords(line.Trim());
                             if (LooksLikeName(n) && seen.Add(n)) nameList.Add(n);
@@ -1067,6 +1128,7 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
     }
 
     // ---------- Window helpers ----------
+#if WINDOWS
     static IntPtr FindPokeMMO(int? targetPid)
     {
         int? pidHint = targetPid ?? (CachedPid > 0 ? CachedPid : (int?)null);
@@ -1134,12 +1196,22 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
         }
         return IntPtr.Zero;
     }
-    static IntPtr CacheHandle(IntPtr h, int pid)
+
+    static IEnumerable<WindowInfo> EnumerateTopLevelWindows()
     {
-        CachedHwnd = h;
-        CachedPid = pid;
-        return h;
+        var list = new List<WindowInfo>();
+        EnumWindows((h, l) =>
+        {
+            if (!IsWindowVisible(h)) return true;
+            var title = GetTitle(h).Trim();
+            if (string.IsNullOrWhiteSpace(title)) return true;
+            GetWindowThreadProcessId(h, out uint pid);
+            list.Add(new WindowInfo { Handle = h, Pid = (int)pid, Title = title });
+            return true;
+        }, IntPtr.Zero);
+        return list;
     }
+
     static bool IsPokeMMOWindow(IntPtr h)
     {
         if (h == IntPtr.Zero) return false;
@@ -1183,8 +1255,31 @@ static Bitmap PreprocessBattle(Bitmap src, int threshold, int upsample)
     }
     static string GetTitle(IntPtr h) { var sb = new StringBuilder(256); GetWindowText(h, sb, sb.Capacity); return sb.ToString(); }
     static string GetClass(IntPtr h) { var sb = new StringBuilder(256); GetClassName(h, sb, sb.Capacity); return sb.ToString(); }
+#endif
 
-static string RemoveDiacritics(string text)
+    static IntPtr CacheHandle(IntPtr h, int pid)
+    {
+        CachedHwnd = h;
+        CachedPid = pid;
+        return h;
+    }
+
+    static bool CaptureRegionInto(Bitmap target, IntPtr hWnd, POINT origin, Rectangle rect)
+    {
+#if WINDOWS
+        int sx = origin.X + rect.Left;
+        int sy = origin.Y + rect.Top;
+        using (var g = Graphics.FromImage(target))
+        {
+            g.CopyFromScreen(sx, sy, 0, 0, target.Size, CopyPixelOperation.SourceCopy);
+        }
+        return true;
+#else
+        return LinuxCaptureRegion(hWnd, origin, rect, target);
+#endif
+    }
+
+    static string RemoveDiacritics(string text)
     {
         var normalized = text.Normalize(NormalizationForm.FormD);
         var sb = new StringBuilder();
@@ -1310,7 +1405,11 @@ static string RemoveDiacritics(string text)
     {
         if (string.IsNullOrEmpty(s)) return "";
         s = s.Replace("\r", " ").Replace("\n", " ");
-        return s.Length > 120 ? s.Substring(0, 120) + "…" : s;
+        return s.Length > 120 ? s.Substring(0, 120) + "..." : s;
     }
-    
+#pragma warning restore CA1416
 }
+
+
+
+
