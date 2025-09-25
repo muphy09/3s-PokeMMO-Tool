@@ -21,6 +21,7 @@ import alphaData from '../data/alpha_pokemon.json';
 import alphaIconUrl from '../data/alpha.ico';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
 import TeamBuilder from './components/TeamBuilder.jsx';
+import DaycareManager from './components/DaycareManager.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
 import RecommendedMovesets from './components/RecommendedMovesets.jsx';
 import hordeRegions from '../horderegiondata.json';
@@ -4491,7 +4492,7 @@ function App(){
   const searchClearIntentRef = useRef(false);
   const [showRegionMenu, setShowRegionMenu] = useState(false);
   const [selected, setSelected] = useState(null);
-  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'horde' | 'tm' | 'items' | 'breeding' | 'team' | 'live' | 'battle' | 'market'
+  const [mode, setMode]         = useState('pokemon'); // 'pokemon' | 'areas' | 'horde' | 'tm' | 'items' | 'breeding' | 'daycare' | 'team' | 'live' | 'battle' | 'market'
   const [toolsOpen, setToolsOpen] = useState(false);
 
   const [showTypeChart, setShowTypeChart] = useState(false);
@@ -5337,7 +5338,7 @@ const marketResults = React.useMemo(() => {
               <button style={styles.segBtn(mode==='tm')} onClick={()=>setMode('tm')}>TM Locations</button>
               <button style={styles.segBtn(mode==='team')} onClick={()=>setMode('team')}>Team Builder</button>
               <div style={{ position:'relative' }}>
-                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>
+                <button style={styles.segBtn(mode==='items' || mode==='breeding' || mode==='daycare' || mode==='market')} onClick={()=>setToolsOpen(v=>!v)}>
                   Tools {toolsOpen ? '▴' : '▾'}
                 </button>
                 {toolsOpen && (
@@ -5345,6 +5346,8 @@ const marketResults = React.useMemo(() => {
                     <button style={{ ...styles.segBtn(mode==='items'), width:'100%', borderRadius:0 }} onClick={()=>setMode('items')}>Items</button>
                     <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
                     <button style={{ ...styles.segBtn(mode==='breeding'), width:'100%', borderRadius:0 }} onClick={()=>setMode('breeding')}>Breeding</button>
+                    <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
+                    <button style={{ ...styles.segBtn(mode==='daycare'), width:'100%', borderRadius:0 }} onClick={()=>setMode('daycare')}>Daycare Manager</button>
                     <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
                     <button style={{ ...styles.segBtn(mode==='market'), width:'100%', borderRadius:0 }} onClick={()=>setMode('market')}>Market</button>
                     <div style={{ height:1, background:'var(--divider)', opacity:0.4 }} />
@@ -5615,7 +5618,7 @@ const marketResults = React.useMemo(() => {
           )}
 
           {/* Context label + search input (hidden for Live) */}
-          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='team' && mode!=='horde' && (
+          {mode!=='live' && mode!=='battle' && mode!=='breeding' && mode!=='daycare' && mode!=='team' && mode!=='horde' && (
             <>
                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <div className="label-muted" style={{ display:'flex', alignItems:'center', gap:8 }}>
@@ -5859,6 +5862,12 @@ const marketResults = React.useMemo(() => {
           {mode==='breeding' && (
             <div style={{ marginTop:4 }}>
               <BreedingSimulator />
+            </div>
+          )}
+
+          {mode==='daycare' && (
+            <div style={{ marginTop:4 }}>
+              <DaycareManager />
             </div>
           )}
 
