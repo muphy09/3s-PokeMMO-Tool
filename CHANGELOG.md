@@ -1,6 +1,20 @@
 # Changelog
 ---
 
+## [3.2.5] - 2025-09
+### Changed
+- Daycare Manager
+  - Updated Daycare Manager to include missing Daycares
+    - Sinnoh & Johto
+
+- OCR Settings
+  - Capture Window Adjustment (Route & Battle)
+    - Introduced capture window adjustments for further tuning of the OCR
+    - Should help users that 
+
+
+---
+
 ## [3.2.4] - 2025-09
 ### Fixed
 - Windows

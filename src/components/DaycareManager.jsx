@@ -39,6 +39,20 @@ const DAYCARE_LOCATIONS = [
     short: 'Unova (Left of Striaton)',
     slots: 2,
     summary: 'Situated on Route 3, west of Striaton City.'
+  },
+  {
+    key: 'sinnoh-solaceon',
+    title: 'Sinnoh (Solaceon Town) Daycare',
+    short: 'Sinnoh (Solaceon Town)',
+    slots: 2,
+    summary: 'Located in Solaceon Town with two daycare slots available.'
+  },
+  {
+    key: 'johto-route34',
+    title: 'Johto (Route 34) Daycare',
+    short: 'Johto (Route 34)',
+    slots: 2,
+    summary: 'Found on Route 34 between Goldenrod City and Azalea Town.'
   }
 ];
 
@@ -176,7 +190,7 @@ function PokemonSprite({ mon, entry, size = 72 }) {
     <img
       src={candidates[idx]}
       alt={mon?.name || entry?.name || ''}
-      style={{ width: size, height: size, objectFit: 'contain', imageRendering: 'pixelated' }}
+      style={{ width: size, height: size, objectFit: 'contain', imageRendering: 'pixelated', display: 'block' }}
       onError={handleError}
     />
   );
@@ -379,12 +393,12 @@ export default function DaycareManager() {
         )}
         {isRealSlot && entry && (
           <>
-            <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <div
                 style={{
-                  width: 84,
-                  height: 84,
-                  borderRadius: 16,
+                  width: 72,
+                  height: 72,
+                  borderRadius: 14,
                   background: 'var(--card)',
                   border: '1px solid var(--divider)',
                   display: 'flex',
@@ -453,7 +467,7 @@ export default function DaycareManager() {
         <div className="label-muted">Track which Pokemon are in each regional daycare.</div>
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {DAYCARE_LOCATIONS.map((loc) => {
           const isActive = loc.key === activeLocation.key;
           return (
@@ -462,12 +476,13 @@ export default function DaycareManager() {
               key={loc.key}
               onClick={() => setActive(loc.key)}
               style={{
-                padding: '10px 14px',
+                padding: '8px 12px',
                 borderRadius: 999,
                 border: isActive ? '1px solid rgba(59,130,246,0.6)' : '1px solid var(--divider)',
                 background: isActive ? 'rgba(59,130,246,0.15)' : 'var(--surface)',
                 color: 'var(--text)',
                 fontWeight: 600,
+                fontSize: 13,
                 cursor: 'pointer'
               }}
             >
@@ -508,7 +523,7 @@ export default function DaycareManager() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
+      <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
         {DAYCARE_LOCATIONS.map((loc) => {
           const isActive = loc.key === activeLocation.key;
           const entries = Array.isArray(assignments?.[loc.key]) ? assignments[loc.key] : [];
@@ -520,8 +535,8 @@ export default function DaycareManager() {
               key={`summary-${loc.key}`}
               onClick={() => setActive(loc.key)}
               style={{
-                padding: 14,
-                borderRadius: 14,
+                padding: 12,
+                borderRadius: 12,
                 border: isActive ? '1px solid rgba(59,130,246,0.65)' : '1px solid var(--divider)',
                 background: isActive
                   ? 'linear-gradient(135deg, rgba(59,130,246,0.35), rgba(59,130,246,0.12))'
@@ -530,7 +545,7 @@ export default function DaycareManager() {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
-                gap: 10,
+                gap: 8,
                 textAlign: 'left',
                 cursor: 'pointer'
               }}
@@ -538,15 +553,15 @@ export default function DaycareManager() {
               <div style={{ fontWeight: 700 }}>{loc.short}</div>
               <div
                 style={{
-                  minHeight: 68,
-                  borderRadius: 12,
+                  minHeight: 64,
+                  borderRadius: 10,
                   background: 'var(--card)',
                   border: '1px solid var(--divider)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: hasMon ? 'flex-start' : 'center',
-                  gap: 10,
-                  padding: '8px 10px'
+                  gap: 8,
+                  padding: '6px 8px'
                 }}
               >
                 {hasMon
@@ -669,9 +684,9 @@ export default function DaycareManager() {
                   >
                     <div
                       style={{
-                        width: 64,
-                        height: 64,
-                        borderRadius: 14,
+                        width: 56,
+                        height: 56,
+                        borderRadius: 12,
                         background: 'var(--card)',
                         border: '1px solid var(--divider)',
                         display: 'flex',
