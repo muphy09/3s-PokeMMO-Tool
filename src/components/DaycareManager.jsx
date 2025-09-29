@@ -523,19 +523,22 @@ export default function DaycareManager() {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 10, gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
+      <div style={{ display: 'grid', gap: 8, gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
         {DAYCARE_LOCATIONS.map((loc) => {
           const isActive = loc.key === activeLocation.key;
           const entries = Array.isArray(assignments?.[loc.key]) ? assignments[loc.key] : [];
           const slotMons = entries.map((entry) => resolveMon(entry));
-          const hasMon = slotMons.some((mon) => mon);
+          const assignedSlots = entries
+            .map((entry, idx) => ({ entry, mon: slotMons[idx], idx }))
+            .filter(({ entry, mon }) => entry || mon);
+          const hasMon = assignedSlots.length > 0;
           return (
             <button
               type="button"
               key={`summary-${loc.key}`}
               onClick={() => setActive(loc.key)}
               style={{
-                padding: 12,
+                padding: 10,
                 borderRadius: 12,
                 border: isActive ? '1px solid rgba(59,130,246,0.65)' : '1px solid var(--divider)',
                 background: isActive
@@ -553,24 +556,36 @@ export default function DaycareManager() {
               <div style={{ fontWeight: 700 }}>{loc.short}</div>
               <div
                 style={{
-                  minHeight: 64,
-                  borderRadius: 10,
-                  background: 'var(--card)',
-                  border: '1px solid var(--divider)',
+                  minHeight: 48,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: hasMon ? 'flex-start' : 'center',
-                  gap: 8,
-                  padding: '6px 8px'
+                  gap: hasMon ? 6 : 0,
+                  padding: hasMon ? '2px 0' : '4px 0'
                 }}
               >
-                {hasMon
-                  ? slotMons.map((mon, idx) => {
-                      const entry = entries[idx];
-                      if (!mon && !entry) return null;
-                      return <PokemonSprite key={`${loc.key}-mon-${idx}`} mon={mon} entry={entry} size={52} />;
-                    })
-                  : <span className="label-muted">No Pokémon in daycare</span>}
+                {hasMon ? (
+                  assignedSlots.map(({ entry, mon, idx }) => (
+                    <div
+                      key={`${loc.key}-mon-${idx}`}
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: '50%',
+                        background: 'var(--card)',
+                        border: '1px solid var(--divider)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}
+                    >
+                      <PokemonSprite mon={mon} entry={entry} size={34} />
+                    </div>
+                  ))
+                ) : (
+                  <span className="label-muted">No Pokémon in daycare</span>
+                )}
               </div>
             </button>
           );
