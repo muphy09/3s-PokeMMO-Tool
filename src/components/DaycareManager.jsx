@@ -27,18 +27,18 @@ const DAYCARE_LOCATIONS = [
     summary: 'Two-slot daycare found on Sevii Island 4.'
   },
   {
+    key: 'johto-route34',
+    title: 'Johto (Route 34) Daycare',
+    short: 'Johto (Route 34)',
+    slots: 2,
+    summary: 'Found on Route 34 between Goldenrod City and Azalea Town.'
+  },
+  {
     key: 'hoenn-mauville',
     title: 'Hoenn (Left of Mauville) Daycare',
     short: 'Hoenn (Left of Mauville)',
     slots: 2,
     summary: 'Located on Route 117, just west of Mauville City.'
-  },
-  {
-    key: 'unova-striaton',
-    title: 'Unova (Left of Striaton) Daycare',
-    short: 'Unova (Left of Striaton)',
-    slots: 2,
-    summary: 'Situated on Route 3, west of Striaton City.'
   },
   {
     key: 'sinnoh-solaceon',
@@ -48,11 +48,11 @@ const DAYCARE_LOCATIONS = [
     summary: 'Located in Solaceon Town with two daycare slots available.'
   },
   {
-    key: 'johto-route34',
-    title: 'Johto (Route 34) Daycare',
-    short: 'Johto (Route 34)',
+    key: 'unova-striaton',
+    title: 'Unova (Left of Striaton) Daycare',
+    short: 'Unova (Left of Striaton)',
     slots: 2,
-    summary: 'Found on Route 34 between Goldenrod City and Azalea Town.'
+    summary: 'Situated on Route 3, west of Striaton City.'
   }
 ];
 
