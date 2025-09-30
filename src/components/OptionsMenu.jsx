@@ -11,6 +11,13 @@ const OPTION_CATEGORIES = [
   { id: 'ui', label: 'UI' },
   { id: 'ocr', label: 'OCR' },
 ];
+const OCR_CAPTURE_OFFSET_STEP = 0.01;
+function clampCaptureOffset(value, fallback = 0) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  const clamped = Math.max(-0.5, Math.min(0.5, num));
+  return Math.round(clamped * 1000) / 1000;
+}
 function normalizeAggValue(value) {
   if (typeof value !== 'string') return 'fast';
   const v = value.trim().toLowerCase();
@@ -55,10 +62,14 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
   const [ocrAggressiveness, setOcrAggressiveness] = useState('fast');
   const [ocrRouteZoom, setOcrRouteZoom] = useState(0.5);
   const [ocrBattleZoom, setOcrBattleZoom] = useState(0.5);
+  const [ocrRouteOffset, setOcrRouteOffset] = useState({ x: 0, y: 0 });
+  const [ocrBattleOffset, setOcrBattleOffset] = useState({ x: 0, y: 0 });
   const [ocrSetupLoaded, setOcrSetupLoaded] = useState(() => !ocrSupported);
   const [activeCategory, setActiveCategory] = useState('general');
   const [ocrImageDebug, setOcrImageDebug] = useState(false);
   const [settingImageDebug, setSettingImageDebug] = useState(false);
+  const [savingRouteOffset, setSavingRouteOffset] = useState(false);
+  const [savingBattleOffset, setSavingBattleOffset] = useState(false);
   const [previewData, setPreviewData] = useState({
     routeCapture: null,
     battleCapture: null,
@@ -119,6 +130,14 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
         );
         setOcrRouteZoom(routeZoom);
         setOcrBattleZoom(battleZoom);
+        setOcrRouteOffset({
+          x: clampCaptureOffset(setup.routeCaptureOffsetX, 0),
+          y: clampCaptureOffset(setup.routeCaptureOffsetY, 0),
+        });
+        setOcrBattleOffset({
+          x: clampCaptureOffset(setup.battleCaptureOffsetX, 0),
+          y: clampCaptureOffset(setup.battleCaptureOffsetY, 0),
+        });
       } catch (err) {
         console.error('[OptionsMenu] load OCR setup error:', err);
       } finally {
@@ -355,6 +374,64 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
       show('Failed to update Battle OCR zoom', 'error');
     }
   }
+
+  async function applyRouteOffset(next) {
+    const prev = ocrRouteOffset;
+    if (next.x === prev.x && next.y === prev.y) return;
+    setOcrRouteOffset(next);
+    setSavingRouteOffset(true);
+    try {
+      await saveOcrSetupStrict(
+        { routeCaptureOffsetX: next.x, routeCaptureOffsetY: next.y },
+        { restart: ocrEnabled },
+      );
+      show('Route OCR position updated.', 'success');
+    } catch (err) {
+      console.error('[OptionsMenu] update Route OCR offset error:', err);
+      setOcrRouteOffset(prev);
+      show('Failed to update Route OCR position', 'error');
+    } finally {
+      setSavingRouteOffset(false);
+    }
+  }
+
+  async function applyBattleOffset(next) {
+    const prev = ocrBattleOffset;
+    if (next.x === prev.x && next.y === prev.y) return;
+    setOcrBattleOffset(next);
+    setSavingBattleOffset(true);
+    try {
+      await saveOcrSetupStrict(
+        { battleCaptureOffsetX: next.x, battleCaptureOffsetY: next.y },
+        { restart: ocrEnabled },
+      );
+      show('Battle OCR position updated.', 'success');
+    } catch (err) {
+      console.error('[OptionsMenu] update Battle OCR offset error:', err);
+      setOcrBattleOffset(prev);
+      show('Failed to update Battle OCR position', 'error');
+    } finally {
+      setSavingBattleOffset(false);
+    }
+  }
+
+  function onRouteOffsetNudge(dx, dy) {
+    if (!ocrSetupLoaded || savingRouteOffset) return;
+    const next = {
+      x: clampCaptureOffset(ocrRouteOffset.x + dx, ocrRouteOffset.x),
+      y: clampCaptureOffset(ocrRouteOffset.y + dy, ocrRouteOffset.y),
+    };
+    applyRouteOffset(next);
+  }
+
+  function onBattleOffsetNudge(dx, dy) {
+    if (!ocrSetupLoaded || savingBattleOffset) return;
+    const next = {
+      x: clampCaptureOffset(ocrBattleOffset.x + dx, ocrBattleOffset.x),
+      y: clampCaptureOffset(ocrBattleOffset.y + dy, ocrBattleOffset.y),
+    };
+    applyBattleOffset(next);
+  }
   function onToggleShiny(next){
     try {
       setShinyEnabled(next);
@@ -547,6 +624,40 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
     fontWeight: 800,
     color: 'var(--text)',
   };
+  const dpadWrapperStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  };
+  const dpadRowStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  };
+  const dpadButtonStyle = {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    border: '1px solid var(--divider)',
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    fontWeight: 700,
+    fontSize: 16,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: 'var(--shadow-1)',
+    cursor: 'pointer',
+    transition: 'transform 0.08s ease',
+  };
+  const dpadButtonDisabledStyle = {
+    opacity: 0.6,
+    cursor: 'not-allowed',
+    boxShadow: 'none',
+  };
   const closeButtonStyle = {
     position: 'absolute',
     top: 16,
@@ -733,6 +844,58 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
                   <span style={previewPlaceholderStyle}>Enable OCR Image Debug for Preview</span>
                 )}
               </div>
+              <div style={dpadWrapperStyle}>
+                <button
+                  type="button"
+                  onClick={() => onRouteOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
+                  style={{
+                    ...dpadButtonStyle,
+                    ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                  }}
+                  disabled={savingRouteOffset || !ocrSetupLoaded}
+                  title="Move capture up"
+                >
+                  ↑
+                </button>
+                <div style={dpadRowStyle}>
+                  <button
+                    type="button"
+                    onClick={() => onRouteOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                    style={{
+                      ...dpadButtonStyle,
+                      ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    }}
+                    disabled={savingRouteOffset || !ocrSetupLoaded}
+                    title="Move capture left"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onRouteOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                    style={{
+                      ...dpadButtonStyle,
+                      ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    }}
+                    disabled={savingRouteOffset || !ocrSetupLoaded}
+                    title="Move capture right"
+                  >
+                    →
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onRouteOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
+                  style={{
+                    ...dpadButtonStyle,
+                    ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                  }}
+                  disabled={savingRouteOffset || !ocrSetupLoaded}
+                  title="Move capture down"
+                >
+                  ↓
+                </button>
+              </div>
               <span style={previewDetailStyle}>
                 <span style={previewDetailLabel}>Detected Route:</span>{' '}
                 {ocrImageDebug ? (previewData.routeDetected || 'No Route') : 'Enable OCR Image Debug for details'}
@@ -751,6 +914,58 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
                 ) : (
                   <span style={previewPlaceholderStyle}>Enable OCR Image Debug for Preview</span>
                 )}
+              </div>
+              <div style={dpadWrapperStyle}>
+                <button
+                  type="button"
+                  onClick={() => onBattleOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
+                  style={{
+                    ...dpadButtonStyle,
+                    ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                  }}
+                  disabled={savingBattleOffset || !ocrSetupLoaded}
+                  title="Move capture up"
+                >
+                  ↑
+                </button>
+                <div style={dpadRowStyle}>
+                  <button
+                    type="button"
+                    onClick={() => onBattleOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                    style={{
+                      ...dpadButtonStyle,
+                      ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    }}
+                    disabled={savingBattleOffset || !ocrSetupLoaded}
+                    title="Move capture left"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onBattleOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                    style={{
+                      ...dpadButtonStyle,
+                      ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    }}
+                    disabled={savingBattleOffset || !ocrSetupLoaded}
+                    title="Move capture right"
+                  >
+                    →
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onBattleOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
+                  style={{
+                    ...dpadButtonStyle,
+                    ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                  }}
+                  disabled={savingBattleOffset || !ocrSetupLoaded}
+                  title="Move capture down"
+                >
+                  ↓
+                </button>
               </div>
               <span style={previewDetailStyle}>
                 <span style={previewDetailLabel}>Detected Pokemon:</span>{' '}

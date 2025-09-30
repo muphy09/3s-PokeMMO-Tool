@@ -89,12 +89,35 @@ class LiveRouteOCR
         }
     }
 
+    static double ClampRatio(double value, double span)
+    {
+        var normalizedSpan = Math.Max(0.0, Math.Min(1.0, span));
+        var max = Math.Max(0.0, 1.0 - normalizedSpan);
+        if (value < 0.0) return 0.0;
+        if (value > max) return max;
+        return value;
+    }
+
+    static double NormalizeOffset(double? raw)
+    {
+        if (!raw.HasValue) return 0.0;
+        var v = raw.Value;
+        if (double.IsNaN(v) || double.IsInfinity(v)) return 0.0;
+        if (v < -0.5) v = -0.5;
+        if (v > 0.5) v = 0.5;
+        return v;
+    }
+
     // ---------- Settings ----------
     class HelperSettings
     {
         public int? targetPid { get; set; }
         public double? captureZoom { get; set; }
         public double? battleCaptureZoom { get; set; }
+        public double? routeCaptureOffsetX { get; set; }
+        public double? routeCaptureOffsetY { get; set; }
+        public double? battleCaptureOffsetX { get; set; }
+        public double? battleCaptureOffsetY { get; set; }
         public string? ocrAggressiveness { get; set; } // fast | balanced | max | auto
         public int? ocrAggressivenessVersion { get; set; }
     }
@@ -140,6 +163,30 @@ class LiveRouteOCR
 
         // Settings & env
         var cfg = LoadSettings();
+        double routeOffsetX = NormalizeOffset(ParseDoubleEnv("ROUTE_CAPTURE_OFFSET_X") ?? cfg.routeCaptureOffsetX);
+        double routeOffsetY = NormalizeOffset(ParseDoubleEnv("ROUTE_CAPTURE_OFFSET_Y") ?? cfg.routeCaptureOffsetY);
+        double battleOffsetX = NormalizeOffset(ParseDoubleEnv("BATTLE_CAPTURE_OFFSET_X") ?? cfg.battleCaptureOffsetX);
+        double battleOffsetY = NormalizeOffset(ParseDoubleEnv("BATTLE_CAPTURE_OFFSET_Y") ?? cfg.battleCaptureOffsetY);
+        roi.Left = ClampRatio(roi.Left + routeOffsetX, roi.Width);
+        roi.Top = ClampRatio(roi.Top + routeOffsetY, roi.Height);
+        battleRoi.Left = ClampRatio(battleRoi.Left + battleOffsetX, battleRoi.Width);
+        battleRoi.Top = ClampRatio(battleRoi.Top + battleOffsetY, battleRoi.Height);
+        if (Math.Abs(routeOffsetX) > 0.0005 || Math.Abs(routeOffsetY) > 0.0005)
+        {
+            Log($"ROI adjusted: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0} (ΔX={routeOffsetX:+0.###;-0.###;0}, ΔY={routeOffsetY:+0.###;-0.###;0})");
+        }
+        else
+        {
+            Log($"ROI adjusted: L={roi.Left:P0} T={roi.Top:P0} W={roi.Width:P0} H={roi.Height:P0}");
+        }
+        if (Math.Abs(battleOffsetX) > 0.0005 || Math.Abs(battleOffsetY) > 0.0005)
+        {
+            Log($"Battle ROI adjusted: L={battleRoi.Left:P0} T={battleRoi.Top:P0} W={battleRoi.Width:P0} H={battleRoi.Height:P0} (ΔX={battleOffsetX:+0.###;-0.###;0}, ΔY={battleOffsetY:+0.###;-0.###;0})");
+        }
+        else
+        {
+            Log($"Battle ROI adjusted: L={battleRoi.Left:P0} T={battleRoi.Top:P0} W={battleRoi.Width:P0} H={battleRoi.Height:P0}");
+        }
         int? TargetPid = ParseIntEnv("TARGET_PID") ?? cfg.targetPid;
         double rawZoom = ParseDoubleEnv("CAPTURE_ZOOM") ?? cfg.captureZoom ?? 0.5;
         double CaptureZoom = NormalizeCaptureZoom(rawZoom, 0.5);

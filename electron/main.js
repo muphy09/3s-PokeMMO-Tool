@@ -286,6 +286,12 @@ function clampCaptureZoom(value, fallback = 0.5) {
   const clamped = Math.max(0.1, Math.min(0.9, normalized));
   return Math.round(clamped * 10) / 10;
 }
+function clampCaptureOffset(value, fallback = 0) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return fallback;
+  const clamped = Math.max(-0.5, Math.min(0.5, num));
+  return Math.round(clamped * 1000) / 1000;
+}
 function captureZoomToEnv(value) {
   if (value === null || value === undefined) return null;
   const normalized = clampCaptureZoom(value, 0.5);
@@ -311,12 +317,20 @@ function normalizeOcrSettings(raw = {}) {
     raw?.battleCaptureZoom ?? raw?.captureZoom ?? 0.5,
     captureZoom,
   );
+  const routeCaptureOffsetX = clampCaptureOffset(raw?.routeCaptureOffsetX ?? 0, 0);
+  const routeCaptureOffsetY = clampCaptureOffset(raw?.routeCaptureOffsetY ?? 0, 0);
+  const battleCaptureOffsetX = clampCaptureOffset(raw?.battleCaptureOffsetX ?? 0, 0);
+  const battleCaptureOffsetY = clampCaptureOffset(raw?.battleCaptureOffsetY ?? 0, 0);
   const normalized = {
     ...raw,
     captureZoom,
     battleCaptureZoom,
     ocrAggressiveness,
     ocrAggressivenessVersion: Math.max(version, OCR_SETTINGS_VERSION),
+    routeCaptureOffsetX,
+    routeCaptureOffsetY,
+    battleCaptureOffsetX,
+    battleCaptureOffsetY,
   };
   return normalized;
 }
@@ -568,11 +582,19 @@ async function startLiveRouteOCR() {
     const s = settings || {};
     const captureZoomEnv = captureZoomToEnv(s?.captureZoom);
     const battleCaptureZoomEnv = captureZoomToEnv(s?.battleCaptureZoom ?? s?.captureZoom);
+    const routeOffsetX = clampCaptureOffset(s?.routeCaptureOffsetX ?? 0, 0);
+    const routeOffsetY = clampCaptureOffset(s?.routeCaptureOffsetY ?? 0, 0);
+    const battleOffsetX = clampCaptureOffset(s?.battleCaptureOffsetX ?? 0, 0);
+    const battleOffsetY = clampCaptureOffset(s?.battleCaptureOffsetY ?? 0, 0);
     const env = {
       ...process.env,
       TARGET_PID: s?.targetPid ? String(s.targetPid) : '',
       CAPTURE_ZOOM: captureZoomEnv != null ? String(captureZoomEnv) : '',
       BATTLE_CAPTURE_ZOOM: battleCaptureZoomEnv != null ? String(battleCaptureZoomEnv) : '',
+      ROUTE_CAPTURE_OFFSET_X: routeOffsetX !== 0 ? String(routeOffsetX) : '',
+      ROUTE_CAPTURE_OFFSET_Y: routeOffsetY !== 0 ? String(routeOffsetY) : '',
+      BATTLE_CAPTURE_OFFSET_X: battleOffsetX !== 0 ? String(battleOffsetX) : '',
+      BATTLE_CAPTURE_OFFSET_Y: battleOffsetY !== 0 ? String(battleOffsetY) : '',
       OCR_AGGRESSIVENESS: s?.ocrAggressiveness || 'fast',
       OCR_IMAGE_DEBUG: ocrImageDebugEnabled ? '1' : '0',
       POKEMMO_TESSDATA_DIR: path.join(cwd, 'tessdata'),
@@ -592,6 +614,10 @@ async function startLiveRouteOCR() {
       CAPTURE_ZOOM_SCALE: captureZoomEnv != null ? Math.round((1 + captureZoomEnv) * 10) / 10 : null,
       BATTLE_CAPTURE_ZOOM: env.BATTLE_CAPTURE_ZOOM,
       BATTLE_CAPTURE_ZOOM_SCALE: battleCaptureZoomEnv != null ? Math.round((1 + battleCaptureZoomEnv) * 10) / 10 : null,
+      ROUTE_CAPTURE_OFFSET_X: env.ROUTE_CAPTURE_OFFSET_X,
+      ROUTE_CAPTURE_OFFSET_Y: env.ROUTE_CAPTURE_OFFSET_Y,
+      BATTLE_CAPTURE_OFFSET_X: env.BATTLE_CAPTURE_OFFSET_X,
+      BATTLE_CAPTURE_OFFSET_Y: env.BATTLE_CAPTURE_OFFSET_Y,
       OCR_AGGRESSIVENESS: env.OCR_AGGRESSIVENESS,
       OCR_IMAGE_DEBUG: env.OCR_IMAGE_DEBUG,
       POKEMMO_LIVE_DATA_DIR: dataDir,
@@ -830,6 +856,10 @@ ipcMain.handle('app:getOcrSetup', async () => {
     captureZoom: s?.captureZoom ?? 0.5,
     battleCaptureZoom: s?.battleCaptureZoom ?? s?.captureZoom ?? 0.5,
     ocrAggressiveness: s?.ocrAggressiveness ?? 'fast',
+    routeCaptureOffsetX: s?.routeCaptureOffsetX ?? 0,
+    routeCaptureOffsetY: s?.routeCaptureOffsetY ?? 0,
+    battleCaptureOffsetX: s?.battleCaptureOffsetX ?? 0,
+    battleCaptureOffsetY: s?.battleCaptureOffsetY ?? 0,
   };
 });
 
@@ -848,6 +878,18 @@ ipcMain.handle('app:saveOcrSetup', async (_evt, payload = {}) => {
   }
   if (payload && Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
     patch.ocrAggressiveness = normalizeOcrAgg(payload.ocrAggressiveness, OCR_SETTINGS_VERSION);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'routeCaptureOffsetX')) {
+    patch.routeCaptureOffsetX = clampCaptureOffset(payload.routeCaptureOffsetX, current?.routeCaptureOffsetX ?? 0);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'routeCaptureOffsetY')) {
+    patch.routeCaptureOffsetY = clampCaptureOffset(payload.routeCaptureOffsetY, current?.routeCaptureOffsetY ?? 0);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'battleCaptureOffsetX')) {
+    patch.battleCaptureOffsetX = clampCaptureOffset(payload.battleCaptureOffsetX, current?.battleCaptureOffsetX ?? 0);
+  }
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'battleCaptureOffsetY')) {
+    patch.battleCaptureOffsetY = clampCaptureOffset(payload.battleCaptureOffsetY, current?.battleCaptureOffsetY ?? 0);
   }
   patch.ocrAggressivenessVersion = OCR_SETTINGS_VERSION;
   const next = applyOcrSettingsPatch(patch);

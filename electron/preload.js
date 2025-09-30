@@ -64,6 +64,12 @@ function clampZoom(v, def = 0.5) {
   const normalized = (n > 1 && n <= 2.5) ? (n - 1) : n;
   return Math.max(0.1, Math.min(0.9, Math.round(normalized * 10) / 10));
 }
+function clampOffset(v, def = 0) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return def;
+  const clamped = Math.max(-0.5, Math.min(0.5, n));
+  return Math.round(clamped * 1000) / 1000;
+}
 function normalizeAggLocal(value) {
   const allowed = ['fast', 'normal', 'efficient'];
   const raw = typeof value === 'string' ? value.trim().toLowerCase() : '';
@@ -82,6 +88,10 @@ async function getOcrSetupCompat() {
         captureZoom: clampZoom(res?.captureZoom, 0.5),
         battleCaptureZoom: clampZoom(res?.battleCaptureZoom ?? res?.captureZoom, clampZoom(res?.captureZoom, 0.5)),
         ocrAggressiveness: normalizeAggLocal(res?.ocrAggressiveness),
+        routeCaptureOffsetX: clampOffset(res?.routeCaptureOffsetX, 0),
+        routeCaptureOffsetY: clampOffset(res?.routeCaptureOffsetY, 0),
+        battleCaptureOffsetX: clampOffset(res?.battleCaptureOffsetX, 0),
+        battleCaptureOffsetY: clampOffset(res?.battleCaptureOffsetY, 0),
       };
     }
   }
@@ -92,6 +102,10 @@ async function getOcrSetupCompat() {
       captureZoom: clampZoom(local?.captureZoom, 0.5),
       battleCaptureZoom: clampZoom(local?.battleCaptureZoom ?? local?.captureZoom, clampZoom(local?.captureZoom, 0.5)),
       ocrAggressiveness: normalizeAggLocal(local?.ocrAggressiveness),
+      routeCaptureOffsetX: clampOffset(local?.routeCaptureOffsetX, 0),
+      routeCaptureOffsetY: clampOffset(local?.routeCaptureOffsetY, 0),
+      battleCaptureOffsetX: clampOffset(local?.battleCaptureOffsetX, 0),
+      battleCaptureOffsetY: clampOffset(local?.battleCaptureOffsetY, 0),
     };
   }
   const defaults = getLocalSetupDefaults();
@@ -100,6 +114,10 @@ async function getOcrSetupCompat() {
     captureZoom: defaults.captureZoom,
     battleCaptureZoom: defaults.battleCaptureZoom,
     ocrAggressiveness: defaults.ocrAggressiveness,
+    routeCaptureOffsetX: defaults.routeCaptureOffsetX,
+    routeCaptureOffsetY: defaults.routeCaptureOffsetY,
+    battleCaptureOffsetX: defaults.battleCaptureOffsetX,
+    battleCaptureOffsetY: defaults.battleCaptureOffsetY,
   };
 }
 async function saveOcrSetupCompat(setup = {}, options = {}) {
@@ -133,6 +151,18 @@ async function saveOcrSetupCompat(setup = {}, options = {}) {
   if (Object.prototype.hasOwnProperty.call(payload, 'ocrAggressiveness')) {
     next.ocrAggressiveness = normalizeAggLocal(payload.ocrAggressiveness);
   }
+  if (Object.prototype.hasOwnProperty.call(payload, 'routeCaptureOffsetX')) {
+    next.routeCaptureOffsetX = clampOffset(payload.routeCaptureOffsetX, clampOffset(current?.routeCaptureOffsetX, 0));
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, 'routeCaptureOffsetY')) {
+    next.routeCaptureOffsetY = clampOffset(payload.routeCaptureOffsetY, clampOffset(current?.routeCaptureOffsetY, 0));
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, 'battleCaptureOffsetX')) {
+    next.battleCaptureOffsetX = clampOffset(payload.battleCaptureOffsetX, clampOffset(current?.battleCaptureOffsetX, 0));
+  }
+  if (Object.prototype.hasOwnProperty.call(payload, 'battleCaptureOffsetY')) {
+    next.battleCaptureOffsetY = clampOffset(payload.battleCaptureOffsetY, clampOffset(current?.battleCaptureOffsetY, 0));
+  }
   next.ocrAggressivenessVersion = 2;
   const ok = writeJSON(settingsPath, next);
   if (!ok) return false;
@@ -157,6 +187,10 @@ function getLocalSetupDefaults() {
     battleCaptureZoom: 0.5,
     ocrAggressiveness: 'fast', // 'fast' | 'normal' | 'efficient'
     ocrAggressivenessVersion: 2,
+    routeCaptureOffsetX: 0,
+    routeCaptureOffsetY: 0,
+    battleCaptureOffsetX: 0,
+    battleCaptureOffsetY: 0,
   };
 }
 
