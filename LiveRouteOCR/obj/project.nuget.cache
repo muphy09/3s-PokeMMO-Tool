@@ -1,23 +1,19 @@
 {
   "version": 2,
-  "dgSpecHash": "LiEQzDHaanb1ajvsCjFQrxilaxFCMg9W76/iCql8bu7zVdFZUTAyu1fwRGhc0jZvGHghRxmkStkkrNCjFWk2Ew==",
+  "dgSpecHash": "Bw3kzEzhsZBDnyfOis6mAAIjnBC5486R/Ae644zDOhC55iJ+0bnAYpqDOQB/FYnADHWJ7iQASdMtQz4A7w5CpQ==",
   "success": true,
-  "projectFilePath": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj",
+  "projectFilePath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
   "expectedPackageFiles": [
-    "/root/.nuget/packages/microsoft.win32.systemevents/6.0.0/microsoft.win32.systemevents.6.0.0.nupkg.sha512",
-    "/root/.nuget/packages/system.drawing.common/6.0.0/system.drawing.common.6.0.0.nupkg.sha512",
-    "/root/.nuget/packages/system.reflection.emit/4.7.0/system.reflection.emit.4.7.0.nupkg.sha512",
-    "/root/.nuget/packages/tesseract/5.2.0/tesseract.5.2.0.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.ref/6.0.36/microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.runtime.win-x64/6.0.36/microsoft.netcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.36/microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/6.0.36/microsoft.aspnetcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.host.win-x64/6.0.36/microsoft.netcore.app.host.win-x64.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.ref/6.0.36/microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.runtime.win-x64/6.0.36/microsoft.netcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.aspnetcore.app.ref/6.0.36/microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/6.0.36/microsoft.aspnetcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
-    "/root/.nuget/packages/microsoft.netcore.app.host.win-x64/6.0.36/microsoft.netcore.app.host.win-x64.6.0.36.nupkg.sha512"
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\tesseract\\5.2.0\\tesseract.5.2.0.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.36\\microsoft.netcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.36\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.36\\microsoft.aspnetcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\6.0.36\\microsoft.netcore.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\6.0.36\\microsoft.windowsdesktop.app.runtime.win-x64.6.0.36.nupkg.sha512",
+    "C:\\Users\\bkumm\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\6.0.36\\microsoft.aspnetcore.app.runtime.win-x64.6.0.36.nupkg.sha512"
   ],
   "logs": []
 }

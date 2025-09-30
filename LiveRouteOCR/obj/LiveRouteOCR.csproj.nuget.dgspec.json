@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj": {}
+    "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj": {}
   },
   "projects": {
-    "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj": {
+    "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj",
+        "projectUniqueName": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
         "projectName": "LiveRouteOCR",
-        "projectPath": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/LiveRouteOCR.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/workspace/3s-PokeMMO-Tool/LiveRouteOCR/obj/",
+        "projectPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\LiveRouteOCR.csproj",
+        "packagesPath": "C:\\Users\\bkumm\\.nuget\\packages\\",
+        "outputPath": "C:\\dev\\pokemmo-tool\\LiveRouteOCR\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\bkumm\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0",
@@ -66,23 +66,15 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
               "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
               "version": "[6.0.36, 6.0.36]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
               "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[6.0.36, 6.0.36]"
             }
           ],
@@ -91,7 +83,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.120/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
         },
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
@@ -118,23 +110,15 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
               "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
               "version": "[6.0.36, 6.0.36]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.36, 6.0.36]"
-            },
-            {
               "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[6.0.36, 6.0.36]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[6.0.36, 6.0.36]"
             }
           ],
@@ -143,7 +127,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.120/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.428\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
