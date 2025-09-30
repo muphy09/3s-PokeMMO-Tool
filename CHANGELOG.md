@@ -6,6 +6,8 @@
 - Daycare Manager
   - Updated Daycare Manager to include missing Daycares
     - Sinnoh & Johto
+  - Changed Sprite style to fill more space
+  - Shrunk tabs at the bottom to accomodate the new Daycares
 
 - OCR Settings
   - Capture Window Adjustment (Route & Battle)

@@ -584,7 +584,7 @@ export default function DaycareManager() {
                     </div>
                   ))
                 ) : (
-                  <span className="label-muted">No Pokémon in daycare</span>
+                  <span className="label-muted">No Pokémon</span>
                 )}
               </div>
             </button>
