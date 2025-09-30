@@ -12,11 +12,17 @@ const OPTION_CATEGORIES = [
   { id: 'ocr', label: 'OCR' },
 ];
 const OCR_CAPTURE_OFFSET_STEP = 0.01;
+const OCR_ROUTE_DEFAULT_OFFSET = Object.freeze({ x: 0, y: 0 });
+const OCR_BATTLE_DEFAULT_OFFSET = Object.freeze({ x: 0, y: 0 });
 function clampCaptureOffset(value, fallback = 0) {
   const num = Number(value);
   if (!Number.isFinite(num)) return fallback;
   const clamped = Math.max(-0.5, Math.min(0.5, num));
   return Math.round(clamped * 1000) / 1000;
+}
+function offsetsMatch(a, b) {
+  if (!a || !b) return false;
+  return Math.abs(a.x - b.x) < 0.0005 && Math.abs(a.y - b.y) < 0.0005;
 }
 function normalizeAggValue(value) {
   if (typeof value !== 'string') return 'fast';
@@ -432,6 +438,14 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
     };
     applyBattleOffset(next);
   }
+  function onRouteOffsetReset() {
+    if (!ocrSetupLoaded || savingRouteOffset) return;
+    applyRouteOffset({ x: OCR_ROUTE_DEFAULT_OFFSET.x, y: OCR_ROUTE_DEFAULT_OFFSET.y });
+  }
+  function onBattleOffsetReset() {
+    if (!ocrSetupLoaded || savingBattleOffset) return;
+    applyBattleOffset({ x: OCR_BATTLE_DEFAULT_OFFSET.x, y: OCR_BATTLE_DEFAULT_OFFSET.y });
+  }
   function onToggleShiny(next){
     try {
       setShinyEnabled(next);
@@ -628,8 +642,14 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
     marginTop: 4,
+  };
+  const dpadControlsStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
   };
   const dpadRowStyle = {
     display: 'flex',
@@ -654,6 +674,22 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
     transition: 'transform 0.08s ease',
   };
   const dpadButtonDisabledStyle = {
+    opacity: 0.6,
+    cursor: 'not-allowed',
+    boxShadow: 'none',
+  };
+  const resetButtonStyle = {
+    padding: '6px 12px',
+    borderRadius: 8,
+    border: '1px solid var(--divider)',
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    fontWeight: 700,
+    fontSize: 12,
+    boxShadow: 'var(--shadow-1)',
+    cursor: 'pointer',
+  };
+  const resetButtonDisabledStyle = {
     opacity: 0.6,
     cursor: 'not-allowed',
     boxShadow: 'none',
@@ -781,6 +817,10 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
       });
       const zoomSelectStyle = { ...selectStyle, padding: '8px 10px' };
       const zoomFieldStyle = { flex: '1 1 160px', minWidth: 150 };
+      const routeResetDisabled =
+        savingRouteOffset || !ocrSetupLoaded || offsetsMatch(ocrRouteOffset, OCR_ROUTE_DEFAULT_OFFSET);
+      const battleResetDisabled =
+        savingBattleOffset || !ocrSetupLoaded || offsetsMatch(ocrBattleOffset, OCR_BATTLE_DEFAULT_OFFSET);
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           <div style={ocrToggleRowStyle}>
@@ -845,55 +885,68 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
                 )}
               </div>
               <div style={dpadWrapperStyle}>
-                <button
-                  type="button"
-                  onClick={() => onRouteOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
-                  style={{
-                    ...dpadButtonStyle,
-                    ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
-                  }}
-                  disabled={savingRouteOffset || !ocrSetupLoaded}
-                  title="Move capture up"
-                >
-                  ↑
-                </button>
-                <div style={dpadRowStyle}>
+                <div style={dpadControlsStyle}>
                   <button
                     type="button"
-                    onClick={() => onRouteOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                    onClick={() => onRouteOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
                     style={{
                       ...dpadButtonStyle,
                       ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
                     }}
                     disabled={savingRouteOffset || !ocrSetupLoaded}
-                    title="Move capture left"
+                    title="Move capture up"
                   >
-                    ←
+                    ↑
                   </button>
+                  <div style={dpadRowStyle}>
+                    <button
+                      type="button"
+                      onClick={() => onRouteOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                      style={{
+                        ...dpadButtonStyle,
+                        ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                      }}
+                      disabled={savingRouteOffset || !ocrSetupLoaded}
+                      title="Move capture left"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onRouteOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                      style={{
+                        ...dpadButtonStyle,
+                        ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                      }}
+                      disabled={savingRouteOffset || !ocrSetupLoaded}
+                      title="Move capture right"
+                    >
+                      →
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => onRouteOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                    onClick={() => onRouteOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
                     style={{
                       ...dpadButtonStyle,
                       ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
                     }}
                     disabled={savingRouteOffset || !ocrSetupLoaded}
-                    title="Move capture right"
+                    title="Move capture down"
                   >
-                    →
+                    ↓
                   </button>
                 </div>
                 <button
                   type="button"
-                  onClick={() => onRouteOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
+                  onClick={onRouteOffsetReset}
                   style={{
-                    ...dpadButtonStyle,
-                    ...(savingRouteOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    ...resetButtonStyle,
+                    ...(routeResetDisabled ? resetButtonDisabledStyle : {}),
                   }}
-                  disabled={savingRouteOffset || !ocrSetupLoaded}
-                  title="Move capture down"
+                  disabled={routeResetDisabled}
                 >
-                  ↓
+                  Reset Location
                 </button>
               </div>
               <span style={previewDetailStyle}>
@@ -916,55 +969,68 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
                 )}
               </div>
               <div style={dpadWrapperStyle}>
-                <button
-                  type="button"
-                  onClick={() => onBattleOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
-                  style={{
-                    ...dpadButtonStyle,
-                    ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
-                  }}
-                  disabled={savingBattleOffset || !ocrSetupLoaded}
-                  title="Move capture up"
-                >
-                  ↑
-                </button>
-                <div style={dpadRowStyle}>
+                <div style={dpadControlsStyle}>
                   <button
                     type="button"
-                    onClick={() => onBattleOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                    onClick={() => onBattleOffsetNudge(0, -OCR_CAPTURE_OFFSET_STEP)}
                     style={{
                       ...dpadButtonStyle,
                       ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
                     }}
                     disabled={savingBattleOffset || !ocrSetupLoaded}
-                    title="Move capture left"
+                    title="Move capture up"
                   >
-                    ←
+                    ↑
                   </button>
+                  <div style={dpadRowStyle}>
+                    <button
+                      type="button"
+                      onClick={() => onBattleOffsetNudge(-OCR_CAPTURE_OFFSET_STEP, 0)}
+                      style={{
+                        ...dpadButtonStyle,
+                        ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                      }}
+                      disabled={savingBattleOffset || !ocrSetupLoaded}
+                      title="Move capture left"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onBattleOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                      style={{
+                        ...dpadButtonStyle,
+                        ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                      }}
+                      disabled={savingBattleOffset || !ocrSetupLoaded}
+                      title="Move capture right"
+                    >
+                      →
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => onBattleOffsetNudge(OCR_CAPTURE_OFFSET_STEP, 0)}
+                    onClick={() => onBattleOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
                     style={{
                       ...dpadButtonStyle,
                       ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
                     }}
                     disabled={savingBattleOffset || !ocrSetupLoaded}
-                    title="Move capture right"
+                    title="Move capture down"
                   >
-                    →
+                    ↓
                   </button>
                 </div>
                 <button
                   type="button"
-                  onClick={() => onBattleOffsetNudge(0, OCR_CAPTURE_OFFSET_STEP)}
+                  onClick={onBattleOffsetReset}
                   style={{
-                    ...dpadButtonStyle,
-                    ...(savingBattleOffset || !ocrSetupLoaded ? dpadButtonDisabledStyle : {}),
+                    ...resetButtonStyle,
+                    ...(battleResetDisabled ? resetButtonDisabledStyle : {}),
                   }}
-                  disabled={savingBattleOffset || !ocrSetupLoaded}
-                  title="Move capture down"
+                  disabled={battleResetDisabled}
                 >
-                  ↓
+                  Reset Location
                 </button>
               </div>
               <span style={previewDetailStyle}>

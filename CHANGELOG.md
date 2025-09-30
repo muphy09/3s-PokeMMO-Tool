@@ -10,8 +10,7 @@
 - OCR Settings
   - Capture Window Adjustment (Route & Battle)
     - Introduced capture window adjustments for further tuning of the OCR
-    - Should help users that 
-
+    - Should help users who play on unique resolutions or aspect ratios
 
 ---
 
