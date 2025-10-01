@@ -217,9 +217,9 @@ async function reportInstallIfNeeded() {
 
   const now = new Date().toISOString();
   const payload = {
-    installId: meta.installId,
-    version,
-    platform: process.platform,
+    userId: meta.installId,
+    appVersion: version,
+    os: process.platform,
     arch: process.arch,
     osRelease: os.release(),
     electron: process.versions?.electron,
