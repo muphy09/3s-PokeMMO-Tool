@@ -48,28 +48,3 @@ Each successful POST is persisted so the app only reports a given version/OS com
 Both routes accept an optional bearer token via the `Authorization` header. When the
 `POKEMMO_TOOL_TELEMETRY_KEY` environment variable is populated the desktop app includes
 the token automatically.
-
-For local tooling (for example when running `node tools/install-telemetry-stats.js`) the
-repository provides a `.env.telemetry` file in the project root. Adjust the values in that
-file or copy them into your own `.env` to avoid exporting the variables globally.
-
-When the telemetry API cannot be reached the stats script automatically falls back to the
-public GitHub release download counts. This mode still groups downloads by OS and app
-version based on the asset naming convention. Set `POKEMMO_TOOL_TELEMETRY_FALLBACK=none`
-to disable the behaviour or customise the source repository with
-`POKEMMO_TOOL_TELEMETRY_GITHUB_OWNER` and `POKEMMO_TOOL_TELEMETRY_GITHUB_REPO`.
-
-### Release pipeline configuration
-
-The GitHub Actions release workflow runs `scripts/write-telemetry-config.js` to bake the
-production telemetry settings into each packaged build. Provide the real endpoint and
-credentials as GitHub repository secrets before tagging a release:
-
-- `POKEMMO_TOOL_TELEMETRY_URL` (required)
-- `POKEMMO_TOOL_TELEMETRY_KEY` or `POKEMMO_TOOL_TELEMETRY_TOKEN` (optional bearer token)
-- `POKEMMO_TOOL_TELEMETRY_STATS_URL` (optional; defaults to `<URL>/stats`)
-- `POKEMMO_TOOL_TELEMETRY_STATS_KEY` or `POKEMMO_TOOL_TELEMETRY_STATS_TOKEN` (optional)
-
-During the workflow the script writes `resources/telemetry.config.json`, which the Electron
-main process reads at runtime when the environment variables are not already populated.
-
