@@ -58,16 +58,15 @@
                   {
                       "label":  "UID Telemetry Stats",
                       "type":  "shell",
-                      "command":  "node",
+                      "command":  "npm",
                       "args":  [
-                                   "./tools/install-telemetry-stats.js"
+                                   "run",
+                                   "telemetry:stats",
+                                   "--silent"
                                ],
                       "options":  {
                                       "cwd":  "${workspaceFolder}"
-                                  },
-                      "problemMatcher":  [
-
-                                         ]
+                                  }
                   },
                   {
                       "label":  "Linux Export",

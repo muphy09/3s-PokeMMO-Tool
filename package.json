@@ -25,7 +25,8 @@
     "release:patch": "npm version patch -m \"v%s\" && npm run push-release",
     "release:minor": "npm version minor -m \"v%s\" && npm run push-release",
     "release:major": "npm version major -m \"v%s\" && npm run push-release",
-    "publish": "npm run clean && npm run build:helper && npm run build && electron-builder --publish always"
+    "publish": "npm run clean && npm run build:helper && npm run build && electron-builder --publish always",
+    "telemetry:stats": "node tools/install-telemetry-stats.js"
   },
   "build": {
     "appId": "com.pokemmo.tool",
