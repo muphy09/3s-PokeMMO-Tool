@@ -7,8 +7,7 @@
   - Hitmonchan location data updated
 
 ### Known Issues
-- Some Pokemon locations in the Kanto region are incorrect - a fix will be rolled out soon
-
+- Some Pokemon locations in the Kanto Region are incorrect - a fix will be rolled out soon
 
 ---
 
