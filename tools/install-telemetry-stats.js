@@ -55,6 +55,11 @@ if (!rows.length) {
 const pad = (s, n) => (s + '').padEnd(n);
 console.log(pad('OS', 12), pad('Version', 16), pad('Unique Users', 14));
 console.log('-'.repeat(44));
+const osNames = new Map([
+  ['win32', 'Windows'],
+  ['darwin', 'Mac']
+]);
 for (const r of rows) {
-  console.log(pad(r.os, 12), pad(r.app_version, 16), pad(r.unique_users, 14));
+  const osLabel = osNames.get(r.os) ?? r.os;
+  console.log(pad(osLabel, 12), pad(r.app_version, 16), pad(r.unique_users, 14));
 }
