@@ -1,6 +1,18 @@
 # Changelog
 ---
 
+## [3.3.1] - 2025-10
+### Overhaul
+- Pokedex, Locations, Items, and Moveset Data
+  - Complete data refresh from latest PokeMMO source files
+  - Updated 720 Pokemon entries with current stats, moves, abilities, and locations
+  - Updated 2,816 item entries with accurate descriptions
+  - All move learning methods now properly categorized (Level, TM/HM, Tutor, Egg)
+  - Fixed exp_type conversions to match game data
+  - Migrated to new standardized data format for improved accuracy
+
+---
+
 ## [3.3.0] - 2025-09
 ### Fixed
 - Pokedex Data
