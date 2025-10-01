@@ -4,6 +4,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const TOOL_PREFIX = '3s-PokeMMO-Tool-';
+const GITHUB_API_BASE = 'https://api.github.com';
+
 function loadLocalEnv() {
   const repoRoot = path.resolve(__dirname, '..');
   const candidateFiles = [
@@ -41,6 +44,18 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 
+function getFallbackMode() {
+  return (process.env.POKEMMO_TOOL_TELEMETRY_FALLBACK || 'github').trim().toLowerCase();
+}
+
+function getGithubOwner() {
+  return (process.env.POKEMMO_TOOL_TELEMETRY_GITHUB_OWNER || 'muphy09').trim() || 'muphy09';
+}
+
+function getGithubRepo() {
+  return (process.env.POKEMMO_TOOL_TELEMETRY_GITHUB_REPO || '3s-PokeMMO-Tool').trim() || '3s-PokeMMO-Tool';
+}
+
 function normalizeVersion(ver) {
   return String(ver || '').trim().replace(/^v/i, '');
 }
@@ -64,6 +79,262 @@ function coalesceRows(input) {
 function ensureBearer(token) {
   if (!token) return null;
   return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+}
+
+function extractExtension(name) {
+  if (!name) return '';
+  const lower = name.toLowerCase();
+  const multi = ['.tar.gz', '.tar.xz', '.tar.bz2'];
+  for (const ext of multi) {
+    if (lower.endsWith(ext)) return ext;
+  }
+  return path.extname(lower);
+}
+
+function shouldSkipAssetName(name) {
+  if (!name) return true;
+  const lower = name.toLowerCase();
+  if (lower.endsWith('.blockmap')) return true;
+  if (lower.endsWith('.yml') || lower.endsWith('.yaml')) return true;
+  if (lower.endsWith('.json')) return true;
+  if (!lower.startsWith(TOOL_PREFIX.toLowerCase())) return true;
+  return false;
+}
+
+function parseGithubAsset(asset) {
+  if (!asset || typeof asset.name !== 'string') return null;
+  const name = asset.name.trim();
+  if (shouldSkipAssetName(name)) return null;
+
+  const remainder = name.slice(TOOL_PREFIX.length);
+  const lowerRemainder = remainder.toLowerCase();
+
+  let platform = null;
+  let versionPart = '';
+  for (const candidate of ['win', 'mac', 'linux']) {
+    const marker = `-${candidate}-`;
+    const idx = lowerRemainder.indexOf(marker);
+    if (idx !== -1) {
+      platform = candidate;
+      versionPart = remainder.slice(0, idx);
+      break;
+    }
+  }
+
+  if (!platform || !versionPart) return null;
+
+  const ext = extractExtension(name);
+  const allowedExts = new Set(['.exe', '.zip', '.appimage', '.dmg', '.tar.gz', '.tar.xz']);
+  if (!allowedExts.has(ext)) return null;
+
+  const count = Number(asset.download_count) || 0;
+  return {
+    platform: formatPlatform(platform),
+    version: normalizeVersion(versionPart),
+    count,
+  };
+}
+
+async function loadGithubDownloadRows(owner = getGithubOwner(), repo = getGithubRepo()) {
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'pokemmo-telemetry-stats',
+  };
+
+  const token = ensureBearer(process.env.GITHUB_TOKEN || process.env.GH_TOKEN || process.env.POKEMMO_TOOL_GITHUB_TOKEN);
+  if (token) headers.Authorization = token;
+
+  const perPage = 100;
+  let page = 1;
+  const releases = [];
+
+  while (true) {
+    const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`;
+    let response;
+    try {
+      response = await fetch(url, { headers });
+    } catch (err) {
+      throw new Error(`GitHub releases request failed: ${err?.message || err}${collectErrorDetails(err)}`);
+    }
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      throw new Error(`GitHub releases responded with HTTP ${response.status} ${response.statusText}${text ? `: ${text}` : ''}`);
+    }
+
+    let pageData;
+    try {
+      pageData = await response.json();
+    } catch (err) {
+      throw new Error(`Unable to parse GitHub releases JSON: ${err?.message || err}`);
+    }
+
+    if (!Array.isArray(pageData) || pageData.length === 0) break;
+    releases.push(...pageData);
+    if (pageData.length < perPage) break;
+    page += 1;
+  }
+
+  if (!releases.length) {
+    throw new Error('No releases returned by the GitHub API.');
+  }
+
+  const rows = [];
+  for (const release of releases) {
+    if (!Array.isArray(release?.assets)) continue;
+    for (const asset of release.assets) {
+      const parsed = parseGithubAsset(asset);
+      if (parsed && parsed.count > 0) {
+        rows.push(parsed);
+      }
+    }
+  }
+
+  if (!rows.length) {
+    throw new Error('No release assets matched the known platform patterns.');
+  }
+
+  return rows;
+}
+
+async function fetchTelemetryRows(statsUrl, headers) {
+  let response;
+  try {
+    response = await fetch(statsUrl, { headers });
+  } catch (err) {
+    const error = new Error(err?.message || err);
+    if (err && typeof err === 'object') {
+      error.code = err.code || err.errno;
+      error.cause = err.cause || err;
+    }
+    error.reason = 'request';
+    throw error;
+  }
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    const error = new Error(`HTTP ${response.status} ${response.statusText}${text ? `: ${text}` : ''}`);
+    error.status = response.status;
+    error.responseText = text;
+    error.reason = 'http';
+    throw error;
+  }
+
+  try {
+    const data = await response.json();
+    return coalesceRows(data);
+  } catch (err) {
+    const error = new Error(err?.message || err);
+    error.reason = 'parse';
+    throw error;
+  }
+}
+
+function getProxyUrl() {
+  const candidates = [
+    process.env.POKEMMO_TOOL_TELEMETRY_PROXY,
+    process.env.HTTPS_PROXY,
+    process.env.https_proxy,
+    process.env.HTTP_PROXY,
+    process.env.http_proxy,
+  ];
+
+  for (const value of candidates) {
+    if (value && value.trim()) return value.trim();
+  }
+
+  return null;
+}
+
+function parseNoProxy(value) {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function hostMatchesNoProxy(hostname, port, entries) {
+  if (!hostname || !entries.length) return false;
+
+  const normalizedHost = hostname.toLowerCase();
+
+  for (const entry of entries) {
+    if (entry === '*') return true;
+
+    const [patternHost, patternPort] = entry.toLowerCase().split(':');
+    if (patternPort && patternPort !== String(port || '')) continue;
+
+    if (!patternHost) continue;
+
+    if (patternHost.startsWith('.')) {
+      const suffix = patternHost.slice(1);
+      if (normalizedHost === suffix || normalizedHost.endsWith(`.${suffix}`)) return true;
+      continue;
+    }
+
+    if (normalizedHost === patternHost) return true;
+  }
+
+  return false;
+}
+
+function configureProxyForUrl(targetUrl) {
+  const proxyUrl = getProxyUrl();
+  if (!proxyUrl) return false;
+
+  let url;
+  try {
+    url = new URL(targetUrl);
+  } catch {
+    return false;
+  }
+
+  const noProxyEntries = parseNoProxy(process.env.NO_PROXY || process.env.no_proxy);
+  if (hostMatchesNoProxy(url.hostname, url.port || (url.protocol === 'https:' ? '443' : '80'), noProxyEntries)) {
+    return false;
+  }
+
+  try {
+    // eslint-disable-next-line global-require
+    let undici;
+    try {
+      undici = require('node:undici');
+    } catch {
+      undici = require('undici');
+    }
+    const { ProxyAgent, setGlobalDispatcher } = undici;
+    if (typeof ProxyAgent !== 'function' || typeof setGlobalDispatcher !== 'function') return false;
+    const agent = new ProxyAgent(proxyUrl);
+    setGlobalDispatcher(agent);
+    return true;
+  } catch (err) {
+    console.warn('Unable to configure proxy for telemetry stats request:', err?.message || err);
+  }
+
+  return false;
+}
+
+function collectErrorDetails(err) {
+  const pieces = [];
+  const seen = new Set();
+  let current = err;
+
+  while (current && typeof current === 'object' && !seen.has(current)) {
+    seen.add(current);
+
+    if (current.code && !pieces.includes(current.code)) pieces.push(current.code);
+    if (current.errno && !pieces.includes(current.errno)) pieces.push(current.errno);
+
+    if (current !== err && typeof current.message === 'string') {
+      const msg = current.message.trim();
+      if (msg && !pieces.includes(msg)) pieces.push(msg);
+    }
+
+    current = current.cause;
+  }
+
+  return pieces.length ? ` (${pieces.join(' | ')})` : '';
 }
 
 function parseTimestamp(value) {
@@ -120,6 +391,8 @@ async function main() {
     return;
   }
 
+  configureProxyForUrl(statsUrl);
+
   if (typeof fetch !== 'function') {
     console.error('Global fetch API unavailable in this Node runtime.');
     process.exitCode = 1;
@@ -134,32 +407,36 @@ async function main() {
   );
   if (authToken) headers.Authorization = authToken;
 
-  let response;
+  let rows;
+  let dataSource = 'telemetry';
   try {
-    response = await fetch(statsUrl, { headers });
+    rows = await fetchTelemetryRows(statsUrl, headers);
   } catch (err) {
-    console.error('Telemetry stats request failed:', err?.message || err);
-    process.exitCode = 1;
-    return;
+    const message = err?.message || err;
+    const details = collectErrorDetails(err);
+    if (getFallbackMode() === 'none') {
+      console.error(`Telemetry stats request failed: ${message}${details}`);
+      process.exitCode = 1;
+      return;
+    }
+
+    console.warn(`Telemetry stats request failed: ${message}${details}`);
+
+    try {
+      const owner = getGithubOwner();
+      const repo = getGithubRepo();
+      configureProxyForUrl(`${GITHUB_API_BASE}/repos/${owner}/${repo}/releases`);
+      rows = await loadGithubDownloadRows(owner, repo);
+      dataSource = 'github';
+      console.warn('Falling back to GitHub release download counts (per OS and version).');
+    } catch (fallbackErr) {
+      console.error(`Unable to load GitHub release download counts: ${fallbackErr?.message || fallbackErr}${collectErrorDetails(fallbackErr)}`);
+      process.exitCode = 1;
+      return;
+    }
   }
 
-  if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    console.error(`Telemetry stats responded with HTTP ${response.status} ${response.statusText}${text ? `: ${text}` : ''}`);
-    process.exitCode = 1;
-    return;
-  }
-
-  let data;
-  try {
-    data = await response.json();
-  } catch (err) {
-    console.error('Unable to parse telemetry response as JSON:', err?.message || err);
-    process.exitCode = 1;
-    return;
-  }
-
-  const rows = coalesceRows(data);
+  if (!Array.isArray(rows)) rows = coalesceRows(rows);
 
   const aggregateGroups = new Map();
   const installs = new Map();
@@ -295,6 +572,8 @@ async function main() {
     rowsToPrint.push(`  ${pad(platform, 10)} ${count}`);
   }
   rowsToPrint.push(`Grand total: ${grandTotal}`);
+  rowsToPrint.push('');
+  rowsToPrint.push(`Data source: ${dataSource === 'telemetry' ? 'Install telemetry service' : 'GitHub release download counts'}`);
 
   console.log(rowsToPrint.join('\n'));
 }

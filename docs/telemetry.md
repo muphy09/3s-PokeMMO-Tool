@@ -39,8 +39,12 @@ node tools/install-telemetry-stats.js --json
 If your deployment exposes a different stats path set
 `POKEMMO_TOOL_TELEMETRY_STATS_URL` in the env file. When omitted, the CLI automatically
 appends `/stats` to the POST endpoint.
-<<<<<<< ours
-=======
+
+When the telemetry API is unreachable the CLI falls back to GitHub release download
+counts. The asset naming convention keeps the per-platform/per-version grouping intact.
+Set `POKEMMO_TOOL_TELEMETRY_FALLBACK=none` to force the primary service or change the
+fallback repository with `POKEMMO_TOOL_TELEMETRY_GITHUB_OWNER` and
+`POKEMMO_TOOL_TELEMETRY_GITHUB_REPO`.
 
 ## Release automation
 
@@ -56,4 +60,3 @@ Populate the following repository secrets so the workflow can create the config 
 - `POKEMMO_TOOL_TELEMETRY_KEY` or `POKEMMO_TOOL_TELEMETRY_TOKEN`
 - `POKEMMO_TOOL_TELEMETRY_STATS_URL` (optional)
 - `POKEMMO_TOOL_TELEMETRY_STATS_KEY` or `POKEMMO_TOOL_TELEMETRY_STATS_TOKEN`
->>>>>>> theirs

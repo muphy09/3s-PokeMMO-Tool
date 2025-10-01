@@ -52,8 +52,12 @@ the token automatically.
 For local tooling (for example when running `node tools/install-telemetry-stats.js`) the
 repository provides a `.env.telemetry` file in the project root. Adjust the values in that
 file or copy them into your own `.env` to avoid exporting the variables globally.
-<<<<<<< ours
-=======
+
+When the telemetry API cannot be reached the stats script automatically falls back to the
+public GitHub release download counts. This mode still groups downloads by OS and app
+version based on the asset naming convention. Set `POKEMMO_TOOL_TELEMETRY_FALLBACK=none`
+to disable the behaviour or customise the source repository with
+`POKEMMO_TOOL_TELEMETRY_GITHUB_OWNER` and `POKEMMO_TOOL_TELEMETRY_GITHUB_REPO`.
 
 ### Release pipeline configuration
 
@@ -68,4 +72,4 @@ credentials as GitHub repository secrets before tagging a release:
 
 During the workflow the script writes `resources/telemetry.config.json`, which the Electron
 main process reads at runtime when the environment variables are not already populated.
->>>>>>> theirs
+
