@@ -7,6 +7,46 @@ const path = require('path');
 const TOOL_PREFIX = '3s-PokeMMO-Tool-';
 const GITHUB_API_BASE = 'https://api.github.com';
 
+let cachedFetch = null;
+let cachedUndici = undefined;
+
+function loadUndici() {
+  if (cachedUndici !== undefined) return cachedUndici;
+  try {
+    // Prefer the userland package so it also works when the builtin is unavailable.
+    // eslint-disable-next-line global-require
+    cachedUndici = require('undici');
+  } catch (pkgErr) {
+    try {
+      // eslint-disable-next-line global-require
+      cachedUndici = require('node:undici');
+    } catch {
+      cachedUndici = null;
+    }
+  }
+  return cachedUndici;
+}
+
+function ensureFetchAvailable() {
+  if (cachedFetch) return cachedFetch;
+  if (typeof fetch === 'function') {
+    cachedFetch = fetch.bind(globalThis);
+    return cachedFetch;
+  }
+
+  const undici = loadUndici();
+  if (undici && typeof undici.fetch === 'function') {
+    cachedFetch = undici.fetch.bind(undici);
+    // expose to consumers that might rely on global fetch
+    if (typeof global.fetch !== 'function') {
+      global.fetch = cachedFetch;
+    }
+    return cachedFetch;
+  }
+
+  return null;
+}
+
 function loadLocalEnv() {
   const repoRoot = path.resolve(__dirname, '..');
   const candidateFiles = [
@@ -81,6 +121,14 @@ function ensureBearer(token) {
   return token.startsWith('Bearer ') ? token : `Bearer ${token}`;
 }
 
+async function performFetch(url, options) {
+  const fetchImpl = ensureFetchAvailable();
+  if (!fetchImpl) {
+    throw new Error('Fetch API is unavailable in this environment.');
+  }
+  return fetchImpl(url, options);
+}
+
 function extractExtension(name) {
   if (!name) return '';
   const lower = name.toLowerCase();
@@ -152,7 +200,7 @@ async function loadGithubDownloadRows(owner = getGithubOwner(), repo = getGithub
     const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}/releases?per_page=${perPage}&page=${page}`;
     let response;
     try {
-      response = await fetch(url, { headers });
+      response = await performFetch(url, { headers });
     } catch (err) {
       throw new Error(`GitHub releases request failed: ${err?.message || err}${collectErrorDetails(err)}`);
     }
@@ -200,7 +248,7 @@ async function loadGithubDownloadRows(owner = getGithubOwner(), repo = getGithub
 async function fetchTelemetryRows(statsUrl, headers) {
   let response;
   try {
-    response = await fetch(statsUrl, { headers });
+    response = await performFetch(statsUrl, { headers });
   } catch (err) {
     const error = new Error(err?.message || err);
     if (err && typeof err === 'object') {
@@ -295,18 +343,40 @@ function configureProxyForUrl(targetUrl) {
     return false;
   }
 
+  const undici = loadUndici();
+  if (!undici) {
+    console.warn('Unable to configure proxy for telemetry stats request: undici module not available.');
+    return false;
+  }
+
+  const { ProxyAgent, setGlobalDispatcher, fetch: undiciFetch } = undici;
+  if (typeof ProxyAgent !== 'function') {
+    console.warn('Unable to configure proxy for telemetry stats request: ProxyAgent not available.');
+    return false;
+  }
+
   try {
-    // eslint-disable-next-line global-require
-    let undici;
-    try {
-      undici = require('node:undici');
-    } catch {
-      undici = require('undici');
-    }
-    const { ProxyAgent, setGlobalDispatcher } = undici;
-    if (typeof ProxyAgent !== 'function' || typeof setGlobalDispatcher !== 'function') return false;
     const agent = new ProxyAgent(proxyUrl);
-    setGlobalDispatcher(agent);
+    let configured = false;
+
+    if (typeof setGlobalDispatcher === 'function') {
+      setGlobalDispatcher(agent);
+      configured = true;
+    }
+
+    if (typeof undiciFetch === 'function') {
+      cachedFetch = (input, init = {}) => undiciFetch(input, { ...init, dispatcher: agent });
+      if (typeof global.fetch !== 'function') {
+        global.fetch = cachedFetch;
+      }
+      configured = true;
+    }
+
+    if (!configured) {
+      console.warn('Unable to configure proxy for telemetry stats request: undici dispatch hooks unavailable.');
+      return false;
+    }
+
     return true;
   } catch (err) {
     console.warn('Unable to configure proxy for telemetry stats request:', err?.message || err);
@@ -393,8 +463,8 @@ async function main() {
 
   configureProxyForUrl(statsUrl);
 
-  if (typeof fetch !== 'function') {
-    console.error('Global fetch API unavailable in this Node runtime.');
+  if (!ensureFetchAvailable()) {
+    console.error('Fetch API unavailable in this Node runtime.');
     process.exitCode = 1;
     return;
   }
