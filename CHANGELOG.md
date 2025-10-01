@@ -1,6 +1,17 @@
 # Changelog
 ---
 
+## [3.2.6] - 2025-09
+### Fixed
+- Pokedex Data
+  - Hitmonchan location data updated
+
+### Known Issues
+- Some Pokemon locations in the Kanto region are incorrect - a fix will be rolled out soon
+
+
+---
+
 ## [3.2.5] - 2025-09
 ### Changed
 - Daycare Manager
