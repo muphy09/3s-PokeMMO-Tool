@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [3.2.6] - 2025-09
+## [3.2.7] - 2025-09
 ### Fixed
 - Pokedex Data
   - Hitmonchan location data updated
