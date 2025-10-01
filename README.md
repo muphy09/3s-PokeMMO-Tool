@@ -39,3 +39,16 @@ The desktop app now records an anonymous install identifier the first time it is
 - Timestamps for when the install was first seen and last reported
 
 Each successful POST is persisted so the app only reports a given version/OS combo once per device.
+
+### Telemetry endpoints
+
+- **Install reports:** `https://telemetry.pokemmo-tool.app/install`
+- **Aggregated stats:** `https://telemetry.pokemmo-tool.app/stats`
+
+Both routes accept an optional bearer token via the `Authorization` header. When the
+`POKEMMO_TOOL_TELEMETRY_KEY` environment variable is populated the desktop app includes
+the token automatically.
+
+For local tooling (for example when running `node tools/install-telemetry-stats.js`) the
+repository provides a `.env.telemetry` file in the project root. Adjust the values in that
+file or copy them into your own `.env` to avoid exporting the variables globally.

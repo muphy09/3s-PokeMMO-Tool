@@ -1,0 +1,41 @@
+# Telemetry integration
+
+The desktop app reports anonymous install metrics to a lightweight HTTPS service. The
+same service exposes aggregated install counts for the CLI tooling in
+`tools/install-telemetry-stats.js`.
+
+## Endpoints
+
+- **Install POST endpoint:** `https://telemetry.pokemmo-tool.app/install`
+- **Stats endpoint:** `https://telemetry.pokemmo-tool.app/stats`
+
+Both endpoints accept JSON responses and support bearer authentication. When the
+`POKEMMO_TOOL_TELEMETRY_KEY` environment variable is set the Electron app and CLI
+utilities include it automatically using the `Authorization` header.
+
+## Local environment configuration
+
+A `.env.telemetry` file is checked into the repository root with the default endpoint
+values. You can edit that file directly or copy its contents to a personal `.env`:
+
+```bash
+cp .env.telemetry .env
+# edit the key if you have one
+```
+
+The stats script will try to load `.env.telemetry` first, then fall back to `.env` when
+you run it from the project root:
+
+```bash
+node tools/install-telemetry-stats.js
+```
+
+To request JSON output you can use the `--json` flag:
+
+```bash
+node tools/install-telemetry-stats.js --json
+```
+
+If your deployment exposes a different stats path set
+`POKEMMO_TOOL_TELEMETRY_STATS_URL` in the env file. When omitted, the CLI automatically
+appends `/stats` to the POST endpoint.

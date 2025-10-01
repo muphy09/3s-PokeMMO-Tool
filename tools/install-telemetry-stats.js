@@ -1,6 +1,46 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
+const fs = require('fs');
+const path = require('path');
+
+function loadLocalEnv() {
+  const repoRoot = path.resolve(__dirname, '..');
+  const candidateFiles = [
+    path.join(repoRoot, '.env.telemetry'),
+    path.join(repoRoot, '.env'),
+  ];
+
+  for (const file of candidateFiles) {
+    let raw;
+    try {
+      raw = fs.readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+
+    for (const line of raw.split(/\r?\n/)) {
+      if (!line || line.trim().startsWith('#')) continue;
+      const idx = line.indexOf('=');
+      if (idx <= 0) continue;
+      const key = line.slice(0, idx).trim();
+      if (!key || Object.prototype.hasOwnProperty.call(process.env, key)) continue;
+      let value = line.slice(idx + 1).trim();
+      if (value.length >= 2) {
+        const first = value[0];
+        const last = value[value.length - 1];
+        if ((first === '"' && last === '"') || (first === '\'' && last === '\'')) {
+          value = value.slice(1, -1);
+        }
+      }
+      process.env[key] = value;
+    }
+    break;
+  }
+}
+
+loadLocalEnv();
+
 function normalizeVersion(ver) {
   return String(ver || '').trim().replace(/^v/i, '');
 }
