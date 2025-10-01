@@ -29,3 +29,13 @@ It is designed for **Generations 1–5 only**, matching PokéMMO’s supported r
 > ⚠️ Windows may show a security prompt for unsigned executables. This is normal and safe to continue.
 
 
+## 📊 Install telemetry
+
+The desktop app now records an anonymous install identifier the first time it is launched. On startup the Electron main process sends a single POST request containing:
+
+- A random install ID (stable per machine)
+- App version (e.g. `3.2.5`)
+- OS platform (`windows`, `mac`, or `linux`) and CPU architecture
+- Timestamps for when the install was first seen and last reported
+
+Each successful POST is persisted so the app only reports a given version/OS combo once per device.

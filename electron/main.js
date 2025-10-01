@@ -4,6 +4,7 @@ const { app, BrowserWindow, ipcMain, Menu, shell, dialog, Notification } = requi
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const crypto = require('crypto');
 const { spawn } = require('child_process');
 
 
@@ -61,6 +62,132 @@ function liveAppDataDir() {
 
 function settingsPath() {
   return path.join(liveAppDataDir(), 'settings.json');
+}
+
+function installMetaPath() {
+  try {
+    return path.join(app.getPath('userData'), 'install-meta.json');
+  } catch (err) {
+    log('installMetaPath error', err?.message || err);
+    return null;
+  }
+}
+
+function readInstallMeta() {
+  const file = installMetaPath();
+  if (!file) return null;
+  try {
+    const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (!raw || typeof raw !== 'object') return null;
+    return raw;
+  } catch {
+    return null;
+  }
+}
+
+function writeInstallMeta(meta) {
+  const file = installMetaPath();
+  if (!file) return false;
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(meta || {}, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    log('writeInstallMeta error', err?.message || err);
+    return false;
+  }
+}
+
+function ensureInstallMeta() {
+  const existing = readInstallMeta() || {};
+  let changed = false;
+  if (!existing.installId) {
+    existing.installId = crypto.randomUUID();
+    changed = true;
+  }
+  if (!existing.firstSeen) {
+    existing.firstSeen = new Date().toISOString();
+    changed = true;
+  }
+  if (!existing.reports || typeof existing.reports !== 'object') {
+    existing.reports = {};
+    changed = true;
+  }
+  if (changed) writeInstallMeta(existing);
+  return existing;
+}
+
+async function reportInstallIfNeeded() {
+  const endpoint = process.env.POKEMMO_TOOL_TELEMETRY_URL;
+  if (!endpoint) {
+    log('telemetry endpoint not configured; skipping install report');
+    return;
+  }
+
+  if (typeof fetch !== 'function') {
+    log('fetch API unavailable; skipping install report');
+    return;
+  }
+
+  const meta = ensureInstallMeta();
+  if (!meta?.installId) {
+    log('unable to load install metadata; skipping install report');
+    return;
+  }
+
+  const version = normalizeVersion(app.getVersion());
+  if (!version) {
+    log('unable to determine app version for telemetry');
+    return;
+  }
+
+  const reportKey = `${process.platform}:${process.arch}:${version}`;
+  if (meta?.reports?.[reportKey]) return;
+
+  const now = new Date().toISOString();
+  const payload = {
+    installId: meta.installId,
+    version,
+    platform: process.platform,
+    arch: process.arch,
+    osRelease: os.release(),
+    electron: process.versions?.electron,
+    node: process.versions?.node,
+    firstSeen: meta.firstSeen,
+    lastSeen: now,
+  };
+
+  const headers = { 'Content-Type': 'application/json' };
+  const authToken = process.env.POKEMMO_TOOL_TELEMETRY_KEY || process.env.POKEMMO_TOOL_TELEMETRY_TOKEN;
+  if (authToken) {
+    headers.Authorization = authToken.startsWith('Bearer ') ? authToken : `Bearer ${authToken}`;
+  }
+
+  const controller = (typeof AbortController === 'function') ? new AbortController() : null;
+  const timeout = controller ? setTimeout(() => {
+    try { controller.abort(); } catch {}
+  }, 10000) : null;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload),
+      signal: controller?.signal,
+    });
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      throw new Error(`HTTP ${response.status} ${response.statusText}${text ? `: ${text}` : ''}`);
+    }
+    meta.reports[reportKey] = now;
+    meta.lastReported = { version, platform: process.platform, arch: process.arch, at: now };
+    writeInstallMeta(meta);
+    log('reported install telemetry', version, process.platform, process.arch);
+  } catch (err) {
+    log('reportInstallIfNeeded failed', err?.message || err);
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
 }
 
 
@@ -935,6 +1062,7 @@ ipcMain.handle('start-ocr', async () => { await startLiveRouteOCR(); return true
 app.whenReady().then(async () => {
   createMainWindow();
   setupAutoUpdates();
+  reportInstallIfNeeded().catch((err) => log('reportInstallIfNeeded error', err?.message || err));
   // Start OCR only if enabled in settings
   setTimeout(() => {
     try {

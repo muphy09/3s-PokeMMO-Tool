@@ -56,6 +56,20 @@
                                          ]
                   },
                   {
+                      "label":  "UID Telemetry Stats",
+                      "type":  "shell",
+                      "command":  "node",
+                      "args":  [
+                                   "./tools/install-telemetry-stats.js"
+                               ],
+                      "options":  {
+                                      "cwd":  "${workspaceFolder}"
+                                  },
+                      "problemMatcher":  [
+
+                                         ]
+                  },
+                  {
                       "label":  "Linux Export",
                       "type":  "shell",
                       "command":  "powershell",
