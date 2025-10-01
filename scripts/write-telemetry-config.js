@@ -36,24 +36,6 @@ for (const key of optionalKeys) {
   }
 }
 
-const hasInstallAuth = Boolean(config.POKEMMO_TOOL_TELEMETRY_KEY || config.POKEMMO_TOOL_TELEMETRY_TOKEN);
-if (!hasInstallAuth) {
-  fail('POKEMMO_TOOL_TELEMETRY_KEY or POKEMMO_TOOL_TELEMETRY_TOKEN must be provided.');
-}
-
-const hasStatsUrl = Boolean(config.POKEMMO_TOOL_TELEMETRY_STATS_URL);
-const hasStatsAuth = Boolean(
-  config.POKEMMO_TOOL_TELEMETRY_STATS_TOKEN ||
-  config.POKEMMO_TOOL_TELEMETRY_STATS_KEY ||
-  config.POKEMMO_TOOL_TELEMETRY_TOKEN ||
-  config.POKEMMO_TOOL_TELEMETRY_KEY,
-);
-if (hasStatsUrl && !hasStatsAuth) {
-  fail(
-    'Stats telemetry requires POKEMMO_TOOL_TELEMETRY_STATS_KEY/POKEMMO_TOOL_TELEMETRY_STATS_TOKEN (or install credentials).',
-  );
-}
-
 const repoRoot = path.resolve(__dirname, '..');
 const resourcesDir = path.join(repoRoot, 'resources');
 const outputPath = path.join(resourcesDir, 'telemetry.config.json');
