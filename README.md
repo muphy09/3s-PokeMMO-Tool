@@ -52,3 +52,20 @@ the token automatically.
 For local tooling (for example when running `node tools/install-telemetry-stats.js`) the
 repository provides a `.env.telemetry` file in the project root. Adjust the values in that
 file or copy them into your own `.env` to avoid exporting the variables globally.
+<<<<<<< ours
+=======
+
+### Release pipeline configuration
+
+The GitHub Actions release workflow runs `scripts/write-telemetry-config.js` to bake the
+production telemetry settings into each packaged build. Provide the real endpoint and
+credentials as GitHub repository secrets before tagging a release:
+
+- `POKEMMO_TOOL_TELEMETRY_URL` (required)
+- `POKEMMO_TOOL_TELEMETRY_KEY` or `POKEMMO_TOOL_TELEMETRY_TOKEN` (optional bearer token)
+- `POKEMMO_TOOL_TELEMETRY_STATS_URL` (optional; defaults to `<URL>/stats`)
+- `POKEMMO_TOOL_TELEMETRY_STATS_KEY` or `POKEMMO_TOOL_TELEMETRY_STATS_TOKEN` (optional)
+
+During the workflow the script writes `resources/telemetry.config.json`, which the Electron
+main process reads at runtime when the environment variables are not already populated.
+>>>>>>> theirs

@@ -36,6 +36,77 @@ let downloadingVersion = null;
 const isWin = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
 
+function safeGetAppPath() {
+  try { return app.getAppPath(); } catch { return null; }
+}
+
+function applyTelemetryDefaultsFromConfig() {
+  const seen = new Set();
+  const candidates = [];
+
+  if (process.resourcesPath) {
+    candidates.push(path.join(process.resourcesPath, 'telemetry.config.json'));
+  }
+
+  const appPath = safeGetAppPath();
+  if (appPath) {
+    candidates.push(path.join(appPath, 'resources', 'telemetry.config.json'));
+    candidates.push(path.join(appPath, 'telemetry.config.json'));
+  }
+
+  candidates.push(path.join(__dirname, '..', 'resources', 'telemetry.config.json'));
+
+  for (const file of candidates) {
+    if (!file || seen.has(file)) continue;
+    seen.add(file);
+
+    let stats;
+    try {
+      stats = fs.statSync(file);
+    } catch {
+      continue;
+    }
+    if (!stats?.isFile()) continue;
+
+    let raw;
+    try {
+      raw = fs.readFileSync(file, 'utf8');
+    } catch (err) {
+      log('failed to read telemetry config', file, err?.message || err);
+      continue;
+    }
+    if (!raw || !raw.trim()) continue;
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (err) {
+      log('failed to parse telemetry config', file, err?.message || err);
+      continue;
+    }
+
+    const appliedKeys = [];
+    let changed = false;
+    for (const [key, value] of Object.entries(parsed || {})) {
+      if (!key.startsWith('POKEMMO_TOOL_TELEMETRY_')) continue;
+      if (process.env[key]) continue;
+      if (typeof value !== 'string') continue;
+      const normalized = value.trim();
+      if (!normalized) continue;
+      process.env[key] = normalized;
+      appliedKeys.push(key);
+      changed = true;
+    }
+
+    if (changed) {
+      log('loaded telemetry defaults from config', file, 'keys:', appliedKeys.join(', '));
+      break;
+    }
+  }
+}
+
+applyTelemetryDefaultsFromConfig();
+
 // ===== Helpers =====
 function normalizeVersion(ver) {
   return String(ver || '').replace(/^v/i, '');

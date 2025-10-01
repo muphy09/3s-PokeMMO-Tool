@@ -21,6 +21,17 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Inject telemetry configuration
+        shell: pwsh
+        run: node scripts/write-telemetry-config.js
+        env:
+          POKEMMO_TOOL_TELEMETRY_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_URL }}
+          POKEMMO_TOOL_TELEMETRY_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_KEY }}
+          POKEMMO_TOOL_TELEMETRY_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_TOKEN }}
+          POKEMMO_TOOL_TELEMETRY_STATS_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_URL }}
+          POKEMMO_TOOL_TELEMETRY_STATS_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_KEY }}
+          POKEMMO_TOOL_TELEMETRY_STATS_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_TOKEN }}
+
       - name: Install dependencies
         shell: pwsh
         run: npm ci
@@ -99,6 +110,16 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Inject telemetry configuration
+        run: node scripts/write-telemetry-config.js
+        env:
+          POKEMMO_TOOL_TELEMETRY_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_URL }}
+          POKEMMO_TOOL_TELEMETRY_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_KEY }}
+          POKEMMO_TOOL_TELEMETRY_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_TOKEN }}
+          POKEMMO_TOOL_TELEMETRY_STATS_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_URL }}
+          POKEMMO_TOOL_TELEMETRY_STATS_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_KEY }}
+          POKEMMO_TOOL_TELEMETRY_STATS_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_TOKEN }}
+
       - name: Install dependencies
         run: npm ci
 
@@ -150,6 +171,16 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Inject telemetry configuration
+        run: node scripts/write-telemetry-config.js
+        env:
+          POKEMMO_TOOL_TELEMETRY_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_URL }}
+          POKEMMO_TOOL_TELEMETRY_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_KEY }}
+          POKEMMO_TOOL_TELEMETRY_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_TOKEN }}
+          POKEMMO_TOOL_TELEMETRY_STATS_URL: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_URL }}
+          POKEMMO_TOOL_TELEMETRY_STATS_KEY: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_KEY }}
+          POKEMMO_TOOL_TELEMETRY_STATS_TOKEN: ${{ secrets.POKEMMO_TOOL_TELEMETRY_STATS_TOKEN }}
 
       - name: Ensure app-builder is executable
         run: chmod +x node_modules/app-builder-bin/mac/app-builder_arm64

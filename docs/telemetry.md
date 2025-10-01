@@ -39,3 +39,21 @@ node tools/install-telemetry-stats.js --json
 If your deployment exposes a different stats path set
 `POKEMMO_TOOL_TELEMETRY_STATS_URL` in the env file. When omitted, the CLI automatically
 appends `/stats` to the POST endpoint.
+<<<<<<< ours
+=======
+
+## Release automation
+
+The GitHub Actions release workflow calls `scripts/write-telemetry-config.js` before
+packaging. The script reads the telemetry secrets from the workflow environment and
+generates `resources/telemetry.config.json`. The Electron main process loads this file at
+runtime when the corresponding `POKEMMO_TOOL_TELEMETRY_*` variables are not already set,
+which ensures production builds always ship with the real endpoint and token.
+
+Populate the following repository secrets so the workflow can create the config file:
+
+- `POKEMMO_TOOL_TELEMETRY_URL` (required)
+- `POKEMMO_TOOL_TELEMETRY_KEY` or `POKEMMO_TOOL_TELEMETRY_TOKEN`
+- `POKEMMO_TOOL_TELEMETRY_STATS_URL` (optional)
+- `POKEMMO_TOOL_TELEMETRY_STATS_KEY` or `POKEMMO_TOOL_TELEMETRY_STATS_TOKEN`
+>>>>>>> theirs

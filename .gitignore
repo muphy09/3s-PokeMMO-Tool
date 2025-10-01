@@ -15,6 +15,9 @@ win-unpacked/
 release/*
 !release/builder-effective-config.yaml
 
+# Telemetry secrets injected during CI/CD
+resources/telemetry.config.json
+
 *.exe
 *.msi
 *.zip
