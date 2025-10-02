@@ -63,3 +63,48 @@ for (const r of rows) {
   const osLabel = osNames.get(r.os) ?? r.os;
   console.log(pad(osLabel, 12), pad(r.app_version, 16), pad(r.unique_users, 14));
 }
+
+// Total Users by Version (all OS combined)
+console.log('\n' + '='.repeat(44));
+console.log('Total Users by Version (all OS):');
+console.log('='.repeat(44));
+const byVersion = new Map();
+for (const r of rows) {
+  const current = byVersion.get(r.app_version) || 0;
+  byVersion.set(r.app_version, current + r.unique_users);
+}
+console.log(pad('Version', 16), pad('Unique Users', 14));
+console.log('-'.repeat(32));
+const sortedVersions = Array.from(byVersion.entries()).sort((a, b) => {
+  const versionA = a[0].split('.').map(Number);
+  const versionB = b[0].split('.').map(Number);
+  for (let i = 0; i < Math.max(versionA.length, versionB.length); i++) {
+    const numA = versionA[i] || 0;
+    const numB = versionB[i] || 0;
+    if (numA !== numB) return numA - numB;
+  }
+  return 0;
+});
+for (const [version, users] of sortedVersions) {
+  console.log(pad(version, 16), pad(users, 14));
+}
+
+// Total Users by OS (all versions combined)
+console.log('\n' + '='.repeat(44));
+console.log('Total Users by OS (all versions):');
+console.log('='.repeat(44));
+const byOS = new Map();
+for (const r of rows) {
+  const current = byOS.get(r.os) || 0;
+  byOS.set(r.os, current + r.unique_users);
+}
+console.log(pad('OS', 12), pad('Unique Users', 14));
+console.log('-'.repeat(28));
+let totalUsers = 0;
+for (const [os, users] of byOS) {
+  const osLabel = osNames.get(os) ?? os;
+  console.log(pad(osLabel, 12), pad(users, 14));
+  totalUsers += users;
+}
+console.log('-'.repeat(28));
+console.log(pad('Total', 12), pad(totalUsers, 14));
