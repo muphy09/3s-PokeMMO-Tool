@@ -27,7 +27,6 @@
   - Title appears at the top of the overlay now
   - Pokemon with no sprite data now have a placeholder icon
 
-
 ---
 
 ## [3.3.1] - 2025-10
