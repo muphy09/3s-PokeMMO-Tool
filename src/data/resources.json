@@ -1,0 +1,274 @@
+{
+  "categories": [
+    {
+      "id": "alpha-pokemon",
+      "title": "Alpha Pokémon",
+      "sections": [
+        {
+          "heading": "What are Alpha Pokémon?",
+          "content": "Alpha Pokémon are special variant Pokémon that are visually larger with unique characteristics. They appear with a red outline in battle and summary screens, have a lower-toned battle cry, and feature a special icon. When caught, Alphas always have their **Hidden Ability** and come with **two randomly chosen perfect IVs (31)**. They appear larger as follower sprites with a special particle effect when summoned."
+        },
+        {
+          "heading": "Alpha Swarm Mechanics",
+          "content": "Alpha Swarms occur once every in-game day (6 real-life hours) at random times and locations, lasting **75 minutes** each. This means four alpha swarms appear daily in real-time. The spawn location becomes visible on the town map, allowing trainers to locate active swarms easily."
+        },
+        {
+          "heading": "Wild Might Mechanic",
+          "content": "During battle, Alpha Pokémon can \"become filled with wild might,\" drastically increasing all their stats. If your party faints, you can rechallenge the Alpha immediately. Running from the encounter requires a **2-minute wait** before the Alpha respawns.\n\n**Counter-Strategy:** Use a Pokémon with the **Contrary ability** and **Skill Swap** move, which reverses the stat increases into decreases."
+        },
+        {
+          "heading": "Breeding Alpha Pokémon",
+          "content": "**Both parents must have the Alpha attribute** to produce an Alpha offspring. Breeding an Alpha with a non-Alpha results in a regular Pokémon. This makes Alpha breeding significantly more resource-intensive."
+        },
+        {
+          "heading": "Key Differences from Vanilla",
+          "content": "Alpha Pokémon are entirely unique to PokeMMO and don't exist in standard Pokémon games. They provide a guaranteed method to obtain Hidden Abilities and strong IVs."
+        }
+      ]
+    },
+    {
+      "id": "raids",
+      "title": "Raid Battles",
+      "sections": [
+        {
+          "heading": "How Raids Work",
+          "content": "Raids are challenging 4-player cooperative battles introduced during the Lunar New Year Event 2024. They take place at Raid Dens and are typically available only during specific seasonal events (Christmas, Halloween, Lunar New Year). Raids are rated by star difficulty (★) ranging from **3-star to 5-star** challenges."
+        },
+        {
+          "heading": "Participation Requirements",
+          "content": "• All Pokémon in your team must have **unique evolution lines** (no duplicates)\n• No two Pokémon can hold the **same item**\n• For 4-star+ raids, players must complete all available 3-star raids first\n• Teams can be formed through party links or matchmaking"
+        },
+        {
+          "heading": "Rewards and Lockouts",
+          "content": "Successfully completing a raid gives trainers the opportunity to **catch the featured raid Pokémon**. Some raids offer additional rewards (e.g., Heatran raid offers 30x Magma Stones). After defeating a specific raid, you're **locked out** from participating in that same raid again during that event."
+        },
+        {
+          "heading": "Optimal Raid Pokémon",
+          "content": "Based on community guides:\n• **Bug-types** pair well with Dark and Physical Ghost types against Psychic raid bosses\n• **Steel types** are valued for their durability and strong resistances but lack offensive power\n• **Fighting types** are commonly recommended for DPS roles\n• The community maintains tier lists and compendiums on the forums with specific Pokémon rankings for support and DPS roles"
+        },
+        {
+          "heading": "Permanent Raid",
+          "content": "**Heatran** is available as a permanent raid but requires a completed OT Pokédex and has a **3-month cooldown** after catching."
+        }
+      ]
+    },
+    {
+      "id": "berry-farming",
+      "title": "Berry Farming",
+      "sections": [
+        {
+          "heading": "How Berry Farming Works",
+          "content": "Berries are planted in loamy soil using different seed types (spicy, dry, sweet, bitter, sour). Growth times vary by berry type:\n\n• **Short berries:** 16 hours (3-6 yield)\n• **Medium berries:** 20 hours (4-7 yield)\n• **Long berries:** 42-67 hours (7-13 yield)\n\nAll berries have an **8-hour wilt time** after full growth."
+        },
+        {
+          "heading": "Watering Mechanics",
+          "content": "Berries have a moisture level displayed as water droplets (0-5):\n\n• If a plant becomes **dry (0 droplets)** for too long, it will die\n• If a plant is **over-watered at 5 droplets (flooded)**, the maximum yield decreases\n• **Watering a flooded plant will kill it**\n\nPlayers must carefully monitor moisture levels to maximize yields."
+        },
+        {
+          "heading": "Tools Required",
+          "content": "• **Harvesting Tool** ($350) - Extract seeds from berries\n• **Wailmer Pail** - Obtained from the flower shop on Route 104 in Hoenn\n• **Sprayduck** - Obtained in front of Mistralton City's berry plots in Unova"
+        },
+        {
+          "heading": "Profit Strategies",
+          "content": "**Leppa berries** are among the most popular for farming, though seed costs can be expensive. Community guides suggest that profits are variable depending on market prices. The forums have berry farming profit calculators and watering guides to help optimize timing and maximize yields. Berries with longer growth times often have special competitive effects and sell for more."
+        }
+      ]
+    },
+    {
+      "id": "breeding",
+      "title": "Breeding System",
+      "sections": [
+        {
+          "heading": "Core Mechanics",
+          "content": "Breeding requires two Pokémon of the same egg group and opposite gender (Ditto can breed with any). **Important:** Parents are **permanently given** to the daycare man and **cannot be retrieved**. The egg hatches into the female parent's species (or the non-Ditto parent when breeding with Ditto)."
+        },
+        {
+          "heading": "IV Inheritance System",
+          "content": "• Exactly **3 IVs** are directly inherited from the parents (can be any combination)\n• The remaining **3 IVs** are calculated as the **average** of the parents' IVs in those stats, rounded down\n• **Power Items (Braces)** cost $10,000 each and **guarantee** a specific stat IV is inherited\n• There are six different braces corresponding to HP, Attack, Defense, Special Attack, Special Defense, and Speed"
+        },
+        {
+          "heading": "Nature and Ability Inheritance",
+          "content": "• An **Everstone** held by either parent guarantees the egg inherits that parent's nature\n• **Hidden Abilities** pass down only if the **female parent** has the Hidden Ability\n• Gender can be manually selected by paying a fee based on the species' gender ratio"
+        },
+        {
+          "heading": "Egg Moves and Hatching",
+          "content": "• Any move that either parent knows that can be passed to the egg's species will be inherited\n• Hatching is **time-based (real-time hours)**, not step-based\n• Having **Flame Body** or **Magma Armor** in the first party slot reduces hatching time\n• **Donator status** provides an additional **10% reduction** to egg hatching time"
+        },
+        {
+          "heading": "Shiny Breeding",
+          "content": "• A shiny can only breed with another shiny\n• Breeding two shinies **guarantees a shiny offspring**\n• Breeding two **Secret Shinies** guarantees a **Secret Shiny** offspring\n• Shiny breeding has the same base odds as wild encounters (**1/30,000**)"
+        },
+        {
+          "heading": "Breeding Chains",
+          "content": "Chain breeding refers to breeding through multiple species to obtain specific move combinations. This involves passing moves through intermediate species in the same egg group to ultimately get desired moves onto your target Pokémon."
+        }
+      ]
+    },
+    {
+      "id": "shiny-hunting",
+      "title": "Shiny Hunting",
+      "sections": [
+        {
+          "heading": "Base Shiny Rates",
+          "content": "The base shiny rate in PokeMMO is **1/30,000**, significantly harder than vanilla Pokémon games. This can be improved through:\n\n• **Donator Status:** +10% boost (bringing odds to ~1/27,000)\n• **Shiny Charm:** +10% boost (~1/27,000 when used alone)\n• **Both combined:** ~1/24,000 (or 1/24,300 for certain methods)"
+        },
+        {
+          "heading": "Shiny Charm Details",
+          "content": "The Shiny Charm costs **100 Reward Points** and lasts for **1 hour**. It's purchased from the Gift Shop. Multiple Shiny Charms in a link do **not stack**.\n\n**Link Bonus:** The Shiny Charm provides a **5% link bonus** to members in a link who didn't personally use a Shiny Charm. Trainers using their own personal Shiny Charm do not receive the link bonus."
+        },
+        {
+          "heading": "Secret Shinies",
+          "content": "There's a **1/16 chance** of encountering a \"Secret Shiny\" with a different particle effect. This applies to non-Sweet Scent encounters. Breeding a Secret Shiny with another shiny guarantees Secret Shiny offspring."
+        },
+        {
+          "heading": "Shiny Lock System",
+          "content": "Accounts can become \"shiny locked\" if spending excessive time hunting before story progression. The shiny lock is removed after **completing one region to level 100**. This anti-abuse measure prevents new accounts from endless shiny hunting without playing the game."
+        },
+        {
+          "heading": "Hunting Methods",
+          "content": "Common methods include:\n\n• **Horde encounters** using Sweet Scent\n• **Wild encounters** with Max Repels\n• **Breeding** (though breeding has the same 1/30,000 base odds)\n• **Alpha Pokémon** were initially shiny-locked but this restriction was removed during part 3 of the 10th anniversary event"
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "title": "Seasonal Events",
+      "sections": [
+        {
+          "heading": "Event Schedule",
+          "content": "PokeMMO hosts annual seasonal events for major holidays:\n\n• **Christmas** (annually since 2015)\n• **Halloween** (annually since 2015)\n• **Lunar New Year** (since 2019)\n\nEvents typically introduce major game updates and new content."
+        },
+        {
+          "heading": "Event Structure",
+          "content": "During events, players fight trainers to earn event-specific items which can be used to participate in boss battles. Events introduce:\n\n• New **vanities** (cosmetic items)\n• **Alpha Pokémon spawns**\n• **Event bags** containing exclusive rewards"
+        },
+        {
+          "heading": "Halloween Event Mechanics",
+          "content": "Players collect wisps spread through all regions, \"beat up kids to steal their candy,\" fight the Spirits of Halloween, and ultimately battle the **Pumpking boss**.\n\n**Rewards:**\n• Easy mode: 5 Goodie Bags\n• Hard mode: 5 Pumpking Goodie Bags"
+        },
+        {
+          "heading": "What to Expect and Prepare",
+          "content": "Events typically last **2-3 weeks**. Players should prepare by:\n\n• Having strong teams ready\n• Saving money for event purchases\n• Checking the forums for event-specific guides\n• Event-exclusive cosmetics and some Alpha Pokémon are only available during these limited windows"
+        }
+      ]
+    },
+    {
+      "id": "money-making",
+      "title": "Money Making Methods",
+      "sections": [
+        {
+          "heading": "Pickup Ability Farming",
+          "content": "The Pickup ability automatically picks up items after battles. **Only the first Pokémon in the party** can use Pickup and must be alive at the end of battle (different from vanilla games).\n\n**Best Pokémon:** Meowth (high Attack IV/EV), Munchlax (high Speed and Attack IV/EV), Teddiursa, and Pachirisu\n\n**Note:** Pickup doesn't function in Sinnoh region\n\n**Estimated profits:** ~$50k/hour from sold items"
+        },
+        {
+          "heading": "Pay Day Methods",
+          "content": "Requires a high-level Meowth with Pay Day move. Using Pay Day in battle increases money gained. **Don't evolve Meowth to Persian** as it loses the Pickup ability.\n\n• **Pay Day Pickup at Undella Bay:** $130k/hour\n• **Pay Day Pickup at Dragonspiral Tower:** $100k/hour\n• **Meowth Item Farming:** $140k/hour"
+        },
+        {
+          "heading": "Gym Leader Rebattles",
+          "content": "Requires storyline completion in multiple regions.\n\n• **Standard method:** $250k/hour\n• **5-Pokémon method:** $450k/hour\n• **Ho-Oh Rebattles:** $882k-$1.1M/hour"
+        },
+        {
+          "heading": "Other Popular Methods",
+          "content": "• **Catching Ditto (Breloom method):** ~$160k/hour (requires Hoenn completion)\n• **Berry Farming:** Variable profit based on market prices\n• **Breeding for Profit:** Variable, highly dependent on demand\n• **Catching Alpha Pokémon:** High-value sales on GTL\n• **Global Trade Link (GTL) Flipping:** Variable profit through market arbitrage\n• **Flame Orb Farming:** $70-$160k/hour\n\n**Note:** All prices are rough estimates and depend on the current in-game economy. Market prices fluctuate based on supply/demand."
+        }
+      ]
+    },
+    {
+      "id": "headbutt",
+      "title": "Headbutt Trees",
+      "sections": [
+        {
+          "heading": "How Headbutt Works",
+          "content": "Headbutt is taught for **free** by a Move Tutor in the center of **Ilex Forest** (can be taught unlimited times). Each headbutt tree is 2x2 or 2x3 with 4-6 tiles, though not all tiles are accessible. Unlike Honey Trees, each headbutt tree has a **unique encounter pool** - meaning specific trees matter for finding specific Pokémon."
+        },
+        {
+          "heading": "Tree Cooldowns and Mechanics",
+          "content": "• Trees have a **6-hour cooldown** per tree after headbutting\n• **Repels work** while headbutting but don't prevent tree encounters\n• **Lures do not** affect tree encounters\n• When you headbutt a tree, a Pokémon may fall out to battle"
+        },
+        {
+          "heading": "Notable Pokémon and Locations",
+          "content": "**Heracross:**\n• Best location is **Azalea Town**, specifically the second tree to the left of Slowpoke Well\n• Also found on Routes 33, 42, 44, 45, and 46\n\n**Aipom:** Routes 29, 33, 42, 44, 45, 46, and Azalea Town\n\n**Other Rare Pokémon:** Sneasel, Skarmory, Pineco\n\n**Common Encounters:** Pidgey, Spearow, Murkrow, Natu"
+        },
+        {
+          "heading": "Strategy Tips",
+          "content": "Target specific trees based on your desired Pokémon. The PokeMMO forums have comprehensive location spreadsheets showing which trees spawn which Pokémon. Many routes (R26-R48) and locations like Ecruteak City, Mt. Silver, and National Park have headbutt trees.\n\n**Requirements:**\n• Headbutt move (free from Ilex Forest tutor)\n• OT Dex for Mt. Silver access\n• Potentially Surf and Cut for accessing certain areas"
+        }
+      ]
+    },
+    {
+      "id": "legendaries",
+      "title": "Legendary Pokémon",
+      "sections": [
+        {
+          "heading": "Roaming Legendary System",
+          "content": "Roaming legendaries are catchable permanent Pokémon that randomly appear in Kanto and Johto:\n\n• **Kanto:** Zapdos, Moltres, and Articuno\n• **Johto:** Entei, Suicune, and Raikou (rotate monthly: Suicune → Raikou → Entei)\n\nOnly **one legendary appears per calendar month** until captured. You can check the current roaming legendary at **pokemmo.zone/time**."
+        },
+        {
+          "heading": "Encounter Mechanics",
+          "content": "• Base encounter rate: approximately **1/5,000**\n• If you faint a roaming legendary, it continues to reappear at an **increased rate of 1/500** until caught"
+        },
+        {
+          "heading": "Hunting Strategies",
+          "content": "• **Legendary Lures:** Special items that boost legendary encounter rates (purchased from shop)\n• **Max Repel Method:** Buy many Max Repels and search in tall grass\n• **Location Strategy:** Find tall grass patches where you can move back and forth easily\n• **Specific Spots:** Some community members believe certain spots have faster spawn rates"
+        },
+        {
+          "heading": "Temporary Legendaries",
+          "content": "Some legendaries like **Mewtwo, Rayquaza, Arceus, Keldeo, and Zekrom** are temporary. They can leave your party if:\n\n1. You lose a player challenge\n2. No challenges occur for a period\n3. Story objective is completed"
+        },
+        {
+          "heading": "Raid Legendaries",
+          "content": "• **Heatran:** Permanent raid requiring completed OT Pokédex, 3-month cooldown after catching\n• **Jirachi:** Seasonal Christmas event raid\n• Other seasonal raid legendaries appear during events"
+        }
+      ]
+    },
+    {
+      "id": "ev-training",
+      "title": "EV Training (Hordes)",
+      "sections": [
+        {
+          "heading": "How EVs Work",
+          "content": "Each Pokémon can earn a maximum of **510 total EVs**, with a maximum of **252 EVs per stat**. Hordes are the most efficient way to EV train. Using **Sweet Scent** in the overworld spawns a horde of 5 wild Pokémon. Each horde encounter can give **10-50 EVs** depending on the Pokémon and items used."
+        },
+        {
+          "heading": "Required Setup",
+          "content": "• A Pokémon with **Sweet Scent** (max PP recommended) to spawn hordes\n• A Pokémon with a move that **hits all foes** and instantly KOs them (like Surf, Earthquake, Rock Slide)\n• **Macho Brace** (doubles EV gain but halves Speed during battle)\n• **EXP Share** to level weaker Pokémon while EV training\n• Completion of multiple regions for best training spots"
+        },
+        {
+          "heading": "EV-Reducing Berries",
+          "content": "• **Pomeg Berry:** Reduces HP EVs by 10\n• **Kelpsy Berry:** Reduces Attack EVs by 10\n• **Qualot Berry:** Reduces Defense EVs by 10\n• **Hondew Berry:** Reduces Special Attack EVs by 10\n• **Grepa Berry:** Reduces Special Defense EVs by 10\n• **Tamato Berry:** Reduces Speed EVs by 10"
+        },
+        {
+          "heading": "Best Horde Locations",
+          "content": "**HP Training:**\n• 5x Stunfisk (10 EVs), Icirrus City Pond (Surf), Unova - 100% HP\n\n**Attack Training:**\n• 5x Nidorino (10 EVs), Route 15, Kanto - 100% Attack\n\n**Defense Training:**\n• 5x Metapod/Kakuna (10 EVs), Pattern Bush, Kanto - 100% Defense\n• 5x Pelipper (10 EVs), Route 222 (Surf), Sinnoh - 100% Defense\n• 5x Cofagrigus (10 EVs), Relic Castle, Unova - 100% Defense\n\n**Special Attack Training:**\n• 5x Gloom (10 EVs), Route 119 (Grass), Hoenn - 100% Sp. Atk\n• 5x Flaaffy/Girafarig, Route 43, Johto - 100% Sp. Atk\n• 5x Slugma (5 EVs), Mt. Ember, Kanto - 100% Sp. Atk\n\n**Speed Training:**\n• 5x Linoone, Route 121, Hoenn - 100% Speed\n• 5x Persian/Fearow, Island 7, Kanto - 100% Speed (near PC)"
+        },
+        {
+          "heading": "Efficient Training Math",
+          "content": "With Macho Brace, each horde gives **20 EVs** per stat (10 base x 2).\n\n**To reach 252 EVs:** 252 ÷ 20 = 12.6, so you need **13 horde battles** to max a stat.\n\n**To reach 510 total EVs (252/252/4 spread):** 13 battles + 13 battles + 1 battle = **27 total horde encounters**."
+        }
+      ]
+    },
+    {
+      "id": "repel-shiny-hunting",
+      "title": "Repel Shiny Hunting",
+      "sections": [
+        {
+          "heading": "Why Repels vs Traditional Leppa Farming",
+          "content": "Traditional Leppa berry shiny hunting can cost up to **$2,550,000 for 3,000 encounters**. The Repel method drastically reduces costs by:\n\n• Minimizing unnecessary travel between encounters\n• Reducing wasted time on non-target encounters\n• Requiring only repels instead of expensive Leppa berries\n\n**Key Formula:** 30,000 ÷ (encounters per repel) = Number of Repels needed\n\n**Total Cost = Number of Repels × Repel Price**\n\nBy manually activating repels and maximizing efficiency, trainers can save significant money while shiny hunting specific hordes."
+        },
+        {
+          "heading": "Repel Costs",
+          "content": "**Repel (100 Steps):** $400\n\n**Super Repel (200 Steps):** $750\n\n**Max Repel (250 Steps):** $900\n\nThe choice of repel depends on the specific horde location and encounter rate to minimize cost per encounter."
+        },
+        {
+          "heading": "Horde Locations & Costs",
+          "content": "**Cheapest Options ($150,000-$225,000):**\n• **Lanturn** - Sootopolis City Underwater: $150,000\n• **Electrike/Linoone** - Mauville City Route 118: $225,000\n\n**Mid-Range ($300,000):**\n• **Dugtrio** - Resort Gorgeous Route 229/228: $300,000\n• **Pikachu** - Route 10 Power Plant: $300,000\n• **Roselia** - Fight Area Route 230: $300,000\n• **Metapod/Kakuna** - Six Island Pattern Bush: $300,000\n• **Magikarp/Dratini** - Blackthorn City Dragon's Den: $300,000\n\n**Higher Cost ($375,000-$400,000):**\n• **Jynx/Delibird** - Blackthorn City Ice Path: $375,000\n• **Lairon** - Ever Grande City Victory Road: $375,000\n• **Clamperl** - Mossdeep City Underwater: $375,000\n• **Smeargle** - Battle Frontier Artisan Cave: $400,000\n• **Magmar/Luxio** - Floaroma Town Fuego Ironworks: $400,000\n\n*All costs are average estimates for reaching 30,000 encounters (1 shiny at base odds)*"
+        },
+        {
+          "heading": "Strategy Tips",
+          "content": "• Manually activate repels to avoid wasted steps\n• Choose your target horde based on both cost and desired Pokémon\n• Lanturn hunting offers the lowest cost for repel-based shiny hunting\n• Combine with Donator Status and Shiny Charm for better odds\n• Track your encounters to estimate remaining cost"
+        }
+      ]
+    }
+  ]
+}

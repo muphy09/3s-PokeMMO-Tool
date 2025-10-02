@@ -3,9 +3,12 @@
 
 ## [3.3.2] - 2025-10
 ### Added
+- Resources | *Suggestions Appreciated!*
+  - Comprehensive Guides & Information to help along the journey
+
 - Event Dex
   - Reorganized the Event (Boss) Pokemon into their own category
-  - *This will continue to be updated with better data*
+    - *This will continue to be updated with better data*
 
 
 ### Changed

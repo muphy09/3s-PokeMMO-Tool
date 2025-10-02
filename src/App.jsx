@@ -25,6 +25,7 @@ import TeamBuilder from './components/TeamBuilder.jsx';
 import DaycareManager from './components/DaycareManager.jsx';
 import HordeSearch from './components/HordeSearch.jsx';
 import RecommendedMovesets from './components/RecommendedMovesets.jsx';
+import ResourcesOverlay from './components/ResourcesOverlay.jsx';
 import hordeRegions from '../horderegiondata.json';
 import typeChartImg from '../data/Pokemon_Type_Chart.png';
 import movesData from '../data/moves.json';
@@ -4544,6 +4545,7 @@ function App(){
   const [toolsOpen, setToolsOpen] = useState(false);
 
   const [showTypeChart, setShowTypeChart] = useState(false);
+  const [showResources, setShowResources] = useState(false);
 
   // Compare mode state for Pokemon Search
   const [compareMode, setCompareMode] = useState(false);
@@ -4560,6 +4562,14 @@ function App(){
   }, [mode]);
 
   useEffect(() => { setToolsOpen(false); }, [mode]);
+
+  // Handle resources mode
+  useEffect(() => {
+    if (mode === 'resources') {
+      setShowResources(true);
+      setMode('home'); // Return to home after opening resources
+    }
+  }, [mode]);
 
 
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'classic');
@@ -5410,6 +5420,19 @@ const marketResults = React.useMemo(() => {
                 )}
               </div>
             </div>
+            {/* Resources button */}
+            <button
+              style={{
+                ...styles.segBtn(false),
+                marginLeft: 12,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6
+              }}
+              onClick={() => setShowResources(true)}
+            >
+              📚 Resources
+            </button>
           {ocrSupported && (
             <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
               <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
@@ -6664,6 +6687,10 @@ const marketResults = React.useMemo(() => {
             />
           </div>
         </div>
+      )}
+
+      {showResources && (
+        <ResourcesOverlay onClose={() => setShowResources(false)} />
       )}
 
       {marketSelected && (
