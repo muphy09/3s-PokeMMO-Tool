@@ -143,19 +143,11 @@ export default function AlphaDexButton(){
     width:'85%', maxWidth:1100, maxHeight:'85%', overflow:'hidden',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)', display:'flex', flexDirection:'column'
   };
-  const headerStyle = {
-    display:'grid',
-    gridTemplateColumns:'auto 1fr auto',
-    alignItems:'center',
-    gap:8,
-    marginBottom:14,
-    position:'relative'
-  };
   const tabBtn = (active) => ({
     padding:'6px 10px', borderRadius:8, border:'1px solid var(--divider)', cursor:'pointer',
     fontWeight:800, background: active ? 'var(--card)' : 'transparent', color:'var(--text)'
   });
-  const gridStyle = { display:'grid', gridTemplateColumns:'repeat(4, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
+  const gridStyle = { display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
   const chipStyle = (filled) => ({
     display:'grid', gridTemplateColumns:'auto 1fr auto', alignItems:'center', gap:10,
     border:`${filled ? 2 : 1}px solid ${filled ? '#ff4d4d' : '#ffffff'}`,
@@ -265,24 +257,28 @@ export default function AlphaDexButton(){
               <span style={{ pointerEvents:'none' }}>X</span>
             </button>
 
-            {/* Header with tabs (left) and centered search (for Normal Spawn) */}
-            <div style={headerStyle}>
-              <div style={{ display:'flex', gap:8 }}>
+            {/* Title */}
+            <div style={{ textAlign:'center', fontWeight:900, fontSize:20, marginBottom:12 }}>Alpha Dex</div>
+
+            {/* Header with tabs and search */}
+            <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:24 }}>
+              <div style={{ display:'flex', justifyContent:'center', gap:8 }}>
                 <button style={tabBtn(tab==='normal')} onClick={()=>setTab('normal')}>Normal Spawn</button>
                 <button style={tabBtn(tab==='event')} onClick={()=>setTab('event')}>Event Spawn</button>
               </div>
-              {tab === 'normal' ? (
-                <input
-                  className="input"
-                  placeholder="Search"
-                  value={query}
-                  onChange={e=>setQuery(e.target.value)}
-                  style={{ justifySelf:'center', width:280, borderRadius:8, padding:'6px 10px' }}
-                />
-              ) : <div />}
-              <div />
+              {tab === 'normal' && (
+                <div style={{ display:'flex', justifyContent:'center' }}>
+                  <input
+                    className="input"
+                    placeholder="Search"
+                    value={query}
+                    onChange={e=>setQuery(e.target.value)}
+                    style={{ width:280, borderRadius:8, padding:'6px 10px' }}
+                  />
+                </div>
+              )}
             </div>
-            <div style={{ flex:1, overflow:'auto' }}>
+            <div style={{ flex:1, overflow:'auto', padding:'20px' }}>
               {tab==='normal' && (()=>{
                 const q = query.trim().toLowerCase();
                 const filtered = q ? normalMon.filter(m => String(m.id).includes(q) || (m.name||'').toLowerCase().includes(q)) : normalMon;

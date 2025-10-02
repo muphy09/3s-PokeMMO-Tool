@@ -9,6 +9,7 @@ import PatchNotesButton, { openPatchNotes } from './components/PatchNotesButton.
 import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
 import AlphaDexButton from './components/AlphaDexButton.jsx';
+import EventDexButton from './components/EventDexButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
 import SponsorButton from './components/SponsorButton.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
@@ -26,6 +27,7 @@ import HordeSearch from './components/HordeSearch.jsx';
 import RecommendedMovesets from './components/RecommendedMovesets.jsx';
 import hordeRegions from '../horderegiondata.json';
 import typeChartImg from '../data/Pokemon_Type_Chart.png';
+import movesData from '../data/moves.json';
 
 const TM_URL        = `${import.meta.env.BASE_URL}data/tm_locations.json`;
 const APP_TITLE = "3's PokeMMO Tool";
@@ -571,6 +573,14 @@ const ITEM_INDEX = (() => {
     byName.set(normalizeKey(item.name), item);
   }
   return { byId, byName };
+})();
+
+const MOVES_INDEX = (() => {
+  const byId = new Map();
+  for (const move of movesData) {
+    if (move.id != null) byId.set(move.id, move);
+  }
+  return { byId };
 })();
 
 const EVO_PARENTS = (() => {
@@ -2579,9 +2589,12 @@ function EvolutionChain({ mon, onSelect }) {
     return cur;
   }, [mon]);
 
-  const renderMon = (m) => {
+  const renderMon = (m, isFormDisplay = false) => {
     if (!m) return null;
-    const isSelected = !!(mon && m && m.id === mon.id);
+    // For forms, check if the name matches (since forms might not have IDs)
+    const isSelected = isFormDisplay
+      ? !!(mon && m && normalizeKey(m.name) === normalizeKey(mon.name))
+      : !!(mon && m && m.id === mon.id);
     const canSelect = !!(onSelect && !isSelected);
     const handleSelect = () => {
       if (onSelect) onSelect(m);
@@ -2609,7 +2622,7 @@ function EvolutionChain({ mon, onSelect }) {
           >
             <Sprite mon={m} size={72} alt={m.name} />
           </div>
-          <div className="label-muted">#{String(m.id).padStart(3,'0')}</div>
+          <div className="label-muted">#{m.id ? String(m.id).padStart(3,'0') : '--'}</div>
           {isSelected ? (
             <span style={{ color:'var(--accent)', fontWeight:700 }}>
               {titleCase(m.name)}
@@ -2668,6 +2681,14 @@ function EvolutionChain({ mon, onSelect }) {
                 }
               }
 
+              if (rawType === 'level_with_skill' && typeof evo.val === 'number') {
+                const move = MOVES_INDEX.byId.get(evo.val);
+                if (move) {
+                  label = `Level up knowing ${move.name}`;
+                  val = null;
+                }
+              }
+
               if (
                 rawType === 'happiness' ||
                 rawType === 'happiness_day' ||
@@ -2721,12 +2742,39 @@ function EvolutionChain({ mon, onSelect }) {
 
   if (!base) return null;
   const hasChain = base.id !== mon.id || (base.evolutions || []).length > 0;
-  if (!hasChain) return null;
+  // Check forms on the base Pokemon (which handles both evolved and base forms)
+  const formsSource = base || mon;
+  const hasForms = Array.isArray(formsSource.forms) && formsSource.forms.length > 0;
+
+  if (!hasChain && !hasForms) return null;
+
+  // Determine the title based on what's available
+  let title = 'Evolution';
+  if (hasForms && hasChain) {
+    title = 'Evolution / Forms';
+  } else if (hasForms && !hasChain) {
+    title = 'Forms';
+  }
 
   return (
     <div style={{ margin:'16px 0 6px' }}>
-      <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>Evolution</div>
-      {renderMon(base)}
+      <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>{title}</div>
+      {hasChain && renderMon(base)}
+      {hasForms && (
+        <div style={{ marginTop: hasChain ? 16 : 0 }}>
+          {hasChain && <div className="label-muted" style={{ fontWeight:700, marginBottom:8, marginTop:16 }}>Forms</div>}
+          <div style={{ display:'flex', flexWrap:'wrap', gap:16 }}>
+            {/* Show the base form first */}
+            {renderMon(formsSource, true)}
+            {/* Then show all the other forms */}
+            {formsSource.forms.map((form, idx) => (
+              <div key={`form-${idx}`}>
+                {renderMon(form, true)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -5293,6 +5341,7 @@ const marketResults = React.useMemo(() => {
         <div style={{ display:'inline-flex', gap:8, pointerEvents:'auto' }}>
           <CaughtListButton />
           <AlphaDexButton />
+          <EventDexButton />
         </div>
       </div>
 
@@ -6191,8 +6240,22 @@ const marketResults = React.useMemo(() => {
                 seenHeld.add(dedupeKey);
                 heldItems.push(h);
               }
-              const abilityNames = (resolved.abilities || []).map(a => a?.name).filter(Boolean);
-              const useCompactAbilities = abilityNames.some(a => (a || '').length > 12) || abilityNames.join('').length > 28;
+              // Deduplicate abilities while preserving order and keeping blanks for empty slots
+              const rawAbilities = (resolved.abilities || []).map(a => a?.name).filter(Boolean);
+              const abilityNames = [];
+              const seenAbilities = new Set();
+              for (let i = 0; i < 3; i++) {
+                const abilityName = rawAbilities[i];
+                if (abilityName && !seenAbilities.has(abilityName)) {
+                  abilityNames.push(abilityName);
+                  seenAbilities.add(abilityName);
+                } else if (abilityName && seenAbilities.has(abilityName)) {
+                  abilityNames.push(undefined); // Keep slot but make it blank
+                } else {
+                  abilityNames.push(undefined);
+                }
+              }
+              const useCompactAbilities = abilityNames.filter(Boolean).some(a => (a || '').length > 12) || abilityNames.filter(Boolean).join('').length > 28;
               const renderHeldItem = (h, idx) => {
                 const item = ITEM_INDEX.byId.get(h.id) || ITEM_INDEX.byName.get(normalizeKey(h.name || h));
                 return (
@@ -6400,7 +6463,6 @@ const marketResults = React.useMemo(() => {
                         })()}
                       </div>
                       <div className="profile-section-card">
-                        <div className="profile-section-title">Evolution</div>
                         <EvolutionChain mon={resolved} onSelect={(m)=>{ setSelected(m); setShowSmogonSets(false); setShowMoveset(false); }} showTitle={false} />
                       </div>
                     </div>

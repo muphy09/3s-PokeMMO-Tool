@@ -94,7 +94,7 @@ for (const mon of dexRaw) {
 }
 
 const DEX_LIST = dexRaw
-  .filter(m => !FORM_IDS.has(m.id))
+  .filter(m => !FORM_IDS.has(m.id) && m.id <= 649)
   .map(m => ({
     id: m.id,
     name: m.name,
@@ -254,19 +254,8 @@ export default function CaughtListButton(){
     maxHeight:'85vh', height:'min(85vh, 920px)', minHeight:'min(620px, 85vh)', overflow:'hidden',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)', display:'flex', flexDirection:'column'
   };
-  const headerStyle = {
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'space-between',
-    gap:12,
-    marginBottom:14,
-    position:'relative',
-    flexWrap:'wrap'
-  };
-  const controlsRowStyle = { display:'flex', alignItems:'center', gap:12, flexWrap:'nowrap', flex:'1 1 auto', minWidth:0 };
-  const hideCaughtLabelStyle = { display:'inline-flex', alignItems:'center', gap:6, fontWeight:700, cursor:'pointer', flex:'0 0 auto' };
+  const hideCaughtLabelStyle = { display:'inline-flex', alignItems:'center', gap:6, fontWeight:700, cursor:'pointer' };
   const hideCaughtCheckboxStyle = { width:16, height:16, accentColor:'var(--accent)' };
-  const regionBadgeStyle = { padding:'4px 12px', borderRadius:999, border:'1px solid var(--accent)', color:'var(--accent)', fontWeight:800, fontSize:13, background:'rgba(255,255,255,0.04)', flex:'0 0 auto' };
   const catchAllButtonStyle = {
     border:'1px solid var(--accent)',
     background:'var(--accent)',
@@ -317,7 +306,7 @@ export default function CaughtListButton(){
     borderColor:'var(--accent)'
   };
   const confirmErrorStyle = { color:'#f87171', fontSize:13, fontWeight:600 };
-  const gridStyle = { display:'grid', gridTemplateColumns:'repeat(4, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
+  const gridStyle = { display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
   const chipStyle = (filled, active) => ({
     display:'flex',
     flexDirection:'column',
@@ -543,52 +532,49 @@ export default function CaughtListButton(){
               <span style={{ pointerEvents:'none' }}>X</span>
             </button>
 
-            {/* Header controls */}
-            <div style={headerStyle}>
-              <div style={controlsRowStyle}>
-                <input
-                  className="input"
-                  placeholder="Search"
-                  value={query}
-                  onChange={e=>setQuery(e.target.value)}
-                  style={{ width:220, flex:'0 0 220px', borderRadius:8, padding:'6px 10px' }}
-                />
-                <select
-                  className="input"
-                  value={regionFilter}
-                  onChange={e=>setRegionFilter(e.target.value)}
-                  style={{ width:220, borderRadius:8, padding:'6px 10px', flex:'0 0 220px' }}
-                >
-                  {REGION_OPTIONS.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-                <label style={hideCaughtLabelStyle}>
-                  <input
-                    type="checkbox"
-                    checked={hideCaught}
-                    onChange={e=>setHideCaught(e.target.checked)}
-                    style={hideCaughtCheckboxStyle}
-                  />
-                  Hide Caught
-                </label>
-                <button
-                  type="button"
-                  onClick={handleCatchAllClick}
-                  style={catchAllButtonStyle}
-                  title="Mark all non-legendary Pokémon as caught"
-                >
-                  Catch All (Non-Legendary)
-                </button>
-                {regionFilter !== 'All' && (
-                  <div style={regionBadgeStyle}>{regionFilter}</div>
-                )}
-              </div>
+            {/* Title */}
+            <div style={{ textAlign:'center', fontWeight:900, fontSize:20, marginBottom:12 }}>Pokedex</div>
 
+            {/* Header controls */}
+            <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:12, marginBottom:24, flexWrap:'wrap' }}>
+              <input
+                className="input"
+                placeholder="Search"
+                value={query}
+                onChange={e=>setQuery(e.target.value)}
+                style={{ width:200, borderRadius:8, padding:'6px 10px' }}
+              />
+              <select
+                className="input"
+                value={regionFilter}
+                onChange={e=>setRegionFilter(e.target.value)}
+                style={{ width:200, borderRadius:8, padding:'6px 10px' }}
+              >
+                {REGION_OPTIONS.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              <label style={hideCaughtLabelStyle}>
+                <input
+                  type="checkbox"
+                  checked={hideCaught}
+                  onChange={e=>setHideCaught(e.target.checked)}
+                  style={hideCaughtCheckboxStyle}
+                />
+                Hide Caught
+              </label>
+              <button
+                type="button"
+                onClick={handleCatchAllClick}
+                style={catchAllButtonStyle}
+                title="Mark all non-legendary Pokémon as caught"
+              >
+                Catch All (Non-Legendary)
+              </button>
             </div>
 
             {/* Grid of chips */}
-            <div style={{ flex:1, overflow:'auto', minHeight:0 }}>
+            <div style={{ flex:1, overflow:'auto', minHeight:0, padding:'20px' }}>
               <div style={gridStyle}>
                 {list.map(mon => {
                   const filled = caught.has(mon.id);

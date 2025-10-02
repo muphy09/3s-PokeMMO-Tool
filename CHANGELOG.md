@@ -1,6 +1,28 @@
 # Changelog
 ---
 
+## [3.3.2] - 2025-10
+### Added
+- Event Dex
+  - Reorganized the Event (Boss) Pokemon into their own category
+  - *This will continue to be updated with better data*
+
+
+### Changed
+- Forms (Inside Profile)
+  - Pokemon Forms will now appear in the (dynamic) Evolution / Forms box
+- Move Evolutions
+  - Pokemon that evolve by knowing a certain move are now properly represented
+- Abilities
+  - Duplicate Abilities no longer appear
+- Pokedex, Alpha Dex, & Event Dex
+  - UI spaced to look easier to navigate
+  - Event Pokemon no longer appear in Pokedex
+  - Title appears at the top of the overlay now
+
+
+---
+
 ## [3.3.1] - 2025-10
 ### Overhaul
 - Pokedex, Locations, Items, and Moveset Data
