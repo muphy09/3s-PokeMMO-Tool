@@ -44,6 +44,7 @@ const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BA
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 const ITEM_ICON_BASE = 'https://raw.githubusercontent.com/PokeMMO-Tools/pokemmo-data/main/assets/itemicons/';
 const ITEM_PLACEHOLDER = `${import.meta.env.BASE_URL}no-item.svg`;
+const PLACEHOLDER_POKEMON = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10c-5.5 0-10 4.5-10 10v5h-5c-5.5 0-10 4.5-10 10v30c0 5.5 4.5 10 10 10h5v5c0 5.5 4.5 10 10 10s10-4.5 10-10v-5h5c5.5 0 10-4.5 10-10V35c0-5.5-4.5-10-10-10h-5v-5c0-5.5-4.5-10-10-10z" fill="none" stroke="currentColor" stroke-width="2"/><text x="50" y="55" font-size="40" text-anchor="middle" fill="currentColor">?</text></svg>`)}`;
 
 // Precompute horde sizes by region and area for quick lookup
 const HORDE_SIZE_MAP = (() => {
@@ -650,6 +651,12 @@ function localSpriteCandidates(mon){
   function spriteSources(mon, opts = {}){
   const shiny = !!opts.shiny;
   if (!mon) return [];
+
+  // Use placeholder for Pokemon with ID >= 650 (Event Pokemon with incorrect sprite data)
+  if (mon?.id != null && mon.id >= 650) {
+    return [PLACEHOLDER_POKEMON];
+  }
+
   const arr = [];
 
   // Prefer higher-resolution PokeAPI sprites first when we have a canonical dex number
@@ -4838,7 +4845,11 @@ function App(){
     if (theme === 'white') return spriteSources(getMon('Zekrom'), opt)[0] || null;
     if (theme === 'diamond') return spriteSources(getMon('Dialga'), opt)[0] || null;
     if (theme === 'pearl') return spriteSources(getMon('Palkia'), opt)[0] || null;
-    const withSprite = DEX_LIST.filter(d => spriteSources(d, opt).length > 0);
+    // Exclude Pokemon with ID >= 650 (Event Pokemon with placeholder images)
+    const withSprite = DEX_LIST.filter(d => {
+      if (d?.id != null && d.id >= 650) return false;
+      return spriteSources(d, opt).length > 0;
+    });
     return withSprite.length ? spriteSources(withSprite[Math.floor(Math.random()*withSprite.length)], opt)[0] : null;
   }, [theme, shinyGlobal]);
   useEffect(() => { document.title = APP_TITLE; }, []);
@@ -5421,20 +5432,16 @@ const marketResults = React.useMemo(() => {
               </div>
             </div>
             {/* Resources button */}
-            <button
-              style={{
-                ...styles.segBtn(false),
-                marginLeft: 12,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6
-              }}
-              onClick={() => setShowResources(true)}
-            >
-              📚 Resources
-            </button>
+            <div style={{ ...styles.segWrap, margin: '0 auto' }}>
+              <button
+                style={styles.segBtn(false)}
+                onClick={() => setShowResources(true)}
+              >
+                📚 Resources
+              </button>
+            </div>
           {ocrSupported && (
-            <div style={{ ...styles.segWrap, marginLeft:'auto' }}>
+            <div style={styles.segWrap}>
               <button style={styles.segBtn(mode==='live')} onClick={()=>setMode('live')}>Live Route</button>
               <button style={styles.segBtn(mode==='battle')} onClick={()=>setMode('battle')}>Live Battle</button>
             </div>

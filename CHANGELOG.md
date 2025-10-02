@@ -14,14 +14,18 @@
 ### Changed
 - Forms (Inside Profile)
   - Pokemon Forms will now appear in the (dynamic) Evolution / Forms box
+
 - Move Evolutions
   - Pokemon that evolve by knowing a certain move are now properly represented
+
 - Abilities
   - Duplicate Abilities no longer appear
+
 - Pokedex, Alpha Dex, & Event Dex
   - UI spaced to look easier to navigate
   - Event Pokemon no longer appear in Pokedex
   - Title appears at the top of the overlay now
+  - Pokemon with no sprite data now have a placeholder icon
 
 
 ---
