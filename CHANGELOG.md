@@ -10,7 +10,6 @@
   - Reorganized the Event (Boss) Pokemon into their own category
     - *This will continue to be updated with better data*
 
-
 ### Changed
 - Forms (Inside Profile)
   - Pokemon Forms will now appear in the (dynamic) Evolution / Forms box
