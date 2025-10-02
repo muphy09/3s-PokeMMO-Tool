@@ -1,7 +1,7 @@
 # Changelog
 ---
 
-## [3.3.2] - 2025-10
+## [3.3.3] - 2025-10
 ### Added
 - Resources | *Suggestions Appreciated!*
   - Comprehensive Guides & Information to help along the journey

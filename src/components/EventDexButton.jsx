@@ -5,6 +5,7 @@ const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BA
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
 const TRANSPARENT_PNG =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
+const PLACEHOLDER_POKEMON = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10c-5.5 0-10 4.5-10 10v5h-5c-5.5 0-10 4.5-10 10v30c0 5.5 4.5 10 10 10h5v5c0 5.5 4.5 10 10 10s10-4.5 10-10v-5h5c5.5 0 10-4.5 10-10V35c0-5.5-4.5-10-10-10h-5v-5c0-5.5-4.5-10-10-10z" fill="none" stroke="currentColor" stroke-width="2"/><text x="50" y="55" font-size="40" text-anchor="middle" fill="currentColor">?</text></svg>`)}`;
 
 function normalizeKey(s=''){
   return String(s)
@@ -29,6 +30,10 @@ function localSpriteCandidates(mon){
 }
 function spriteSources(mon, { shiny=false } = {}){
   if (!mon) return [];
+  // Use placeholder for Pokemon with ID >= 650 (Event Pokemon with incorrect sprite data)
+  if (mon?.id != null && mon.id >= 650) {
+    return [PLACEHOLDER_POKEMON];
+  }
   const arr = [];
   if (shiny) {
     if (mon.sprites?.front_shiny) arr.push(mon.sprites.front_shiny);
