@@ -6,7 +6,12 @@
       "Bash(npm run build:*)",
       "Bash(npm start)",
       "Bash(timeout:*)",
-      "Bash(del convert_alpha_ids.js)"
+      "Bash(del convert_alpha_ids.js)",
+      "Bash(python:*)",
+      "Bash(del \"c:\\dev\\pokemmo-tool\\read_excel.ps1\")",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

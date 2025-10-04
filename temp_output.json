@@ -1,0 +1,1544 @@
+{
+  "Bulbasaur": {
+    "National": 1,
+    "Kanto": 1
+  },
+  "Ivysaur": {
+    "National": 2,
+    "Kanto": 2
+  },
+  "Venusaur": {
+    "National": 3,
+    "Kanto": 3
+  },
+  "Charmander": {
+    "National": 4,
+    "Kanto": 4
+  },
+  "Charmeleon": {
+    "National": 5,
+    "Kanto": 5
+  },
+  "Charizard": {
+    "National": 6,
+    "Kanto": 6
+  },
+  "Squirtle": {
+    "National": 7,
+    "Kanto": 7
+  },
+  "Wartortle": {
+    "National": 8,
+    "Kanto": 8
+  },
+  "Blastoise": {
+    "National": 9,
+    "Kanto": 9
+  },
+  "Caterpie": {
+    "National": 10,
+    "Kanto": 10,
+    "Johto": 24,
+    "Unova": 208
+  },
+  "Metapod": {
+    "National": 11,
+    "Kanto": 11,
+    "Johto": 25,
+    "Unova": 209
+  },
+  "Butterfree": {
+    "National": 12,
+    "Kanto": 12,
+    "Johto": 26,
+    "Unova": 210
+  },
+  "Weedle": {
+    "National": 13,
+    "Kanto": 13,
+    "Johto": 27,
+    "Unova": 211
+  },
+  "Kakuna": {
+    "National": 14,
+    "Kanto": 14,
+    "Johto": 28,
+    "Unova": 212
+  },
+  "Beedrill": {
+    "National": 15,
+    "Kanto": 15,
+    "Johto": 29,
+    "Unova": 213
+  },
+  "Ledyba": {
+    "National": 165,
+    "Kanto": 16,
+    "Johto": 30,
+    "Hoenn": 212,
+    "Sinnoh": 266,
+    "Unova": 148
+  },
+  "Ledian": {
+    "National": 166,
+    "Kanto": 17,
+    "Johto": 31,
+    "Hoenn": 213,
+    "Sinnoh": 267,
+    "Unova": 149
+  },
+  "Spinarak": {
+    "National": 167,
+    "Kanto": 18,
+    "Johto": 32,
+    "Hoenn": 196,
+    "Sinnoh": 268,
+    "Unova": 150
+  },
+  "Ariados": {
+    "National": 168,
+    "Kanto": 19,
+    "Johto": 33,
+    "Hoenn": 197,
+    "Sinnoh": 269,
+    "Unova": 151
+  },
+  "Pidgey": {
+    "National": 16,
+    "Kanto": 20,
+    "Johto": 10,
+    "Sinnoh": 262
+  },
+  "Pidgeotto": {
+    "National": 17,
+    "Kanto": 21,
+    "Johto": 11,
+    "Sinnoh": 263
+  },
+  "Pidgeot": {
+    "National": 18,
+    "Kanto": 22,
+    "Johto": 12,
+    "Sinnoh": 264
+  },
+  "Hoothoot": {
+    "National": 163,
+    "Kanto": 23,
+    "Johto": 15,
+    "Hoenn": 210,
+    "Sinnoh": 106,
+    "Unova": 283
+  },
+  "Noctowl": {
+    "National": 164,
+    "Kanto": 24,
+    "Johto": 16,
+    "Hoenn": 211,
+    "Sinnoh": 107,
+    "Unova": 284
+  },
+  "Rattata": {
+    "National": 19,
+    "Kanto": 25,
+    "Johto": 17,
+    "Sinnoh": 234,
+    "Unova": 144
+  },
+  "Raticate": {
+    "National": 20,
+    "Kanto": 26,
+    "Johto": 18,
+    "Sinnoh": 235,
+    "Unova": 145
+  },
+  "Sentret": {
+    "National": 161,
+    "Kanto": 27,
+    "Johto": 19
+  },
+  "Furret": {
+    "National": 162,
+    "Kanto": 28,
+    "Johto": 20
+  },
+  "Spearow": {
+    "National": 21,
+    "Kanto": 29,
+    "Johto": 13,
+    "Sinnoh": 236,
+    "Unova": 274
+  },
+  "Fearow": {
+    "National": 22,
+    "Kanto": 30,
+    "Johto": 14,
+    "Sinnoh": 237,
+    "Unova": 275
+  },
+  "Ekans": {
+    "National": 23,
+    "Kanto": 31,
+    "Johto": 51
+  },
+  "Arbok": {
+    "National": 24,
+    "Kanto": 32,
+    "Johto": 52
+  },
+  "Pichu": {
+    "National": 172,
+    "Kanto": 33,
+    "Johto": 21,
+    "Hoenn": 162,
+    "Sinnoh": 103
+  },
+  "Pikachu": {
+    "National": 25,
+    "Kanto": 34,
+    "Johto": 22,
+    "Hoenn": 163,
+    "Sinnoh": 104
+  },
+  "Raichu": {
+    "National": 26,
+    "Kanto": 35,
+    "Johto": 23,
+    "Hoenn": 164,
+    "Sinnoh": 105
+  },
+  "Sandshrew": {
+    "National": 27,
+    "Kanto": 36,
+    "Johto": 49,
+    "Hoenn": 117,
+    "Unova": 163
+  },
+  "Sandslash": {
+    "National": 28,
+    "Kanto": 37,
+    "Johto": 50,
+    "Hoenn": 118,
+    "Unova": 164
+  },
+  "Nidoran\u2640": {
+    "National": 29,
+    "Kanto": 38,
+    "Johto": 96
+  },
+  "Nidorina": {
+    "National": 30,
+    "Kanto": 39,
+    "Johto": 97
+  },
+  "Nidoqueen": {
+    "National": 31,
+    "Kanto": 40,
+    "Johto": 98
+  },
+  "Nidoran\u2642": {
+    "National": 32,
+    "Kanto": 41,
+    "Johto": 99
+  },
+  "Nidorino": {
+    "National": 33,
+    "Kanto": 42,
+    "Johto": 100
+  },
+  "Nidoking": {
+    "National": 34,
+    "Kanto": 43,
+    "Johto": 101
+  },
+  "Cleffa": {
+    "National": 173,
+    "Kanto": 44,
+    "Johto": 40,
+    "Sinnoh": 99,
+    "Unova": 252
+  },
+  "Clefairy": {
+    "National": 35,
+    "Kanto": 45,
+    "Johto": 41,
+    "Sinnoh": 100,
+    "Unova": 253
+  },
+  "Clefable": {
+    "National": 36,
+    "Kanto": 46,
+    "Johto": 42,
+    "Sinnoh": 101,
+    "Unova": 254
+  },
+  "Vulpix": {
+    "National": 37,
+    "Kanto": 47,
+    "Johto": 131,
+    "Hoenn": 160,
+    "Unova": 281
+  },
+  "Ninetales": {
+    "National": 38,
+    "Kanto": 48,
+    "Johto": 132,
+    "Hoenn": 161,
+    "Unova": 282
+  },
+  "Igglybuff": {
+    "National": 174,
+    "Kanto": 49,
+    "Johto": 43,
+    "Hoenn": 142,
+    "Unova": 268
+  },
+  "Jigglypuff": {
+    "National": 39,
+    "Kanto": 50,
+    "Johto": 44,
+    "Hoenn": 143,
+    "Unova": 269
+  },
+  "Wigglytuff": {
+    "National": 40,
+    "Kanto": 51,
+    "Johto": 45,
+    "Hoenn": 144,
+    "Unova": 270
+  },
+  "Zubat": {
+    "National": 41,
+    "Kanto": 52,
+    "Johto": 37,
+    "Hoenn": 65,
+    "Sinnoh": 28,
+    "Unova": 223
+  },
+  "Golbat": {
+    "National": 42,
+    "Kanto": 53,
+    "Johto": 38,
+    "Hoenn": 66,
+    "Sinnoh": 29,
+    "Unova": 224
+  },
+  "Crobat": {
+    "National": 169,
+    "Kanto": 54,
+    "Johto": 39,
+    "Hoenn": 67,
+    "Sinnoh": 30,
+    "Unova": 225
+  },
+  "Oddish": {
+    "National": 43,
+    "Kanto": 55,
+    "Johto": 84,
+    "Hoenn": 91,
+    "Sinnoh": 226
+  },
+  "Gloom": {
+    "National": 44,
+    "Kanto": 56,
+    "Johto": 85,
+    "Hoenn": 92,
+    "Sinnoh": 227
+  },
+  "Vileplume": {
+    "National": 45,
+    "Kanto": 57,
+    "Johto": 86,
+    "Hoenn": 93,
+    "Sinnoh": 228
+  },
+  "Bellossom": {
+    "National": 182,
+    "Kanto": 58,
+    "Johto": 87,
+    "Hoenn": 94,
+    "Sinnoh": 229
+  },
+  "Paras": {
+    "National": 46,
+    "Kanto": 59,
+    "Johto": 71
+  },
+  "Parasect": {
+    "National": 47,
+    "Kanto": 60,
+    "Johto": 72
+  },
+  "Venonat": {
+    "National": 48,
+    "Kanto": 61,
+    "Johto": 112,
+    "Unova": 146
+  },
+  "Venomoth": {
+    "National": 49,
+    "Kanto": 62,
+    "Johto": 113,
+    "Unova": 147
+  },
+  "Sunkern": {
+    "National": 191,
+    "Kanto": 63,
+    "Johto": 104,
+    "Hoenn": 219,
+    "Unova": 218
+  },
+  "Sunflora": {
+    "National": 192,
+    "Kanto": 64,
+    "Johto": 105,
+    "Hoenn": 220,
+    "Unova": 219
+  },
+  "Diglett": {
+    "National": 50,
+    "Kanto": 65,
+    "Johto": 139,
+    "Sinnoh": 258
+  },
+  "Dugtrio": {
+    "National": 51,
+    "Kanto": 66,
+    "Johto": 140,
+    "Sinnoh": 259
+  },
+  "Meowth": {
+    "National": 52,
+    "Kanto": 67,
+    "Johto": 143
+  },
+  "Persian": {
+    "National": 53,
+    "Kanto": 68,
+    "Johto": 144
+  },
+  "Psyduck": {
+    "National": 54,
+    "Kanto": 69,
+    "Johto": 145,
+    "Hoenn": 165,
+    "Sinnoh": 43,
+    "Unova": 195
+  },
+  "Golduck": {
+    "National": 55,
+    "Kanto": 70,
+    "Johto": 146,
+    "Hoenn": 166,
+    "Sinnoh": 44,
+    "Unova": 196
+  },
+  "Snubbull": {
+    "National": 209,
+    "Kanto": 71,
+    "Johto": 129,
+    "Hoenn": 227
+  },
+  "Granbull": {
+    "National": 210,
+    "Kanto": 72,
+    "Johto": 130,
+    "Hoenn": 228
+  },
+  "Hoppip": {
+    "National": 187,
+    "Kanto": 73,
+    "Johto": 68
+  },
+  "Skiploom": {
+    "National": 188,
+    "Kanto": 74,
+    "Johto": 69
+  },
+  "Jumpluff": {
+    "National": 189,
+    "Kanto": 75,
+    "Johto": 70
+  },
+  "Mankey": {
+    "National": 56,
+    "Kanto": 76,
+    "Johto": 141
+  },
+  "Primeape": {
+    "National": 57,
+    "Kanto": 77,
+    "Johto": 142
+  },
+  "Growlithe": {
+    "National": 58,
+    "Kanto": 78,
+    "Johto": 133
+  },
+  "Arcanine": {
+    "National": 59,
+    "Kanto": 79,
+    "Johto": 134
+  },
+  "Poliwag": {
+    "National": 60,
+    "Kanto": 80,
+    "Johto": 73,
+    "Sinnoh": 254,
+    "Unova": 169
+  },
+  "Poliwhirl": {
+    "National": 61,
+    "Kanto": 81,
+    "Johto": 74,
+    "Sinnoh": 255,
+    "Unova": 170
+  },
+  "Poliwrath": {
+    "National": 62,
+    "Kanto": 82,
+    "Johto": 75,
+    "Sinnoh": 256,
+    "Unova": 171
+  },
+  "Politoed": {
+    "National": 186,
+    "Kanto": 83,
+    "Johto": 76,
+    "Sinnoh": 257,
+    "Unova": 172
+  },
+  "Abra": {
+    "National": 63,
+    "Kanto": 84,
+    "Johto": 90,
+    "Hoenn": 40,
+    "Sinnoh": 20
+  },
+  "Kadabra": {
+    "National": 64,
+    "Kanto": 85,
+    "Johto": 91,
+    "Hoenn": 41,
+    "Sinnoh": 21
+  },
+  "Alakazam": {
+    "National": 65,
+    "Kanto": 86,
+    "Johto": 92,
+    "Hoenn": 42,
+    "Sinnoh": 22
+  },
+  "Machop": {
+    "National": 66,
+    "Kanto": 87,
+    "Johto": 147,
+    "Hoenn": 75,
+    "Sinnoh": 40
+  },
+  "Machoke": {
+    "National": 67,
+    "Kanto": 88,
+    "Johto": 148,
+    "Hoenn": 76,
+    "Sinnoh": 41
+  },
+  "Machamp": {
+    "National": 68,
+    "Kanto": 89,
+    "Johto": 149,
+    "Hoenn": 77,
+    "Sinnoh": 42
+  },
+  "Wooper": {
+    "National": 194,
+    "Kanto": 90,
+    "Johto": 57,
+    "Hoenn": 221,
+    "Sinnoh": 117
+  },
+  "Quagsire": {
+    "National": 195,
+    "Kanto": 91,
+    "Johto": 58,
+    "Hoenn": 222,
+    "Sinnoh": 118
+  },
+  "Bellsprout": {
+    "National": 69,
+    "Kanto": 92,
+    "Johto": 65,
+    "Sinnoh": 230
+  },
+  "Weepinbell": {
+    "National": 70,
+    "Kanto": 93,
+    "Johto": 66,
+    "Sinnoh": 231
+  },
+  "Victreebel": {
+    "National": 71,
+    "Kanto": 94,
+    "Johto": 67,
+    "Sinnoh": 232
+  },
+  "Tentacool": {
+    "National": 72,
+    "Kanto": 95,
+    "Johto": 172,
+    "Hoenn": 68,
+    "Sinnoh": 136
+  },
+  "Tentacruel": {
+    "National": 73,
+    "Kanto": 96,
+    "Johto": 173,
+    "Hoenn": 69,
+    "Sinnoh": 137
+  },
+  "Geodude": {
+    "National": 74,
+    "Kanto": 97,
+    "Johto": 34,
+    "Hoenn": 58,
+    "Sinnoh": 31,
+    "Unova": 186
+  },
+  "Graveler": {
+    "National": 75,
+    "Kanto": 98,
+    "Johto": 35,
+    "Hoenn": 59,
+    "Sinnoh": 32,
+    "Unova": 187
+  },
+  "Golem": {
+    "National": 76,
+    "Kanto": 99,
+    "Johto": 36,
+    "Hoenn": 60,
+    "Sinnoh": 33,
+    "Unova": 188
+  },
+  "Ponyta": {
+    "National": 77,
+    "Kanto": 100,
+    "Johto": 218,
+    "Sinnoh": 90,
+    "Unova": 216
+  },
+  "Rapidash": {
+    "National": 78,
+    "Kanto": 101,
+    "Johto": 219,
+    "Sinnoh": 91,
+    "Unova": 217
+  },
+  "Slowpoke": {
+    "National": 79,
+    "Kanto": 102,
+    "Johto": 81,
+    "Unova": 294
+  },
+  "Slowbro": {
+    "National": 80,
+    "Kanto": 103,
+    "Johto": 82,
+    "Unova": 295
+  },
+  "Slowking": {
+    "National": 199,
+    "Kanto": 104,
+    "Johto": 83,
+    "Unova": 296
+  },
+  "Magnemite": {
+    "National": 81,
+    "Kanto": 105,
+    "Johto": 122,
+    "Hoenn": 84,
+    "Sinnoh": 172
+  },
+  "Magneton": {
+    "National": 82,
+    "Kanto": 106,
+    "Johto": 123,
+    "Hoenn": 85,
+    "Sinnoh": 173
+  },
+  "Magnezone": {
+    "National": 462,
+    "Kanto": 107,
+    "Johto": 124,
+    "Hoenn": 86,
+    "Sinnoh": 174
+  },
+  "Farfetch'd": {
+    "National": 83,
+    "Kanto": 108,
+    "Johto": 168
+  },
+  "Doduo": {
+    "National": 84,
+    "Kanto": 109,
+    "Johto": 216,
+    "Hoenn": 95
+  },
+  "Dodrio": {
+    "National": 85,
+    "Kanto": 110,
+    "Johto": 217,
+    "Hoenn": 96
+  },
+  "Murkrow": {
+    "National": 198,
+    "Kanto": 111,
+    "Johto": 226,
+    "Sinnoh": 74,
+    "Unova": 285
+  },
+  "Honchkrow": {
+    "National": 430,
+    "Kanto": 112,
+    "Johto": 227,
+    "Sinnoh": 75,
+    "Unova": 286
+  },
+  "Houndour": {
+    "National": 228,
+    "Kanto": 113,
+    "Johto": 228,
+    "Hoenn": 233,
+    "Sinnoh": 170
+  },
+  "Houndoom": {
+    "National": 229,
+    "Kanto": 114,
+    "Johto": 229,
+    "Hoenn": 234,
+    "Sinnoh": 171
+  },
+  "Seel": {
+    "National": 86,
+    "Kanto": 115,
+    "Johto": 186,
+    "Sinnoh": 240,
+    "Unova": 250
+  },
+  "Dewgong": {
+    "National": 87,
+    "Kanto": 116,
+    "Johto": 187,
+    "Sinnoh": 241,
+    "Unova": 251
+  },
+  "Grimer": {
+    "National": 88,
+    "Kanto": 117,
+    "Johto": 120,
+    "Hoenn": 111
+  },
+  "Muk": {
+    "National": 89,
+    "Kanto": 118,
+    "Johto": 121,
+    "Hoenn": 112
+  },
+  "Shellder": {
+    "National": 90,
+    "Kanto": 119,
+    "Johto": 179,
+    "Sinnoh": 209,
+    "Unova": 240
+  },
+  "Cloyster": {
+    "National": 91,
+    "Kanto": 120,
+    "Johto": 180,
+    "Sinnoh": 210,
+    "Unova": 241
+  },
+  "Gastly": {
+    "National": 92,
+    "Kanto": 121,
+    "Johto": 59,
+    "Sinnoh": 69
+  },
+  "Haunter": {
+    "National": 93,
+    "Kanto": 122,
+    "Johto": 60,
+    "Sinnoh": 70
+  },
+  "Gengar": {
+    "National": 94,
+    "Kanto": 123,
+    "Johto": 61,
+    "Sinnoh": 71
+  },
+  "Onix": {
+    "National": 95,
+    "Kanto": 124,
+    "Johto": 63,
+    "Sinnoh": 34,
+    "Unova": 165
+  },
+  "Steelix": {
+    "National": 208,
+    "Kanto": 125,
+    "Johto": 64,
+    "Sinnoh": 35,
+    "Unova": 166
+  },
+  "Drowzee": {
+    "National": 96,
+    "Kanto": 126,
+    "Johto": 88
+  },
+  "Hypno": {
+    "National": 97,
+    "Kanto": 127,
+    "Johto": 89
+  },
+  "Krabby": {
+    "National": 98,
+    "Kanto": 128,
+    "Johto": 174,
+    "Unova": 156
+  },
+  "Kingler": {
+    "National": 99,
+    "Kanto": 129,
+    "Johto": 175,
+    "Unova": 157
+  },
+  "Voltorb": {
+    "National": 100,
+    "Kanto": 130,
+    "Johto": 125,
+    "Hoenn": 87
+  },
+  "Electrode": {
+    "National": 101,
+    "Kanto": 131,
+    "Johto": 126,
+    "Hoenn": 88
+  },
+  "Exeggcute": {
+    "National": 102,
+    "Kanto": 132,
+    "Johto": 106
+  },
+  "Exeggutor": {
+    "National": 103,
+    "Kanto": 133,
+    "Johto": 107
+  },
+  "Cubone": {
+    "National": 104,
+    "Kanto": 134,
+    "Johto": 220,
+    "Unova": 276
+  },
+  "Marowak": {
+    "National": 105,
+    "Kanto": 135,
+    "Johto": 221,
+    "Unova": 277
+  },
+  "Slugma": {
+    "National": 218,
+    "Kanto": 136,
+    "Johto": 230,
+    "Hoenn": 108,
+    "Sinnoh": 274
+  },
+  "Magcargo": {
+    "National": 219,
+    "Kanto": 137,
+    "Johto": 231,
+    "Hoenn": 109,
+    "Sinnoh": 275
+  },
+  "Tyrogue": {
+    "National": 236,
+    "Kanto": 138,
+    "Johto": 150
+  },
+  "Hitmonlee": {
+    "National": 106,
+    "Kanto": 139,
+    "Johto": 151
+  },
+  "Hitmonchan": {
+    "National": 107,
+    "Kanto": 140,
+    "Johto": 152
+  },
+  "Hitmontop": {
+    "National": 237,
+    "Kanto": 141,
+    "Johto": 153
+  },
+  "Lickitung": {
+    "National": 108,
+    "Kanto": 142,
+    "Johto": 188,
+    "Sinnoh": 155,
+    "Unova": 189
+  },
+  "Lickilicky": {
+    "National": 463,
+    "Kanto": 143,
+    "Johto": 189,
+    "Sinnoh": 156,
+    "Unova": 190
+  },
+  "Koffing": {
+    "National": 109,
+    "Kanto": 144,
+    "Johto": 118,
+    "Hoenn": 113,
+    "Sinnoh": 249
+  },
+  "Weezing": {
+    "National": 110,
+    "Kanto": 145,
+    "Johto": 119,
+    "Hoenn": 114,
+    "Sinnoh": 250
+  },
+  "Rhyhorn": {
+    "National": 111,
+    "Kanto": 146,
+    "Johto": 223,
+    "Hoenn": 176,
+    "Sinnoh": 180
+  },
+  "Rhydon": {
+    "National": 112,
+    "Kanto": 147,
+    "Johto": 224,
+    "Hoenn": 177,
+    "Sinnoh": 181
+  },
+  "Rhyperior": {
+    "National": 464,
+    "Kanto": 148,
+    "Johto": 225,
+    "Hoenn": 178,
+    "Sinnoh": 182
+  },
+  "Happiny": {
+    "National": 440,
+    "Kanto": 149,
+    "Johto": 239,
+    "Sinnoh": 96
+  },
+  "Chansey": {
+    "National": 113,
+    "Kanto": 150,
+    "Johto": 240,
+    "Sinnoh": 97
+  },
+  "Blissey": {
+    "National": 242,
+    "Kanto": 151,
+    "Johto": 241,
+    "Sinnoh": 98
+  },
+  "Tangela": {
+    "National": 114,
+    "Kanto": 152,
+    "Johto": 190,
+    "Sinnoh": 175,
+    "Unova": 226
+  },
+  "Tangrowth": {
+    "National": 465,
+    "Kanto": 153,
+    "Johto": 191,
+    "Sinnoh": 176,
+    "Unova": 227
+  },
+  "Kangaskhan": {
+    "National": 115,
+    "Kanto": 154,
+    "Johto": 222
+  },
+  "Horsea": {
+    "National": 116,
+    "Kanto": 155,
+    "Johto": 200,
+    "Hoenn": 193,
+    "Sinnoh": 245,
+    "Unova": 175
+  },
+  "Seadra": {
+    "National": 117,
+    "Kanto": 156,
+    "Johto": 201,
+    "Hoenn": 194,
+    "Sinnoh": 246,
+    "Unova": 176
+  },
+  "Kingdra": {
+    "National": 230,
+    "Kanto": 157,
+    "Johto": 202,
+    "Hoenn": 195,
+    "Sinnoh": 247,
+    "Unova": 177
+  },
+  "Goldeen": {
+    "National": 118,
+    "Kanto": 158,
+    "Johto": 79,
+    "Hoenn": 51,
+    "Sinnoh": 78,
+    "Unova": 154
+  },
+  "Seaking": {
+    "National": 119,
+    "Kanto": 159,
+    "Johto": 80,
+    "Hoenn": 52,
+    "Sinnoh": 79,
+    "Unova": 155
+  },
+  "Staryu": {
+    "National": 120,
+    "Kanto": 160,
+    "Johto": 177,
+    "Hoenn": 148,
+    "Sinnoh": 215,
+    "Unova": 235
+  },
+  "Starmie": {
+    "National": 121,
+    "Kanto": 161,
+    "Johto": 178,
+    "Hoenn": 149,
+    "Sinnoh": 216,
+    "Unova": 236
+  },
+  "Qwilfish": {
+    "National": 211,
+    "Kanto": 162,
+    "Johto": 171,
+    "Sinnoh": 219,
+    "Unova": 178
+  },
+  "Corsola": {
+    "National": 222,
+    "Kanto": 163,
+    "Johto": 181,
+    "Hoenn": 189,
+    "Unova": 239
+  },
+  "Chinchou": {
+    "National": 170,
+    "Kanto": 164,
+    "Johto": 184,
+    "Hoenn": 190,
+    "Sinnoh": 213,
+    "Unova": 179
+  },
+  "Lanturn": {
+    "National": 171,
+    "Kanto": 165,
+    "Johto": 185,
+    "Hoenn": 191,
+    "Sinnoh": 214,
+    "Unova": 180
+  },
+  "Mime Jr.": {
+    "National": 439,
+    "Kanto": 166,
+    "Johto": 165,
+    "Sinnoh": 94
+  },
+  "Mr. Mime": {
+    "National": 122,
+    "Kanto": 167,
+    "Johto": 166,
+    "Sinnoh": 95
+  },
+  "Scyther": {
+    "National": 123,
+    "Kanto": 168,
+    "Johto": 114,
+    "Sinnoh": 189
+  },
+  "Scizor": {
+    "National": 212,
+    "Kanto": 169,
+    "Johto": 115,
+    "Sinnoh": 190
+  },
+  "Smoochum": {
+    "National": 238,
+    "Kanto": 170,
+    "Johto": 160,
+    "Sinnoh": 220,
+    "Unova": 248
+  },
+  "Jynx": {
+    "National": 124,
+    "Kanto": 171,
+    "Johto": 161,
+    "Sinnoh": 221,
+    "Unova": 249
+  },
+  "Elekid": {
+    "National": 239,
+    "Kanto": 172,
+    "Johto": 162,
+    "Sinnoh": 191
+  },
+  "Electabuzz": {
+    "National": 125,
+    "Kanto": 173,
+    "Johto": 163,
+    "Sinnoh": 192
+  },
+  "Electivire": {
+    "National": 466,
+    "Kanto": 174,
+    "Johto": 164,
+    "Sinnoh": 193
+  },
+  "Magby": {
+    "National": 240,
+    "Kanto": 175,
+    "Johto": 157,
+    "Sinnoh": 194
+  },
+  "Magmar": {
+    "National": 126,
+    "Kanto": 176,
+    "Johto": 158,
+    "Sinnoh": 195
+  },
+  "Magmortar": {
+    "National": 467,
+    "Kanto": 177,
+    "Johto": 159,
+    "Sinnoh": 196
+  },
+  "Pinsir": {
+    "National": 127,
+    "Kanto": 178,
+    "Johto": 116,
+    "Hoenn": 174,
+    "Sinnoh": 265,
+    "Unova": 214
+  },
+  "Tauros": {
+    "National": 128,
+    "Kanto": 179,
+    "Johto": 155
+  },
+  "Magikarp": {
+    "National": 129,
+    "Kanto": 180,
+    "Johto": 77,
+    "Hoenn": 53,
+    "Sinnoh": 23
+  },
+  "Gyarados": {
+    "National": 130,
+    "Kanto": 181,
+    "Johto": 78,
+    "Hoenn": 54,
+    "Sinnoh": 24
+  },
+  "Lapras": {
+    "National": 131,
+    "Kanto": 182,
+    "Johto": 243,
+    "Sinnoh": 225,
+    "Unova": 201
+  },
+  "Ditto": {
+    "National": 132,
+    "Kanto": 183,
+    "Johto": 93,
+    "Hoenn": 204,
+    "Unova": 255
+  },
+  "Eevee": {
+    "National": 133,
+    "Kanto": 184,
+    "Johto": 192,
+    "Sinnoh": 157
+  },
+  "Vaporeon": {
+    "National": 134,
+    "Kanto": 185,
+    "Johto": 193,
+    "Sinnoh": 158
+  },
+  "Jolteon": {
+    "National": 135,
+    "Kanto": 186,
+    "Johto": 194,
+    "Sinnoh": 159
+  },
+  "Flareon": {
+    "National": 136,
+    "Kanto": 187,
+    "Johto": 195,
+    "Sinnoh": 160
+  },
+  "Espeon": {
+    "National": 196,
+    "Kanto": 188,
+    "Johto": 196,
+    "Sinnoh": 161
+  },
+  "Umbreon": {
+    "National": 197,
+    "Kanto": 189,
+    "Johto": 197,
+    "Sinnoh": 162
+  },
+  "Leafeon": {
+    "National": 470,
+    "Kanto": 190,
+    "Johto": 198,
+    "Sinnoh": 163
+  },
+  "Glaceon": {
+    "National": 471,
+    "Kanto": 191,
+    "Johto": 199,
+    "Sinnoh": 164
+  },
+  "Porygon": {
+    "National": 137,
+    "Kanto": 192,
+    "Johto": 236,
+    "Sinnoh": 186
+  },
+  "Porygon2": {
+    "National": 233,
+    "Kanto": 193,
+    "Johto": 237,
+    "Sinnoh": 187
+  },
+  "Porygon-Z": {
+    "National": 474,
+    "Kanto": 194,
+    "Johto": 238,
+    "Sinnoh": 188
+  },
+  "Teddiursa": {
+    "National": 216,
+    "Kanto": 195,
+    "Johto": 209,
+    "Hoenn": 229
+  },
+  "Ursaring": {
+    "National": 217,
+    "Kanto": 196,
+    "Johto": 210,
+    "Hoenn": 230
+  },
+  "Phanpy": {
+    "National": 231,
+    "Kanto": 197,
+    "Johto": 211,
+    "Hoenn": 172
+  },
+  "Donphan": {
+    "National": 232,
+    "Kanto": 198,
+    "Johto": 212,
+    "Hoenn": 173
+  },
+  "Omanyte": {
+    "National": 138,
+    "Kanto": 199,
+    "Johto": 244
+  },
+  "Omastar": {
+    "National": 139,
+    "Kanto": 200,
+    "Johto": 245
+  },
+  "Kabuto": {
+    "National": 140,
+    "Kanto": 201,
+    "Johto": 246
+  },
+  "Kabutops": {
+    "National": 141,
+    "Kanto": 202,
+    "Johto": 247
+  },
+  "Aerodactyl": {
+    "National": 142,
+    "Kanto": 203,
+    "Johto": 248
+  },
+  "Munchlax": {
+    "National": 446,
+    "Kanto": 204,
+    "Johto": 249,
+    "Sinnoh": 112
+  },
+  "Snorlax": {
+    "National": 143,
+    "Kanto": 205,
+    "Johto": 250,
+    "Sinnoh": 113
+  },
+  "Dratini": {
+    "National": 147,
+    "Kanto": 206,
+    "Johto": 251,
+    "Sinnoh": 222,
+    "Unova": 183
+  },
+  "Dragonair": {
+    "National": 148,
+    "Kanto": 207,
+    "Johto": 252,
+    "Sinnoh": 223,
+    "Unova": 184
+  },
+  "Dragonite": {
+    "National": 149,
+    "Kanto": 208,
+    "Johto": 253,
+    "Sinnoh": 224,
+    "Unova": 185
+  },
+  "Dunsparce": {
+    "National": 206,
+    "Kanto": 209,
+    "Johto": 53,
+    "Unova": 220
+  },
+  "Azurill": {
+    "National": 298,
+    "Kanto": 210,
+    "Johto": 136,
+    "Hoenn": 55,
+    "Sinnoh": 124
+  },
+  "Marill": {
+    "National": 183,
+    "Kanto": 211,
+    "Johto": 137,
+    "Hoenn": 56,
+    "Sinnoh": 125
+  },
+  "Azumarill": {
+    "National": 184,
+    "Kanto": 212,
+    "Johto": 138,
+    "Hoenn": 57,
+    "Sinnoh": 126
+  },
+  "Swinub": {
+    "National": 220,
+    "Kanto": 213,
+    "Johto": 206,
+    "Sinnoh": 197,
+    "Unova": 242
+  },
+  "Piloswine": {
+    "National": 221,
+    "Kanto": 214,
+    "Johto": 207,
+    "Sinnoh": 198,
+    "Unova": 243
+  },
+  "Mamoswine": {
+    "National": 473,
+    "Kanto": 215,
+    "Johto": 208,
+    "Sinnoh": 199,
+    "Unova": 244
+  },
+  "Delibird": {
+    "National": 225,
+    "Kanto": 216,
+    "Johto": 205,
+    "Unova": 247
+  },
+  "Sneasel": {
+    "National": 215,
+    "Kanto": 217,
+    "Johto": 232,
+    "Sinnoh": 144,
+    "Unova": 245
+  },
+  "Weavile": {
+    "National": 461,
+    "Kanto": 218,
+    "Johto": 233,
+    "Sinnoh": 145,
+    "Unova": 246
+  },
+  "Remoraid": {
+    "National": 223,
+    "Kanto": 219,
+    "Johto": 182,
+    "Hoenn": 231,
+    "Sinnoh": 132,
+    "Unova": 263
+  },
+  "Octillery": {
+    "National": 224,
+    "Kanto": 220,
+    "Johto": 183,
+    "Hoenn": 232,
+    "Sinnoh": 133,
+    "Unova": 264
+  },
+  "Misdreavus": {
+    "National": 200,
+    "Kanto": 221,
+    "Johto": 234,
+    "Sinnoh": 72,
+    "Unova": 287
+  },
+  "Mismagius": {
+    "National": 429,
+    "Kanto": 222,
+    "Johto": 235,
+    "Sinnoh": 73,
+    "Unova": 288
+  },
+  "Wynaut": {
+    "National": 360,
+    "Kanto": 223,
+    "Johto": 110,
+    "Hoenn": 167
+  },
+  "Wobbuffet": {
+    "National": 202,
+    "Kanto": 224,
+    "Johto": 111,
+    "Hoenn": 168
+  },
+  "Natu": {
+    "National": 177,
+    "Kanto": 225,
+    "Johto": 169,
+    "Hoenn": 169
+  },
+  "Xatu": {
+    "National": 178,
+    "Kanto": 226,
+    "Johto": 170,
+    "Hoenn": 170
+  },
+  "Yanma": {
+    "National": 193,
+    "Kanto": 227,
+    "Johto": 102,
+    "Sinnoh": 177
+  },
+  "Yanmega": {
+    "National": 469,
+    "Kanto": 228,
+    "Johto": 103,
+    "Sinnoh": 178
+  },
+  "Heracross": {
+    "National": 214,
+    "Kanto": 229,
+    "Johto": 117,
+    "Hoenn": 175,
+    "Sinnoh": 62,
+    "Unova": 215
+  },
+  "Mantyke": {
+    "National": 458,
+    "Kanto": 230,
+    "Johto": 213,
+    "Hoenn": 207,
+    "Sinnoh": 140,
+    "Unova": 259
+  },
+  "Mantine": {
+    "National": 226,
+    "Kanto": 231,
+    "Johto": 214,
+    "Hoenn": 208,
+    "Sinnoh": 141,
+    "Unova": 260
+  },
+  "Togepi": {
+    "National": 175,
+    "Kanto": 232,
+    "Johto": 46,
+    "Sinnoh": 167
+  },
+  "Togetic": {
+    "National": 176,
+    "Kanto": 233,
+    "Johto": 47,
+    "Sinnoh": 168
+  },
+  "Togekiss": {
+    "National": 468,
+    "Kanto": 234,
+    "Johto": 48,
+    "Sinnoh": 169
+  },
+  "Skarmory": {
+    "National": 227,
+    "Kanto": 235,
+    "Johto": 215,
+    "Hoenn": 120,
+    "Sinnoh": 251
+  },
+  "Larvitar": {
+    "National": 246,
+    "Kanto": 236,
+    "Johto": 254,
+    "Unova": 278
+  },
+  "Pupitar": {
+    "National": 247,
+    "Kanto": 237,
+    "Johto": 255,
+    "Unova": 279
+  },
+  "Tyranitar": {
+    "National": 248,
+    "Kanto": 238,
+    "Johto": 256,
+    "Unova": 280
+  },
+  "Unown": {
+    "National": 201,
+    "Kanto": 239,
+    "Johto": 62,
+    "Sinnoh": 114
+  },
+  "Articuno": {
+    "National": 144,
+    "Kanto": 240
+  },
+  "Zapdos": {
+    "National": 145,
+    "Kanto": 241
+  },
+  "Moltres": {
+    "National": 146,
+    "Kanto": 242
+  },
+  "Mewtwo": {
+    "National": 150,
+    "Kanto": 243
+  },
+  "Mew": {
+    "National": 151,
+    "Kanto": 244
+  }
+}

@@ -2,6 +2,7 @@ import React, { useContext, useMemo, useState, useEffect } from 'react';
 import { CaughtContext } from '../caughtContext.js';
 import nonLegendaryData from '../data/nonLegendaryIds.json';
 import dexRaw from '../../UpdatedDex.json';
+import regionPokedexData from '../data/regionPokedex.json';
 
 const SPRITES_BASE = (import.meta.env.VITE_SPRITES_BASE || `${import.meta.env.BASE_URL}sprites/`).replace(/\/+$/, '/');
 const SPRITES_EXT  = import.meta.env.VITE_SPRITES_EXT || '.png';
@@ -110,31 +111,32 @@ const DEX_LIST = dexRaw
 
 const DEX_BY_ID = new Map(DEX_LIST.map(mon => [mon.id, mon]));
 
-function hasRegionLocation(mon, region) {
-  if (!mon) return false;
-  return (mon.locations || []).some(loc => loc?.region_name === region);
+// Build a map from Pokemon name to regional dex entries
+const REGION_DEX_BY_NAME = new Map();
+for (const [pokemonName, regions] of Object.entries(regionPokedexData)) {
+  REGION_DEX_BY_NAME.set(pokemonName, regions);
 }
 
-const REGION_CHAIN_CACHE = new Map();
+// Helper to check if a Pokemon is in a specific region's dex
 function monMatchesRegionFilter(mon, region) {
   if (region === 'All') return true;
   if (!mon) return false;
-  const key = `${mon.id}|${region}`;
-  if (REGION_CHAIN_CACHE.has(key)) return REGION_CHAIN_CACHE.get(key);
-  const result = hasRegionInChain(mon, region, new Set());
-  REGION_CHAIN_CACHE.set(key, result);
-  return result;
+  const regionalData = REGION_DEX_BY_NAME.get(mon.name);
+  if (!regionalData) return false;
+  return regionalData.hasOwnProperty(region);
 }
 
-function hasRegionInChain(mon, region, visited) {
-  if (!mon || visited.has(mon.id)) return false;
-  visited.add(mon.id);
-  if (hasRegionLocation(mon, region)) return true;
-  for (const prevId of mon.preEvolutionIds || []) {
-    const prev = DEX_BY_ID.get(prevId);
-    if (hasRegionInChain(prev, region, visited)) return true;
-  }
-  return false;
+// Helper to get the regional dex ID for a Pokemon
+function getRegionalDexId(mon, region) {
+  if (!mon || region === 'All') return null;
+  const regionalData = REGION_DEX_BY_NAME.get(mon.name);
+  if (!regionalData) return null;
+  return regionalData[region] || null;
+}
+
+function hasRegionLocation(mon, region) {
+  if (!mon) return false;
+  return (mon.locations || []).some(loc => loc?.region_name === region);
 }
 
 function collectEvolutionSources(mon, region, visited = new Set(), sources = new Map()) {
@@ -388,13 +390,29 @@ export default function CaughtListButton(){
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return DEX_LIST.filter(mon => {
+    const filtered = DEX_LIST.filter(mon => {
       if (hideCaught && caught.has(mon.id)) return false;
       if (!monMatchesRegionFilter(mon, regionFilter)) return false;
       if (!q) return true;
       return String(mon.id).includes(q) || mon.name.toLowerCase().includes(q);
     });
+
+    // Sort by regional ID if a region is selected, otherwise by national ID
+    return filtered.sort((a, b) => {
+      const aId = regionFilter === 'All' ? a.id : (getRegionalDexId(a, regionFilter) || a.id);
+      const bId = regionFilter === 'All' ? b.id : (getRegionalDexId(b, regionFilter) || b.id);
+      return aId - bId;
+    });
   }, [query, regionFilter, hideCaught, caught]);
+
+  const regionStats = useMemo(() => {
+    if (regionFilter === 'All') {
+      return { caughtCount: caught.size, totalCount: DEX_LIST.length };
+    }
+    const regionPokemon = DEX_LIST.filter(mon => monMatchesRegionFilter(mon, regionFilter));
+    const caughtInRegion = regionPokemon.filter(mon => caught.has(mon.id)).length;
+    return { caughtCount: caughtInRegion, totalCount: regionPokemon.length };
+  }, [regionFilter, caught]);
 
   const locationOverlayData = useMemo(() => {
     if (!activeMon) return { sections: [], emptyMessage: '' };
@@ -579,6 +597,8 @@ export default function CaughtListButton(){
                 {list.map(mon => {
                   const filled = caught.has(mon.id);
                   const isActive = activeMon?.id === mon.id;
+                  const regionalId = getRegionalDexId(mon, regionFilter);
+                  const displayId = regionalId !== null ? regionalId : mon.id;
                   return (
                     <div
                       key={mon.id}
@@ -590,7 +610,7 @@ export default function CaughtListButton(){
                         <Sprite mon={mon} alt={mon.name} style={{ opacity: filled ? 0.6 : 1 }} />
                         <div style={{ ...chipNameStyle, opacity: filled ? 0.6 : 1 }}>
                           <div style={{ fontWeight:800, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{titleCase(mon.name)}</div>
-                          <div className="label-muted" style={{ fontSize:12 }}>#{mon.id}</div>
+                          <div className="label-muted" style={{ fontSize:12 }}>#{displayId}</div>
                         </div>
                         <button
                           type='button'
@@ -608,7 +628,7 @@ export default function CaughtListButton(){
               </div>
             </div>
             <div style={{ marginTop:14, textAlign:'center', fontWeight:800 }}>
-              Total caught {caught.size}/{DEX_LIST.length}
+              Total caught {regionStats.caughtCount}/{regionStats.totalCount}
             </div>
             {activeMon && (
               <div style={locationScrimStyle} onClick={() => setActiveMon(null)}>

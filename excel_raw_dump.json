@@ -1,0 +1,5200 @@
+{
+  "sheetName": "Kanto",
+  "range": "A1:A1298",
+  "jsonData": [
+    [
+      "Bulbasaur"
+    ],
+    [
+      "National #1"
+    ],
+    [
+      "Kanto #1"
+    ],
+    [
+      "Ivysaur"
+    ],
+    [
+      "National #2"
+    ],
+    [
+      "Kanto #2"
+    ],
+    [
+      "Venusaur"
+    ],
+    [
+      "National #3"
+    ],
+    [
+      "Kanto #3"
+    ],
+    [
+      "Charmander"
+    ],
+    [
+      "National #4"
+    ],
+    [
+      "Kanto #4"
+    ],
+    [
+      "Charmeleon"
+    ],
+    [
+      "National #5"
+    ],
+    [
+      "Kanto #5"
+    ],
+    [
+      "Charizard"
+    ],
+    [
+      "National #6"
+    ],
+    [
+      "Kanto #6"
+    ],
+    [
+      "Squirtle"
+    ],
+    [
+      "National #7"
+    ],
+    [
+      "Kanto #7"
+    ],
+    [
+      "Wartortle"
+    ],
+    [
+      "National #8"
+    ],
+    [
+      "Kanto #8"
+    ],
+    [
+      "Blastoise"
+    ],
+    [
+      "National #9"
+    ],
+    [
+      "Kanto #9"
+    ],
+    [
+      "Caterpie"
+    ],
+    [
+      "National #10"
+    ],
+    [
+      "Kanto #10"
+    ],
+    [
+      "Johto #24"
+    ],
+    [
+      "Unova #208"
+    ],
+    [
+      "Metapod"
+    ],
+    [
+      "National #11"
+    ],
+    [
+      "Kanto #11"
+    ],
+    [
+      "Johto #25"
+    ],
+    [
+      "Unova #209"
+    ],
+    [
+      "Butterfree"
+    ],
+    [
+      "National #12"
+    ],
+    [
+      "Kanto #12"
+    ],
+    [
+      "Johto #26"
+    ],
+    [
+      "Unova #210"
+    ],
+    [
+      "Weedle"
+    ],
+    [
+      "National #13"
+    ],
+    [
+      "Kanto #13"
+    ],
+    [
+      "Johto #27"
+    ],
+    [
+      "Unova #211"
+    ],
+    [
+      "Kakuna"
+    ],
+    [
+      "National #14"
+    ],
+    [
+      "Kanto #14"
+    ],
+    [
+      "Johto #28"
+    ],
+    [
+      "Unova #212"
+    ],
+    [
+      "Beedrill"
+    ],
+    [
+      "National #15"
+    ],
+    [
+      "Kanto #15"
+    ],
+    [
+      "Johto #29"
+    ],
+    [
+      "Unova #213"
+    ],
+    [
+      "Ledyba"
+    ],
+    [
+      "National #165"
+    ],
+    [
+      "Kanto #16"
+    ],
+    [
+      "Johto #30"
+    ],
+    [
+      "Hoenn #212"
+    ],
+    [
+      "Sinnoh #266"
+    ],
+    [
+      "Unova #148"
+    ],
+    [
+      "Ledian"
+    ],
+    [
+      "National #166"
+    ],
+    [
+      "Kanto #17"
+    ],
+    [
+      "Johto #31"
+    ],
+    [
+      "Hoenn #213"
+    ],
+    [
+      "Sinnoh #267"
+    ],
+    [
+      "Unova #149"
+    ],
+    [
+      "Spinarak"
+    ],
+    [
+      "National #167"
+    ],
+    [
+      "Kanto #18"
+    ],
+    [
+      "Johto #32"
+    ],
+    [
+      "Hoenn #196"
+    ],
+    [
+      "Sinnoh #268"
+    ],
+    [
+      "Unova #150"
+    ],
+    [
+      "Ariados"
+    ],
+    [
+      "National #168"
+    ],
+    [
+      "Kanto #19"
+    ],
+    [
+      "Johto #33"
+    ],
+    [
+      "Hoenn #197"
+    ],
+    [
+      "Sinnoh #269"
+    ],
+    [
+      "Unova #151"
+    ],
+    [
+      "Pidgey"
+    ],
+    [
+      "National #16"
+    ],
+    [
+      "Kanto #20"
+    ],
+    [
+      "Johto #10"
+    ],
+    [
+      "Sinnoh #262"
+    ],
+    [
+      "Pidgeotto"
+    ],
+    [
+      "National #17"
+    ],
+    [
+      "Kanto #21"
+    ],
+    [
+      "Johto #11"
+    ],
+    [
+      "Sinnoh #263"
+    ],
+    [
+      "Pidgeot"
+    ],
+    [
+      "National #18"
+    ],
+    [
+      "Kanto #22"
+    ],
+    [
+      "Johto #12"
+    ],
+    [
+      "Sinnoh #264"
+    ],
+    [
+      "Hoothoot"
+    ],
+    [
+      "National #163"
+    ],
+    [
+      "Kanto #23"
+    ],
+    [
+      "Johto #15"
+    ],
+    [
+      "Hoenn #210"
+    ],
+    [
+      "Sinnoh #106"
+    ],
+    [
+      "Unova #283"
+    ],
+    [
+      "Noctowl"
+    ],
+    [
+      "National #164"
+    ],
+    [
+      "Kanto #24"
+    ],
+    [
+      "Johto #16"
+    ],
+    [
+      "Hoenn #211"
+    ],
+    [
+      "Sinnoh #107"
+    ],
+    [
+      "Unova #284"
+    ],
+    [
+      "Rattata"
+    ],
+    [
+      "National #19"
+    ],
+    [
+      "Kanto #25"
+    ],
+    [
+      "Johto #17"
+    ],
+    [
+      "Sinnoh #234"
+    ],
+    [
+      "Unova #144"
+    ],
+    [
+      "Raticate"
+    ],
+    [
+      "National #20"
+    ],
+    [
+      "Kanto #26"
+    ],
+    [
+      "Johto #18"
+    ],
+    [
+      "Sinnoh #235"
+    ],
+    [
+      "Unova #145"
+    ],
+    [
+      "Sentret"
+    ],
+    [
+      "National #161"
+    ],
+    [
+      "Kanto #27"
+    ],
+    [
+      "Johto #19"
+    ],
+    [
+      "Furret"
+    ],
+    [
+      "National #162"
+    ],
+    [
+      "Kanto #28"
+    ],
+    [
+      "Johto #20"
+    ],
+    [
+      "Spearow"
+    ],
+    [
+      "National #21"
+    ],
+    [
+      "Kanto #29"
+    ],
+    [
+      "Johto #13"
+    ],
+    [
+      "Sinnoh #236"
+    ],
+    [
+      "Unova #274"
+    ],
+    [
+      "Fearow"
+    ],
+    [
+      "National #22"
+    ],
+    [
+      "Kanto #30"
+    ],
+    [
+      "Johto #14"
+    ],
+    [
+      "Sinnoh #237"
+    ],
+    [
+      "Unova #275"
+    ],
+    [
+      "Ekans"
+    ],
+    [
+      "National #23"
+    ],
+    [
+      "Kanto #31"
+    ],
+    [
+      "Johto #51"
+    ],
+    [
+      "Arbok"
+    ],
+    [
+      "National #24"
+    ],
+    [
+      "Kanto #32"
+    ],
+    [
+      "Johto #52"
+    ],
+    [
+      "Pichu"
+    ],
+    [
+      "National #172"
+    ],
+    [
+      "Kanto #33"
+    ],
+    [
+      "Johto #21"
+    ],
+    [
+      "Hoenn #162"
+    ],
+    [
+      "Sinnoh #103"
+    ],
+    [
+      "Pikachu"
+    ],
+    [
+      "National #25"
+    ],
+    [
+      "Kanto #34"
+    ],
+    [
+      "Johto #22"
+    ],
+    [
+      "Hoenn #163"
+    ],
+    [
+      "Sinnoh #104"
+    ],
+    [
+      "Raichu"
+    ],
+    [
+      "National #26"
+    ],
+    [
+      "Kanto #35"
+    ],
+    [
+      "Johto #23"
+    ],
+    [
+      "Hoenn #164"
+    ],
+    [
+      "Sinnoh #105"
+    ],
+    [
+      "Sandshrew"
+    ],
+    [
+      "National #27"
+    ],
+    [
+      "Kanto #36"
+    ],
+    [
+      "Johto #49"
+    ],
+    [
+      "Hoenn #117"
+    ],
+    [
+      "Unova #163"
+    ],
+    [
+      "Sandslash"
+    ],
+    [
+      "National #28"
+    ],
+    [
+      "Kanto #37"
+    ],
+    [
+      "Johto #50"
+    ],
+    [
+      "Hoenn #118"
+    ],
+    [
+      "Unova #164"
+    ],
+    [
+      "Nidoran♀"
+    ],
+    [
+      "National #29"
+    ],
+    [
+      "Kanto #38"
+    ],
+    [
+      "Johto #96"
+    ],
+    [
+      "Nidorina"
+    ],
+    [
+      "National #30"
+    ],
+    [
+      "Kanto #39"
+    ],
+    [
+      "Johto #97"
+    ],
+    [
+      "Nidoqueen"
+    ],
+    [
+      "National #31"
+    ],
+    [
+      "Kanto #40"
+    ],
+    [
+      "Johto #98"
+    ],
+    [
+      "Nidoran♂"
+    ],
+    [
+      "National #32"
+    ],
+    [
+      "Kanto #41"
+    ],
+    [
+      "Johto #99"
+    ],
+    [
+      "Nidorino"
+    ],
+    [
+      "National #33"
+    ],
+    [
+      "Kanto #42"
+    ],
+    [
+      "Johto #100"
+    ],
+    [
+      "Nidoking"
+    ],
+    [
+      "National #34"
+    ],
+    [
+      "Kanto #43"
+    ],
+    [
+      "Johto #101"
+    ],
+    [
+      "Cleffa"
+    ],
+    [
+      "National #173"
+    ],
+    [
+      "Kanto #44"
+    ],
+    [
+      "Johto #40"
+    ],
+    [
+      "Sinnoh #99"
+    ],
+    [
+      "Unova #252"
+    ],
+    [
+      "Clefairy"
+    ],
+    [
+      "National #35"
+    ],
+    [
+      "Kanto #45"
+    ],
+    [
+      "Johto #41"
+    ],
+    [
+      "Sinnoh #100"
+    ],
+    [
+      "Unova #253"
+    ],
+    [
+      "Clefable"
+    ],
+    [
+      "National #36"
+    ],
+    [
+      "Kanto #46"
+    ],
+    [
+      "Johto #42"
+    ],
+    [
+      "Sinnoh #101"
+    ],
+    [
+      "Unova #254"
+    ],
+    [
+      "Vulpix"
+    ],
+    [
+      "National #37"
+    ],
+    [
+      "Kanto #47"
+    ],
+    [
+      "Johto #131"
+    ],
+    [
+      "Hoenn #160"
+    ],
+    [
+      "Unova #281"
+    ],
+    [
+      "Ninetales"
+    ],
+    [
+      "National #38"
+    ],
+    [
+      "Kanto #48"
+    ],
+    [
+      "Johto #132"
+    ],
+    [
+      "Hoenn #161"
+    ],
+    [
+      "Unova #282"
+    ],
+    [
+      "Igglybuff"
+    ],
+    [
+      "National #174"
+    ],
+    [
+      "Kanto #49"
+    ],
+    [
+      "Johto #43"
+    ],
+    [
+      "Hoenn #142"
+    ],
+    [
+      "Unova #268"
+    ],
+    [
+      "Jigglypuff"
+    ],
+    [
+      "National #39"
+    ],
+    [
+      "Kanto #50"
+    ],
+    [
+      "Johto #44"
+    ],
+    [
+      "Hoenn #143"
+    ],
+    [
+      "Unova #269"
+    ],
+    [
+      "Wigglytuff"
+    ],
+    [
+      "National #40"
+    ],
+    [
+      "Kanto #51"
+    ],
+    [
+      "Johto #45"
+    ],
+    [
+      "Hoenn #144"
+    ],
+    [
+      "Unova #270"
+    ],
+    [
+      "Zubat"
+    ],
+    [
+      "National #41"
+    ],
+    [
+      "Kanto #52"
+    ],
+    [
+      "Johto #37"
+    ],
+    [
+      "Hoenn #65"
+    ],
+    [
+      "Sinnoh #28"
+    ],
+    [
+      "Unova #223"
+    ],
+    [
+      "Golbat"
+    ],
+    [
+      "National #42"
+    ],
+    [
+      "Kanto #53"
+    ],
+    [
+      "Johto #38"
+    ],
+    [
+      "Hoenn #66"
+    ],
+    [
+      "Sinnoh #29"
+    ],
+    [
+      "Unova #224"
+    ],
+    [
+      "Crobat"
+    ],
+    [
+      "National #169"
+    ],
+    [
+      "Kanto #54"
+    ],
+    [
+      "Johto #39"
+    ],
+    [
+      "Hoenn #67"
+    ],
+    [
+      "Sinnoh #30"
+    ],
+    [
+      "Unova #225"
+    ],
+    [
+      "Oddish"
+    ],
+    [
+      "National #43"
+    ],
+    [
+      "Kanto #55"
+    ],
+    [
+      "Johto #84"
+    ],
+    [
+      "Hoenn #91"
+    ],
+    [
+      "Sinnoh #226"
+    ],
+    [
+      "Gloom"
+    ],
+    [
+      "National #44"
+    ],
+    [
+      "Kanto #56"
+    ],
+    [
+      "Johto #85"
+    ],
+    [
+      "Hoenn #92"
+    ],
+    [
+      "Sinnoh #227"
+    ],
+    [
+      "Vileplume"
+    ],
+    [
+      "National #45"
+    ],
+    [
+      "Kanto #57"
+    ],
+    [
+      "Johto #86"
+    ],
+    [
+      "Hoenn #93"
+    ],
+    [
+      "Sinnoh #228"
+    ],
+    [
+      "Bellossom"
+    ],
+    [
+      "National #182"
+    ],
+    [
+      "Kanto #58"
+    ],
+    [
+      "Johto #87"
+    ],
+    [
+      "Hoenn #94"
+    ],
+    [
+      "Sinnoh #229"
+    ],
+    [
+      "Paras"
+    ],
+    [
+      "National #46"
+    ],
+    [
+      "Kanto #59"
+    ],
+    [
+      "Johto #71"
+    ],
+    [
+      "Parasect"
+    ],
+    [
+      "National #47"
+    ],
+    [
+      "Kanto #60"
+    ],
+    [
+      "Johto #72"
+    ],
+    [
+      "Venonat"
+    ],
+    [
+      "National #48"
+    ],
+    [
+      "Kanto #61"
+    ],
+    [
+      "Johto #112"
+    ],
+    [
+      "Unova #146"
+    ],
+    [
+      "Venomoth"
+    ],
+    [
+      "National #49"
+    ],
+    [
+      "Kanto #62"
+    ],
+    [
+      "Johto #113"
+    ],
+    [
+      "Unova #147"
+    ],
+    [
+      "Sunkern"
+    ],
+    [
+      "National #191"
+    ],
+    [
+      "Kanto #63"
+    ],
+    [
+      "Johto #104"
+    ],
+    [
+      "Hoenn #219"
+    ],
+    [
+      "Unova #218"
+    ],
+    [
+      "Sunflora"
+    ],
+    [
+      "National #192"
+    ],
+    [
+      "Kanto #64"
+    ],
+    [
+      "Johto #105"
+    ],
+    [
+      "Hoenn #220"
+    ],
+    [
+      "Unova #219"
+    ],
+    [
+      "Diglett"
+    ],
+    [
+      "National #50"
+    ],
+    [
+      "Kanto #65"
+    ],
+    [
+      "Johto #139"
+    ],
+    [
+      "Sinnoh #258"
+    ],
+    [
+      "Dugtrio"
+    ],
+    [
+      "National #51"
+    ],
+    [
+      "Kanto #66"
+    ],
+    [
+      "Johto #140"
+    ],
+    [
+      "Sinnoh #259"
+    ],
+    [
+      "Meowth"
+    ],
+    [
+      "National #52"
+    ],
+    [
+      "Kanto #67"
+    ],
+    [
+      "Johto #143"
+    ],
+    [
+      "Persian"
+    ],
+    [
+      "National #53"
+    ],
+    [
+      "Kanto #68"
+    ],
+    [
+      "Johto #144"
+    ],
+    [
+      "Psyduck"
+    ],
+    [
+      "National #54"
+    ],
+    [
+      "Kanto #69"
+    ],
+    [
+      "Johto #145"
+    ],
+    [
+      "Hoenn #165"
+    ],
+    [
+      "Sinnoh #43"
+    ],
+    [
+      "Unova #195"
+    ],
+    [
+      "Golduck"
+    ],
+    [
+      "National #55"
+    ],
+    [
+      "Kanto #70"
+    ],
+    [
+      "Johto #146"
+    ],
+    [
+      "Hoenn #166"
+    ],
+    [
+      "Sinnoh #44"
+    ],
+    [
+      "Unova #196"
+    ],
+    [
+      "Snubbull"
+    ],
+    [
+      "National #209"
+    ],
+    [
+      "Kanto #71"
+    ],
+    [
+      "Johto #129"
+    ],
+    [
+      "Hoenn #227"
+    ],
+    [
+      "Granbull"
+    ],
+    [
+      "National #210"
+    ],
+    [
+      "Kanto #72"
+    ],
+    [
+      "Johto #130"
+    ],
+    [
+      "Hoenn #228"
+    ],
+    [
+      "Hoppip"
+    ],
+    [
+      "National #187"
+    ],
+    [
+      "Kanto #73"
+    ],
+    [
+      "Johto #68"
+    ],
+    [
+      "Skiploom"
+    ],
+    [
+      "National #188"
+    ],
+    [
+      "Kanto #74"
+    ],
+    [
+      "Johto #69"
+    ],
+    [
+      "Jumpluff"
+    ],
+    [
+      "National #189"
+    ],
+    [
+      "Kanto #75"
+    ],
+    [
+      "Johto #70"
+    ],
+    [
+      "Mankey"
+    ],
+    [
+      "National #56"
+    ],
+    [
+      "Kanto #76"
+    ],
+    [
+      "Johto #141"
+    ],
+    [
+      "Primeape"
+    ],
+    [
+      "National #57"
+    ],
+    [
+      "Kanto #77"
+    ],
+    [
+      "Johto #142"
+    ],
+    [
+      "Growlithe"
+    ],
+    [
+      "National #58"
+    ],
+    [
+      "Kanto #78"
+    ],
+    [
+      "Johto #133"
+    ],
+    [
+      "Arcanine"
+    ],
+    [
+      "National #59"
+    ],
+    [
+      "Kanto #79"
+    ],
+    [
+      "Johto #134"
+    ],
+    [
+      "Poliwag"
+    ],
+    [
+      "National #60"
+    ],
+    [
+      "Kanto #80"
+    ],
+    [
+      "Johto #73"
+    ],
+    [
+      "Sinnoh #254"
+    ],
+    [
+      "Unova #169"
+    ],
+    [
+      "Poliwhirl"
+    ],
+    [
+      "National #61"
+    ],
+    [
+      "Kanto #81"
+    ],
+    [
+      "Johto #74"
+    ],
+    [
+      "Sinnoh #255"
+    ],
+    [
+      "Unova #170"
+    ],
+    [
+      "Poliwrath"
+    ],
+    [
+      "National #62"
+    ],
+    [
+      "Kanto #82"
+    ],
+    [
+      "Johto #75"
+    ],
+    [
+      "Sinnoh #256"
+    ],
+    [
+      "Unova #171"
+    ],
+    [
+      "Politoed"
+    ],
+    [
+      "National #186"
+    ],
+    [
+      "Kanto #83"
+    ],
+    [
+      "Johto #76"
+    ],
+    [
+      "Sinnoh #257"
+    ],
+    [
+      "Unova #172"
+    ],
+    [
+      "Abra"
+    ],
+    [
+      "National #63"
+    ],
+    [
+      "Kanto #84"
+    ],
+    [
+      "Johto #90"
+    ],
+    [
+      "Hoenn #40"
+    ],
+    [
+      "Sinnoh #20"
+    ],
+    [
+      "Kadabra"
+    ],
+    [
+      "National #64"
+    ],
+    [
+      "Kanto #85"
+    ],
+    [
+      "Johto #91"
+    ],
+    [
+      "Hoenn #41"
+    ],
+    [
+      "Sinnoh #21"
+    ],
+    [
+      "Alakazam"
+    ],
+    [
+      "National #65"
+    ],
+    [
+      "Kanto #86"
+    ],
+    [
+      "Johto #92"
+    ],
+    [
+      "Hoenn #42"
+    ],
+    [
+      "Sinnoh #22"
+    ],
+    [
+      "Machop"
+    ],
+    [
+      "National #66"
+    ],
+    [
+      "Kanto #87"
+    ],
+    [
+      "Johto #147"
+    ],
+    [
+      "Hoenn #75"
+    ],
+    [
+      "Sinnoh #40"
+    ],
+    [
+      "Machoke"
+    ],
+    [
+      "National #67"
+    ],
+    [
+      "Kanto #88"
+    ],
+    [
+      "Johto #148"
+    ],
+    [
+      "Hoenn #76"
+    ],
+    [
+      "Sinnoh #41"
+    ],
+    [
+      "Machamp"
+    ],
+    [
+      "National #68"
+    ],
+    [
+      "Kanto #89"
+    ],
+    [
+      "Johto #149"
+    ],
+    [
+      "Hoenn #77"
+    ],
+    [
+      "Sinnoh #42"
+    ],
+    [
+      "Wooper"
+    ],
+    [
+      "National #194"
+    ],
+    [
+      "Kanto #90"
+    ],
+    [
+      "Johto #57"
+    ],
+    [
+      "Hoenn #221"
+    ],
+    [
+      "Sinnoh #117"
+    ],
+    [
+      "Quagsire"
+    ],
+    [
+      "National #195"
+    ],
+    [
+      "Kanto #91"
+    ],
+    [
+      "Johto #58"
+    ],
+    [
+      "Hoenn #222"
+    ],
+    [
+      "Sinnoh #118"
+    ],
+    [
+      "Bellsprout"
+    ],
+    [
+      "National #69"
+    ],
+    [
+      "Kanto #92"
+    ],
+    [
+      "Johto #65"
+    ],
+    [
+      "Sinnoh #230"
+    ],
+    [
+      "Weepinbell"
+    ],
+    [
+      "National #70"
+    ],
+    [
+      "Kanto #93"
+    ],
+    [
+      "Johto #66"
+    ],
+    [
+      "Sinnoh #231"
+    ],
+    [
+      "Victreebel"
+    ],
+    [
+      "National #71"
+    ],
+    [
+      "Kanto #94"
+    ],
+    [
+      "Johto #67"
+    ],
+    [
+      "Sinnoh #232"
+    ],
+    [
+      "Tentacool"
+    ],
+    [
+      "National #72"
+    ],
+    [
+      "Kanto #95"
+    ],
+    [
+      "Johto #172"
+    ],
+    [
+      "Hoenn #68"
+    ],
+    [
+      "Sinnoh #136"
+    ],
+    [
+      "Tentacruel"
+    ],
+    [
+      "National #73"
+    ],
+    [
+      "Kanto #96"
+    ],
+    [
+      "Johto #173"
+    ],
+    [
+      "Hoenn #69"
+    ],
+    [
+      "Sinnoh #137"
+    ],
+    [
+      "Geodude"
+    ],
+    [
+      "National #74"
+    ],
+    [
+      "Kanto #97"
+    ],
+    [
+      "Johto #34"
+    ],
+    [
+      "Hoenn #58"
+    ],
+    [
+      "Sinnoh #31"
+    ],
+    [
+      "Unova #186"
+    ],
+    [
+      "Graveler"
+    ],
+    [
+      "National #75"
+    ],
+    [
+      "Kanto #98"
+    ],
+    [
+      "Johto #35"
+    ],
+    [
+      "Hoenn #59"
+    ],
+    [
+      "Sinnoh #32"
+    ],
+    [
+      "Unova #187"
+    ],
+    [
+      "Golem"
+    ],
+    [
+      "National #76"
+    ],
+    [
+      "Kanto #99"
+    ],
+    [
+      "Johto #36"
+    ],
+    [
+      "Hoenn #60"
+    ],
+    [
+      "Sinnoh #33"
+    ],
+    [
+      "Unova #188"
+    ],
+    [
+      "Ponyta"
+    ],
+    [
+      "National #77"
+    ],
+    [
+      "Kanto #100"
+    ],
+    [
+      "Johto #218"
+    ],
+    [
+      "Sinnoh #90"
+    ],
+    [
+      "Unova #216"
+    ],
+    [
+      "Rapidash"
+    ],
+    [
+      "National #78"
+    ],
+    [
+      "Kanto #101"
+    ],
+    [
+      "Johto #219"
+    ],
+    [
+      "Sinnoh #91"
+    ],
+    [
+      "Unova #217"
+    ],
+    [
+      "Slowpoke"
+    ],
+    [
+      "National #79"
+    ],
+    [
+      "Kanto #102"
+    ],
+    [
+      "Johto #81"
+    ],
+    [
+      "Unova #294"
+    ],
+    [
+      "Slowbro"
+    ],
+    [
+      "National #80"
+    ],
+    [
+      "Kanto #103"
+    ],
+    [
+      "Johto #82"
+    ],
+    [
+      "Unova #295"
+    ],
+    [
+      "Slowking"
+    ],
+    [
+      "National #199"
+    ],
+    [
+      "Kanto #104"
+    ],
+    [
+      "Johto #83"
+    ],
+    [
+      "Unova #296"
+    ],
+    [
+      "Magnemite"
+    ],
+    [
+      "National #81"
+    ],
+    [
+      "Kanto #105"
+    ],
+    [
+      "Johto #122"
+    ],
+    [
+      "Hoenn #84"
+    ],
+    [
+      "Sinnoh #172"
+    ],
+    [
+      "Magneton"
+    ],
+    [
+      "National #82"
+    ],
+    [
+      "Kanto #106"
+    ],
+    [
+      "Johto #123"
+    ],
+    [
+      "Hoenn #85"
+    ],
+    [
+      "Sinnoh #173"
+    ],
+    [
+      "Magnezone"
+    ],
+    [
+      "National #462"
+    ],
+    [
+      "Kanto #107"
+    ],
+    [
+      "Johto #124"
+    ],
+    [
+      "Hoenn #86"
+    ],
+    [
+      "Sinnoh #174"
+    ],
+    [
+      "Farfetch'd"
+    ],
+    [
+      "National #83"
+    ],
+    [
+      "Kanto #108"
+    ],
+    [
+      "Johto #168"
+    ],
+    [
+      "Doduo"
+    ],
+    [
+      "National #84"
+    ],
+    [
+      "Kanto #109"
+    ],
+    [
+      "Johto #216"
+    ],
+    [
+      "Hoenn #95"
+    ],
+    [
+      "Dodrio"
+    ],
+    [
+      "National #85"
+    ],
+    [
+      "Kanto #110"
+    ],
+    [
+      "Johto #217"
+    ],
+    [
+      "Hoenn #96"
+    ],
+    [
+      "Murkrow"
+    ],
+    [
+      "National #198"
+    ],
+    [
+      "Kanto #111"
+    ],
+    [
+      "Johto #226"
+    ],
+    [
+      "Sinnoh #74"
+    ],
+    [
+      "Unova #285"
+    ],
+    [
+      "Honchkrow"
+    ],
+    [
+      "National #430"
+    ],
+    [
+      "Kanto #112"
+    ],
+    [
+      "Johto #227"
+    ],
+    [
+      "Sinnoh #75"
+    ],
+    [
+      "Unova #286"
+    ],
+    [
+      "Houndour"
+    ],
+    [
+      "National #228"
+    ],
+    [
+      "Kanto #113"
+    ],
+    [
+      "Johto #228"
+    ],
+    [
+      "Hoenn #233"
+    ],
+    [
+      "Sinnoh #170"
+    ],
+    [
+      "Houndoom"
+    ],
+    [
+      "National #229"
+    ],
+    [
+      "Kanto #114"
+    ],
+    [
+      "Johto #229"
+    ],
+    [
+      "Hoenn #234"
+    ],
+    [
+      "Sinnoh #171"
+    ],
+    [
+      "Seel"
+    ],
+    [
+      "National #86"
+    ],
+    [
+      "Kanto #115"
+    ],
+    [
+      "Johto #186"
+    ],
+    [
+      "Sinnoh #240"
+    ],
+    [
+      "Unova #250"
+    ],
+    [
+      "Dewgong"
+    ],
+    [
+      "National #87"
+    ],
+    [
+      "Kanto #116"
+    ],
+    [
+      "Johto #187"
+    ],
+    [
+      "Sinnoh #241"
+    ],
+    [
+      "Unova #251"
+    ],
+    [
+      "Grimer"
+    ],
+    [
+      "National #88"
+    ],
+    [
+      "Kanto #117"
+    ],
+    [
+      "Johto #120"
+    ],
+    [
+      "Hoenn #111"
+    ],
+    [
+      "Muk"
+    ],
+    [
+      "National #89"
+    ],
+    [
+      "Kanto #118"
+    ],
+    [
+      "Johto #121"
+    ],
+    [
+      "Hoenn #112"
+    ],
+    [
+      "Shellder"
+    ],
+    [
+      "National #90"
+    ],
+    [
+      "Kanto #119"
+    ],
+    [
+      "Johto #179"
+    ],
+    [
+      "Sinnoh #209"
+    ],
+    [
+      "Unova #240"
+    ],
+    [
+      "Cloyster"
+    ],
+    [
+      "National #91"
+    ],
+    [
+      "Kanto #120"
+    ],
+    [
+      "Johto #180"
+    ],
+    [
+      "Sinnoh #210"
+    ],
+    [
+      "Unova #241"
+    ],
+    [
+      "Gastly"
+    ],
+    [
+      "National #92"
+    ],
+    [
+      "Kanto #121"
+    ],
+    [
+      "Johto #59"
+    ],
+    [
+      "Sinnoh #69"
+    ],
+    [
+      "Haunter"
+    ],
+    [
+      "National #93"
+    ],
+    [
+      "Kanto #122"
+    ],
+    [
+      "Johto #60"
+    ],
+    [
+      "Sinnoh #70"
+    ],
+    [
+      "Gengar"
+    ],
+    [
+      "National #94"
+    ],
+    [
+      "Kanto #123"
+    ],
+    [
+      "Johto #61"
+    ],
+    [
+      "Sinnoh #71"
+    ],
+    [
+      "Onix"
+    ],
+    [
+      "National #95"
+    ],
+    [
+      "Kanto #124"
+    ],
+    [
+      "Johto #63"
+    ],
+    [
+      "Sinnoh #34"
+    ],
+    [
+      "Unova #165"
+    ],
+    [
+      "Steelix"
+    ],
+    [
+      "National #208"
+    ],
+    [
+      "Kanto #125"
+    ],
+    [
+      "Johto #64"
+    ],
+    [
+      "Sinnoh #35"
+    ],
+    [
+      "Unova #166"
+    ],
+    [
+      "Drowzee"
+    ],
+    [
+      "National #96"
+    ],
+    [
+      "Kanto #126"
+    ],
+    [
+      "Johto #88"
+    ],
+    [
+      "Hypno"
+    ],
+    [
+      "National #97"
+    ],
+    [
+      "Kanto #127"
+    ],
+    [
+      "Johto #89"
+    ],
+    [
+      "Krabby"
+    ],
+    [
+      "National #98"
+    ],
+    [
+      "Kanto #128"
+    ],
+    [
+      "Johto #174"
+    ],
+    [
+      "Unova #156"
+    ],
+    [
+      "Kingler"
+    ],
+    [
+      "National #99"
+    ],
+    [
+      "Kanto #129"
+    ],
+    [
+      "Johto #175"
+    ],
+    [
+      "Unova #157"
+    ],
+    [
+      "Voltorb"
+    ],
+    [
+      "National #100"
+    ],
+    [
+      "Kanto #130"
+    ],
+    [
+      "Johto #125"
+    ],
+    [
+      "Hoenn #87"
+    ],
+    [
+      "Electrode"
+    ],
+    [
+      "National #101"
+    ],
+    [
+      "Kanto #131"
+    ],
+    [
+      "Johto #126"
+    ],
+    [
+      "Hoenn #88"
+    ],
+    [
+      "Exeggcute"
+    ],
+    [
+      "National #102"
+    ],
+    [
+      "Kanto #132"
+    ],
+    [
+      "Johto #106"
+    ],
+    [
+      "Exeggutor"
+    ],
+    [
+      "National #103"
+    ],
+    [
+      "Kanto #133"
+    ],
+    [
+      "Johto #107"
+    ],
+    [
+      "Cubone"
+    ],
+    [
+      "National #104"
+    ],
+    [
+      "Kanto #134"
+    ],
+    [
+      "Johto #220"
+    ],
+    [
+      "Unova #276"
+    ],
+    [
+      "Marowak"
+    ],
+    [
+      "National #105"
+    ],
+    [
+      "Kanto #135"
+    ],
+    [
+      "Johto #221"
+    ],
+    [
+      "Unova #277"
+    ],
+    [
+      "Slugma"
+    ],
+    [
+      "National #218"
+    ],
+    [
+      "Kanto #136"
+    ],
+    [
+      "Johto #230"
+    ],
+    [
+      "Hoenn #108"
+    ],
+    [
+      "Sinnoh #274"
+    ],
+    [
+      "Magcargo"
+    ],
+    [
+      "National #219"
+    ],
+    [
+      "Kanto #137"
+    ],
+    [
+      "Johto #231"
+    ],
+    [
+      "Hoenn #109"
+    ],
+    [
+      "Sinnoh #275"
+    ],
+    [
+      "Tyrogue"
+    ],
+    [
+      "National #236"
+    ],
+    [
+      "Kanto #138"
+    ],
+    [
+      "Johto #150"
+    ],
+    [
+      "Hitmonlee"
+    ],
+    [
+      "National #106"
+    ],
+    [
+      "Kanto #139"
+    ],
+    [
+      "Johto #151"
+    ],
+    [
+      "Hitmonchan"
+    ],
+    [
+      "National #107"
+    ],
+    [
+      "Kanto #140"
+    ],
+    [
+      "Johto #152"
+    ],
+    [
+      "Hitmontop"
+    ],
+    [
+      "National #237"
+    ],
+    [
+      "Kanto #141"
+    ],
+    [
+      "Johto #153"
+    ],
+    [
+      "Lickitung"
+    ],
+    [
+      "National #108"
+    ],
+    [
+      "Kanto #142"
+    ],
+    [
+      "Johto #188"
+    ],
+    [
+      "Sinnoh #155"
+    ],
+    [
+      "Unova #189"
+    ],
+    [
+      "Lickilicky"
+    ],
+    [
+      "National #463"
+    ],
+    [
+      "Kanto #143"
+    ],
+    [
+      "Johto #189"
+    ],
+    [
+      "Sinnoh #156"
+    ],
+    [
+      "Unova #190"
+    ],
+    [
+      "Koffing"
+    ],
+    [
+      "National #109"
+    ],
+    [
+      "Kanto #144"
+    ],
+    [
+      "Johto #118"
+    ],
+    [
+      "Hoenn #113"
+    ],
+    [
+      "Sinnoh #249"
+    ],
+    [
+      "Weezing"
+    ],
+    [
+      "National #110"
+    ],
+    [
+      "Kanto #145"
+    ],
+    [
+      "Johto #119"
+    ],
+    [
+      "Hoenn #114"
+    ],
+    [
+      "Sinnoh #250"
+    ],
+    [
+      "Rhyhorn"
+    ],
+    [
+      "National #111"
+    ],
+    [
+      "Kanto #146"
+    ],
+    [
+      "Johto #223"
+    ],
+    [
+      "Hoenn #176"
+    ],
+    [
+      "Sinnoh #180"
+    ],
+    [
+      "Rhydon"
+    ],
+    [
+      "National #112"
+    ],
+    [
+      "Kanto #147"
+    ],
+    [
+      "Johto #224"
+    ],
+    [
+      "Hoenn #177"
+    ],
+    [
+      "Sinnoh #181"
+    ],
+    [
+      "Rhyperior"
+    ],
+    [
+      "National #464"
+    ],
+    [
+      "Kanto #148"
+    ],
+    [
+      "Johto #225"
+    ],
+    [
+      "Hoenn #178"
+    ],
+    [
+      "Sinnoh #182"
+    ],
+    [
+      "Happiny"
+    ],
+    [
+      "National #440"
+    ],
+    [
+      "Kanto #149"
+    ],
+    [
+      "Johto #239"
+    ],
+    [
+      "Sinnoh #96"
+    ],
+    [
+      "Chansey"
+    ],
+    [
+      "National #113"
+    ],
+    [
+      "Kanto #150"
+    ],
+    [
+      "Johto #240"
+    ],
+    [
+      "Sinnoh #97"
+    ],
+    [
+      "Blissey"
+    ],
+    [
+      "National #242"
+    ],
+    [
+      "Kanto #151"
+    ],
+    [
+      "Johto #241"
+    ],
+    [
+      "Sinnoh #98"
+    ],
+    [
+      "Tangela"
+    ],
+    [
+      "National #114"
+    ],
+    [
+      "Kanto #152"
+    ],
+    [
+      "Johto #190"
+    ],
+    [
+      "Sinnoh #175"
+    ],
+    [
+      "Unova #226"
+    ],
+    [
+      "Tangrowth"
+    ],
+    [
+      "National #465"
+    ],
+    [
+      "Kanto #153"
+    ],
+    [
+      "Johto #191"
+    ],
+    [
+      "Sinnoh #176"
+    ],
+    [
+      "Unova #227"
+    ],
+    [
+      "Kangaskhan"
+    ],
+    [
+      "National #115"
+    ],
+    [
+      "Kanto #154"
+    ],
+    [
+      "Johto #222"
+    ],
+    [
+      "Horsea"
+    ],
+    [
+      "National #116"
+    ],
+    [
+      "Kanto #155"
+    ],
+    [
+      "Johto #200"
+    ],
+    [
+      "Hoenn #193"
+    ],
+    [
+      "Sinnoh #245"
+    ],
+    [
+      "Unova #175"
+    ],
+    [
+      "Seadra"
+    ],
+    [
+      "National #117"
+    ],
+    [
+      "Kanto #156"
+    ],
+    [
+      "Johto #201"
+    ],
+    [
+      "Hoenn #194"
+    ],
+    [
+      "Sinnoh #246"
+    ],
+    [
+      "Unova #176"
+    ],
+    [
+      "Kingdra"
+    ],
+    [
+      "National #230"
+    ],
+    [
+      "Kanto #157"
+    ],
+    [
+      "Johto #202"
+    ],
+    [
+      "Hoenn #195"
+    ],
+    [
+      "Sinnoh #247"
+    ],
+    [
+      "Unova #177"
+    ],
+    [
+      "Goldeen"
+    ],
+    [
+      "National #118"
+    ],
+    [
+      "Kanto #158"
+    ],
+    [
+      "Johto #79"
+    ],
+    [
+      "Hoenn #51"
+    ],
+    [
+      "Sinnoh #78"
+    ],
+    [
+      "Unova #154"
+    ],
+    [
+      "Seaking"
+    ],
+    [
+      "National #119"
+    ],
+    [
+      "Kanto #159"
+    ],
+    [
+      "Johto #80"
+    ],
+    [
+      "Hoenn #52"
+    ],
+    [
+      "Sinnoh #79"
+    ],
+    [
+      "Unova #155"
+    ],
+    [
+      "Staryu"
+    ],
+    [
+      "National #120"
+    ],
+    [
+      "Kanto #160"
+    ],
+    [
+      "Johto #177"
+    ],
+    [
+      "Hoenn #148"
+    ],
+    [
+      "Sinnoh #215"
+    ],
+    [
+      "Unova #235"
+    ],
+    [
+      "Starmie"
+    ],
+    [
+      "National #121"
+    ],
+    [
+      "Kanto #161"
+    ],
+    [
+      "Johto #178"
+    ],
+    [
+      "Hoenn #149"
+    ],
+    [
+      "Sinnoh #216"
+    ],
+    [
+      "Unova #236"
+    ],
+    [
+      "Qwilfish"
+    ],
+    [
+      "National #211"
+    ],
+    [
+      "Kanto #162"
+    ],
+    [
+      "Johto #171"
+    ],
+    [
+      "Sinnoh #219"
+    ],
+    [
+      "Unova #178"
+    ],
+    [
+      "Corsola"
+    ],
+    [
+      "National #222"
+    ],
+    [
+      "Kanto #163"
+    ],
+    [
+      "Johto #181"
+    ],
+    [
+      "Hoenn #189"
+    ],
+    [
+      "Unova #239"
+    ],
+    [
+      "Chinchou"
+    ],
+    [
+      "National #170"
+    ],
+    [
+      "Kanto #164"
+    ],
+    [
+      "Johto #184"
+    ],
+    [
+      "Hoenn #190"
+    ],
+    [
+      "Sinnoh #213"
+    ],
+    [
+      "Unova #179"
+    ],
+    [
+      "Lanturn"
+    ],
+    [
+      "National #171"
+    ],
+    [
+      "Kanto #165"
+    ],
+    [
+      "Johto #185"
+    ],
+    [
+      "Hoenn #191"
+    ],
+    [
+      "Sinnoh #214"
+    ],
+    [
+      "Unova #180"
+    ],
+    [
+      "Mime Jr."
+    ],
+    [
+      "National #439"
+    ],
+    [
+      "Kanto #166"
+    ],
+    [
+      "Johto #165"
+    ],
+    [
+      "Sinnoh #94"
+    ],
+    [
+      "Mr. Mime"
+    ],
+    [
+      "National #122"
+    ],
+    [
+      "Kanto #167"
+    ],
+    [
+      "Johto #166"
+    ],
+    [
+      "Sinnoh #95"
+    ],
+    [
+      "Scyther"
+    ],
+    [
+      "National #123"
+    ],
+    [
+      "Kanto #168"
+    ],
+    [
+      "Johto #114"
+    ],
+    [
+      "Sinnoh #189"
+    ],
+    [
+      "Scizor"
+    ],
+    [
+      "National #212"
+    ],
+    [
+      "Kanto #169"
+    ],
+    [
+      "Johto #115"
+    ],
+    [
+      "Sinnoh #190"
+    ],
+    [
+      "Smoochum"
+    ],
+    [
+      "National #238"
+    ],
+    [
+      "Kanto #170"
+    ],
+    [
+      "Johto #160"
+    ],
+    [
+      "Sinnoh #220"
+    ],
+    [
+      "Unova #248"
+    ],
+    [
+      "Jynx"
+    ],
+    [
+      "National #124"
+    ],
+    [
+      "Kanto #171"
+    ],
+    [
+      "Johto #161"
+    ],
+    [
+      "Sinnoh #221"
+    ],
+    [
+      "Unova #249"
+    ],
+    [
+      "Elekid"
+    ],
+    [
+      "National #239"
+    ],
+    [
+      "Kanto #172"
+    ],
+    [
+      "Johto #162"
+    ],
+    [
+      "Sinnoh #191"
+    ],
+    [
+      "Electabuzz"
+    ],
+    [
+      "National #125"
+    ],
+    [
+      "Kanto #173"
+    ],
+    [
+      "Johto #163"
+    ],
+    [
+      "Sinnoh #192"
+    ],
+    [
+      "Electivire"
+    ],
+    [
+      "National #466"
+    ],
+    [
+      "Kanto #174"
+    ],
+    [
+      "Johto #164"
+    ],
+    [
+      "Sinnoh #193"
+    ],
+    [
+      "Magby"
+    ],
+    [
+      "National #240"
+    ],
+    [
+      "Kanto #175"
+    ],
+    [
+      "Johto #157"
+    ],
+    [
+      "Sinnoh #194"
+    ],
+    [
+      "Magmar"
+    ],
+    [
+      "National #126"
+    ],
+    [
+      "Kanto #176"
+    ],
+    [
+      "Johto #158"
+    ],
+    [
+      "Sinnoh #195"
+    ],
+    [
+      "Magmortar"
+    ],
+    [
+      "National #467"
+    ],
+    [
+      "Kanto #177"
+    ],
+    [
+      "Johto #159"
+    ],
+    [
+      "Sinnoh #196"
+    ],
+    [
+      "Pinsir"
+    ],
+    [
+      "National #127"
+    ],
+    [
+      "Kanto #178"
+    ],
+    [
+      "Johto #116"
+    ],
+    [
+      "Hoenn #174"
+    ],
+    [
+      "Sinnoh #265"
+    ],
+    [
+      "Unova #214"
+    ],
+    [
+      "Tauros"
+    ],
+    [
+      "National #128"
+    ],
+    [
+      "Kanto #179"
+    ],
+    [
+      "Johto #155"
+    ],
+    [
+      "Magikarp"
+    ],
+    [
+      "National #129"
+    ],
+    [
+      "Kanto #180"
+    ],
+    [
+      "Johto #77"
+    ],
+    [
+      "Hoenn #53"
+    ],
+    [
+      "Sinnoh #23"
+    ],
+    [
+      "Gyarados"
+    ],
+    [
+      "National #130"
+    ],
+    [
+      "Kanto #181"
+    ],
+    [
+      "Johto #78"
+    ],
+    [
+      "Hoenn #54"
+    ],
+    [
+      "Sinnoh #24"
+    ],
+    [
+      "Lapras"
+    ],
+    [
+      "National #131"
+    ],
+    [
+      "Kanto #182"
+    ],
+    [
+      "Johto #243"
+    ],
+    [
+      "Sinnoh #225"
+    ],
+    [
+      "Unova #201"
+    ],
+    [
+      "Ditto"
+    ],
+    [
+      "National #132"
+    ],
+    [
+      "Kanto #183"
+    ],
+    [
+      "Johto #93"
+    ],
+    [
+      "Hoenn #204"
+    ],
+    [
+      "Unova #255"
+    ],
+    [
+      "Eevee"
+    ],
+    [
+      "National #133"
+    ],
+    [
+      "Kanto #184"
+    ],
+    [
+      "Johto #192"
+    ],
+    [
+      "Sinnoh #157"
+    ],
+    [
+      "Vaporeon"
+    ],
+    [
+      "National #134"
+    ],
+    [
+      "Kanto #185"
+    ],
+    [
+      "Johto #193"
+    ],
+    [
+      "Sinnoh #158"
+    ],
+    [
+      "Jolteon"
+    ],
+    [
+      "National #135"
+    ],
+    [
+      "Kanto #186"
+    ],
+    [
+      "Johto #194"
+    ],
+    [
+      "Sinnoh #159"
+    ],
+    [
+      "Flareon"
+    ],
+    [
+      "National #136"
+    ],
+    [
+      "Kanto #187"
+    ],
+    [
+      "Johto #195"
+    ],
+    [
+      "Sinnoh #160"
+    ],
+    [
+      "Espeon"
+    ],
+    [
+      "National #196"
+    ],
+    [
+      "Kanto #188"
+    ],
+    [
+      "Johto #196"
+    ],
+    [
+      "Sinnoh #161"
+    ],
+    [
+      "Umbreon"
+    ],
+    [
+      "National #197"
+    ],
+    [
+      "Kanto #189"
+    ],
+    [
+      "Johto #197"
+    ],
+    [
+      "Sinnoh #162"
+    ],
+    [
+      "Leafeon"
+    ],
+    [
+      "National #470"
+    ],
+    [
+      "Kanto #190"
+    ],
+    [
+      "Johto #198"
+    ],
+    [
+      "Sinnoh #163"
+    ],
+    [
+      "Glaceon"
+    ],
+    [
+      "National #471"
+    ],
+    [
+      "Kanto #191"
+    ],
+    [
+      "Johto #199"
+    ],
+    [
+      "Sinnoh #164"
+    ],
+    [
+      "Porygon"
+    ],
+    [
+      "National #137"
+    ],
+    [
+      "Kanto #192"
+    ],
+    [
+      "Johto #236"
+    ],
+    [
+      "Sinnoh #186"
+    ],
+    [
+      "Porygon2"
+    ],
+    [
+      "National #233"
+    ],
+    [
+      "Kanto #193"
+    ],
+    [
+      "Johto #237"
+    ],
+    [
+      "Sinnoh #187"
+    ],
+    [
+      "Porygon-Z"
+    ],
+    [
+      "National #474"
+    ],
+    [
+      "Kanto #194"
+    ],
+    [
+      "Johto #238"
+    ],
+    [
+      "Sinnoh #188"
+    ],
+    [
+      "Teddiursa"
+    ],
+    [
+      "National #216"
+    ],
+    [
+      "Kanto #195"
+    ],
+    [
+      "Johto #209"
+    ],
+    [
+      "Hoenn #229"
+    ],
+    [
+      "Ursaring"
+    ],
+    [
+      "National #217"
+    ],
+    [
+      "Kanto #196"
+    ],
+    [
+      "Johto #210"
+    ],
+    [
+      "Hoenn #230"
+    ],
+    [
+      "Phanpy"
+    ],
+    [
+      "National #231"
+    ],
+    [
+      "Kanto #197"
+    ],
+    [
+      "Johto #211"
+    ],
+    [
+      "Hoenn #172"
+    ],
+    [
+      "Donphan"
+    ],
+    [
+      "National #232"
+    ],
+    [
+      "Kanto #198"
+    ],
+    [
+      "Johto #212"
+    ],
+    [
+      "Hoenn #173"
+    ],
+    [
+      "Omanyte"
+    ],
+    [
+      "National #138"
+    ],
+    [
+      "Kanto #199"
+    ],
+    [
+      "Johto #244"
+    ],
+    [
+      "Omastar"
+    ],
+    [
+      "National #139"
+    ],
+    [
+      "Kanto #200"
+    ],
+    [
+      "Johto #245"
+    ],
+    [
+      "Kabuto"
+    ],
+    [
+      "National #140"
+    ],
+    [
+      "Kanto #201"
+    ],
+    [
+      "Johto #246"
+    ],
+    [
+      "Kabutops"
+    ],
+    [
+      "National #141"
+    ],
+    [
+      "Kanto #202"
+    ],
+    [
+      "Johto #247"
+    ],
+    [
+      "Aerodactyl"
+    ],
+    [
+      "National #142"
+    ],
+    [
+      "Kanto #203"
+    ],
+    [
+      "Johto #248"
+    ],
+    [
+      "Munchlax"
+    ],
+    [
+      "National #446"
+    ],
+    [
+      "Kanto #204"
+    ],
+    [
+      "Johto #249"
+    ],
+    [
+      "Sinnoh #112"
+    ],
+    [
+      "Snorlax"
+    ],
+    [
+      "National #143"
+    ],
+    [
+      "Kanto #205"
+    ],
+    [
+      "Johto #250"
+    ],
+    [
+      "Sinnoh #113"
+    ],
+    [
+      "Dratini"
+    ],
+    [
+      "National #147"
+    ],
+    [
+      "Kanto #206"
+    ],
+    [
+      "Johto #251"
+    ],
+    [
+      "Sinnoh #222"
+    ],
+    [
+      "Unova #183"
+    ],
+    [
+      "Dragonair"
+    ],
+    [
+      "National #148"
+    ],
+    [
+      "Kanto #207"
+    ],
+    [
+      "Johto #252"
+    ],
+    [
+      "Sinnoh #223"
+    ],
+    [
+      "Unova #184"
+    ],
+    [
+      "Dragonite"
+    ],
+    [
+      "National #149"
+    ],
+    [
+      "Kanto #208"
+    ],
+    [
+      "Johto #253"
+    ],
+    [
+      "Sinnoh #224"
+    ],
+    [
+      "Unova #185"
+    ],
+    [
+      "Dunsparce"
+    ],
+    [
+      "National #206"
+    ],
+    [
+      "Kanto #209"
+    ],
+    [
+      "Johto #53"
+    ],
+    [
+      "Unova #220"
+    ],
+    [
+      "Azurill"
+    ],
+    [
+      "National #298"
+    ],
+    [
+      "Kanto #210"
+    ],
+    [
+      "Johto #136"
+    ],
+    [
+      "Hoenn #55"
+    ],
+    [
+      "Sinnoh #124"
+    ],
+    [
+      "Marill"
+    ],
+    [
+      "National #183"
+    ],
+    [
+      "Kanto #211"
+    ],
+    [
+      "Johto #137"
+    ],
+    [
+      "Hoenn #56"
+    ],
+    [
+      "Sinnoh #125"
+    ],
+    [
+      "Azumarill"
+    ],
+    [
+      "National #184"
+    ],
+    [
+      "Kanto #212"
+    ],
+    [
+      "Johto #138"
+    ],
+    [
+      "Hoenn #57"
+    ],
+    [
+      "Sinnoh #126"
+    ],
+    [
+      "Swinub"
+    ],
+    [
+      "National #220"
+    ],
+    [
+      "Kanto #213"
+    ],
+    [
+      "Johto #206"
+    ],
+    [
+      "Sinnoh #197"
+    ],
+    [
+      "Unova #242"
+    ],
+    [
+      "Piloswine"
+    ],
+    [
+      "National #221"
+    ],
+    [
+      "Kanto #214"
+    ],
+    [
+      "Johto #207"
+    ],
+    [
+      "Sinnoh #198"
+    ],
+    [
+      "Unova #243"
+    ],
+    [
+      "Mamoswine"
+    ],
+    [
+      "National #473"
+    ],
+    [
+      "Kanto #215"
+    ],
+    [
+      "Johto #208"
+    ],
+    [
+      "Sinnoh #199"
+    ],
+    [
+      "Unova #244"
+    ],
+    [
+      "Delibird"
+    ],
+    [
+      "National #225"
+    ],
+    [
+      "Kanto #216"
+    ],
+    [
+      "Johto #205"
+    ],
+    [
+      "Unova #247"
+    ],
+    [
+      "Sneasel"
+    ],
+    [
+      "National #215"
+    ],
+    [
+      "Kanto #217"
+    ],
+    [
+      "Johto #232"
+    ],
+    [
+      "Sinnoh #144"
+    ],
+    [
+      "Unova #245"
+    ],
+    [
+      "Weavile"
+    ],
+    [
+      "National #461"
+    ],
+    [
+      "Kanto #218"
+    ],
+    [
+      "Johto #233"
+    ],
+    [
+      "Sinnoh #145"
+    ],
+    [
+      "Unova #246"
+    ],
+    [
+      "Remoraid"
+    ],
+    [
+      "National #223"
+    ],
+    [
+      "Kanto #219"
+    ],
+    [
+      "Johto #182"
+    ],
+    [
+      "Hoenn #231"
+    ],
+    [
+      "Sinnoh #132"
+    ],
+    [
+      "Unova #263"
+    ],
+    [
+      "Octillery"
+    ],
+    [
+      "National #224"
+    ],
+    [
+      "Kanto #220"
+    ],
+    [
+      "Johto #183"
+    ],
+    [
+      "Hoenn #232"
+    ],
+    [
+      "Sinnoh #133"
+    ],
+    [
+      "Unova #264"
+    ],
+    [
+      "Misdreavus"
+    ],
+    [
+      "National #200"
+    ],
+    [
+      "Kanto #221"
+    ],
+    [
+      "Johto #234"
+    ],
+    [
+      "Sinnoh #72"
+    ],
+    [
+      "Unova #287"
+    ],
+    [
+      "Mismagius"
+    ],
+    [
+      "National #429"
+    ],
+    [
+      "Kanto #222"
+    ],
+    [
+      "Johto #235"
+    ],
+    [
+      "Sinnoh #73"
+    ],
+    [
+      "Unova #288"
+    ],
+    [
+      "Wynaut"
+    ],
+    [
+      "National #360"
+    ],
+    [
+      "Kanto #223"
+    ],
+    [
+      "Johto #110"
+    ],
+    [
+      "Hoenn #167"
+    ],
+    [
+      "Wobbuffet"
+    ],
+    [
+      "National #202"
+    ],
+    [
+      "Kanto #224"
+    ],
+    [
+      "Johto #111"
+    ],
+    [
+      "Hoenn #168"
+    ],
+    [
+      "Natu"
+    ],
+    [
+      "National #177"
+    ],
+    [
+      "Kanto #225"
+    ],
+    [
+      "Johto #169"
+    ],
+    [
+      "Hoenn #169"
+    ],
+    [
+      "Xatu"
+    ],
+    [
+      "National #178"
+    ],
+    [
+      "Kanto #226"
+    ],
+    [
+      "Johto #170"
+    ],
+    [
+      "Hoenn #170"
+    ],
+    [
+      "Yanma"
+    ],
+    [
+      "National #193"
+    ],
+    [
+      "Kanto #227"
+    ],
+    [
+      "Johto #102"
+    ],
+    [
+      "Sinnoh #177"
+    ],
+    [
+      "Yanmega"
+    ],
+    [
+      "National #469"
+    ],
+    [
+      "Kanto #228"
+    ],
+    [
+      "Johto #103"
+    ],
+    [
+      "Sinnoh #178"
+    ],
+    [
+      "Heracross"
+    ],
+    [
+      "National #214"
+    ],
+    [
+      "Kanto #229"
+    ],
+    [
+      "Johto #117"
+    ],
+    [
+      "Hoenn #175"
+    ],
+    [
+      "Sinnoh #62"
+    ],
+    [
+      "Unova #215"
+    ],
+    [
+      "Mantyke"
+    ],
+    [
+      "National #458"
+    ],
+    [
+      "Kanto #230"
+    ],
+    [
+      "Johto #213"
+    ],
+    [
+      "Hoenn #207"
+    ],
+    [
+      "Sinnoh #140"
+    ],
+    [
+      "Unova #259"
+    ],
+    [
+      "Mantine"
+    ],
+    [
+      "National #226"
+    ],
+    [
+      "Kanto #231"
+    ],
+    [
+      "Johto #214"
+    ],
+    [
+      "Hoenn #208"
+    ],
+    [
+      "Sinnoh #141"
+    ],
+    [
+      "Unova #260"
+    ],
+    [
+      "Togepi"
+    ],
+    [
+      "National #175"
+    ],
+    [
+      "Kanto #232"
+    ],
+    [
+      "Johto #46"
+    ],
+    [
+      "Sinnoh #167"
+    ],
+    [
+      "Togetic"
+    ],
+    [
+      "National #176"
+    ],
+    [
+      "Kanto #233"
+    ],
+    [
+      "Johto #47"
+    ],
+    [
+      "Sinnoh #168"
+    ],
+    [
+      "Togekiss"
+    ],
+    [
+      "National #468"
+    ],
+    [
+      "Kanto #234"
+    ],
+    [
+      "Johto #48"
+    ],
+    [
+      "Sinnoh #169"
+    ],
+    [
+      "Skarmory"
+    ],
+    [
+      "National #227"
+    ],
+    [
+      "Kanto #235"
+    ],
+    [
+      "Johto #215"
+    ],
+    [
+      "Hoenn #120"
+    ],
+    [
+      "Sinnoh #251"
+    ],
+    [
+      "Larvitar"
+    ],
+    [
+      "National #246"
+    ],
+    [
+      "Kanto #236"
+    ],
+    [
+      "Johto #254"
+    ],
+    [
+      "Unova #278"
+    ],
+    [
+      "Pupitar"
+    ],
+    [
+      "National #247"
+    ],
+    [
+      "Kanto #237"
+    ],
+    [
+      "Johto #255"
+    ],
+    [
+      "Unova #279"
+    ],
+    [
+      "Tyranitar"
+    ],
+    [
+      "National #248"
+    ],
+    [
+      "Kanto #238"
+    ],
+    [
+      "Johto #256"
+    ],
+    [
+      "Unova #280"
+    ],
+    [
+      "Unown"
+    ],
+    [
+      "National #201"
+    ],
+    [
+      "Kanto #239"
+    ],
+    [
+      "Johto #62"
+    ],
+    [
+      "Sinnoh #114"
+    ],
+    [
+      "Articuno"
+    ],
+    [
+      "National #144"
+    ],
+    [
+      "Kanto #240"
+    ],
+    [
+      "Zapdos"
+    ],
+    [
+      "National #145"
+    ],
+    [
+      "Kanto #241"
+    ],
+    [
+      "Moltres"
+    ],
+    [
+      "National #146"
+    ],
+    [
+      "Kanto #242"
+    ],
+    [
+      "Mewtwo"
+    ],
+    [
+      "National #150"
+    ],
+    [
+      "Kanto #243"
+    ],
+    [
+      "Mew"
+    ],
+    [
+      "National #151"
+    ],
+    [
+      "Kanto #244"
+    ]
+  ],
+  "allCells": {
+    "A1": "Bulbasaur",
+    "A2": "National #1",
+    "A3": "Kanto #1",
+    "A4": "Ivysaur",
+    "A5": "National #2",
+    "A6": "Kanto #2",
+    "A7": "Venusaur",
+    "A8": "National #3",
+    "A9": "Kanto #3",
+    "A10": "Charmander",
+    "A11": "National #4",
+    "A12": "Kanto #4",
+    "A13": "Charmeleon",
+    "A14": "National #5",
+    "A15": "Kanto #5",
+    "A16": "Charizard",
+    "A17": "National #6",
+    "A18": "Kanto #6",
+    "A19": "Squirtle",
+    "A20": "National #7",
+    "A21": "Kanto #7",
+    "A22": "Wartortle",
+    "A23": "National #8",
+    "A24": "Kanto #8",
+    "A25": "Blastoise",
+    "A26": "National #9",
+    "A27": "Kanto #9",
+    "A28": "Caterpie",
+    "A29": "National #10",
+    "A30": "Kanto #10",
+    "A31": "Johto #24",
+    "A32": "Unova #208",
+    "A33": "Metapod",
+    "A34": "National #11",
+    "A35": "Kanto #11",
+    "A36": "Johto #25",
+    "A37": "Unova #209",
+    "A38": "Butterfree",
+    "A39": "National #12",
+    "A40": "Kanto #12",
+    "A41": "Johto #26",
+    "A42": "Unova #210",
+    "A43": "Weedle",
+    "A44": "National #13",
+    "A45": "Kanto #13",
+    "A46": "Johto #27",
+    "A47": "Unova #211",
+    "A48": "Kakuna",
+    "A49": "National #14",
+    "A50": "Kanto #14",
+    "A51": "Johto #28",
+    "A52": "Unova #212",
+    "A53": "Beedrill",
+    "A54": "National #15",
+    "A55": "Kanto #15",
+    "A56": "Johto #29",
+    "A57": "Unova #213",
+    "A58": "Ledyba",
+    "A59": "National #165",
+    "A60": "Kanto #16",
+    "A61": "Johto #30",
+    "A62": "Hoenn #212",
+    "A63": "Sinnoh #266",
+    "A64": "Unova #148",
+    "A65": "Ledian",
+    "A66": "National #166",
+    "A67": "Kanto #17",
+    "A68": "Johto #31",
+    "A69": "Hoenn #213",
+    "A70": "Sinnoh #267",
+    "A71": "Unova #149",
+    "A72": "Spinarak",
+    "A73": "National #167",
+    "A74": "Kanto #18",
+    "A75": "Johto #32",
+    "A76": "Hoenn #196",
+    "A77": "Sinnoh #268",
+    "A78": "Unova #150",
+    "A79": "Ariados",
+    "A80": "National #168",
+    "A81": "Kanto #19",
+    "A82": "Johto #33",
+    "A83": "Hoenn #197",
+    "A84": "Sinnoh #269",
+    "A85": "Unova #151",
+    "A86": "Pidgey",
+    "A87": "National #16",
+    "A88": "Kanto #20",
+    "A89": "Johto #10",
+    "A90": "Sinnoh #262",
+    "A91": "Pidgeotto",
+    "A92": "National #17",
+    "A93": "Kanto #21",
+    "A94": "Johto #11",
+    "A95": "Sinnoh #263",
+    "A96": "Pidgeot",
+    "A97": "National #18",
+    "A98": "Kanto #22",
+    "A99": "Johto #12",
+    "A100": "Sinnoh #264",
+    "A101": "Hoothoot",
+    "A102": "National #163",
+    "A103": "Kanto #23",
+    "A104": "Johto #15",
+    "A105": "Hoenn #210",
+    "A106": "Sinnoh #106",
+    "A107": "Unova #283",
+    "A108": "Noctowl",
+    "A109": "National #164",
+    "A110": "Kanto #24",
+    "A111": "Johto #16",
+    "A112": "Hoenn #211",
+    "A113": "Sinnoh #107",
+    "A114": "Unova #284",
+    "A115": "Rattata",
+    "A116": "National #19",
+    "A117": "Kanto #25",
+    "A118": "Johto #17",
+    "A119": "Sinnoh #234",
+    "A120": "Unova #144",
+    "A121": "Raticate",
+    "A122": "National #20",
+    "A123": "Kanto #26",
+    "A124": "Johto #18",
+    "A125": "Sinnoh #235",
+    "A126": "Unova #145",
+    "A127": "Sentret",
+    "A128": "National #161",
+    "A129": "Kanto #27",
+    "A130": "Johto #19",
+    "A131": "Furret",
+    "A132": "National #162",
+    "A133": "Kanto #28",
+    "A134": "Johto #20",
+    "A135": "Spearow",
+    "A136": "National #21",
+    "A137": "Kanto #29",
+    "A138": "Johto #13",
+    "A139": "Sinnoh #236",
+    "A140": "Unova #274",
+    "A141": "Fearow",
+    "A142": "National #22",
+    "A143": "Kanto #30",
+    "A144": "Johto #14",
+    "A145": "Sinnoh #237",
+    "A146": "Unova #275",
+    "A147": "Ekans",
+    "A148": "National #23",
+    "A149": "Kanto #31",
+    "A150": "Johto #51",
+    "A151": "Arbok",
+    "A152": "National #24",
+    "A153": "Kanto #32",
+    "A154": "Johto #52",
+    "A155": "Pichu",
+    "A156": "National #172",
+    "A157": "Kanto #33",
+    "A158": "Johto #21",
+    "A159": "Hoenn #162",
+    "A160": "Sinnoh #103",
+    "A161": "Pikachu",
+    "A162": "National #25",
+    "A163": "Kanto #34",
+    "A164": "Johto #22",
+    "A165": "Hoenn #163",
+    "A166": "Sinnoh #104",
+    "A167": "Raichu",
+    "A168": "National #26",
+    "A169": "Kanto #35",
+    "A170": "Johto #23",
+    "A171": "Hoenn #164",
+    "A172": "Sinnoh #105",
+    "A173": "Sandshrew",
+    "A174": "National #27",
+    "A175": "Kanto #36",
+    "A176": "Johto #49",
+    "A177": "Hoenn #117",
+    "A178": "Unova #163",
+    "A179": "Sandslash",
+    "A180": "National #28",
+    "A181": "Kanto #37",
+    "A182": "Johto #50",
+    "A183": "Hoenn #118",
+    "A184": "Unova #164",
+    "A185": "Nidoran♀",
+    "A186": "National #29",
+    "A187": "Kanto #38",
+    "A188": "Johto #96",
+    "A189": "Nidorina",
+    "A190": "National #30",
+    "A191": "Kanto #39",
+    "A192": "Johto #97",
+    "A193": "Nidoqueen",
+    "A194": "National #31",
+    "A195": "Kanto #40",
+    "A196": "Johto #98",
+    "A197": "Nidoran♂",
+    "A198": "National #32",
+    "A199": "Kanto #41",
+    "A200": "Johto #99",
+    "A201": "Nidorino",
+    "A202": "National #33",
+    "A203": "Kanto #42",
+    "A204": "Johto #100",
+    "A205": "Nidoking",
+    "A206": "National #34",
+    "A207": "Kanto #43",
+    "A208": "Johto #101",
+    "A209": "Cleffa",
+    "A210": "National #173",
+    "A211": "Kanto #44",
+    "A212": "Johto #40",
+    "A213": "Sinnoh #99",
+    "A214": "Unova #252",
+    "A215": "Clefairy",
+    "A216": "National #35",
+    "A217": "Kanto #45",
+    "A218": "Johto #41",
+    "A219": "Sinnoh #100",
+    "A220": "Unova #253",
+    "A221": "Clefable",
+    "A222": "National #36",
+    "A223": "Kanto #46",
+    "A224": "Johto #42",
+    "A225": "Sinnoh #101",
+    "A226": "Unova #254",
+    "A227": "Vulpix",
+    "A228": "National #37",
+    "A229": "Kanto #47",
+    "A230": "Johto #131",
+    "A231": "Hoenn #160",
+    "A232": "Unova #281",
+    "A233": "Ninetales",
+    "A234": "National #38",
+    "A235": "Kanto #48",
+    "A236": "Johto #132",
+    "A237": "Hoenn #161",
+    "A238": "Unova #282",
+    "A239": "Igglybuff",
+    "A240": "National #174",
+    "A241": "Kanto #49",
+    "A242": "Johto #43",
+    "A243": "Hoenn #142",
+    "A244": "Unova #268",
+    "A245": "Jigglypuff",
+    "A246": "National #39",
+    "A247": "Kanto #50",
+    "A248": "Johto #44",
+    "A249": "Hoenn #143",
+    "A250": "Unova #269",
+    "A251": "Wigglytuff",
+    "A252": "National #40",
+    "A253": "Kanto #51",
+    "A254": "Johto #45",
+    "A255": "Hoenn #144",
+    "A256": "Unova #270",
+    "A257": "Zubat",
+    "A258": "National #41",
+    "A259": "Kanto #52",
+    "A260": "Johto #37",
+    "A261": "Hoenn #65",
+    "A262": "Sinnoh #28",
+    "A263": "Unova #223",
+    "A264": "Golbat",
+    "A265": "National #42",
+    "A266": "Kanto #53",
+    "A267": "Johto #38",
+    "A268": "Hoenn #66",
+    "A269": "Sinnoh #29",
+    "A270": "Unova #224",
+    "A271": "Crobat",
+    "A272": "National #169",
+    "A273": "Kanto #54",
+    "A274": "Johto #39",
+    "A275": "Hoenn #67",
+    "A276": "Sinnoh #30",
+    "A277": "Unova #225",
+    "A278": "Oddish",
+    "A279": "National #43",
+    "A280": "Kanto #55",
+    "A281": "Johto #84",
+    "A282": "Hoenn #91",
+    "A283": "Sinnoh #226",
+    "A284": "Gloom",
+    "A285": "National #44",
+    "A286": "Kanto #56",
+    "A287": "Johto #85",
+    "A288": "Hoenn #92",
+    "A289": "Sinnoh #227",
+    "A290": "Vileplume",
+    "A291": "National #45",
+    "A292": "Kanto #57",
+    "A293": "Johto #86",
+    "A294": "Hoenn #93",
+    "A295": "Sinnoh #228",
+    "A296": "Bellossom",
+    "A297": "National #182",
+    "A298": "Kanto #58",
+    "A299": "Johto #87",
+    "A300": "Hoenn #94",
+    "A301": "Sinnoh #229",
+    "A302": "Paras",
+    "A303": "National #46",
+    "A304": "Kanto #59",
+    "A305": "Johto #71",
+    "A306": "Parasect",
+    "A307": "National #47",
+    "A308": "Kanto #60",
+    "A309": "Johto #72",
+    "A310": "Venonat",
+    "A311": "National #48",
+    "A312": "Kanto #61",
+    "A313": "Johto #112",
+    "A314": "Unova #146",
+    "A315": "Venomoth",
+    "A316": "National #49",
+    "A317": "Kanto #62",
+    "A318": "Johto #113",
+    "A319": "Unova #147",
+    "A320": "Sunkern",
+    "A321": "National #191",
+    "A322": "Kanto #63",
+    "A323": "Johto #104",
+    "A324": "Hoenn #219",
+    "A325": "Unova #218",
+    "A326": "Sunflora",
+    "A327": "National #192",
+    "A328": "Kanto #64",
+    "A329": "Johto #105",
+    "A330": "Hoenn #220",
+    "A331": "Unova #219",
+    "A332": "Diglett",
+    "A333": "National #50",
+    "A334": "Kanto #65",
+    "A335": "Johto #139",
+    "A336": "Sinnoh #258",
+    "A337": "Dugtrio",
+    "A338": "National #51",
+    "A339": "Kanto #66",
+    "A340": "Johto #140",
+    "A341": "Sinnoh #259",
+    "A342": "Meowth",
+    "A343": "National #52",
+    "A344": "Kanto #67",
+    "A345": "Johto #143",
+    "A346": "Persian",
+    "A347": "National #53",
+    "A348": "Kanto #68",
+    "A349": "Johto #144",
+    "A350": "Psyduck",
+    "A351": "National #54",
+    "A352": "Kanto #69",
+    "A353": "Johto #145",
+    "A354": "Hoenn #165",
+    "A355": "Sinnoh #43",
+    "A356": "Unova #195",
+    "A357": "Golduck",
+    "A358": "National #55",
+    "A359": "Kanto #70",
+    "A360": "Johto #146",
+    "A361": "Hoenn #166",
+    "A362": "Sinnoh #44",
+    "A363": "Unova #196",
+    "A364": "Snubbull",
+    "A365": "National #209",
+    "A366": "Kanto #71",
+    "A367": "Johto #129",
+    "A368": "Hoenn #227",
+    "A369": "Granbull",
+    "A370": "National #210",
+    "A371": "Kanto #72",
+    "A372": "Johto #130",
+    "A373": "Hoenn #228",
+    "A374": "Hoppip",
+    "A375": "National #187",
+    "A376": "Kanto #73",
+    "A377": "Johto #68",
+    "A378": "Skiploom",
+    "A379": "National #188",
+    "A380": "Kanto #74",
+    "A381": "Johto #69",
+    "A382": "Jumpluff",
+    "A383": "National #189",
+    "A384": "Kanto #75",
+    "A385": "Johto #70",
+    "A386": "Mankey",
+    "A387": "National #56",
+    "A388": "Kanto #76",
+    "A389": "Johto #141",
+    "A390": "Primeape",
+    "A391": "National #57",
+    "A392": "Kanto #77",
+    "A393": "Johto #142",
+    "A394": "Growlithe",
+    "A395": "National #58",
+    "A396": "Kanto #78",
+    "A397": "Johto #133",
+    "A398": "Arcanine",
+    "A399": "National #59",
+    "A400": "Kanto #79",
+    "A401": "Johto #134",
+    "A402": "Poliwag",
+    "A403": "National #60",
+    "A404": "Kanto #80",
+    "A405": "Johto #73",
+    "A406": "Sinnoh #254",
+    "A407": "Unova #169",
+    "A408": "Poliwhirl",
+    "A409": "National #61",
+    "A410": "Kanto #81",
+    "A411": "Johto #74",
+    "A412": "Sinnoh #255",
+    "A413": "Unova #170",
+    "A414": "Poliwrath",
+    "A415": "National #62",
+    "A416": "Kanto #82",
+    "A417": "Johto #75",
+    "A418": "Sinnoh #256",
+    "A419": "Unova #171",
+    "A420": "Politoed",
+    "A421": "National #186",
+    "A422": "Kanto #83",
+    "A423": "Johto #76",
+    "A424": "Sinnoh #257",
+    "A425": "Unova #172",
+    "A426": "Abra",
+    "A427": "National #63",
+    "A428": "Kanto #84",
+    "A429": "Johto #90",
+    "A430": "Hoenn #40",
+    "A431": "Sinnoh #20",
+    "A432": "Kadabra",
+    "A433": "National #64",
+    "A434": "Kanto #85",
+    "A435": "Johto #91",
+    "A436": "Hoenn #41",
+    "A437": "Sinnoh #21",
+    "A438": "Alakazam",
+    "A439": "National #65",
+    "A440": "Kanto #86",
+    "A441": "Johto #92",
+    "A442": "Hoenn #42",
+    "A443": "Sinnoh #22",
+    "A444": "Machop",
+    "A445": "National #66",
+    "A446": "Kanto #87",
+    "A447": "Johto #147",
+    "A448": "Hoenn #75",
+    "A449": "Sinnoh #40",
+    "A450": "Machoke",
+    "A451": "National #67",
+    "A452": "Kanto #88",
+    "A453": "Johto #148",
+    "A454": "Hoenn #76",
+    "A455": "Sinnoh #41",
+    "A456": "Machamp",
+    "A457": "National #68",
+    "A458": "Kanto #89",
+    "A459": "Johto #149",
+    "A460": "Hoenn #77",
+    "A461": "Sinnoh #42",
+    "A462": "Wooper",
+    "A463": "National #194",
+    "A464": "Kanto #90",
+    "A465": "Johto #57",
+    "A466": "Hoenn #221",
+    "A467": "Sinnoh #117",
+    "A468": "Quagsire",
+    "A469": "National #195",
+    "A470": "Kanto #91",
+    "A471": "Johto #58",
+    "A472": "Hoenn #222",
+    "A473": "Sinnoh #118",
+    "A474": "Bellsprout",
+    "A475": "National #69",
+    "A476": "Kanto #92",
+    "A477": "Johto #65",
+    "A478": "Sinnoh #230",
+    "A479": "Weepinbell",
+    "A480": "National #70",
+    "A481": "Kanto #93",
+    "A482": "Johto #66",
+    "A483": "Sinnoh #231",
+    "A484": "Victreebel",
+    "A485": "National #71",
+    "A486": "Kanto #94",
+    "A487": "Johto #67",
+    "A488": "Sinnoh #232",
+    "A489": "Tentacool",
+    "A490": "National #72",
+    "A491": "Kanto #95",
+    "A492": "Johto #172",
+    "A493": "Hoenn #68",
+    "A494": "Sinnoh #136",
+    "A495": "Tentacruel",
+    "A496": "National #73",
+    "A497": "Kanto #96",
+    "A498": "Johto #173",
+    "A499": "Hoenn #69",
+    "A500": "Sinnoh #137",
+    "A501": "Geodude",
+    "A502": "National #74",
+    "A503": "Kanto #97",
+    "A504": "Johto #34",
+    "A505": "Hoenn #58",
+    "A506": "Sinnoh #31",
+    "A507": "Unova #186",
+    "A508": "Graveler",
+    "A509": "National #75",
+    "A510": "Kanto #98",
+    "A511": "Johto #35",
+    "A512": "Hoenn #59",
+    "A513": "Sinnoh #32",
+    "A514": "Unova #187",
+    "A515": "Golem",
+    "A516": "National #76",
+    "A517": "Kanto #99",
+    "A518": "Johto #36",
+    "A519": "Hoenn #60",
+    "A520": "Sinnoh #33",
+    "A521": "Unova #188",
+    "A522": "Ponyta",
+    "A523": "National #77",
+    "A524": "Kanto #100",
+    "A525": "Johto #218",
+    "A526": "Sinnoh #90",
+    "A527": "Unova #216",
+    "A528": "Rapidash",
+    "A529": "National #78",
+    "A530": "Kanto #101",
+    "A531": "Johto #219",
+    "A532": "Sinnoh #91",
+    "A533": "Unova #217",
+    "A534": "Slowpoke",
+    "A535": "National #79",
+    "A536": "Kanto #102",
+    "A537": "Johto #81",
+    "A538": "Unova #294",
+    "A539": "Slowbro",
+    "A540": "National #80",
+    "A541": "Kanto #103",
+    "A542": "Johto #82",
+    "A543": "Unova #295",
+    "A544": "Slowking",
+    "A545": "National #199",
+    "A546": "Kanto #104",
+    "A547": "Johto #83",
+    "A548": "Unova #296",
+    "A549": "Magnemite",
+    "A550": "National #81",
+    "A551": "Kanto #105",
+    "A552": "Johto #122",
+    "A553": "Hoenn #84",
+    "A554": "Sinnoh #172",
+    "A555": "Magneton",
+    "A556": "National #82",
+    "A557": "Kanto #106",
+    "A558": "Johto #123",
+    "A559": "Hoenn #85",
+    "A560": "Sinnoh #173",
+    "A561": "Magnezone",
+    "A562": "National #462",
+    "A563": "Kanto #107",
+    "A564": "Johto #124",
+    "A565": "Hoenn #86",
+    "A566": "Sinnoh #174",
+    "A567": "Farfetch'd",
+    "A568": "National #83",
+    "A569": "Kanto #108",
+    "A570": "Johto #168",
+    "A571": "Doduo",
+    "A572": "National #84",
+    "A573": "Kanto #109",
+    "A574": "Johto #216",
+    "A575": "Hoenn #95",
+    "A576": "Dodrio",
+    "A577": "National #85",
+    "A578": "Kanto #110",
+    "A579": "Johto #217",
+    "A580": "Hoenn #96",
+    "A581": "Murkrow",
+    "A582": "National #198",
+    "A583": "Kanto #111",
+    "A584": "Johto #226",
+    "A585": "Sinnoh #74",
+    "A586": "Unova #285",
+    "A587": "Honchkrow",
+    "A588": "National #430",
+    "A589": "Kanto #112",
+    "A590": "Johto #227",
+    "A591": "Sinnoh #75",
+    "A592": "Unova #286",
+    "A593": "Houndour",
+    "A594": "National #228",
+    "A595": "Kanto #113",
+    "A596": "Johto #228",
+    "A597": "Hoenn #233",
+    "A598": "Sinnoh #170",
+    "A599": "Houndoom",
+    "A600": "National #229",
+    "A601": "Kanto #114",
+    "A602": "Johto #229",
+    "A603": "Hoenn #234",
+    "A604": "Sinnoh #171",
+    "A605": "Seel",
+    "A606": "National #86",
+    "A607": "Kanto #115",
+    "A608": "Johto #186",
+    "A609": "Sinnoh #240",
+    "A610": "Unova #250",
+    "A611": "Dewgong",
+    "A612": "National #87",
+    "A613": "Kanto #116",
+    "A614": "Johto #187",
+    "A615": "Sinnoh #241",
+    "A616": "Unova #251",
+    "A617": "Grimer",
+    "A618": "National #88",
+    "A619": "Kanto #117",
+    "A620": "Johto #120",
+    "A621": "Hoenn #111",
+    "A622": "Muk",
+    "A623": "National #89",
+    "A624": "Kanto #118",
+    "A625": "Johto #121",
+    "A626": "Hoenn #112",
+    "A627": "Shellder",
+    "A628": "National #90",
+    "A629": "Kanto #119",
+    "A630": "Johto #179",
+    "A631": "Sinnoh #209",
+    "A632": "Unova #240",
+    "A633": "Cloyster",
+    "A634": "National #91",
+    "A635": "Kanto #120",
+    "A636": "Johto #180",
+    "A637": "Sinnoh #210",
+    "A638": "Unova #241",
+    "A639": "Gastly",
+    "A640": "National #92",
+    "A641": "Kanto #121",
+    "A642": "Johto #59",
+    "A643": "Sinnoh #69",
+    "A644": "Haunter",
+    "A645": "National #93",
+    "A646": "Kanto #122",
+    "A647": "Johto #60",
+    "A648": "Sinnoh #70",
+    "A649": "Gengar",
+    "A650": "National #94",
+    "A651": "Kanto #123",
+    "A652": "Johto #61",
+    "A653": "Sinnoh #71",
+    "A654": "Onix",
+    "A655": "National #95",
+    "A656": "Kanto #124",
+    "A657": "Johto #63",
+    "A658": "Sinnoh #34",
+    "A659": "Unova #165",
+    "A660": "Steelix",
+    "A661": "National #208",
+    "A662": "Kanto #125",
+    "A663": "Johto #64",
+    "A664": "Sinnoh #35",
+    "A665": "Unova #166",
+    "A666": "Drowzee",
+    "A667": "National #96",
+    "A668": "Kanto #126",
+    "A669": "Johto #88",
+    "A670": "Hypno",
+    "A671": "National #97",
+    "A672": "Kanto #127",
+    "A673": "Johto #89",
+    "A674": "Krabby",
+    "A675": "National #98",
+    "A676": "Kanto #128",
+    "A677": "Johto #174",
+    "A678": "Unova #156",
+    "A679": "Kingler",
+    "A680": "National #99",
+    "A681": "Kanto #129",
+    "A682": "Johto #175",
+    "A683": "Unova #157",
+    "A684": "Voltorb",
+    "A685": "National #100",
+    "A686": "Kanto #130",
+    "A687": "Johto #125",
+    "A688": "Hoenn #87",
+    "A689": "Electrode",
+    "A690": "National #101",
+    "A691": "Kanto #131",
+    "A692": "Johto #126",
+    "A693": "Hoenn #88",
+    "A694": "Exeggcute",
+    "A695": "National #102",
+    "A696": "Kanto #132",
+    "A697": "Johto #106",
+    "A698": "Exeggutor",
+    "A699": "National #103",
+    "A700": "Kanto #133",
+    "A701": "Johto #107",
+    "A702": "Cubone",
+    "A703": "National #104",
+    "A704": "Kanto #134",
+    "A705": "Johto #220",
+    "A706": "Unova #276",
+    "A707": "Marowak",
+    "A708": "National #105",
+    "A709": "Kanto #135",
+    "A710": "Johto #221",
+    "A711": "Unova #277",
+    "A712": "Slugma",
+    "A713": "National #218",
+    "A714": "Kanto #136",
+    "A715": "Johto #230",
+    "A716": "Hoenn #108",
+    "A717": "Sinnoh #274",
+    "A718": "Magcargo",
+    "A719": "National #219",
+    "A720": "Kanto #137",
+    "A721": "Johto #231",
+    "A722": "Hoenn #109",
+    "A723": "Sinnoh #275",
+    "A724": "Tyrogue",
+    "A725": "National #236",
+    "A726": "Kanto #138",
+    "A727": "Johto #150",
+    "A728": "Hitmonlee",
+    "A729": "National #106",
+    "A730": "Kanto #139",
+    "A731": "Johto #151",
+    "A732": "Hitmonchan",
+    "A733": "National #107",
+    "A734": "Kanto #140",
+    "A735": "Johto #152",
+    "A736": "Hitmontop",
+    "A737": "National #237",
+    "A738": "Kanto #141",
+    "A739": "Johto #153",
+    "A740": "Lickitung",
+    "A741": "National #108",
+    "A742": "Kanto #142",
+    "A743": "Johto #188",
+    "A744": "Sinnoh #155",
+    "A745": "Unova #189",
+    "A746": "Lickilicky",
+    "A747": "National #463",
+    "A748": "Kanto #143",
+    "A749": "Johto #189",
+    "A750": "Sinnoh #156",
+    "A751": "Unova #190",
+    "A752": "Koffing",
+    "A753": "National #109",
+    "A754": "Kanto #144",
+    "A755": "Johto #118",
+    "A756": "Hoenn #113",
+    "A757": "Sinnoh #249",
+    "A758": "Weezing",
+    "A759": "National #110",
+    "A760": "Kanto #145",
+    "A761": "Johto #119",
+    "A762": "Hoenn #114",
+    "A763": "Sinnoh #250",
+    "A764": "Rhyhorn",
+    "A765": "National #111",
+    "A766": "Kanto #146",
+    "A767": "Johto #223",
+    "A768": "Hoenn #176",
+    "A769": "Sinnoh #180",
+    "A770": "Rhydon",
+    "A771": "National #112",
+    "A772": "Kanto #147",
+    "A773": "Johto #224",
+    "A774": "Hoenn #177",
+    "A775": "Sinnoh #181",
+    "A776": "Rhyperior",
+    "A777": "National #464",
+    "A778": "Kanto #148",
+    "A779": "Johto #225",
+    "A780": "Hoenn #178",
+    "A781": "Sinnoh #182",
+    "A782": "Happiny",
+    "A783": "National #440",
+    "A784": "Kanto #149",
+    "A785": "Johto #239",
+    "A786": "Sinnoh #96",
+    "A787": "Chansey",
+    "A788": "National #113",
+    "A789": "Kanto #150",
+    "A790": "Johto #240",
+    "A791": "Sinnoh #97",
+    "A792": "Blissey",
+    "A793": "National #242",
+    "A794": "Kanto #151",
+    "A795": "Johto #241",
+    "A796": "Sinnoh #98",
+    "A797": "Tangela",
+    "A798": "National #114",
+    "A799": "Kanto #152",
+    "A800": "Johto #190",
+    "A801": "Sinnoh #175",
+    "A802": "Unova #226",
+    "A803": "Tangrowth",
+    "A804": "National #465",
+    "A805": "Kanto #153",
+    "A806": "Johto #191",
+    "A807": "Sinnoh #176",
+    "A808": "Unova #227",
+    "A809": "Kangaskhan",
+    "A810": "National #115",
+    "A811": "Kanto #154",
+    "A812": "Johto #222",
+    "A813": "Horsea",
+    "A814": "National #116",
+    "A815": "Kanto #155",
+    "A816": "Johto #200",
+    "A817": "Hoenn #193",
+    "A818": "Sinnoh #245",
+    "A819": "Unova #175",
+    "A820": "Seadra",
+    "A821": "National #117",
+    "A822": "Kanto #156",
+    "A823": "Johto #201",
+    "A824": "Hoenn #194",
+    "A825": "Sinnoh #246",
+    "A826": "Unova #176",
+    "A827": "Kingdra",
+    "A828": "National #230",
+    "A829": "Kanto #157",
+    "A830": "Johto #202",
+    "A831": "Hoenn #195",
+    "A832": "Sinnoh #247",
+    "A833": "Unova #177",
+    "A834": "Goldeen",
+    "A835": "National #118",
+    "A836": "Kanto #158",
+    "A837": "Johto #79",
+    "A838": "Hoenn #51",
+    "A839": "Sinnoh #78",
+    "A840": "Unova #154",
+    "A841": "Seaking",
+    "A842": "National #119",
+    "A843": "Kanto #159",
+    "A844": "Johto #80",
+    "A845": "Hoenn #52",
+    "A846": "Sinnoh #79",
+    "A847": "Unova #155",
+    "A848": "Staryu",
+    "A849": "National #120",
+    "A850": "Kanto #160",
+    "A851": "Johto #177",
+    "A852": "Hoenn #148",
+    "A853": "Sinnoh #215",
+    "A854": "Unova #235",
+    "A855": "Starmie",
+    "A856": "National #121",
+    "A857": "Kanto #161",
+    "A858": "Johto #178",
+    "A859": "Hoenn #149",
+    "A860": "Sinnoh #216",
+    "A861": "Unova #236",
+    "A862": "Qwilfish",
+    "A863": "National #211",
+    "A864": "Kanto #162",
+    "A865": "Johto #171",
+    "A866": "Sinnoh #219",
+    "A867": "Unova #178",
+    "A868": "Corsola",
+    "A869": "National #222",
+    "A870": "Kanto #163",
+    "A871": "Johto #181",
+    "A872": "Hoenn #189",
+    "A873": "Unova #239",
+    "A874": "Chinchou",
+    "A875": "National #170",
+    "A876": "Kanto #164",
+    "A877": "Johto #184",
+    "A878": "Hoenn #190",
+    "A879": "Sinnoh #213",
+    "A880": "Unova #179",
+    "A881": "Lanturn",
+    "A882": "National #171",
+    "A883": "Kanto #165",
+    "A884": "Johto #185",
+    "A885": "Hoenn #191",
+    "A886": "Sinnoh #214",
+    "A887": "Unova #180",
+    "A888": "Mime Jr.",
+    "A889": "National #439",
+    "A890": "Kanto #166",
+    "A891": "Johto #165",
+    "A892": "Sinnoh #94",
+    "A893": "Mr. Mime",
+    "A894": "National #122",
+    "A895": "Kanto #167",
+    "A896": "Johto #166",
+    "A897": "Sinnoh #95",
+    "A898": "Scyther",
+    "A899": "National #123",
+    "A900": "Kanto #168",
+    "A901": "Johto #114",
+    "A902": "Sinnoh #189",
+    "A903": "Scizor",
+    "A904": "National #212",
+    "A905": "Kanto #169",
+    "A906": "Johto #115",
+    "A907": "Sinnoh #190",
+    "A908": "Smoochum",
+    "A909": "National #238",
+    "A910": "Kanto #170",
+    "A911": "Johto #160",
+    "A912": "Sinnoh #220",
+    "A913": "Unova #248",
+    "A914": "Jynx",
+    "A915": "National #124",
+    "A916": "Kanto #171",
+    "A917": "Johto #161",
+    "A918": "Sinnoh #221",
+    "A919": "Unova #249",
+    "A920": "Elekid",
+    "A921": "National #239",
+    "A922": "Kanto #172",
+    "A923": "Johto #162",
+    "A924": "Sinnoh #191",
+    "A925": "Electabuzz",
+    "A926": "National #125",
+    "A927": "Kanto #173",
+    "A928": "Johto #163",
+    "A929": "Sinnoh #192",
+    "A930": "Electivire",
+    "A931": "National #466",
+    "A932": "Kanto #174",
+    "A933": "Johto #164",
+    "A934": "Sinnoh #193",
+    "A935": "Magby",
+    "A936": "National #240",
+    "A937": "Kanto #175",
+    "A938": "Johto #157",
+    "A939": "Sinnoh #194",
+    "A940": "Magmar",
+    "A941": "National #126",
+    "A942": "Kanto #176",
+    "A943": "Johto #158",
+    "A944": "Sinnoh #195",
+    "A945": "Magmortar",
+    "A946": "National #467",
+    "A947": "Kanto #177",
+    "A948": "Johto #159",
+    "A949": "Sinnoh #196",
+    "A950": "Pinsir",
+    "A951": "National #127",
+    "A952": "Kanto #178",
+    "A953": "Johto #116",
+    "A954": "Hoenn #174",
+    "A955": "Sinnoh #265",
+    "A956": "Unova #214",
+    "A957": "Tauros",
+    "A958": "National #128",
+    "A959": "Kanto #179",
+    "A960": "Johto #155",
+    "A961": "Magikarp",
+    "A962": "National #129",
+    "A963": "Kanto #180",
+    "A964": "Johto #77",
+    "A965": "Hoenn #53",
+    "A966": "Sinnoh #23",
+    "A967": "Gyarados",
+    "A968": "National #130",
+    "A969": "Kanto #181",
+    "A970": "Johto #78",
+    "A971": "Hoenn #54",
+    "A972": "Sinnoh #24",
+    "A973": "Lapras",
+    "A974": "National #131",
+    "A975": "Kanto #182",
+    "A976": "Johto #243",
+    "A977": "Sinnoh #225",
+    "A978": "Unova #201",
+    "A979": "Ditto",
+    "A980": "National #132",
+    "A981": "Kanto #183",
+    "A982": "Johto #93",
+    "A983": "Hoenn #204",
+    "A984": "Unova #255",
+    "A985": "Eevee",
+    "A986": "National #133",
+    "A987": "Kanto #184",
+    "A988": "Johto #192",
+    "A989": "Sinnoh #157",
+    "A990": "Vaporeon",
+    "A991": "National #134",
+    "A992": "Kanto #185",
+    "A993": "Johto #193",
+    "A994": "Sinnoh #158",
+    "A995": "Jolteon",
+    "A996": "National #135",
+    "A997": "Kanto #186",
+    "A998": "Johto #194",
+    "A999": "Sinnoh #159",
+    "A1000": "Flareon",
+    "A1001": "National #136",
+    "A1002": "Kanto #187",
+    "A1003": "Johto #195",
+    "A1004": "Sinnoh #160",
+    "A1005": "Espeon",
+    "A1006": "National #196",
+    "A1007": "Kanto #188",
+    "A1008": "Johto #196",
+    "A1009": "Sinnoh #161",
+    "A1010": "Umbreon",
+    "A1011": "National #197",
+    "A1012": "Kanto #189",
+    "A1013": "Johto #197",
+    "A1014": "Sinnoh #162",
+    "A1015": "Leafeon",
+    "A1016": "National #470",
+    "A1017": "Kanto #190",
+    "A1018": "Johto #198",
+    "A1019": "Sinnoh #163",
+    "A1020": "Glaceon",
+    "A1021": "National #471",
+    "A1022": "Kanto #191",
+    "A1023": "Johto #199",
+    "A1024": "Sinnoh #164",
+    "A1025": "Porygon",
+    "A1026": "National #137",
+    "A1027": "Kanto #192",
+    "A1028": "Johto #236",
+    "A1029": "Sinnoh #186",
+    "A1030": "Porygon2",
+    "A1031": "National #233",
+    "A1032": "Kanto #193",
+    "A1033": "Johto #237",
+    "A1034": "Sinnoh #187",
+    "A1035": "Porygon-Z",
+    "A1036": "National #474",
+    "A1037": "Kanto #194",
+    "A1038": "Johto #238",
+    "A1039": "Sinnoh #188",
+    "A1040": "Teddiursa",
+    "A1041": "National #216",
+    "A1042": "Kanto #195",
+    "A1043": "Johto #209",
+    "A1044": "Hoenn #229",
+    "A1045": "Ursaring",
+    "A1046": "National #217",
+    "A1047": "Kanto #196",
+    "A1048": "Johto #210",
+    "A1049": "Hoenn #230",
+    "A1050": "Phanpy",
+    "A1051": "National #231",
+    "A1052": "Kanto #197",
+    "A1053": "Johto #211",
+    "A1054": "Hoenn #172",
+    "A1055": "Donphan",
+    "A1056": "National #232",
+    "A1057": "Kanto #198",
+    "A1058": "Johto #212",
+    "A1059": "Hoenn #173",
+    "A1060": "Omanyte",
+    "A1061": "National #138",
+    "A1062": "Kanto #199",
+    "A1063": "Johto #244",
+    "A1064": "Omastar",
+    "A1065": "National #139",
+    "A1066": "Kanto #200",
+    "A1067": "Johto #245",
+    "A1068": "Kabuto",
+    "A1069": "National #140",
+    "A1070": "Kanto #201",
+    "A1071": "Johto #246",
+    "A1072": "Kabutops",
+    "A1073": "National #141",
+    "A1074": "Kanto #202",
+    "A1075": "Johto #247",
+    "A1076": "Aerodactyl",
+    "A1077": "National #142",
+    "A1078": "Kanto #203",
+    "A1079": "Johto #248",
+    "A1080": "Munchlax",
+    "A1081": "National #446",
+    "A1082": "Kanto #204",
+    "A1083": "Johto #249",
+    "A1084": "Sinnoh #112",
+    "A1085": "Snorlax",
+    "A1086": "National #143",
+    "A1087": "Kanto #205",
+    "A1088": "Johto #250",
+    "A1089": "Sinnoh #113",
+    "A1090": "Dratini",
+    "A1091": "National #147",
+    "A1092": "Kanto #206",
+    "A1093": "Johto #251",
+    "A1094": "Sinnoh #222",
+    "A1095": "Unova #183",
+    "A1096": "Dragonair",
+    "A1097": "National #148",
+    "A1098": "Kanto #207",
+    "A1099": "Johto #252",
+    "A1100": "Sinnoh #223",
+    "A1101": "Unova #184",
+    "A1102": "Dragonite",
+    "A1103": "National #149",
+    "A1104": "Kanto #208",
+    "A1105": "Johto #253",
+    "A1106": "Sinnoh #224",
+    "A1107": "Unova #185",
+    "A1108": "Dunsparce",
+    "A1109": "National #206",
+    "A1110": "Kanto #209",
+    "A1111": "Johto #53",
+    "A1112": "Unova #220",
+    "A1113": "Azurill",
+    "A1114": "National #298",
+    "A1115": "Kanto #210",
+    "A1116": "Johto #136",
+    "A1117": "Hoenn #55",
+    "A1118": "Sinnoh #124",
+    "A1119": "Marill",
+    "A1120": "National #183",
+    "A1121": "Kanto #211",
+    "A1122": "Johto #137",
+    "A1123": "Hoenn #56",
+    "A1124": "Sinnoh #125",
+    "A1125": "Azumarill",
+    "A1126": "National #184",
+    "A1127": "Kanto #212",
+    "A1128": "Johto #138",
+    "A1129": "Hoenn #57",
+    "A1130": "Sinnoh #126",
+    "A1131": "Swinub",
+    "A1132": "National #220",
+    "A1133": "Kanto #213",
+    "A1134": "Johto #206",
+    "A1135": "Sinnoh #197",
+    "A1136": "Unova #242",
+    "A1137": "Piloswine",
+    "A1138": "National #221",
+    "A1139": "Kanto #214",
+    "A1140": "Johto #207",
+    "A1141": "Sinnoh #198",
+    "A1142": "Unova #243",
+    "A1143": "Mamoswine",
+    "A1144": "National #473",
+    "A1145": "Kanto #215",
+    "A1146": "Johto #208",
+    "A1147": "Sinnoh #199",
+    "A1148": "Unova #244",
+    "A1149": "Delibird",
+    "A1150": "National #225",
+    "A1151": "Kanto #216",
+    "A1152": "Johto #205",
+    "A1153": "Unova #247",
+    "A1154": "Sneasel",
+    "A1155": "National #215",
+    "A1156": "Kanto #217",
+    "A1157": "Johto #232",
+    "A1158": "Sinnoh #144",
+    "A1159": "Unova #245",
+    "A1160": "Weavile",
+    "A1161": "National #461",
+    "A1162": "Kanto #218",
+    "A1163": "Johto #233",
+    "A1164": "Sinnoh #145",
+    "A1165": "Unova #246",
+    "A1166": "Remoraid",
+    "A1167": "National #223",
+    "A1168": "Kanto #219",
+    "A1169": "Johto #182",
+    "A1170": "Hoenn #231",
+    "A1171": "Sinnoh #132",
+    "A1172": "Unova #263",
+    "A1173": "Octillery",
+    "A1174": "National #224",
+    "A1175": "Kanto #220",
+    "A1176": "Johto #183",
+    "A1177": "Hoenn #232",
+    "A1178": "Sinnoh #133",
+    "A1179": "Unova #264",
+    "A1180": "Misdreavus",
+    "A1181": "National #200",
+    "A1182": "Kanto #221",
+    "A1183": "Johto #234",
+    "A1184": "Sinnoh #72",
+    "A1185": "Unova #287",
+    "A1186": "Mismagius",
+    "A1187": "National #429",
+    "A1188": "Kanto #222",
+    "A1189": "Johto #235",
+    "A1190": "Sinnoh #73",
+    "A1191": "Unova #288",
+    "A1192": "Wynaut",
+    "A1193": "National #360",
+    "A1194": "Kanto #223",
+    "A1195": "Johto #110",
+    "A1196": "Hoenn #167",
+    "A1197": "Wobbuffet",
+    "A1198": "National #202",
+    "A1199": "Kanto #224",
+    "A1200": "Johto #111",
+    "A1201": "Hoenn #168",
+    "A1202": "Natu",
+    "A1203": "National #177",
+    "A1204": "Kanto #225",
+    "A1205": "Johto #169",
+    "A1206": "Hoenn #169",
+    "A1207": "Xatu",
+    "A1208": "National #178",
+    "A1209": "Kanto #226",
+    "A1210": "Johto #170",
+    "A1211": "Hoenn #170",
+    "A1212": "Yanma",
+    "A1213": "National #193",
+    "A1214": "Kanto #227",
+    "A1215": "Johto #102",
+    "A1216": "Sinnoh #177",
+    "A1217": "Yanmega",
+    "A1218": "National #469",
+    "A1219": "Kanto #228",
+    "A1220": "Johto #103",
+    "A1221": "Sinnoh #178",
+    "A1222": "Heracross",
+    "A1223": "National #214",
+    "A1224": "Kanto #229",
+    "A1225": "Johto #117",
+    "A1226": "Hoenn #175",
+    "A1227": "Sinnoh #62",
+    "A1228": "Unova #215",
+    "A1229": "Mantyke",
+    "A1230": "National #458",
+    "A1231": "Kanto #230",
+    "A1232": "Johto #213",
+    "A1233": "Hoenn #207",
+    "A1234": "Sinnoh #140",
+    "A1235": "Unova #259",
+    "A1236": "Mantine",
+    "A1237": "National #226",
+    "A1238": "Kanto #231",
+    "A1239": "Johto #214",
+    "A1240": "Hoenn #208",
+    "A1241": "Sinnoh #141",
+    "A1242": "Unova #260",
+    "A1243": "Togepi",
+    "A1244": "National #175",
+    "A1245": "Kanto #232",
+    "A1246": "Johto #46",
+    "A1247": "Sinnoh #167",
+    "A1248": "Togetic",
+    "A1249": "National #176",
+    "A1250": "Kanto #233",
+    "A1251": "Johto #47",
+    "A1252": "Sinnoh #168",
+    "A1253": "Togekiss",
+    "A1254": "National #468",
+    "A1255": "Kanto #234",
+    "A1256": "Johto #48",
+    "A1257": "Sinnoh #169",
+    "A1258": "Skarmory",
+    "A1259": "National #227",
+    "A1260": "Kanto #235",
+    "A1261": "Johto #215",
+    "A1262": "Hoenn #120",
+    "A1263": "Sinnoh #251",
+    "A1264": "Larvitar",
+    "A1265": "National #246",
+    "A1266": "Kanto #236",
+    "A1267": "Johto #254",
+    "A1268": "Unova #278",
+    "A1269": "Pupitar",
+    "A1270": "National #247",
+    "A1271": "Kanto #237",
+    "A1272": "Johto #255",
+    "A1273": "Unova #279",
+    "A1274": "Tyranitar",
+    "A1275": "National #248",
+    "A1276": "Kanto #238",
+    "A1277": "Johto #256",
+    "A1278": "Unova #280",
+    "A1279": "Unown",
+    "A1280": "National #201",
+    "A1281": "Kanto #239",
+    "A1282": "Johto #62",
+    "A1283": "Sinnoh #114",
+    "A1284": "Articuno",
+    "A1285": "National #144",
+    "A1286": "Kanto #240",
+    "A1287": "Zapdos",
+    "A1288": "National #145",
+    "A1289": "Kanto #241",
+    "A1290": "Moltres",
+    "A1291": "National #146",
+    "A1292": "Kanto #242",
+    "A1293": "Mewtwo",
+    "A1294": "National #150",
+    "A1295": "Kanto #243",
+    "A1296": "Mew",
+    "A1297": "National #151",
+    "A1298": "Kanto #244"
+  }
+}

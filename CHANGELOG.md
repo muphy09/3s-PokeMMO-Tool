@@ -1,6 +1,18 @@
 # Changelog
 ---
 
+## [3.3.5] - 2025-10
+### Changed
+- Pokedex Region Data | *Big Thanks to Bog!*
+  - The Pokedex tab now filters the Region's Pokedex instead of Pokemon that can be caught in filtered region.
+  - Includes the Pokemon's Region ID # when a region is applied
+  - Total Caught List now updates per-region
+
+- Evolution Data
+  - Pokemon that do not evolve now display "This Pokemon does not Evolve"
+
+---
+
 ## [3.3.4] - 2025-10
 ### Changed
 - Pokemon Search
