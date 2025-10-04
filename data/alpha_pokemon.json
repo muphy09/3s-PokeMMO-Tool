@@ -1,6 +1,21 @@
 {
     "normal_alpha": [
         [
+            "Bulbasaur",
+            "Ivysaur",
+            "Venusaur"
+        ],
+        [
+            "Charmander",
+            "Charmeleon",
+            "Charizard"
+        ],
+        [
+            "Squirtle",
+            "Wartortle",
+            "Blastoise"
+        ],
+        [
             "Caterpie",
             "Metapod",
             "Butterfree"
@@ -23,13 +38,8 @@
             "Arbok"
         ],
         [
-            "Pichu",
-            "Pikachu",
-            "Raichu"
-        ],
-        [
-            "Sanshrew",
-            "Sanslash"
+            "Sandshrew",
+            "Sandslash"
         ],
         [
             "Nidoran♀",
@@ -42,18 +52,8 @@
             "Nidoking"
         ],
         [
-            "Cleffa",
-            "Clefairy",
-            "Clefable"
-        ],
-        [
             "Vulpix",
             "Ninetales"
-        ],
-        [
-            "Igglybuff",
-            "Jigglypuff",
-            "Wigglytuff"
         ],
         [
             "Zubat",
@@ -118,12 +118,25 @@
             "Cloyster"
         ],
         [
+            "Gastly",
+            "Haunter",
+            "Gengar"
+        ],
+        [
+            "Onix",
+            "Steelix"
+        ],
+        [
             "Drowzee",
             "Hypno"
         ],
         [
             "Krabby",
             "Kingler"
+        ],
+        [
+            "Voltorb",
+            "Electrode"
         ],
         [
             "Cubone",
@@ -139,9 +152,8 @@
             "Rhyperior"
         ],
         [
-            "Happiny",
-            "Chansey",
-            "Blissey"
+            "Tangela",
+            "Tangrowth"
         ],
         [
             "Kangaskhan"
@@ -152,21 +164,18 @@
             "Kingdra"
         ],
         [
-            "Smoochun",
-            "Jynx"
-        ],
-        [
-            "Elekid",
-            "Electabuzz",
-            "Electivire"
-        ],
-        [
-            "Magby",
-            "Magmar",
-            "Magmortar"
+            "Staryu",
+            "Starmie"
         ],
         [
             "Pinsir"
+        ],
+        [
+            "Tauros"
+        ],
+        [
+            "Magikarp",
+            "Gyarados"
         ],
         [
             "Lapras"
@@ -176,13 +185,16 @@
         ],
         [
             "Eevee",
+            "Vaporeon",
             "Jolteon",
             "Flareon",
-            "Vaporeon",
-            "Umbreon",
             "Espeon",
+            "Umbreon",
             "Leafeon",
             "Glaceon"
+        ],
+        [
+            "Aerodactyl"
         ],
         [
             "Dratini",
@@ -202,17 +214,33 @@
             "Ariados"
         ],
         [
+            "Pikachu",
+            "Raichu",
+            "Pichu"
+        ],
+        [
+            "Clefairy",
+            "Clefable",
+            "Cleffa"
+        ],
+        [
+            "Jigglypuff",
+            "Wigglytuff",
+            "Igglybuff"
+        ],
+        [
+            "Togepi",
+            "Togetic",
+            "Togekiss"
+        ],
+        [
             "Natu",
             "Xatu"
         ],
         [
-            "Azurill",
-            "Marill",
-            "Azumarill"
-        ],
-        [
-            "Bonsly",
-            "Sudowoodo"
+            "Mareep",
+            "Flaaffy",
+            "Ampharos"
         ],
         [
             "Aipom",
@@ -233,6 +261,10 @@
         [
             "Murkrow",
             "Honchkrow"
+        ],
+        [
+            "Misdreavus",
+            "Mismagius"
         ],
         [
             "Pineco",
@@ -266,15 +298,45 @@
             "Corsola"
         ],
         [
-            "Mantyke",
-            "Mantine"
+            "Delibird"
         ],
         [
             "Houndour",
             "Houndoom"
         ],
         [
+            "Stantler"
+        ],
+        [
+            "Hitmonlee",
+            "Hitmonchan",
+            "Tyrogue",
+            "Hitmontop"
+        ],
+        [
+            "Jynx",
+            "Smoochum"
+        ],
+        [
+            "Electabuzz",
+            "Elekid",
+            "Electivire"
+        ],
+        [
+            "Magmar",
+            "Magby",
+            "Magmortar"
+        ],
+        [
             "Miltank"
+        ],
+        [
+            "Suicune"
+        ],
+        [
+            "Larvitar",
+            "Pupitar",
+            "Tyranitar"
         ],
         [
             "Poochyena",
@@ -286,7 +348,7 @@
         ],
         [
             "Wingull",
-            "Pelliper"
+            "Pelipper"
         ],
         [
             "Ralts",
@@ -299,9 +361,19 @@
             "Breloom"
         ],
         [
+            "Slakoth",
+            "Vigoroth",
+            "Slaking"
+        ],
+        [
             "Whismur",
             "Loudred",
             "Exploud"
+        ],
+        [
+            "Marill",
+            "Azumarill",
+            "Azurill"
         ],
         [
             "Sableye"
@@ -318,13 +390,12 @@
             "Minun"
         ],
         [
-            "Budew",
-            "Roselia",
-            "Roserade"
-        ],
-        [
             "Carvanha",
             "Sharpedo"
+        ],
+        [
+            "Spoink",
+            "Grumpig"
         ],
         [
             "Spinda"
@@ -337,7 +408,7 @@
             "Seviper"
         ],
         [
-            "Corpish",
+            "Corphish",
             "Crawdaunt"
         ],
         [
@@ -349,7 +420,20 @@
             "Banette"
         ],
         [
+            "Duskull",
+            "Dusclops",
+            "Dusknoir"
+        ],
+        [
             "Tropius"
+        ],
+        [
+            "Absol"
+        ],
+        [
+            "Snorunt",
+            "Glalie",
+            "Froslass"
         ],
         [
             "Spheal",
@@ -372,8 +456,29 @@
             "Luxray"
         ],
         [
+            "Roselia",
+            "Budew",
+            "Roserade"
+        ],
+        [
             "Buizel",
             "Floatzel"
+        ],
+        [
+            "Drifloon",
+            "Drifblim"
+        ],
+        [
+            "Buneary",
+            "Lopunny"
+        ],
+        [
+            "Glameow",
+            "Purugly"
+        ],
+        [
+            "Chimecho",
+            "Chingling"
         ],
         [
             "Stunky",
@@ -382,6 +487,18 @@
         [
             "Bronzor",
             "Bronzong"
+        ],
+        [
+            "Sudowoodo",
+            "Bonsly"
+        ],
+        [
+            "Chansey",
+            "Blissey",
+            "Happiny"
+        ],
+        [
+            "Spiritomb"
         ],
         [
             "Gible",
@@ -397,12 +514,42 @@
             "Drapion"
         ],
         [
+            "Mantine",
+            "Mantyke"
+        ],
+        [
+            "Snover",
+            "Abomasnow"
+        ],
+        [
             "Patrat",
             "Watchog"
         ],
         [
+            "Lillipup",
+            "Herdier",
+            "Stoutland"
+        ],
+        [
             "Munna",
             "Musharna"
+        ],
+        [
+            "Blitzle",
+            "Zebstrika"
+        ],
+        [
+            "Drilbur",
+            "Excadrill"
+        ],
+        [
+            "Venipede",
+            "Whirlipede",
+            "Scolipede"
+        ],
+        [
+            "Cottonee",
+            "Whimsicott"
         ],
         [
             "Sandile",
@@ -410,163 +557,56 @@
             "Krookodile"
         ],
         [
+            "Zorua",
+            "Zoroark"
+        ],
+        [
             "Minccino",
             "Cinccino"
+        ],
+        [
+            "Vanillite",
+            "Vanillish",
+            "Vanilluxe"
+        ],
+        [
+            "Deerling",
+            "Sawsbuck"
+        ],
+        [
+            "Foongus",
+            "Amoonguss"
+        ],
+        [
+            "Joltik",
+            "Galvantula"
+        ],
+        [
+            "Litwick",
+            "Lampent",
+            "Chandelure"
+        ],
+        [
+            "Cubchoo",
+            "Beartic"
+        ],
+        [
+            "Cryogonal"
+        ],
+        [
+            "Druddigon"
+        ],
+        [
+            "Golett",
+            "Golurk"
+        ],
+        [
+            "Rufflet",
+            "Braviary"
+        ],
+        [
+            "Vullaby",
+            "Mandibuzz"
         ]
-    ],
-    "event_alpha": {
-        "Anniversary Part 2 Exclusive Alphas": [
-            [
-                "Bulbasaur",
-                "Ivysaur",
-                "Venusaur"
-            ],
-            [
-                "Charmander",
-                "Charmeleon",
-                "Charizard"
-            ],
-            [
-                "Squirtle",
-                "Wartotle",
-                "Blastoise"
-            ]
-        ],
-        "Halloween Exclusive Alphas": [
-            [
-                "Gastly",
-                "Haunter",
-                "Gengar"
-            ],
-            [
-                "Misdreavus",
-                "Mismagius"
-            ],
-            [
-                "Duskull",
-                "Dusclops",
-                "Dusknoir"
-            ],
-            [
-                "Drifloon",
-                "Drifblim"
-            ],
-            [
-                "Spiritomb"
-            ],
-            [
-                "Zorua",
-                "Zoroark"
-            ],
-            [
-                "Litwick",
-                "Lampent",
-                "Chandelure"
-            ]
-        ],
-        "Christmas Exclusive Alphas (Available in Mysterious Premier Ball)": [
-            [
-                "Voltorb",
-                "Electrode"
-            ],
-            [
-                "Foongus",
-                "Amoongus"
-            ],
-            [
-                "Snover",
-                "Abomasnow"
-            ],
-            [
-                "Cryogonal"
-            ],
-            [
-                "Cubchoo",
-                "Beartic"
-            ],
-            [
-                "Chingling",
-                "Chimecho"
-            ],
-            [
-                "Delibird"
-            ],
-            [
-                "Snorunt",
-                "Glalie",
-                "Frosslass"
-            ],
-            [
-                "Staryu",
-                "Starmie"
-            ],
-            [
-                "Stantler"
-            ],
-            [
-                "Vanillite",
-                "Vanillish",
-                "Vanilluxe"
-            ]
-        ],
-        "Chinese New Year Exclusive Alphas (Available to capture after 10 tablets)": [
-            [
-                "Mareep",
-                "Flaaffy",
-                "Ampharos"
-            ],
-            [
-                "Blitze",
-                "Zebstrika"
-            ],
-            [
-                "Onix",
-                "Steelix"
-            ],
-            [
-                "Spoink",
-                "Grumpig"
-            ],
-            [
-                "Glameow",
-                "Purugly"
-            ],
-            [
-                "Buneary",
-                "Lopunny"
-            ],
-            [
-                "Lillipup",
-                "Herdier",
-                "Stoutland"
-            ],
-            [
-                "Magikarp",
-                "Gyarados"
-            ],
-            [
-                "Slakoth",
-                "Vigoroth",
-                "Slaking"
-            ],
-            [
-                "Drillbur",
-                "Excadrill"
-            ],
-            [
-                "Rufflet",
-                "Braviary"
-            ],
-            [
-                "Tauros"
-            ]
-        ],
-        "Exclusive Alpha for Completing All Regions": [
-            [
-                "Larvitar",
-                "Pupitar",
-                "Tyranitar"
-            ]
-        ]
-    }
+    ]
 }

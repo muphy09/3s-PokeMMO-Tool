@@ -117,8 +117,8 @@ function toEventMap(eventObj){
 export default function AlphaDexButton(){
   const { alphaCaught, toggleAlphaCaught } = useContext(AlphaCaughtContext);
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState('normal'); // 'normal' | 'event'
-  const [query, setQuery] = useState(''); // search for Normal Spawn tab
+  const [query, setQuery] = useState('');
+  const [hideCaught, setHideCaught] = useState(false);
 
   const normalMon = useMemo(() => toMonListFromNestedNames(alphaData.normal_alpha), []);
   const eventMap = useMemo(() => toEventMap(alphaData.event_alpha), []);
@@ -143,10 +143,8 @@ export default function AlphaDexButton(){
     width:'85%', maxWidth:1100, maxHeight:'85%', overflow:'hidden',
     borderRadius:'var(--radius-lg)', boxShadow:'var(--shadow-2)', display:'flex', flexDirection:'column'
   };
-  const tabBtn = (active) => ({
-    padding:'6px 10px', borderRadius:8, border:'1px solid var(--divider)', cursor:'pointer',
-    fontWeight:800, background: active ? 'var(--card)' : 'transparent', color:'var(--text)'
-  });
+  const hideCaughtLabelStyle = { display:'inline-flex', alignItems:'center', gap:6, fontWeight:700, cursor:'pointer' };
+  const hideCaughtCheckboxStyle = { width:16, height:16, accentColor:'var(--accent)' };
   const gridStyle = { display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', columnGap:10, rowGap:16, alignItems:'stretch' };
   const chipStyle = (filled) => ({
     display:'grid', gridTemplateColumns:'auto 1fr auto', alignItems:'center', gap:10,
@@ -201,11 +199,12 @@ export default function AlphaDexButton(){
     try { localStorage.setItem('alphaEventOpenMap', JSON.stringify(eventOpen)); } catch {}
   }, [eventOpen]);
 
-  function EventDropdowns({ eventMap, renderChip, gridStyle }){
+  function EventDropdowns({ eventMap, renderChip, gridStyle, hideCaught, alphaCaught }){
     return (
       <div style={{ display:'grid', gap:12 }}>
         {Array.from(eventMap.entries()).map(([evt, list]) => {
           const isOpen = !!eventOpen[evt];
+          const filteredList = hideCaught ? list.filter(m => !alphaCaught.has(m.id)) : list;
           return (
             <div key={evt}>
               <div
@@ -222,7 +221,7 @@ export default function AlphaDexButton(){
               {isOpen && (
                 <div style={{ marginTop:8 }}>
                   <div style={gridStyle}>
-                    {list.map(renderChip)}
+                    {filteredList.map(renderChip)}
                   </div>
                 </div>
               )}
@@ -260,37 +259,46 @@ export default function AlphaDexButton(){
             {/* Title */}
             <div style={{ textAlign:'center', fontWeight:900, fontSize:20, marginBottom:12 }}>Alpha Dex</div>
 
-            {/* Header with tabs and search */}
-            <div style={{ display:'flex', flexDirection:'column', gap:12, marginBottom:24 }}>
-              <div style={{ display:'flex', justifyContent:'center', gap:8 }}>
-                <button style={tabBtn(tab==='normal')} onClick={()=>setTab('normal')}>Normal Spawn</button>
-                <button style={tabBtn(tab==='event')} onClick={()=>setTab('event')}>Event Spawn</button>
-              </div>
-              {tab === 'normal' && (
-                <div style={{ display:'flex', justifyContent:'center' }}>
-                  <input
-                    className="input"
-                    placeholder="Search"
-                    value={query}
-                    onChange={e=>setQuery(e.target.value)}
-                    style={{ width:280, borderRadius:8, padding:'6px 10px' }}
-                  />
-                </div>
-              )}
+            {/* Header with search and filter */}
+            <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:12, marginBottom:24 }}>
+              <input
+                className="input"
+                placeholder="Search"
+                value={query}
+                onChange={e=>setQuery(e.target.value)}
+                style={{ width:280, borderRadius:8, padding:'6px 10px' }}
+              />
+              <label style={hideCaughtLabelStyle}>
+                <input
+                  type="checkbox"
+                  checked={hideCaught}
+                  onChange={e=>setHideCaught(e.target.checked)}
+                  style={hideCaughtCheckboxStyle}
+                />
+                Hide Caught
+              </label>
             </div>
             <div style={{ flex:1, overflow:'auto', padding:'20px' }}>
-              {tab==='normal' && (()=>{
+              {(()=>{
                 const q = query.trim().toLowerCase();
-                const filtered = q ? normalMon.filter(m => String(m.id).includes(q) || (m.name||'').toLowerCase().includes(q)) : normalMon;
+                let filtered = normalMon;
+                if (hideCaught) {
+                  filtered = filtered.filter(m => !alphaCaught.has(m.id));
+                }
+                if (q) {
+                  filtered = filtered.filter(m => String(m.id).includes(q) || (m.name||'').toLowerCase().includes(q));
+                }
                 return (
-                  <div style={gridStyle}>
-                    {filtered.map(renderChip)}
-                  </div>
+                  <>
+                    <div style={gridStyle}>
+                      {filtered.map(renderChip)}
+                    </div>
+                    <div style={{ marginTop:24 }}>
+                      <EventDropdowns eventMap={eventMap} renderChip={renderChip} gridStyle={gridStyle} hideCaught={hideCaught} alphaCaught={alphaCaught} />
+                    </div>
+                  </>
                 );
               })()}
-              {tab==='event' && (
-                <EventDropdowns eventMap={eventMap} renderChip={renderChip} gridStyle={gridStyle} />
-              )}
             </div>
             <div style={footerStyle}>Total Alpha Caught {totalAlphaCaught}/{allAlphaIds.size}</div>
           </div>

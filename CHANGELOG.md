@@ -1,6 +1,26 @@
 # Changelog
 ---
 
+## [3.3.4] - 2025-10
+### Changed
+- Pokemon Search
+  - Sprite sizes have been increased from 42 to 64 pixels
+
+- Alpha Dex
+  - Updated the Alpha Dex to match the 2025 Alpha dataset (All 319)
+  - Included a 'Hide Caught' toggle to match the Pokedex Tab
+  - Removed 'Event Spawn' *will be introduced again in an overhaul of Alpha Locations*
+
+### Fixed
+- Previously, viewing an Alternate Form of a Pokemon resulted in the Forms area returning blank
+  - This has been resolved
+
+### Known Issues
+- Filtering a Region in the Pokedex Tab does not mirror the PokeMMO Region Pokedex, instead, it returns Pokemon that can be captured in the specified Region.
+  - *A fix will be provided next update*
+
+---
+
 ## [3.3.3] - 2025-10
 ### Added
 - Resources | *Suggestions Appreciated!*

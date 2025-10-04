@@ -3,7 +3,10 @@
     "allow": [
       "Bash(powershell:*)",
       "Bash(node:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm start)",
+      "Bash(timeout:*)",
+      "Bash(del convert_alpha_ids.js)"
     ],
     "deny": [],
     "ask": []

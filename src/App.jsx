@@ -2750,8 +2750,20 @@ function EvolutionChain({ mon, onSelect }) {
 
   if (!base) return null;
   const hasChain = base.id !== mon.id || (base.evolutions || []).length > 0;
-  // Check forms on the base Pokemon (which handles both evolved and base forms)
-  const formsSource = base || mon;
+
+  // Find the true base form if current mon is an alternate form
+  let formsSource = base;
+  if (mon?.name) {
+    // Check if current mon is an alternate form by checking if any Pokemon has this as a form
+    const monNameKey = normalizeKey(mon.name);
+    const trueBase = DEX_LIST.find(p =>
+      Array.isArray(p.forms) && p.forms.some(f => normalizeKey(f.name) === monNameKey)
+    );
+    if (trueBase) {
+      formsSource = trueBase;
+    }
+  }
+
   const hasForms = Array.isArray(formsSource.forms) && formsSource.forms.length > 0;
 
   if (!hasChain && !hasForms) return null;
@@ -6015,10 +6027,10 @@ const marketResults = React.useMemo(() => {
                         }
                       }}
                       className="result-tile"
-                      style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' }}
+                      style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)', gap:12 }}
                     >
-                      <Sprite mon={mon} size={42} alt={mon.name} />
-                      <div style={{ textAlign:'left' }}>
+                      <Sprite mon={mon} size={64} alt={mon.name} />
+                      <div style={{ textAlign:'left', flex:1, minWidth:0 }}>
                         <div style={{ fontWeight:800 }}>{titleCase(mon.name)}</div>
                         <div className="label-muted">Dex #{mon.id}</div>
                         <div style={{ display:'flex', gap:6, marginTop:6 }}>
@@ -6059,10 +6071,10 @@ const marketResults = React.useMemo(() => {
                       }
                     }}
                     className={`result-tile${compareMode && compareA && sameMon(p, compareA) ? ' compare-selected' : ''}`}
-                      style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)' }}
+                      style={{ alignItems:'center', padding:10, borderRadius:12, border:'1px solid var(--divider)', background:'var(--surface)', gap:12 }}
                   >
-                    <Sprite mon={mon} size={42} alt={p.name} />
-                    <div style={{ textAlign:'left' }}>
+                    <Sprite mon={mon} size={64} alt={p.name} />
+                    <div style={{ textAlign:'left', flex:1, minWidth:0 }}>
                       <div style={{ fontWeight:800 }}>{titleCase(p.name)}</div>
                       <div className="label-muted">Dex #{p.id}</div>
                       <div style={{ display:'flex', gap:6, marginTop:6 }}>
