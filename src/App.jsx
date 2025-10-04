@@ -2766,8 +2766,6 @@ function EvolutionChain({ mon, onSelect }) {
 
   const hasForms = Array.isArray(formsSource.forms) && formsSource.forms.length > 0;
 
-  if (!hasChain && !hasForms) return null;
-
   // Determine the title based on what's available
   let title = 'Evolution';
   if (hasForms && hasChain) {
@@ -2779,21 +2777,27 @@ function EvolutionChain({ mon, onSelect }) {
   return (
     <div style={{ margin:'16px 0 6px' }}>
       <div className="label-muted" style={{ fontWeight:700, marginBottom:8 }}>{title}</div>
-      {hasChain && renderMon(base)}
-      {hasForms && (
-        <div style={{ marginTop: hasChain ? 16 : 0 }}>
-          {hasChain && <div className="label-muted" style={{ fontWeight:700, marginBottom:8, marginTop:16 }}>Forms</div>}
-          <div style={{ display:'flex', flexWrap:'wrap', gap:16 }}>
-            {/* Show the base form first */}
-            {renderMon(formsSource, true)}
-            {/* Then show all the other forms */}
-            {formsSource.forms.map((form, idx) => (
-              <div key={`form-${idx}`}>
-                {renderMon(form, true)}
+      {!hasChain && !hasForms ? (
+        <div className="label-muted">This Pokemon does not Evolve</div>
+      ) : (
+        <>
+          {hasChain && renderMon(base)}
+          {hasForms && (
+            <div style={{ marginTop: hasChain ? 16 : 0 }}>
+              {hasChain && <div className="label-muted" style={{ fontWeight:700, marginBottom:8, marginTop:16 }}>Forms</div>}
+              <div style={{ display:'flex', flexWrap:'wrap', gap:16 }}>
+                {/* Show the base form first */}
+                {renderMon(formsSource, true)}
+                {/* Then show all the other forms */}
+                {formsSource.forms.map((form, idx) => (
+                  <div key={`form-${idx}`}>
+                    {renderMon(form, true)}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
