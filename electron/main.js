@@ -213,7 +213,16 @@ async function reportInstallIfNeeded() {
   }
 
   const reportKey = `${process.platform}:${process.arch}:${version}`;
-  if (meta?.reports?.[reportKey]) return;
+  // Check if we already reported this exact version recently (within 24 hours)
+  // This prevents duplicate reports on app restarts while allowing version updates
+  const lastReportTime = meta?.reports?.[reportKey];
+  if (lastReportTime) {
+    const hoursSinceLastReport = (Date.now() - new Date(lastReportTime).getTime()) / (1000 * 60 * 60);
+    if (hoursSinceLastReport < 24) {
+      log('telemetry already reported for this version within 24h; skipping');
+      return;
+    }
+  }
 
   const now = new Date().toISOString();
   const payload = {

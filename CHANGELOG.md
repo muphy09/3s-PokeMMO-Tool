@@ -1,4 +1,9 @@
 # Changelog
+## [3.3.6] - 2025-10
+### Fixed
+- Live Battle
+  - Fixed the '???' Pokemon from appearing when nothing is on-screen
+
 ---
 
 ## [3.3.5] - 2025-10

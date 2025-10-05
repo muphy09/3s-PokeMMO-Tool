@@ -443658,7 +443658,7 @@
   },
   {
     "id": 1022,
-    "name": "???",
+    "name": "event",
     "exp_type": "MEDIUM_FAST",
     "obtainable": false,
     "gender_ratio": 255,
