@@ -1,6 +1,16 @@
 # Changelog
 ---
 
+## [3.3.8] - 2025-10
+### Added
+- Shiny Dex
+  - Included a Shiny Dex to showcase your caught Shinies
+  - Date, Time, Method, and Encounters included as options to save
+  - Can store multiple Shiny entries for each Pokemon
+
+
+---
+
 ## [3.3.7] - 2025-10
 ### Fixed
 - Pokemon Time of Day & Seasons now appear again

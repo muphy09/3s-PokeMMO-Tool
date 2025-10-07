@@ -10,6 +10,7 @@ import ColorPickerButton from './components/ColorPickerButton.jsx';
 import CaughtListButton from './components/CaughtListButton.jsx';
 import AlphaDexButton from './components/AlphaDexButton.jsx';
 import EventDexButton from './components/EventDexButton.jsx';
+import ShinyDexButton from './components/ShinyDexButton.jsx';
 import ThemeButton from './components/ThemeButton.jsx';
 import SponsorButton from './components/SponsorButton.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
@@ -18,6 +19,7 @@ import HomeScreen from './components/HomeScreen.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
 import { AlphaCaughtContext } from './alphaCaughtContext.js';
+import { ShinyCaughtContext } from './shinyCaughtContext.js';
 import alphaData from '../data/alpha_pokemon.json';
 import alphaIconUrl from '../data/alpha.ico';
 import BreedingSimulator from './components/BreedingSimulator.jsx';
@@ -4564,6 +4566,85 @@ function App(){
     });
   };
 
+  // Shiny caught state - stores arrays of catch entries per Pokemon
+  const [shinyCaught, setShinyCaught] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('shinyCaughtPokemon') || '{}');
+      const map = new Map();
+      for (const [id, entries] of Object.entries(saved)) {
+        // Ensure entries is always an array
+        if (Array.isArray(entries)) {
+          map.set(Number(id), entries);
+        } else if (entries && typeof entries === 'object') {
+          // Migrate old single-entry format to array
+          map.set(Number(id), [entries]);
+        }
+      }
+      return map;
+    } catch {
+      return new Map();
+    }
+  });
+
+  const addShinyEntry = (id, data) => {
+    setShinyCaught(prev => {
+      const next = new Map(prev);
+      const existing = next.get(id) || [];
+      next.set(id, [...existing, data]);
+      try {
+        const obj = {};
+        for (const [key, value] of next.entries()) {
+          obj[key] = value;
+        }
+        localStorage.setItem('shinyCaughtPokemon', JSON.stringify(obj));
+      } catch {}
+      return next;
+    });
+  };
+
+  const updateShinyEntry = (id, index, data) => {
+    setShinyCaught(prev => {
+      const next = new Map(prev);
+      const entries = next.get(id) || [];
+      if (index >= 0 && index < entries.length) {
+        const updated = [...entries];
+        updated[index] = data;
+        next.set(id, updated);
+        try {
+          const obj = {};
+          for (const [key, value] of next.entries()) {
+            obj[key] = value;
+          }
+          localStorage.setItem('shinyCaughtPokemon', JSON.stringify(obj));
+        } catch {}
+      }
+      return next;
+    });
+  };
+
+  const removeShinyEntry = (id, index) => {
+    setShinyCaught(prev => {
+      const next = new Map(prev);
+      const entries = next.get(id) || [];
+      if (index >= 0 && index < entries.length) {
+        const updated = entries.filter((_, i) => i !== index);
+        if (updated.length === 0) {
+          next.delete(id);
+        } else {
+          next.set(id, updated);
+        }
+        try {
+          const obj = {};
+          for (const [key, value] of next.entries()) {
+            obj[key] = value;
+          }
+          localStorage.setItem('shinyCaughtPokemon', JSON.stringify(obj));
+        } catch {}
+      }
+      return next;
+    });
+  };
+
   const [query, setQuery]       = useState('');
   const [areaQuery, setAreaQuery] = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
@@ -5370,6 +5451,7 @@ const marketResults = React.useMemo(() => {
   return (
     <CaughtContext.Provider value={{ caught, toggleCaught, replaceCaught }}>
     <AlphaCaughtContext.Provider value={{ alphaCaught, toggleAlphaCaught }}>
+    <ShinyCaughtContext.Provider value={{ shinyCaught, addShinyEntry, updateShinyEntry, removeShinyEntry }}>
     <ColorContext.Provider value={{ methodColors, rarityColors, setMethodColors, setRarityColors }}>
       <>
       {/* App-wide overlay controls (top-right) */}
@@ -5385,6 +5467,7 @@ const marketResults = React.useMemo(() => {
           <CaughtListButton />
           <AlphaDexButton />
           <EventDexButton />
+          <ShinyDexButton />
         </div>
       </div>
 
@@ -6793,6 +6876,7 @@ const marketResults = React.useMemo(() => {
       <VersionBadge />
     </>
     </ColorContext.Provider>
+    </ShinyCaughtContext.Provider>
     </AlphaCaughtContext.Provider>
     </CaughtContext.Provider>
   );
