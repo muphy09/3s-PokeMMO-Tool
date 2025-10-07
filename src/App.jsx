@@ -76,10 +76,11 @@ function normalizeAreaName(area = "") {
 
 function stripSeason(str = "") {
   return String(str)
-    // Remove complete season/time-of-day tags like (SEASON0/Day/Morning), (SEASON1/Day), (Day), etc.
-    .replace(/\s*\(((?:SEASON\d+|Morning|Day|Night)(?:\/(?:SEASON\d+|Morning|Day|Night))*)\)\s*$/i, '')
-    // Fallback: remove any remaining /SEASON patterns
+    // Remove SEASON# when it appears with a slash before or after
     .replace(/\/SEASON\d+/gi, "")
+    .replace(/SEASON\d+\//gi, "")
+    // Remove standalone (SEASON#) tags
+    .replace(/\(SEASON\d+\)/gi, "")
     // Clean up empty parentheses
     .replace(/\(\s*\)/g, "")
     // Normalize whitespace
@@ -3868,7 +3869,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
     <div className="p-3" style={{ display:'flex', flexDirection:'column', gap:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline' }}>
         <div className="label-muted">
-          Live Location: <span style={{ fontWeight:800 }}>{rawText || '—'}</span>
+          Live Location: <span style={{ fontWeight:800 }}>{stripTimeTag(rawText || '—')}</span>
           {SHOW_CONFIDENCE && (confPct !== null) && (
             <span className="text-slate-400 ml-2">({confPct}% Confidence)</span>
           )}
@@ -3979,7 +3980,7 @@ function LiveRoutePanel({ areasIndex, locIndex, onViewMon }){
           <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
             <div>
               <div style={{ fontWeight:800, fontSize:16 }}>
-                {displayMap} {region ? <span className="label-muted">({titleCase(region)})</span> : null}
+                {stripTimeTag(displayMap)} {region ? <span className="label-muted">({titleCase(region)})</span> : null}
               </div>
               <div className="label-muted">{entries.length} Pokemon</div>
             </div>

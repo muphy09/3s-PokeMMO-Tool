@@ -1,6 +1,13 @@
 # Changelog
 ---
 
+## [3.3.7] - 2025-10
+### Fixed
+- Pokemon Time of Day & Seasons now appear again
+  - Broken when fixing the location names
+
+---
+
 ## [3.3.6] - 2025-10
 ### Fixed
 - Live Battle
