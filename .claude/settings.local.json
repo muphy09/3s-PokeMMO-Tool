@@ -11,7 +11,8 @@
       "Bash(del \"c:\\dev\\pokemmo-tool\\read_excel.ps1\")",
       "Bash(pip install:*)",
       "Bash(npm install:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(del test_strip_season.js)"
     ],
     "deny": [],
     "ask": []

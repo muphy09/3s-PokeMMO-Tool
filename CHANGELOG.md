@@ -1,8 +1,13 @@
 # Changelog
+---
+
 ## [3.3.6] - 2025-10
 ### Fixed
 - Live Battle
   - Fixed the '???' Pokemon from appearing when nothing is on-screen
+
+- Live Route
+  - Fixed some location names to omit the Season / Time of Day for consistency
 
 ---
 

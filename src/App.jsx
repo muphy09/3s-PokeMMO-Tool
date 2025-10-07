@@ -76,8 +76,13 @@ function normalizeAreaName(area = "") {
 
 function stripSeason(str = "") {
   return String(str)
+    // Remove complete season/time-of-day tags like (SEASON0/Day/Morning), (SEASON1/Day), (Day), etc.
+    .replace(/\s*\(((?:SEASON\d+|Morning|Day|Night)(?:\/(?:SEASON\d+|Morning|Day|Night))*)\)\s*$/i, '')
+    // Fallback: remove any remaining /SEASON patterns
     .replace(/\/SEASON\d+/gi, "")
+    // Clean up empty parentheses
     .replace(/\(\s*\)/g, "")
+    // Normalize whitespace
     .replace(/\s+/g, " ")
     .trim();
 }
