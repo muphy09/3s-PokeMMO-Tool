@@ -6,8 +6,8 @@ same service exposes aggregated install counts for the CLI tooling in
 
 ## Endpoints
 
-- **Install POST endpoint:** `https://telemetry.pokemmo-tool.app/install`
-- **Stats endpoint:** `https://telemetry.pokemmo-tool.app/stats`
+- **Install POST endpoint:** `https://3s-telemetry-service.vercel.app/api/install`
+- **Stats endpoint:** `https://3s-telemetry-service.vercel.app/api/stats`
 
 Both endpoints accept JSON responses and support bearer authentication. When the
 `POKEMMO_TOOL_TELEMETRY_KEY` environment variable is set the Electron app and CLI
