@@ -42,8 +42,8 @@ Each successful POST is persisted so the app only reports a given version/OS com
 
 ### Telemetry endpoints
 
-- **Install reports:** `https://telemetry.pokemmo-tool.app/install`
-- **Aggregated stats:** `https://telemetry.pokemmo-tool.app/stats`
+- **Install reports:** `https://3s-telemetry-service.vercel.app/api/install`
+- **Aggregated stats:** `https://3s-telemetry-service.vercel.app/api/stats`
 
 Both routes accept an optional bearer token via the `Authorization` header. When the
 `POKEMMO_TOOL_TELEMETRY_KEY` environment variable is populated the desktop app includes
