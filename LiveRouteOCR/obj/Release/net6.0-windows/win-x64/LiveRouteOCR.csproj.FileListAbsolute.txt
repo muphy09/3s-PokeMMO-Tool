@@ -486,9 +486,10 @@ C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.AssemblyInfoInputs.cache
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.AssemblyInfo.cs
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.csproj.CoreCompileInputs.cache
-C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.csproj.CopyComplete
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.dll
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\refint\LiveRouteOCR.dll
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.pdb
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.genruntimeconfig.cache
 C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\ref\LiveRouteOCR.dll
+C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRouteOCR.sourcelink.json
+C:\dev\pokemmo-tool\LiveRouteOCR\obj\Release\net6.0-windows\win-x64\LiveRout.53B548C6.Up2Date

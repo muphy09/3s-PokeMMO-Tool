@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LiveRouteOCR")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+330c57c2f86523ed0b075e77a2a6ce2f266abb92")]
 [assembly: System.Reflection.AssemblyProductAttribute("LiveRouteOCR")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LiveRouteOCR")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

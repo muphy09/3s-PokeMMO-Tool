@@ -16,6 +16,7 @@ import SponsorButton from './components/SponsorButton.jsx';
 import FeedbackButton from './components/FeedbackButton.jsx';
 import SearchFilter from './components/SearchFilter.jsx';
 import HomeScreen from './components/HomeScreen.jsx';
+import CatchNotification from './components/CatchNotification.jsx';
 import { ColorContext, DEFAULT_METHOD_COLORS, DEFAULT_RARITY_COLORS } from './colorConfig.js';
 import { CaughtContext } from './caughtContext.js';
 import { AlphaCaughtContext } from './alphaCaughtContext.js';
@@ -4645,6 +4646,72 @@ function App(){
     });
   };
 
+  // Catch notifications state
+  const [catchNotifications, setCatchNotifications] = useState([]);
+
+  // Listen for pokemon-caught events from the chat log watcher
+  useEffect(() => {
+    const handlePokemonCaught = (data) => {
+      if (!data || !data.pokemonName) return;
+
+      const pokemonName = data.pokemonName;
+      const isAlpha = data.isAlpha;
+
+      // Find the Pokemon in the dex by name
+      const pokemon = DEX.find(p =>
+        p.name?.toLowerCase() === pokemonName.toLowerCase()
+      );
+
+      if (!pokemon) {
+        console.warn('[AutoCatch] Pokemon not found in dex:', pokemonName);
+        return;
+      }
+
+      const pokemonId = pokemon.id;
+
+      // Check if already caught (for regular) or alpha caught (for alpha)
+      if (isAlpha) {
+        if (alphaCaught.has(pokemonId)) {
+          console.log('[AutoCatch] Alpha Pokemon already marked as caught:', pokemonName);
+          return;
+        }
+        // Mark as alpha caught
+        toggleAlphaCaught(pokemonId);
+      } else {
+        if (caught.has(pokemonId)) {
+          console.log('[AutoCatch] Pokemon already marked as caught:', pokemonName);
+          return;
+        }
+        // Mark as caught
+        toggleCaught(pokemonId);
+      }
+
+      // Get sprite URL
+      const spriteUrl = localSpriteCandidates(pokemon)?.[0] || PLACEHOLDER_POKEMON;
+
+      // Add notification
+      const notificationId = Date.now();
+      setCatchNotifications(prev => [...prev, {
+        id: notificationId,
+        pokemonName: pokemon.name,
+        isAlpha,
+        spriteUrl,
+      }]);
+    };
+
+    // Set up the event listener
+    const cleanup = window.app?.onPokemonCaught?.(handlePokemonCaught);
+    return () => {
+      if (cleanup && typeof cleanup === 'function') {
+        cleanup();
+      }
+    };
+  }, [caught, alphaCaught, toggleCaught, toggleAlphaCaught]);
+
+  const removeCatchNotification = (id) => {
+    setCatchNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
   const [query, setQuery]       = useState('');
   const [areaQuery, setAreaQuery] = useState('');
   const [areaRegion, setAreaRegion] = useState('All');
@@ -6874,6 +6941,16 @@ const marketResults = React.useMemo(() => {
       </div>
       <FeedbackButton />
       <VersionBadge />
+      {/* Catch notifications */}
+      {catchNotifications.map((notification) => (
+        <CatchNotification
+          key={notification.id}
+          pokemonName={notification.pokemonName}
+          isAlpha={notification.isAlpha}
+          spriteUrl={notification.spriteUrl}
+          onComplete={() => removeCatchNotification(notification.id)}
+        />
+      ))}
     </>
     </ColorContext.Provider>
     </ShinyCaughtContext.Provider>

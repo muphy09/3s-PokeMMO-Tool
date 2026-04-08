@@ -32,6 +32,8 @@ let ocrProc = null;
 let ocrImageDebugEnabled = false;
 let downloadedUpdate = null;
 let downloadingVersion = null;
+let chatLogWatcher = null;
+let autoCatchEnabled = true;
 
 const isWin = process.platform === 'win32';
 const isLinux = process.platform === 'linux';
@@ -576,6 +578,185 @@ async function relaunchApp({ ocrDisabledFlag = false } = {}) {
   try { app.quit(); } catch {}
   // hard fallback in dev
   setTimeout(() => { try { process.exit(0); } catch {} }, 1500);
+}
+
+// ===== Chat Log Watcher for Auto Catch =====
+function getPokeMMOLogDir() {
+  try {
+    const localAppData = process.env.LOCALAPPDATA || app.getPath('localAppData');
+    return path.join(localAppData, 'Programs', 'PokeMMO', 'log');
+  } catch (err) {
+    log('getPokeMMOLogDir error', err?.message || err);
+    return null;
+  }
+}
+
+function getMostRecentChatLog() {
+  const logDir = getPokeMMOLogDir();
+  if (!logDir || !fs.existsSync(logDir)) {
+    return null;
+  }
+
+  try {
+    const files = fs.readdirSync(logDir)
+      .filter(f => f.startsWith('chat_') && f.endsWith('.log'))
+      .map(f => {
+        const fullPath = path.join(logDir, f);
+        try {
+          const stats = fs.statSync(fullPath);
+          return { path: fullPath, mtime: stats.mtime };
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.mtime - a.mtime);
+
+    return files.length > 0 ? files[0].path : null;
+  } catch (err) {
+    log('getMostRecentChatLog error', err?.message || err);
+    return null;
+  }
+}
+
+function parseCatchLine(line) {
+  // Match pattern: [MM/DD/YY HH:MM:SS AM/PM] [Battle] Gotcha! [#color_code]Pokemon Name[#] was caught!
+  // or [MM/DD/YY HH:MM:SS AM/PM] [Battle] Gotcha! [#color_code]Alpha Pokemon Name[#] was caught!
+  // The pattern may span multiple lines, so we normalize it first
+  const normalized = line.replace(/\r?\n/g, ' ').trim();
+
+  // Match with optional timestamp prefix
+  const catchMatch = normalized.match(/(?:\[[^\]]+\]\s*)?\[Battle\]\s+Gotcha!\s*\[#[^\]]*\](.*?)\[#\]\s+was\s+caught!/i);
+  if (!catchMatch) return null;
+
+  let pokemonText = catchMatch[1].trim();
+  let isAlpha = false;
+
+  // Check if it starts with "Alpha"
+  if (/^Alpha\s+/i.test(pokemonText)) {
+    isAlpha = true;
+    pokemonText = pokemonText.replace(/^Alpha\s+/i, '').trim();
+  }
+
+  return { pokemonName: pokemonText, isAlpha };
+}
+
+function startChatLogWatcher() {
+  if (!autoCatchEnabled) {
+    log('Auto catch disabled; not starting chat log watcher');
+    return;
+  }
+
+  stopChatLogWatcher();
+
+  const logDir = getPokeMMOLogDir();
+  if (!logDir) {
+    log('PokeMMO log directory not found; cannot start chat log watcher');
+    return;
+  }
+
+  if (!fs.existsSync(logDir)) {
+    log('PokeMMO log directory does not exist:', logDir);
+    return;
+  }
+
+  log('Starting chat log watcher for directory:', logDir);
+
+  let lastPosition = 0;
+  let currentLogFile = getMostRecentChatLog();
+
+  if (currentLogFile && fs.existsSync(currentLogFile)) {
+    try {
+      const stats = fs.statSync(currentLogFile);
+      lastPosition = stats.size;
+      log('Watching chat log file:', currentLogFile, 'starting at position:', lastPosition);
+    } catch (err) {
+      log('Error getting initial file size:', err?.message || err);
+    }
+  }
+
+  const checkForNewLines = () => {
+    if (!autoCatchEnabled) return;
+
+    const latestLogFile = getMostRecentChatLog();
+    if (!latestLogFile || !fs.existsSync(latestLogFile)) {
+      log('[AutoCatch] No log file found');
+      return;
+    }
+
+    // If the log file changed, reset position
+    if (latestLogFile !== currentLogFile) {
+      log('[AutoCatch] Log file changed from', currentLogFile, 'to', latestLogFile);
+      currentLogFile = latestLogFile;
+      lastPosition = 0;
+    }
+
+    try {
+      const stats = fs.statSync(currentLogFile);
+      log('[AutoCatch] Checking file - current size:', stats.size, 'last position:', lastPosition);
+
+      if (stats.size > lastPosition) {
+        // Read the new content directly instead of using streams
+        const newContent = fs.readFileSync(currentLogFile, {
+          encoding: 'utf8',
+          start: lastPosition,
+          end: stats.size
+        });
+
+        log('[AutoCatch] New content read, length:', newContent.length);
+        log('[AutoCatch] New content (first 500 chars):', newContent.substring(0, 500));
+
+        // Look for catch patterns in the entire new content
+        // Pattern: [timestamp] [Battle] Gotcha!\n[#color]PokemonName[#] was caught!
+        const catchPattern = /\[([^\]]+)\]\s*\[Battle\]\s*Gotcha!\s*\[#[^\]]*\](.*?)\[#\]\s*was\s*caught!/gi;
+
+        log('[AutoCatch] Testing regex pattern...');
+        let match;
+        let matchCount = 0;
+        while ((match = catchPattern.exec(newContent)) !== null) {
+          matchCount++;
+          log('[AutoCatch] Match found:', match[0]);
+          let pokemonText = match[2].trim();
+          let isAlpha = false;
+
+          // Check if it starts with "Alpha"
+          if (/^Alpha\s+/i.test(pokemonText)) {
+            isAlpha = true;
+            pokemonText = pokemonText.replace(/^Alpha\s+/i, '').trim();
+          }
+
+          const catchData = { pokemonName: pokemonText, isAlpha };
+          log('[AutoCatch] Detected catch:', catchData);
+
+          try {
+            mainWindow?.webContents?.send('pokemon-caught', catchData);
+            log('[AutoCatch] Event sent successfully');
+          } catch (err) {
+            log('[AutoCatch] Error sending pokemon-caught event:', err?.message || err);
+          }
+        }
+
+        log('[AutoCatch] Total matches found:', matchCount);
+        lastPosition = stats.size;
+      } else {
+        log('[AutoCatch] No new content (size <= lastPosition)');
+      }
+    } catch (err) {
+      log('[AutoCatch] Error checking chat log:', err?.message || err);
+    }
+  };
+
+  // Check for new lines every second
+  chatLogWatcher = setInterval(checkForNewLines, 1000);
+  log('Chat log watcher started');
+}
+
+function stopChatLogWatcher() {
+  if (chatLogWatcher) {
+    clearInterval(chatLogWatcher);
+    chatLogWatcher = null;
+    log('Chat log watcher stopped');
+  }
 }
 
 // ===== Updater wiring =====
@@ -1152,9 +1333,26 @@ app.whenReady().then(async () => {
       else log('LiveRouteOCR disabled by settings; not starting');
     } catch {}
   }, 800);
+  // Start chat log watcher for auto catch
+  setTimeout(() => {
+    try {
+      if (autoCatchEnabled) {
+        startChatLogWatcher();
+      }
+    } catch (err) {
+      log('Error starting chat log watcher:', err?.message || err);
+    }
+  }, 1000);
 });
-app.on('before-quit', () => { stopLiveRouteOCR(); });
-app.on('window-all-closed', () => { stopLiveRouteOCR(); if (process.platform !== 'darwin') app.quit(); });
+app.on('before-quit', () => {
+  stopLiveRouteOCR();
+  stopChatLogWatcher();
+});
+app.on('window-all-closed', () => {
+  stopLiveRouteOCR();
+  stopChatLogWatcher();
+  if (process.platform !== 'darwin') app.quit();
+});
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createMainWindow(); });
 
 ipcMain.handle('live:list-windows', async () => {
@@ -1298,6 +1496,43 @@ ipcMain.handle('live:save-settings', async (_evt, payload) => {
   try { if (saved?.ocrEnabled !== false) { await stopLiveRouteOCR(); await startLiveRouteOCR(); } } catch {}
   try { mainWindow?.webContents?.send('force-live-reconnect', { reset: true }); } catch {}
   return { ok: true, path: SETTINGS_PATH, saved };
+});
+
+// ===== Auto Catch IPC Handlers =====
+ipcMain.handle('autocatch:get-enabled', async () => {
+  return { enabled: autoCatchEnabled };
+});
+
+ipcMain.handle('autocatch:set-enabled', async (_evt, payload = {}) => {
+  const enabled = !!payload?.enabled;
+  autoCatchEnabled = enabled;
+
+  if (enabled) {
+    startChatLogWatcher();
+  } else {
+    stopChatLogWatcher();
+  }
+
+  log('Auto catch', enabled ? 'enabled' : 'disabled');
+  return { ok: true, enabled: autoCatchEnabled };
+});
+
+ipcMain.handle('autocatch:check-log-status', async () => {
+  const logDir = getPokeMMOLogDir();
+  if (!logDir) {
+    return { available: false, reason: 'Log directory path not found' };
+  }
+
+  if (!fs.existsSync(logDir)) {
+    return { available: false, reason: 'Log directory does not exist' };
+  }
+
+  const chatLog = getMostRecentChatLog();
+  if (!chatLog) {
+    return { available: false, reason: 'No chat log files found' };
+  }
+
+  return { available: true, logFile: chatLog };
 });
 
 

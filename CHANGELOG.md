@@ -1,13 +1,25 @@
 # Changelog
 ---
 
+## [Unreleased]
+### Added
+- Automatic Catch Detection
+  - Automatically mark Pokemon as 'Caught' when they are caught in-game
+  - Reads PokeMMO chat log files to detect catch messages
+  - Works for both regular and Alpha Pokemon
+  - Shows a notification toast with Pokemon sprite when a catch is detected
+  - Setting included in Options Menu → General tab
+  - Requires 'Log Chat to Disk' enabled in PokeMMO (Settings→Chat→Log Chat to Disk)
+  - Status indicator shows if chat log is detected
+
+---
+
 ## [3.3.8] - 2025-10
 ### Added
 - Shiny Dex
   - Included a Shiny Dex to showcase your caught Shinies
   - Date, Time, Method, and Encounters included as options to save
   - Can store multiple Shiny entries for each Pokemon
-
 
 ---
 

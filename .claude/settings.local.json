@@ -12,7 +12,10 @@
       "Bash(pip install:*)",
       "Bash(npm install:*)",
       "Bash(cat:*)",
-      "Bash(del test_strip_season.js)"
+      "Bash(del test_strip_season.js)",
+      "Bash(move toolsinstall-telemetry-stats.js toolsinstall-telemetry-stats.mjs)",
+      "Bash(ren:*)",
+      "Bash(npm run telemetry:stats:*)"
     ],
     "deny": [],
     "ask": []

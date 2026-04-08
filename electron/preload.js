@@ -324,6 +324,27 @@ contextBridge.exposeInMainWorld('app', {
 
   // Events
   forceLiveReconnect: () => { try { ipcRenderer.send('live:force-reconnect'); } catch {} },
+
+  // Auto Catch
+  getAutoCatchEnabled: async () => {
+    const res = await invokeSafe('autocatch:get-enabled', undefined, { enabled: true });
+    return res?.enabled ?? true;
+  },
+  setAutoCatchEnabled: async (enabled) => {
+    const res = await invokeSafe('autocatch:set-enabled', { enabled: !!enabled }, { ok: false });
+    if (res && res.ok !== false) return { ok: true, enabled: !!res.enabled };
+    return { ok: false };
+  },
+  checkChatLogStatus: async () => {
+    return await invokeSafe('autocatch:check-log-status', undefined, { available: false, reason: 'IPC unavailable' });
+  },
+  onPokemonCaught: (cb) => {
+    try {
+      const handler = (_evt, data) => { try { cb?.(data); } catch {} };
+      ipcRenderer.on('pokemon-caught', handler);
+      return () => ipcRenderer.removeListener('pokemon-caught', handler);
+    } catch { return () => {}; }
+  },
 });
 
 // ---------- Live setup bridges ----------

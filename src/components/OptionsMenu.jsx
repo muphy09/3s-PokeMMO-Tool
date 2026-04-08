@@ -76,6 +76,8 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
   const [settingImageDebug, setSettingImageDebug] = useState(false);
   const [savingRouteOffset, setSavingRouteOffset] = useState(false);
   const [savingBattleOffset, setSavingBattleOffset] = useState(false);
+  const [autoCatchEnabled, setAutoCatchEnabled] = useState(true);
+  const [chatLogAvailable, setChatLogAvailable] = useState(true);
   const [previewData, setPreviewData] = useState({
     routeCapture: null,
     battleCapture: null,
@@ -223,6 +225,42 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
       });
     }
   }, [ocrImageDebug]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const enabled = await window.app?.getAutoCatchEnabled?.();
+        if (!cancelled && typeof enabled === 'boolean') {
+          setAutoCatchEnabled(enabled);
+        }
+      } catch (err) {
+        console.error('[OptionsMenu] load auto catch enabled error:', err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!open || activeCategory !== 'general') return;
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const status = await window.app?.checkChatLogStatus?.();
+        if (!cancelled && status) {
+          setChatLogAvailable(status.available);
+        }
+      } catch (err) {
+        console.error('[OptionsMenu] check chat log status error:', err);
+      }
+    };
+    check();
+    const id = setInterval(check, 5000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [open, activeCategory]);
 
   const show = (text, kind = "info") => setToast({ text, kind });
 
@@ -498,6 +536,20 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
     setOpen(false);
   }
 
+  async function onToggleAutoCatch(next) {
+    const prev = autoCatchEnabled;
+    try {
+      setAutoCatchEnabled(next);
+      const res = await window.app?.setAutoCatchEnabled?.(next);
+      if (!res || res.ok === false) throw new Error('Failed to apply auto catch setting');
+      show(next ? 'Auto catch enabled.' : 'Auto catch disabled.', 'success');
+    } catch (err) {
+      console.error('[OptionsMenu] toggle auto catch error:', err);
+      show('Failed to apply auto catch setting', 'error');
+      setAutoCatchEnabled(prev);
+    }
+  }
+
   // Styles
   const btnStyle = {
     padding: "6px 10px",
@@ -735,6 +787,18 @@ export default function OptionsMenu({ style = {}, ocrSupported = false }) {
           <ActionButton label="Check for Updates" onClick={onCheckUpdates} />
           <Divider style={{ margin: '18px 0' }} />
           <ToggleButton label="Shiny Sprites" value={!!shinyEnabled} onToggle={onToggleShiny} />
+          <Divider style={{ margin: '18px 0' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <ToggleButton label="Automatically mark as Caught" value={!!autoCatchEnabled} onToggle={onToggleAutoCatch} />
+            <span style={{ fontSize: 12, color: 'var(--muted)', paddingLeft: 18, lineHeight: 1.4 }}>
+              For this feature to work - Enable 'Log Chat to Disk' in PokeMMO; Settings→Chat→Log Chat to Disk
+            </span>
+            {!chatLogAvailable && (
+              <span style={{ fontSize: 12, color: '#ff4444', fontWeight: 700, paddingLeft: 18 }}>
+                Log Chat not Enabled
+              </span>
+            )}
+          </div>
           <Divider style={{ margin: '18px 0' }} />
           <ActionButton label="Choose Colors" onClick={onOpenColorPicker} />
         </div>
